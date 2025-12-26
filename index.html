@@ -25,6 +25,17 @@
             padding: clamp(8px, 2vw, 16px);
         }
 
+        body.is-paused .pause-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.is-paused .lane-container,
+        body.is-paused .stock-area,
+        body.is-paused #logs {
+            filter: grayscale(0.4) brightness(0.7);
+        }
+
         .anta { font-family: 'Anta', sans-serif; }
 
         /* レーンエリア */
@@ -80,6 +91,32 @@
             background: rgba(30, 41, 59, 0.9);
             border-color: #38bdf8;
             color: #38bdf8;
+        }
+
+        .pause-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(18px, 4vw, 28px);
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: #e2e8f0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 40;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+        }
+
+        .pause-overlay span {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(56, 189, 248, 0.8);
+            border-radius: 999px;
+            padding: 10px 18px;
         }
 
         .skill-block {
@@ -219,6 +256,10 @@
     <!-- Quick Info -->
     <div class="text-center text-[10px] text-slate-600 animate-pulse">
         ブロックをタップで発動 / 下にスワイプで保留
+    </div>
+
+    <div class="pause-overlay" aria-hidden="true">
+        <span>PAUSED</span>
     </div>
 
     <script>
@@ -420,6 +461,7 @@
             pauseBtn.classList.toggle('is-paused', state.isPaused);
             pauseBtn.setAttribute('aria-pressed', state.isPaused ? 'true' : 'false');
             pauseBtn.textContent = state.isPaused ? '▶' : '⏸';
+            document.body.classList.toggle('is-paused', state.isPaused);
             if (typeof time === 'number') {
                 state.lastSpawn = time;
                 lastEnemyAttack = time;
