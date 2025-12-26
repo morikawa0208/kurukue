@@ -25,6 +25,17 @@
             padding: clamp(8px, 2vw, 16px);
         }
 
+        body.is-paused .pause-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.is-paused .lane-container,
+        body.is-paused .stock-area,
+        body.is-paused #logs {
+            filter: grayscale(0.4) brightness(0.7);
+        }
+
         .anta { font-family: 'Anta', sans-serif; }
 
         /* レーンエリア */
@@ -53,6 +64,59 @@
             align-items: center;
             background: rgba(30, 41, 59, 0.3);
             position: relative;
+        }
+
+        .pause-button {
+            width: clamp(44px, 12vw, 56px);
+            height: clamp(44px, 12vw, 56px);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid #1f2937;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 900;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
+            transition: all 0.2s ease;
+        }
+
+        .pause-button:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        .pause-button.is-paused {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        .pause-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(18px, 4vw, 28px);
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: #e2e8f0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 40;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+        }
+
+        .pause-overlay span {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(56, 189, 248, 0.8);
+            border-radius: 999px;
+            padding: 10px 18px;
         }
 
         .skill-block {
@@ -173,8 +237,11 @@
     <!-- Stock Area (Manual Control) -->
     <div class="mb-4">
         <div class="text-[10px] text-slate-500 mb-1 text-center font-bold">STOCK (タップで戻す)</div>
-        <div id="stock-lane" class="stock-area">
-            <!-- Only 1 stored block goes here -->
+        <div class="flex items-center justify-center gap-3">
+            <button id="pause-btn" class="pause-button" type="button" aria-pressed="false" aria-label="一時停止">⏸</button>
+            <div id="stock-lane" class="stock-area">
+                <!-- Only 1 stored block goes here -->
+            </div>
         </div>
     </div>
 
@@ -191,6 +258,10 @@
         ブロックをタップで発動 / 下にスワイプで保留
     </div>
 
+    <div id="pause-overlay" class="pause-overlay" aria-hidden="true">
+        <span>PAUSED</span>
+    </div>
+
     <script>
         const state = {
             player: { hp: 100, maxHp: 100, shield: 0 },
@@ -198,6 +269,7 @@
             lane: [],
             stock: [],
             isGameOver: false,
+            isPaused: false,
             lastSpawn: 0,
             spawnInterval: 1800,
             types: [
@@ -210,6 +282,8 @@
         const skillLane = document.getElementById('skill-lane');
         const stockLane = document.getElementById('stock-lane');
         const logs = document.getElementById('logs');
+        const pauseBtn = document.getElementById('pause-btn');
+        const pauseOverlay = document.getElementById('pause-overlay');
 
         function addLog(msg) {
             const div = document.createElement('div');
@@ -382,8 +456,36 @@
         }
 
         let lastEnemyAttack = 0;
+
+        function setPaused(nextPaused, time) {
+            state.isPaused = nextPaused;
+            pauseBtn.classList.toggle('is-paused', state.isPaused);
+            pauseBtn.setAttribute('aria-pressed', state.isPaused ? 'true' : 'false');
+            pauseBtn.textContent = state.isPaused ? '▶' : '⏸';
+            document.body.classList.toggle('is-paused', state.isPaused);
+            pauseOverlay.setAttribute('aria-hidden', state.isPaused ? 'false' : 'true');
+            if (typeof time === 'number') {
+                state.lastSpawn = time;
+                lastEnemyAttack = time;
+            }
+        }
+
+        pauseBtn.addEventListener('click', () => {
+            if (state.isGameOver) return;
+            setPaused(!state.isPaused, performance.now());
+        });
+
+        pauseOverlay.addEventListener('click', () => {
+            if (state.isGameOver || !state.isPaused) return;
+            setPaused(false, performance.now());
+        });
+
         function gameLoop(time) {
             if (state.isGameOver) return;
+            if (state.isPaused) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
 
             if (time - state.lastSpawn > state.spawnInterval) {
                 spawnBlock();
