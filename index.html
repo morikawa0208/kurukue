@@ -16,14 +16,23 @@
             touch-action: manipulation;
         }
 
+        body.h-screen {
+            height: 100svh;
+            min-height: 100svh;
+        }
+
+        body.p-4 {
+            padding: clamp(8px, 2vw, 16px);
+        }
+
         .anta { font-family: 'Anta', sans-serif; }
 
         /* レーンエリア */
         .lane-container {
             display: flex;
             gap: 8px;
-            padding: 12px;
-            height: 100px;
+            padding: clamp(6px, 1.8vw, 12px);
+            height: clamp(70px, 14vh, 110px);
             background: rgba(15, 23, 42, 0.8);
             border-top: 2px solid #1e293b;
             border-bottom: 2px solid #1e293b;
@@ -34,8 +43,8 @@
 
         /* 保留エリア */
         .stock-area {
-            height: 90px;
-            width: 90px;
+            height: clamp(64px, 16vw, 90px);
+            width: clamp(64px, 16vw, 90px);
             margin: 0 auto;
             border: 2px dashed #334155;
             border-radius: 12px;
@@ -47,8 +56,8 @@
         }
 
         .skill-block {
-            min-width: 60px;
-            height: 75px;
+            min-width: clamp(48px, 12vw, 60px);
+            height: clamp(60px, 12vh, 75px);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -102,6 +111,30 @@
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-5px); }
             40%, 80% { transform: translateX(5px); }
+        }
+
+        #logs {
+            max-height: 30vh;
+            overflow: hidden;
+            font-size: clamp(8px, 1.6vw, 10px);
+        }
+
+        @media (max-height: 720px) {
+            .mb-4 {
+                margin-bottom: 8px !important;
+            }
+
+            .mb-6 {
+                margin-bottom: 12px !important;
+            }
+
+            .chain-badge {
+                top: -8px;
+                right: -8px;
+                width: 20px;
+                height: 20px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
@@ -369,4 +402,3 @@
     </script>
 </body>
 </html>
-
