@@ -185,32 +185,29 @@
             justify-content: center;
             align-items: center;
             font-weight: 900;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            font-size: clamp(12px, 3vw, 14px);
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border: 2px solid #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .skill-block:active { transform: scale(0.95) translateY(2px); box-shadow: none; }
+        .attack-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
 
-        .type-red { background: linear-gradient(135deg, #ef4444, #991b1b); border: 2px solid #f87171; }
-        .type-blue { background: linear-gradient(135deg, #3b82f6, #1e3a8a); border: 2px solid #60a5fa; }
-        .type-green { background: linear-gradient(135deg, #10b981, #064e3b); border: 2px solid #34d399; }
+        .lane-hint {
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
+        }
 
-        .chain-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #fff;
-            color: #000;
-            font-size: 12px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        #logs {
+            max-height: 24vh;
+            overflow: hidden;
+            font-size: clamp(8px, 1.6vw, 11px);
         }
 
         .attack-btn {
