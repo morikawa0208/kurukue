@@ -165,13 +165,7 @@
         .lane-container {
             display: flex;
             gap: 8px;
-            padding: clamp(6px, 1.8vw, 12px);
-            height: clamp(70px, 14vh, 110px);
-            background: rgba(15, 23, 42, 0.8);
-            border-top: 2px solid #1e293b;
-            border-bottom: 2px solid #1e293b;
-            overflow-x: auto;
-            scrollbar-width: none;
+            align-items: stretch;
         }
 
         .lane-container::-webkit-scrollbar { display: none; }
@@ -185,29 +179,142 @@
             justify-content: center;
             align-items: center;
             font-weight: 900;
-            font-size: clamp(12px, 3vw, 14px);
-            background: linear-gradient(135deg, #0ea5e9, #0369a1);
-            border: 2px solid #38bdf8;
-            color: #e0f2fe;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
 
-        .attack-btn:active {
-            transform: translateY(2px);
-            box-shadow: none;
+        .skill-block:active { transform: scale(0.95) translateY(2px); box-shadow: none; }
+
+        .type-red { background: linear-gradient(135deg, #ef4444, #991b1b); border: 2px solid #f87171; }
+        .type-blue { background: linear-gradient(135deg, #3b82f6, #1e3a8a); border: 2px solid #60a5fa; }
+        .type-green { background: linear-gradient(135deg, #10b981, #064e3b); border: 2px solid #34d399; }
+
+        .chain-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #fff;
+            color: #000;
+            font-size: 12px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
-        .lane-hint {
-            font-size: 10px;
-            color: #94a3b8;
-            text-align: center;
+        .enemy-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #1e293b;
         }
 
-        #logs {
-            max-height: 24vh;
+        .enemy-cell {
+            position: relative;
+            min-height: clamp(62px, 12vh, 86px);
+            border-radius: 10px;
+            border: 1px solid #1f2937;
+            background: rgba(15, 23, 42, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            font-size: clamp(8px, 1.6vw, 11px);
+        }
+
+        .enemy-cell.is-empty {
+            border-style: dashed;
+            color: #475569;
+            font-size: 10px;
+        }
+
+        .enemy-card {
+            width: 100%;
+            height: 100%;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(127, 29, 29, 0.6));
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.6);
+            gap: 4px;
+        }
+
+        .enemy-card.is-front {
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4) inset;
+        }
+
+        .enemy-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fecaca;
+        }
+
+        .enemy-hp-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(30, 41, 59, 0.8);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .enemy-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f87171, #dc2626);
+            transition: width 0.2s ease;
+        }
+
+        .hp-bar-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 900;
+            color: #f8fafc;
+            text-shadow: 0 0 4px rgba(15, 23, 42, 0.9);
+            letter-spacing: 0.04em;
+            pointer-events: none;
+        }
+
+        .enemy-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            color: #bae6fd;
+            font-weight: 700;
+        }
+
+        .enemy-action-bar {
+            flex: 1;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            overflow: hidden;
+        }
+
+        body.is-paused .pause-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        body.is-paused .enemy-grid,
+        body.is-paused .lane-container,
+        body.is-paused #logs {
+            filter: grayscale(0.4) brightness(0.7);
         }
 
         .attack-btn {
@@ -245,12 +352,17 @@
             font-size: clamp(8px, 1.6vw, 11px);
         }
 
-        .pop-up {
-            position: absolute;
-            animation: popUp 0.8s ease-out forwards;
-            pointer-events: none;
+        .attack-btn {
+            min-width: clamp(72px, 20vw, 96px);
+            padding: 10px 12px;
+            border-radius: 12px;
             font-weight: 900;
-            z-index: 50;
+            font-size: clamp(12px, 3vw, 14px);
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border: 2px solid #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
         }
 
         @keyframes popUp {
@@ -284,6 +396,7 @@
     <div class="mb-4">
         <div class="text-[10px] text-slate-500 mb-2 text-center font-bold">攻撃対象の列を選択</div>
         <div class="flex items-center justify-center gap-3">
+            <button id="pause-btn" class="pause-button" type="button" aria-pressed="false" aria-label="一時停止">⏸</button>
             <button class="attack-btn" data-col="0" type="button">左列</button>
             <button class="attack-btn" data-col="1" type="button">中央</button>
             <button class="attack-btn" data-col="2" type="button">右列</button>
@@ -308,6 +421,10 @@
 
     <div class="lane-hint">下が最前列。前列が倒れると後ろが前にスライドします。</div>
 
+    <div id="pause-overlay" class="pause-overlay" aria-hidden="true">
+        <span>PAUSED</span>
+    </div>
+
     <script>
         const enemyRows = 3;
         const enemyCols = 3;
@@ -317,6 +434,7 @@
             columns: [],
             lane: [],
             isGameOver: false,
+            isPaused: false,
             lastFrameTime: 0,
             spawnInterval: 1800,
             lastSpawn: 0,
@@ -333,6 +451,8 @@
         const playerHpText = document.getElementById('player-hp-txt');
         const playerHpBar = document.getElementById('player-hp-bar');
         const skillLane = document.getElementById('skill-lane');
+        const pauseBtn = document.getElementById('pause-btn');
+        const pauseOverlay = document.getElementById('pause-overlay');
         const logs = document.getElementById('logs');
 
         function createEnemy(row, col) {
@@ -584,6 +704,10 @@
 
         function gameLoop(time) {
             if (state.isGameOver) return;
+            if (state.isPaused) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
             if (!state.lastFrameTime) state.lastFrameTime = time;
             const delta = time - state.lastFrameTime;
             state.lastFrameTime = time;
@@ -596,6 +720,29 @@
             updateEnemyActions(delta);
             requestAnimationFrame(gameLoop);
         }
+
+        function setPaused(nextPaused, time) {
+            state.isPaused = nextPaused;
+            pauseBtn.classList.toggle('is-paused', state.isPaused);
+            pauseBtn.setAttribute('aria-pressed', state.isPaused ? 'true' : 'false');
+            pauseBtn.textContent = state.isPaused ? '▶' : '⏸';
+            document.body.classList.toggle('is-paused', state.isPaused);
+            pauseOverlay.setAttribute('aria-hidden', state.isPaused ? 'false' : 'true');
+            if (typeof time === 'number') {
+                state.lastFrameTime = time;
+                state.lastSpawn = time;
+            }
+        }
+
+        pauseBtn.addEventListener('click', () => {
+            if (state.isGameOver) return;
+            setPaused(!state.isPaused, performance.now());
+        });
+
+        pauseOverlay.addEventListener('click', () => {
+            if (state.isGameOver || !state.isPaused) return;
+            setPaused(false, performance.now());
+        });
 
         document.querySelectorAll('.attack-btn').forEach((button) => {
             button.addEventListener('click', () => {
