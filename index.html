@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chain Puzzle RPG - Stock System</title>
+    <title>Lane Battle 3x3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Noto+Sans+JP:wght@400;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Anta&family=Noto+Sans+JP:wght@400;700;900&display=swap');
 
         body {
             background-color: #020617;
@@ -25,135 +25,130 @@
             padding: clamp(8px, 2vw, 16px);
         }
 
-        body.is-paused .pause-overlay {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        body.is-paused .lane-container,
-        body.is-paused .stock-area,
-        body.is-paused #logs {
-            filter: grayscale(0.4) brightness(0.7);
-        }
-
         .anta { font-family: 'Anta', sans-serif; }
 
-        /* レーンエリア */
-        .lane-container {
+        .enemy-grid-shell {
             display: flex;
             gap: 8px;
-            padding: clamp(6px, 1.8vw, 12px);
-            height: clamp(70px, 14vh, 110px);
-            background: rgba(15, 23, 42, 0.8);
-            border-top: 2px solid #1e293b;
-            border-bottom: 2px solid #1e293b;
-            overflow-x: auto;
-            scrollbar-width: none;
+            align-items: stretch;
         }
-        .lane-container::-webkit-scrollbar { display: none; }
 
-        /* 保留エリア */
-        .stock-area {
-            height: clamp(64px, 16vw, 90px);
-            width: clamp(64px, 16vw, 90px);
-            margin: 0 auto;
-            border: 2px dashed #334155;
-            border-radius: 12px;
+        .enemy-row-labels {
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .enemy-row-labels span {
             display: flex;
-            justify-content: center;
             align-items: center;
-            background: rgba(30, 41, 59, 0.3);
+            justify-content: center;
+            padding: 4px 6px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #1f2937;
+        }
+
+        .enemy-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            padding: 8px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #1e293b;
+        }
+
+        .enemy-cell {
             position: relative;
-        }
-
-        .pause-button {
-            width: clamp(44px, 12vw, 56px);
-            height: clamp(44px, 12vw, 56px);
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #1f2937;
-            color: #e2e8f0;
+            min-height: clamp(62px, 12vh, 86px);
+            border-radius: 10px;
+            border: 1px solid #1f2937;
+            background: rgba(15, 23, 42, 0.65);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(16px, 4vw, 22px);
-            font-weight: 900;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
-            transition: all 0.2s ease;
+            overflow: hidden;
         }
 
-        .pause-button:active {
+        .enemy-cell.is-empty {
+            border-style: dashed;
+            color: #475569;
+            font-size: 10px;
+        }
+
+        .enemy-card {
+            width: 100%;
+            height: 100%;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(127, 29, 29, 0.6));
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.6);
+        }
+
+        .enemy-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fecaca;
+        }
+
+        .enemy-hp {
+            font-size: 12px;
+            font-weight: 900;
+            color: #f87171;
+        }
+
+        .enemy-hp-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(30, 41, 59, 0.8);
+            overflow: hidden;
+        }
+
+        .enemy-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f87171, #dc2626);
+            transition: width 0.2s ease;
+        }
+
+        .attack-btn {
+            min-width: clamp(72px, 20vw, 96px);
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: clamp(12px, 3vw, 14px);
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border: 2px solid #38bdf8;
+            color: #e0f2fe;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .attack-btn:active {
             transform: translateY(2px);
             box-shadow: none;
         }
 
-        .pause-button.is-paused {
-            background: rgba(30, 41, 59, 0.9);
-            border-color: #38bdf8;
-            color: #38bdf8;
+        .lane-hint {
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
         }
 
-        .pause-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.6);
-            backdrop-filter: blur(2px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(18px, 4vw, 28px);
-            font-weight: 900;
-            letter-spacing: 0.2em;
-            color: #e2e8f0;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-            z-index: 40;
-            text-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
-        }
-
-        .pause-overlay span {
-            background: rgba(15, 23, 42, 0.8);
-            border: 2px solid rgba(56, 189, 248, 0.8);
-            border-radius: 999px;
-            padding: 10px 18px;
-        }
-
-        .skill-block {
-            min-width: clamp(48px, 12vw, 60px);
-            height: clamp(60px, 12vh, 75px);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-weight: 900;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-        }
-
-        .skill-block:active { transform: scale(0.95) translateY(2px); box-shadow: none; }
-
-        .type-red { background: linear-gradient(135deg, #ef4444, #991b1b); border: 2px solid #f87171; }
-        .type-blue { background: linear-gradient(135deg, #3b82f6, #1e3a8a); border: 2px solid #60a5fa; }
-        .type-green { background: linear-gradient(135deg, #10b981, #064e3b); border: 2px solid #34d399; }
-
-        .chain-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #fff;
-            color: #000;
-            font-size: 12px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        #logs {
+            max-height: 24vh;
+            overflow: hidden;
+            font-size: clamp(8px, 1.6vw, 11px);
         }
 
         .pop-up {
@@ -166,341 +161,252 @@
 
         @keyframes popUp {
             0% { transform: translateY(0); opacity: 0; }
-            20% { opacity: 1; transform: translateY(-20px); }
-            100% { transform: translateY(-80px); opacity: 0; }
-        }
-
-        .shake { animation: shake 0.3s ease-in-out; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
-        }
-
-        #logs {
-            max-height: 30vh;
-            overflow: hidden;
-            font-size: clamp(8px, 1.6vw, 10px);
-        }
-
-        @media (max-height: 720px) {
-            .mb-4 {
-                margin-bottom: 8px !important;
-            }
-
-            .mb-6 {
-                margin-bottom: 12px !important;
-            }
-
-            .chain-badge {
-                top: -8px;
-                right: -8px;
-                width: 20px;
-                height: 20px;
-                font-size: 11px;
-            }
+            20% { opacity: 1; transform: translateY(-16px); }
+            100% { transform: translateY(-60px); opacity: 0; }
         }
     </style>
 </head>
 <body class="flex flex-col h-screen p-4">
-
-    <!-- Enemy Info -->
     <div class="mb-4">
-        <div class="flex justify-between items-end mb-1 px-1">
-            <span class="text-xs text-red-500 font-bold anta">BOSS: COLOSSUS</span>
-            <span id="enemy-hp-txt" class="text-sm font-bold anta">4500 / 4500</span>
+        <div class="flex justify-between items-end mb-2 px-1">
+            <span class="text-xs text-red-400 font-bold anta">ENEMY LANE 3x3</span>
+            <span id="enemy-count" class="text-sm font-bold anta">9 / 9</span>
         </div>
-        <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
-            <div id="enemy-hp-bar" class="bg-red-600 h-full w-full transition-all duration-300"></div>
+        <div class="enemy-grid-shell">
+            <div class="enemy-row-labels">
+                <span>後列</span>
+                <span>中列</span>
+                <span class="text-cyan-300">前列</span>
+            </div>
+            <div id="enemy-grid" class="enemy-grid"></div>
         </div>
     </div>
 
-    <!-- Battle Log Area -->
-    <div id="logs" class="flex-grow flex flex-col justify-end text-[10px] gap-1 opacity-40 mb-4 font-mono">
+    <div class="mb-4">
+        <div class="text-[10px] text-slate-500 mb-2 text-center font-bold">攻撃対象の列を選択</div>
+        <div class="flex items-center justify-center gap-3">
+            <button class="attack-btn" data-col="0" type="button">左列 攻撃</button>
+            <button class="attack-btn" data-col="1" type="button">中央 攻撃</button>
+            <button class="attack-btn" data-col="2" type="button">右列 攻撃</button>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <div class="flex justify-between items-end mb-1 px-2">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-green-400 font-bold">PLAYER HP</span>
+                <span id="player-hp-txt" class="text-2xl font-black anta">100 / 100</span>
+            </div>
+            <div class="text-right">
+                <span class="text-[10px] text-slate-400 font-bold">ENEMY ATTACK</span>
+                <div class="w-24 bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                    <div id="enemy-attack-bar" class="bg-red-500 h-full w-full transition-all"></div>
+                </div>
+            </div>
+        </div>
+        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+            <div id="player-hp-bar" class="bg-green-500 h-full w-full transition-all"></div>
+        </div>
+    </div>
+
+    <div id="logs" class="flex-grow flex flex-col justify-end text-[10px] gap-1 opacity-60 font-mono mb-2">
         <div>-- BATTLE START --</div>
     </div>
 
-    <!-- Player Status -->
-    <div class="flex justify-between items-end mb-4 px-2">
-        <div class="flex flex-col">
-            <span class="text-[10px] text-blue-400 font-bold">SHIELD</span>
-            <span id="player-shield" class="text-2xl font-black anta">0</span>
-        </div>
-        <div class="text-right">
-            <span class="text-[10px] text-green-400 font-bold">PLAYER HP</span>
-            <div class="w-24 bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
-                <div id="player-hp-bar" class="bg-green-500 h-full w-full transition-all"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stock Area (Manual Control) -->
-    <div class="mb-4">
-        <div class="text-[10px] text-slate-500 mb-1 text-center font-bold">STOCK (タップで戻す)</div>
-        <div class="flex items-center justify-center gap-3">
-            <button id="pause-btn" class="pause-button" type="button" aria-pressed="false" aria-label="一時停止">⏸</button>
-            <div id="stock-lane" class="stock-area">
-                <!-- Only 1 stored block goes here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Real-time Lane -->
-    <div class="mb-6">
-        <div class="text-[10px] text-slate-500 mb-1 text-center font-bold">LANE (下にスワイプで保留)</div>
-        <div id="skill-lane" class="lane-container">
-            <!-- Flowing blocks -->
-        </div>
-    </div>
-
-    <!-- Quick Info -->
-    <div class="text-center text-[10px] text-slate-600 animate-pulse">
-        ブロックをタップで発動 / 下にスワイプで保留
-    </div>
-
-    <div id="pause-overlay" class="pause-overlay" aria-hidden="true">
-        <span>PAUSED</span>
-    </div>
+    <div class="lane-hint">下が最前列。前列が倒れると後ろが前にスライドします。</div>
 
     <script>
+        const enemyRows = 3;
+        const enemyCols = 3;
+
         const state = {
-            player: { hp: 100, maxHp: 100, shield: 0 },
-            enemy: { hp: 4500, maxHp: 4500 },
-            lane: [],
-            stock: [],
+            player: { hp: 100, maxHp: 100 },
+            columns: [],
             isGameOver: false,
-            isPaused: false,
-            lastSpawn: 0,
-            spawnInterval: 1800,
-            types: [
-                { name: '斬', type: 'red', val: 40, desc: 'ATTACK' },
-                { name: '防', type: 'blue', val: 30, desc: 'SHIELD' },
-                { name: '癒', type: 'green', val: 20, desc: 'HEAL' }
-            ]
+            lastEnemyAttack: 0,
+            enemyAttackInterval: 3200
         };
 
-        const skillLane = document.getElementById('skill-lane');
-        const stockLane = document.getElementById('stock-lane');
+        const enemyGrid = document.getElementById('enemy-grid');
+        const enemyCountText = document.getElementById('enemy-count');
+        const playerHpText = document.getElementById('player-hp-txt');
+        const playerHpBar = document.getElementById('player-hp-bar');
+        const enemyAttackBar = document.getElementById('enemy-attack-bar');
         const logs = document.getElementById('logs');
-        const pauseBtn = document.getElementById('pause-btn');
-        const pauseOverlay = document.getElementById('pause-overlay');
 
-        function addLog(msg) {
-            const div = document.createElement('div');
-            div.innerText = `> ${msg}`;
-            logs.appendChild(div);
-            if (logs.childNodes.length > 5) logs.removeChild(logs.firstChild);
+        function createEnemy(row, col) {
+            const base = 80 + row * 30 + col * 10;
+            return {
+                id: `${row}-${col}-${Math.random()}`,
+                name: `E${row + 1}-${col + 1}`,
+                hp: base,
+                maxHp: base
+            };
         }
 
-        function popText(text, color, x) {
+        function initEnemies() {
+            state.columns = Array.from({ length: enemyCols }, (_, col) => (
+                Array.from({ length: enemyRows }, (_, row) => createEnemy(row, col))
+            ));
+            render();
+        }
+
+        function addLog(message) {
+            const div = document.createElement('div');
+            div.innerText = `> ${message}`;
+            logs.appendChild(div);
+            if (logs.childNodes.length > 6) {
+                logs.removeChild(logs.firstChild);
+            }
+        }
+
+        function popText(text, color, x, y) {
             const el = document.createElement('div');
-            el.className = `pop-up ${color} text-2xl`;
+            el.className = `pop-up ${color} text-xl`;
             el.innerText = text;
-            el.style.left = `${x || 50}%`;
-            el.style.top = `20%`;
+            el.style.left = `${x}%`;
+            el.style.top = `${y}%`;
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 800);
         }
 
-        function spawnBlock() {
-            if (state.lane.length >= 10) return;
-            const proto = state.types[Math.floor(Math.random() * state.types.length)];
-            state.lane.push({ ...proto, id: Math.random() });
-            render();
+        function countEnemies() {
+            return state.columns.reduce((sum, column) => (
+                sum + column.filter(Boolean).length
+            ), 0);
+        }
+
+        function renderEnemies() {
+            enemyGrid.innerHTML = '';
+            for (let row = 0; row < enemyRows; row++) {
+                for (let col = 0; col < enemyCols; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'enemy-cell';
+                    const enemy = state.columns[col][row];
+                    if (!enemy) {
+                        cell.classList.add('is-empty');
+                        cell.innerHTML = '<span>--</span>';
+                    } else {
+                        const card = document.createElement('div');
+                        card.className = 'enemy-card';
+                        card.innerHTML = `
+                            <div>
+                                <div class="enemy-name">${enemy.name}</div>
+                                <div class="enemy-hp">${enemy.hp} / ${enemy.maxHp}</div>
+                            </div>
+                            <div class="enemy-hp-bar">
+                                <div class="enemy-hp-fill" style="width:${(enemy.hp / enemy.maxHp) * 100}%"></div>
+                            </div>
+                        `;
+                        cell.appendChild(card);
+                    }
+                    enemyGrid.appendChild(cell);
+                }
+            }
         }
 
         function render() {
-            renderLane();
-            renderStock();
+            renderEnemies();
             updateUI();
         }
 
-        function renderLane() {
-            skillLane.innerHTML = '';
-            
-            const withChain = state.lane.map((block, i) => {
-                let count = 1;
-                let l = i - 1;
-                while(l >= 0 && state.lane[l].type === block.type) { count++; l--; }
-                let r = i + 1;
-                while(r < state.lane.length && state.lane[r].type === block.type) { count++; r++; }
-                return { ...block, chain: count };
-            });
+        function updateUI() {
+            const remaining = countEnemies();
+            enemyCountText.innerText = `${remaining} / ${enemyRows * enemyCols}`;
+            playerHpText.innerText = `${state.player.hp} / ${state.player.maxHp}`;
+            playerHpBar.style.width = `${(state.player.hp / state.player.maxHp) * 100}%`;
+        }
 
-            withChain.forEach((block, index) => {
-                const div = document.createElement('div');
-                div.className = `skill-block type-${block.type} flex-shrink-0`;
-                div.innerHTML = `<span class="text-[8px] opacity-60">${block.desc}</span><span class="text-xl">${block.name}</span>`;
-                
-                if (block.chain > 1) {
-                    const badge = document.createElement('div');
-                    badge.className = 'chain-badge font-bold';
-                    badge.innerText = block.chain;
-                    div.appendChild(badge);
+        function shiftColumn(colIndex) {
+            const column = state.columns[colIndex];
+            for (let row = enemyRows - 1; row >= 0; row--) {
+                if (column[row]) continue;
+                let above = row - 1;
+                while (above >= 0 && !column[above]) {
+                    above -= 1;
                 }
-
-                div.onclick = (e) => {
-                    executeChain(index);
-                };
-
-                let startY;
-                div.ontouchstart = (e) => { startY = e.touches[0].clientY; };
-                div.ontouchend = (e) => {
-                    let endY = e.changedTouches[0].clientY;
-                    if (endY - startY > 30) {
-                        moveToStock(index);
-                    }
-                };
-                div.oncontextmenu = (e) => {
-                    e.preventDefault();
-                    moveToStock(index);
-                };
-
-                skillLane.appendChild(div);
-            });
-        }
-
-        function renderStock() {
-            stockLane.innerHTML = '';
-            state.stock.forEach((block, index) => {
-                const div = document.createElement('div');
-                div.className = `skill-block type-${block.type} scale-90 flex-shrink-0`;
-                div.innerHTML = `<span class="text-xl">${block.name}</span>`;
-                div.onclick = () => returnFromStock(index);
-                stockLane.appendChild(div);
-            });
-        }
-
-        function executeChain(index) {
-            const type = state.lane[index].type;
-            let indices = [index];
-            
-            let l = index - 1;
-            while(l >= 0 && state.lane[l].type === type) { indices.push(l); l--; }
-            let r = index + 1;
-            while(r < state.lane.length && state.lane[r].type === type) { indices.push(r); r++; }
-
-            const chainSize = indices.length;
-            const multiplier = [0, 1, 2.8, 7.5, 15, 25][Math.min(chainSize, 5)];
-            const baseVal = state.lane[index].val;
-
-            indices.sort((a,b) => b - a).forEach(i => state.lane.splice(i, 1));
-
-            if (type === 'red') {
-                const d = Math.floor(baseVal * multiplier);
-                state.enemy.hp = Math.max(0, state.enemy.hp - d);
-                popText(`-${d}`, 'text-red-500');
-                addLog(`${chainSize}チェイン：斬撃(${d})`);
-            } else if (type === 'blue') {
-                const s = Math.floor(baseVal * multiplier);
-                state.player.shield += s;
-                popText(`+${s} SHIELD`, 'text-blue-400');
-                addLog(`${chainSize}チェイン：防御(+${s})`);
-            } else if (type === 'green') {
-                const h = Math.floor(baseVal * multiplier);
-                state.player.hp = Math.min(state.player.maxHp, state.player.hp + h);
-                popText(`+${h} HEAL`, 'text-green-400');
-                addLog(`${chainSize}チェイン：回復(+${h})`);
+                if (above >= 0) {
+                    column[row] = column[above];
+                    column[above] = null;
+                }
             }
-
-            render();
         }
 
-        function moveToStock(index) {
-            // ストック数を1つに制限
-            if (state.stock.length >= 1) {
-                addLog("STOCKがいっぱいです");
+        function getFrontEnemyRow(column) {
+            for (let row = enemyRows - 1; row >= 0; row--) {
+                if (column[row]) return row;
+            }
+            return null;
+        }
+
+        function attackColumn(colIndex) {
+            if (state.isGameOver) return;
+            const column = state.columns[colIndex];
+            const targetRow = getFrontEnemyRow(column);
+            if (targetRow === null) {
+                addLog(`列${colIndex + 1}に敵がいません。`);
                 return;
             }
-            const block = state.lane.splice(index, 1)[0];
-            state.stock.push(block);
-            render();
-        }
-
-        function returnFromStock(index) {
-            if (state.lane.length >= 10) return;
-            const block = state.stock.splice(index, 1)[0];
-            state.lane.push(block);
+            const enemy = column[targetRow];
+            const damage = 35;
+            enemy.hp = Math.max(0, enemy.hp - damage);
+            popText(`-${damage}`, 'text-red-400', 50, 30);
+            addLog(`列${colIndex + 1}の前列に攻撃！ ${damage}ダメージ`);
+            if (enemy.hp === 0) {
+                addLog(`${enemy.name}を撃破！`);
+                column[targetRow] = null;
+                shiftColumn(colIndex);
+            }
+            if (countEnemies() === 0) {
+                state.isGameOver = true;
+                addLog('VICTORY!');
+            }
             render();
         }
 
         function enemyAction() {
             if (state.isGameOver) return;
-            const dmg = 12 + Math.floor(state.enemy.hp / 1000) * 2;
-            if (state.player.shield >= dmg) {
-                state.player.shield -= dmg;
-            } else {
-                const r = dmg - state.player.shield;
-                state.player.shield = 0;
-                state.player.hp = Math.max(0, state.player.hp - r);
-                document.body.classList.add('shake');
-                setTimeout(() => document.body.classList.remove('shake'), 300);
-            }
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('enemy-hp-bar').style.width = `${(state.enemy.hp / state.enemy.maxHp) * 100}%`;
-            document.getElementById('enemy-hp-txt').innerText = `${state.enemy.hp} / ${state.enemy.maxHp}`;
-            document.getElementById('player-hp-bar').style.width = `${(state.player.hp / state.player.maxHp) * 100}%`;
-            document.getElementById('player-shield').innerText = state.player.shield;
-
-            if (state.enemy.hp <= 0 && !state.isGameOver) {
+            const frontCount = state.columns.reduce((sum, column) => (
+                sum + (column[enemyRows - 1] ? 1 : 0)
+            ), 0);
+            const damage = 6 + frontCount * 3;
+            state.player.hp = Math.max(0, state.player.hp - damage);
+            addLog(`敵の反撃！ ${damage}ダメージ`);
+            if (state.player.hp === 0) {
                 state.isGameOver = true;
-                addLog("VICTORY!");
+                addLog('DEFEAT...');
             }
-            if (state.player.hp <= 0 && !state.isGameOver) {
-                state.isGameOver = true;
-                addLog("DEFEAT...");
-            }
+            render();
         }
 
-        let lastEnemyAttack = 0;
-
-        function setPaused(nextPaused, time) {
-            state.isPaused = nextPaused;
-            pauseBtn.classList.toggle('is-paused', state.isPaused);
-            pauseBtn.setAttribute('aria-pressed', state.isPaused ? 'true' : 'false');
-            pauseBtn.textContent = state.isPaused ? '▶' : '⏸';
-            document.body.classList.toggle('is-paused', state.isPaused);
-            pauseOverlay.setAttribute('aria-hidden', state.isPaused ? 'false' : 'true');
-            if (typeof time === 'number') {
-                state.lastSpawn = time;
-                lastEnemyAttack = time;
-            }
+        function updateEnemyAttackBar(progress) {
+            enemyAttackBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
         }
-
-        pauseBtn.addEventListener('click', () => {
-            if (state.isGameOver) return;
-            setPaused(!state.isPaused, performance.now());
-        });
-
-        pauseOverlay.addEventListener('click', () => {
-            if (state.isGameOver || !state.isPaused) return;
-            setPaused(false, performance.now());
-        });
 
         function gameLoop(time) {
             if (state.isGameOver) return;
-            if (state.isPaused) {
-                requestAnimationFrame(gameLoop);
-                return;
-            }
-
-            if (time - state.lastSpawn > state.spawnInterval) {
-                spawnBlock();
-                state.lastSpawn = time;
-            }
-
-            if (time - lastEnemyAttack > 4000) {
+            const elapsed = time - state.lastEnemyAttack;
+            const ratio = (elapsed / state.enemyAttackInterval) * 100;
+            updateEnemyAttackBar(ratio);
+            if (elapsed > state.enemyAttackInterval) {
                 enemyAction();
-                lastEnemyAttack = time;
+                state.lastEnemyAttack = time;
+                updateEnemyAttackBar(0);
             }
-
             requestAnimationFrame(gameLoop);
         }
 
-        requestAnimationFrame(gameLoop);
+        document.querySelectorAll('.attack-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+                attackColumn(Number(button.dataset.col));
+            });
+        });
+
+        initEnemies();
+        requestAnimationFrame((time) => {
+            state.lastEnemyAttack = time;
+            requestAnimationFrame(gameLoop);
+        });
     </script>
 </body>
 </html>
