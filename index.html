@@ -16,6 +16,30 @@
             touch-action: manipulation;
         }
 
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: -20vh;
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+            background: radial-gradient(circle at top, rgba(14, 165, 233, 0.25), transparent 55%),
+                radial-gradient(circle at 20% 70%, rgba(239, 68, 68, 0.2), transparent 60%),
+                radial-gradient(circle at 80% 30%, rgba(16, 185, 129, 0.2), transparent 60%);
+            animation: auroraShift 18s ease-in-out infinite;
+        }
+
+        body::after {
+            opacity: 0.35;
+            background: repeating-linear-gradient(120deg, rgba(148, 163, 184, 0.08) 0 2px, transparent 2px 12px);
+            animation: scanLines 8s linear infinite;
+        }
+
+        body.is-paused * {
+            animation-play-state: paused !important;
+        }
+
         body.h-screen {
             height: 100svh;
             min-height: 100svh;
@@ -63,6 +87,8 @@
             border-radius: 12px;
             background: rgba(15, 23, 42, 0.85);
             border: 2px solid #1e293b;
+            box-shadow: 0 0 24px rgba(30, 64, 175, 0.25);
+            animation: gridGlow 6s ease-in-out infinite;
         }
 
         .enemy-cell {
@@ -75,12 +101,18 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .enemy-cell.is-empty {
             border-style: dashed;
             color: #475569;
             font-size: 10px;
+        }
+
+        .enemy-cell.is-hit {
+            animation: hitShake 0.45s ease;
+            box-shadow: 0 0 14px rgba(248, 113, 113, 0.6);
         }
 
         .enemy-card {
@@ -94,10 +126,23 @@
             border-radius: 8px;
             border: 1px solid rgba(248, 113, 113, 0.6);
             gap: 4px;
+            animation: cardFloat 5s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
         }
 
         .enemy-card.is-front {
             box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4) inset;
+            animation: frontPulse 3s ease-in-out infinite;
+        }
+
+        .enemy-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(248, 113, 113, 0.5), transparent 55%);
+            opacity: 0.2;
+            animation: emberDrift 6s ease-in-out infinite;
         }
 
         .enemy-name {
@@ -183,9 +228,20 @@
             position: relative;
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            animation: laneFloat 6s ease-in-out infinite;
         }
 
         .skill-block:active { transform: scale(0.95) translateY(2px); box-shadow: none; }
+        .skill-block:hover { transform: translateY(-4px) scale(1.03); }
+
+        .skill-block.is-spawned {
+            animation: spawnPop 0.6s ease;
+        }
+
+        .skill-block.is-chain {
+            animation: chainSpark 0.8s ease;
+            box-shadow: 0 0 14px rgba(253, 230, 138, 0.8);
+        }
 
         .type-red { background: linear-gradient(135deg, #ef4444, #991b1b); border: 2px solid #f87171; }
         .type-blue { background: linear-gradient(135deg, #3b82f6, #1e3a8a); border: 2px solid #60a5fa; }
@@ -205,6 +261,7 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 0 10px rgba(255,255,255,0.5);
+            animation: badgeBounce 1.6s ease-in-out infinite;
         }
 
         .enemy-grid {
@@ -328,11 +385,27 @@
             color: #e0f2fe;
             box-shadow: 0 4px 0 rgba(0,0,0,0.35);
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .attack-btn.is-active {
             filter: brightness(1.2);
             box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+            animation: targetPulse 1.6s ease-in-out infinite;
+        }
+
+        .attack-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-120%);
+            transition: transform 0.6s ease;
+        }
+
+        .attack-btn:hover::after {
+            transform: translateX(120%);
         }
 
         .attack-btn:active {
@@ -352,6 +425,82 @@
             font-size: clamp(8px, 1.6vw, 11px);
         }
 
+        .log-item {
+            animation: logSlide 0.4s ease;
+        }
+
+        .lane-container.is-flash {
+            animation: laneFlash 0.6s ease;
+        }
+
+        #player-hp-shell {
+            box-shadow: 0 0 12px rgba(15, 23, 42, 0.7) inset;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #player-hp-bar {
+            transition: width 0.4s ease;
+        }
+
+        #player-hp-bar.is-heal {
+            animation: healPulse 0.6s ease;
+            background: linear-gradient(90deg, #22c55e, #86efac);
+        }
+
+        #player-hp-bar.is-shield {
+            animation: shieldPulse 0.6s ease;
+            background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+        }
+
+        #player-hp-bar.is-damage {
+            animation: damagePulse 0.6s ease;
+            background: linear-gradient(90deg, #f87171, #ef4444);
+        }
+
+        .pause-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #334155;
+            color: #e2e8f0;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pause-button.is-paused {
+            box-shadow: 0 0 12px rgba(148, 163, 184, 0.6);
+            animation: pauseGlow 1.8s ease-in-out infinite;
+        }
+
+        .pause-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: #e2e8f0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .pop-up {
+            position: absolute;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(15, 23, 42, 0.9);
+            animation: popUp 0.8s ease forwards;
+            pointer-events: none;
+        }
+
         .attack-btn {
             min-width: clamp(72px, 20vw, 96px);
             padding: 10px 12px;
@@ -363,6 +512,106 @@
             color: #e0f2fe;
             box-shadow: 0 4px 0 rgba(0,0,0,0.35);
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+        }
+
+        @keyframes auroraShift {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(2%, -3%, 0) scale(1.05); }
+        }
+
+        @keyframes scanLines {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(20%); }
+        }
+
+        @keyframes gridGlow {
+            0%, 100% { box-shadow: 0 0 18px rgba(59, 130, 246, 0.25); }
+            50% { box-shadow: 0 0 30px rgba(56, 189, 248, 0.45); }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes frontPulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.4) inset; }
+            50% { box-shadow: 0 0 14px rgba(56, 189, 248, 0.65); }
+        }
+
+        @keyframes emberDrift {
+            0%, 100% { transform: translateY(0); opacity: 0.2; }
+            50% { transform: translateY(-6px); opacity: 0.45; }
+        }
+
+        @keyframes hitShake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-4px); }
+            40% { transform: translateX(4px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes laneFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        @keyframes spawnPop {
+            0% { transform: scale(0.4); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes chainSpark {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); filter: brightness(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes badgeBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-3px) scale(1.08); }
+        }
+
+        @keyframes targetPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+
+        @keyframes logSlide {
+            0% { transform: translateY(6px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 0.8; }
+        }
+
+        @keyframes laneFlash {
+            0% { filter: brightness(1); }
+            30% { filter: brightness(1.4); }
+            100% { filter: brightness(1); }
+        }
+
+        @keyframes healPulse {
+            0% { box-shadow: 0 0 0 rgba(34, 197, 94, 0.6); }
+            50% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.8); }
+            100% { box-shadow: 0 0 0 rgba(34, 197, 94, 0.6); }
+        }
+
+        @keyframes shieldPulse {
+            0% { box-shadow: 0 0 0 rgba(56, 189, 248, 0.6); }
+            50% { box-shadow: 0 0 16px rgba(56, 189, 248, 0.8); }
+            100% { box-shadow: 0 0 0 rgba(56, 189, 248, 0.6); }
+        }
+
+        @keyframes damagePulse {
+            0% { box-shadow: 0 0 0 rgba(248, 113, 113, 0.6); }
+            50% { box-shadow: 0 0 16px rgba(248, 113, 113, 0.8); }
+            100% { box-shadow: 0 0 0 rgba(248, 113, 113, 0.6); }
+        }
+
+        @keyframes pauseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
         @keyframes popUp {
@@ -409,7 +658,7 @@
                 <span class="text-[10px] text-green-400 font-bold">PLAYER HP</span>
             </div>
         </div>
-        <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden relative">
+        <div id="player-hp-shell" class="w-full bg-slate-800 h-3 rounded-full overflow-hidden relative">
             <div id="player-hp-bar" class="bg-green-500 h-full w-full transition-all"></div>
             <div id="player-hp-txt" class="hp-bar-text">100 / 100</div>
         </div>
@@ -439,6 +688,10 @@
             spawnInterval: 1800,
             lastSpawn: 0,
             selectedColumn: 1,
+            lastHit: null,
+            lastSpawnId: null,
+            lastChainIds: [],
+            lastAction: null,
             types: [
                 { name: '斬', type: 'red', val: 35, desc: 'ATTACK' },
                 { name: '防', type: 'blue', val: 25, desc: 'SHIELD' },
@@ -475,6 +728,7 @@
 
         function addLog(message) {
             const div = document.createElement('div');
+            div.className = 'log-item';
             div.innerText = `> ${message}`;
             logs.appendChild(div);
             if (logs.childNodes.length > 6) {
@@ -500,6 +754,7 @@
 
         function renderEnemies() {
             enemyGrid.innerHTML = '';
+            const now = performance.now();
             for (let row = 0; row < enemyRows; row++) {
                 for (let col = 0; col < enemyCols; col++) {
                     const cell = document.createElement('div');
@@ -528,6 +783,9 @@
                             </div>
                         `;
                         cell.appendChild(card);
+                        if (state.lastHit && state.lastHit.col === col && state.lastHit.row === row && now - state.lastHit.time < 600) {
+                            cell.classList.add('is-hit');
+                        }
                     }
                     enemyGrid.appendChild(cell);
                 }
@@ -550,6 +808,12 @@
                 const div = document.createElement('div');
                 div.className = `skill-block type-${block.type} flex-shrink-0`;
                 div.innerHTML = `<span class="text-[8px] opacity-60">${block.desc}</span><span class="text-xl">${block.name}</span>`;
+                if (block.id === state.lastSpawnId) {
+                    div.classList.add('is-spawned');
+                }
+                if (state.lastChainIds.includes(block.id)) {
+                    div.classList.add('is-chain');
+                }
 
                 if (block.chain > 1) {
                     const badge = document.createElement('div');
@@ -574,6 +838,11 @@
             enemyCountText.innerText = `${remaining} / ${enemyRows * enemyCols}`;
             playerHpText.innerText = `${state.player.hp} / ${state.player.maxHp}`;
             playerHpBar.style.width = `${(state.player.hp / state.player.maxHp) * 100}%`;
+            const now = performance.now();
+            const recent = state.lastAction && now - state.lastAction.time < 700;
+            playerHpBar.classList.toggle('is-heal', recent && state.lastAction.type === 'heal');
+            playerHpBar.classList.toggle('is-shield', recent && state.lastAction.type === 'shield');
+            playerHpBar.classList.toggle('is-damage', recent && state.lastAction.type === 'damage');
             document.querySelectorAll('.attack-btn').forEach((button) => {
                 const col = Number(button.dataset.col);
                 button.classList.toggle('is-active', col === state.selectedColumn);
@@ -612,6 +881,8 @@
             }
             const enemy = column[targetRow];
             enemy.hp = Math.max(0, enemy.hp - damage);
+            state.lastHit = { col: colIndex, row: targetRow, time: performance.now() };
+            state.lastAction = { type: 'attack', time: performance.now() };
             popText(`-${damage}`, 'text-red-400', 50, 30);
             addLog(`列${colIndex + 1}の前列に攻撃！ ${damage}ダメージ`);
             if (enemy.hp === 0) {
@@ -629,7 +900,9 @@
         function spawnBlock() {
             if (state.lane.length >= 10) return;
             const proto = state.types[Math.floor(Math.random() * state.types.length)];
-            state.lane.push({ ...proto, id: Math.random() });
+            const block = { ...proto, id: Math.random() };
+            state.lane.push(block);
+            state.lastSpawnId = block.id;
             render();
         }
 
@@ -645,8 +918,13 @@
             const chainSize = indices.length;
             const multiplier = [0, 1, 2.4, 5.5, 9.5, 14][Math.min(chainSize, 5)];
             const baseVal = state.lane[index].val;
+            const chainIds = indices.map((i) => state.lane[i].id);
 
             indices.sort((a, b) => b - a).forEach((i) => state.lane.splice(i, 1));
+            state.lastChainIds = chainIds;
+            skillLane.classList.remove('is-flash');
+            void skillLane.offsetWidth;
+            skillLane.classList.add('is-flash');
 
             if (type === 'red') {
                 const damage = Math.floor(baseVal * multiplier);
@@ -654,11 +932,13 @@
             } else if (type === 'blue') {
                 const shield = Math.floor(baseVal * multiplier);
                 state.player.shield += shield;
+                state.lastAction = { type: 'shield', time: performance.now() };
                 popText(`+${shield} SHIELD`, 'text-blue-300', 50, 30);
                 addLog(`${chainSize}チェイン：防御(+${shield})`);
             } else if (type === 'green') {
                 const heal = Math.floor(baseVal * multiplier);
                 state.player.hp = Math.min(state.player.maxHp, state.player.hp + heal);
+                state.lastAction = { type: 'heal', time: performance.now() };
                 popText(`+${heal} HEAL`, 'text-green-300', 50, 30);
                 addLog(`${chainSize}チェイン：回復(+${heal})`);
             }
@@ -678,6 +958,7 @@
             if (remaining > 0) {
                 state.player.hp = Math.max(0, state.player.hp - remaining);
             }
+            state.lastAction = { type: 'damage', time: performance.now() };
             addLog(`${enemy.name}の攻撃！ ${damage}ダメージ`);
             if (state.player.hp === 0) {
                 state.isGameOver = true;
