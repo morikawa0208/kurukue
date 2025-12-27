@@ -106,24 +106,33 @@
             color: #fecaca;
         }
 
-        .enemy-hp {
-            font-size: 12px;
-            font-weight: 900;
-            color: #f87171;
-        }
-
         .enemy-hp-bar {
             width: 100%;
             height: 6px;
             border-radius: 999px;
             background: rgba(30, 41, 59, 0.8);
             overflow: hidden;
+            position: relative;
         }
 
         .enemy-hp-fill {
             height: 100%;
             background: linear-gradient(90deg, #f87171, #dc2626);
             transition: width 0.2s ease;
+        }
+
+        .hp-bar-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 900;
+            color: #f8fafc;
+            text-shadow: 0 0 4px rgba(15, 23, 42, 0.9);
+            letter-spacing: 0.04em;
+            pointer-events: none;
         }
 
         .enemy-action {
@@ -285,11 +294,11 @@
         <div class="flex justify-between items-end mb-1 px-2">
             <div class="flex flex-col">
                 <span class="text-[10px] text-green-400 font-bold">PLAYER HP</span>
-                <span id="player-hp-txt" class="text-2xl font-black anta">100 / 100</span>
             </div>
         </div>
-        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+        <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden relative">
             <div id="player-hp-bar" class="bg-green-500 h-full w-full transition-all"></div>
+            <div id="player-hp-txt" class="hp-bar-text">100 / 100</div>
         </div>
     </div>
 
@@ -386,10 +395,10 @@
                         card.innerHTML = `
                             <div>
                                 <div class="enemy-name">${enemy.name}</div>
-                                <div class="enemy-hp">${enemy.hp} / ${enemy.maxHp}</div>
                             </div>
                             <div class="enemy-hp-bar">
                                 <div class="enemy-hp-fill" style="width:${(enemy.hp / enemy.maxHp) * 100}%"></div>
+                                <div class="hp-bar-text">${enemy.hp} / ${enemy.maxHp}</div>
                             </div>
                             <div class="enemy-action${isFront ? '' : ' is-idle'}">
                                 <span>行動</span>
