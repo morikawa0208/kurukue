@@ -211,6 +211,8 @@
             display: flex;
             gap: 8px;
             align-items: stretch;
+            height: clamp(60px, 12vh, 75px);
+            min-height: clamp(60px, 12vh, 75px);
         }
 
         .lane-container::-webkit-scrollbar { display: none; }
@@ -229,6 +231,7 @@
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 0 rgba(0,0,0,0.3);
             animation: laneFloat 6s ease-in-out infinite;
+            touch-action: none;
         }
 
         .skill-block:active { transform: scale(0.95) translateY(2px); box-shadow: none; }
@@ -417,6 +420,55 @@
             font-size: 10px;
             color: #94a3b8;
             text-align: center;
+        }
+
+        .reserve-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 6px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #1f2937;
+            min-width: 96px;
+        }
+
+        .reserve-stock {
+            display: flex;
+            gap: 6px;
+        }
+
+        .reserve-slot {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px dashed #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #475569;
+        }
+
+        .reserve-block {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 12px;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.35);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .reserve-block:active {
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
         #logs {
@@ -644,11 +696,18 @@
 
     <div class="mb-4">
         <div class="text-[10px] text-slate-500 mb-2 text-center font-bold">攻撃対象の列を選択</div>
-        <div class="flex items-center justify-center gap-3">
-            <button id="pause-btn" class="pause-button" type="button" aria-pressed="false" aria-label="一時停止">⏸</button>
-            <button class="attack-btn" data-col="0" type="button">左列</button>
-            <button class="attack-btn" data-col="1" type="button">中央</button>
-            <button class="attack-btn" data-col="2" type="button">右列</button>
+        <div class="flex items-center justify-center gap-4">
+            <div class="flex items-center justify-center gap-3">
+                <button id="pause-btn" class="pause-button" type="button" aria-pressed="false" aria-label="一時停止">⏸</button>
+                <button class="attack-btn" data-col="0" type="button">左列</button>
+                <button class="attack-btn" data-col="1" type="button">中央</button>
+                <button class="attack-btn" data-col="2" type="button">右列</button>
+            </div>
+            <div class="reserve-panel">
+                <div class="text-[10px] text-slate-400 font-bold">保留ストック</div>
+                <div id="reserve-stock" class="reserve-stock"></div>
+                <div class="text-[9px] text-slate-500">下フリックで保留</div>
+            </div>
         </div>
     </div>
 
@@ -682,6 +741,8 @@
             player: { hp: 100, maxHp: 100, shield: 0 },
             columns: [],
             lane: [],
+            reserve: [],
+            reserveMax: 2,
             isGameOver: false,
             isPaused: false,
             lastFrameTime: 0,
@@ -707,6 +768,7 @@
         const pauseBtn = document.getElementById('pause-btn');
         const pauseOverlay = document.getElementById('pause-overlay');
         const logs = document.getElementById('logs');
+        const reserveStock = document.getElementById('reserve-stock');
 
         function createEnemy(row, col) {
             const base = 80 + row * 30 + col * 10;
@@ -804,7 +866,7 @@
                 return { ...block, chain: count };
             });
 
-            withChain.forEach((block, index) => {
+            withChain.forEach((block) => {
                 const div = document.createElement('div');
                 div.className = `skill-block type-${block.type} flex-shrink-0`;
                 div.innerHTML = `<span class="text-[8px] opacity-60">${block.desc}</span><span class="text-xl">${block.name}</span>`;
@@ -822,14 +884,34 @@
                     div.appendChild(badge);
                 }
 
-                div.onclick = () => executeChain(index);
+                attachBlockHandlers(div, block.id);
                 skillLane.appendChild(div);
             });
+        }
+
+        function renderReserve() {
+            reserveStock.innerHTML = '';
+            for (let i = 0; i < state.reserveMax; i++) {
+                const block = state.reserve[i];
+                if (!block) {
+                    const slot = document.createElement('div');
+                    slot.className = 'reserve-slot';
+                    slot.innerText = '--';
+                    reserveStock.appendChild(slot);
+                    continue;
+                }
+                const item = document.createElement('div');
+                item.className = `reserve-block type-${block.type}`;
+                item.innerHTML = `<span>${block.name}</span>`;
+                item.addEventListener('click', () => releaseReserve(i));
+                reserveStock.appendChild(item);
+            }
         }
 
         function render() {
             renderEnemies();
             renderLane();
+            renderReserve();
             updateUI();
         }
 
@@ -906,7 +988,63 @@
             render();
         }
 
+        function reserveBlock(blockId) {
+            const index = state.lane.findIndex((block) => block.id === blockId);
+            if (index === -1) return;
+            if (state.reserve.length >= state.reserveMax) {
+                addLog('保留ストックが満杯です。');
+                return;
+            }
+            const [block] = state.lane.splice(index, 1);
+            state.reserve.push(block);
+            state.lastChainIds = [];
+            addLog(`${block.name}を保留しました。`);
+            render();
+        }
+
+        function releaseReserve(slotIndex) {
+            if (state.lane.length >= 10) {
+                addLog('攻撃レーンがいっぱいです。');
+                return;
+            }
+            const block = state.reserve.splice(slotIndex, 1)[0];
+            if (!block) return;
+            state.lane.push(block);
+            state.lastChainIds = [];
+            addLog(`${block.name}を攻撃レーンに戻しました。`);
+            render();
+        }
+
+        function attachBlockHandlers(div, blockId) {
+            let startX = 0;
+            let startY = 0;
+            let activePointer = null;
+            const threshold = 24;
+            div.addEventListener('pointerdown', (event) => {
+                startX = event.clientX;
+                startY = event.clientY;
+                activePointer = event.pointerId;
+                div.setPointerCapture(activePointer);
+            });
+            div.addEventListener('pointerup', (event) => {
+                if (activePointer === null) return;
+                const dx = event.clientX - startX;
+                const dy = event.clientY - startY;
+                div.releasePointerCapture(activePointer);
+                activePointer = null;
+                if (dy > threshold && Math.abs(dy) > Math.abs(dx) + 8) {
+                    reserveBlock(blockId);
+                    return;
+                }
+                executeChain(state.lane.findIndex((block) => block.id === blockId));
+            });
+            div.addEventListener('pointercancel', () => {
+                activePointer = null;
+            });
+        }
+
         function executeChain(index) {
+            if (index < 0) return;
             const type = state.lane[index].type;
             let indices = [index];
 
