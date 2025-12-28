@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>練習用縦持ちハクスラ試作</title>
+    <title>縦持ちハクスラ試作</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' ry='12' fill='%23111827'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-size='44'%3E⚔️%3C/text%3E%3C/svg%3E"
@@ -1735,180 +1735,6 @@
         min-width: 50px;
       }
 
-      .stat-tree-panel {
-        margin-top: 12px;
-      }
-
-      .stat-tree-note {
-        font-size: 11px;
-        color: var(--muted);
-        margin-bottom: 6px;
-      }
-
-      .stat-tree-legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px 10px;
-        font-size: 10px;
-        color: var(--muted);
-        margin-bottom: 8px;
-      }
-
-      .stat-tree-legend .legend-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .stat-tree-legend .legend-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.35);
-        box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
-      }
-
-      .stat-tree-legend .legend-dot.sword {
-        background: #f59e0b;
-      }
-
-      .stat-tree-legend .legend-dot.mage {
-        background: #60a5fa;
-      }
-
-      .stat-tree-legend .legend-dot.holy {
-        background: #facc15;
-      }
-
-      .stat-tree-legend .legend-dot.vamp {
-        background: #f472b6;
-      }
-
-      .stat-tree-legend .legend-dot.detour {
-        background: #34d399;
-      }
-
-      .stat-tree {
-        position: relative;
-        border-radius: 12px;
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        background:
-          radial-gradient(
-            circle at 50% 20%,
-            rgba(96, 165, 250, 0.08),
-            transparent 45%
-          ),
-          rgba(15, 23, 42, 0.55);
-        padding: 10px;
-        height: 520px;
-        overflow: auto;
-      }
-
-      .stat-tree-canvas {
-        position: relative;
-        min-width: 100%;
-        min-height: 100%;
-      }
-
-      .stat-tree-lines {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-      }
-
-      .stat-tree-line {
-        stroke: rgba(148, 163, 184, 0.35);
-        stroke-width: 2;
-      }
-
-      .stat-tree-line.is-detour {
-        stroke: rgba(52, 211, 153, 0.6);
-        stroke-dasharray: 6 6;
-      }
-
-      .stat-tree-node {
-        position: absolute;
-        transform: translate(-50%, -50%);
-        padding: 6px 8px;
-        width: 110px;
-        text-align: center;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(17, 24, 39, 0.92);
-        box-shadow:
-          0 6px 16px rgba(0, 0, 0, 0.3),
-          inset 0 0 0 1px rgba(255, 255, 255, 0.03);
-        font-size: 11px;
-      }
-
-      .stat-tree-node .node-label {
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-
-      .stat-tree-node .node-note {
-        margin-top: 2px;
-        font-size: 10px;
-        color: var(--muted);
-      }
-
-      .stat-tree-node.is-origin {
-        background: linear-gradient(
-          140deg,
-          rgba(52, 211, 153, 0.25),
-          rgba(96, 165, 250, 0.2)
-        );
-        border-color: rgba(94, 234, 212, 0.5);
-      }
-
-      .stat-tree-node.is-class {
-        width: 120px;
-        font-size: 12px;
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(15, 23, 42, 0.95);
-      }
-
-      .stat-tree-node.is-major {
-        width: 128px;
-        font-size: 12px;
-        border-color: rgba(148, 197, 255, 0.9);
-        background: linear-gradient(
-          140deg,
-          rgba(30, 64, 175, 0.5),
-          rgba(15, 23, 42, 0.95)
-        );
-        box-shadow:
-          0 10px 22px rgba(0, 0, 0, 0.45),
-          0 0 18px rgba(96, 165, 250, 0.5);
-      }
-
-      .stat-tree-node.is-detour {
-        border-color: rgba(52, 211, 153, 0.6);
-        box-shadow:
-          0 8px 16px rgba(0, 0, 0, 0.3),
-          0 0 10px rgba(52, 211, 153, 0.25);
-      }
-
-      .stat-tree-node[data-group="sword"] {
-        border-color: rgba(245, 158, 11, 0.6);
-      }
-
-      .stat-tree-node[data-group="mage"] {
-        border-color: rgba(96, 165, 250, 0.6);
-      }
-
-      .stat-tree-node[data-group="holy"] {
-        border-color: rgba(250, 204, 21, 0.6);
-      }
-
-      .stat-tree-node[data-group="vamp"] {
-        border-color: rgba(244, 114, 182, 0.7);
-      }
-
-      .stat-tree-node[data-group="hybrid"] {
-        border-color: rgba(52, 211, 153, 0.7);
-      }
-
       .stat-label.inline {
         display: flex;
         align-items: center;
@@ -3576,38 +3402,6 @@
               </button>
             </div>
             <div id="secondary-stats" class="stat-grid"></div>
-            <div class="stat-tree-panel">
-              <div class="section-title" style="margin: 8px 0 4px">
-                ステータスツリー
-              </div>
-              <div class="stat-tree-note">
-                職業の起点から上に伸びる分岐を可視化。主要ノードでビルドが変化し、
-                近くの寄り道ノードで意外な組み合わせも狙える。
-              </div>
-              <div class="stat-tree-legend">
-                <div class="legend-item">
-                  <span class="legend-dot sword"></span>剣士
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot mage"></span>魔法
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot holy"></span>聖職
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot vamp"></span>吸血
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot detour"></span>寄り道ノード
-                </div>
-              </div>
-              <div
-                id="stat-tree"
-                class="stat-tree"
-                role="img"
-                aria-label="ステータスツリー"
-              ></div>
-            </div>
           </div>
           <div class="primary-fixed">
             <div
@@ -3619,38 +3413,29 @@
               "
             >
               <div class="section-title" style="margin: 2px 0 4px">
-                ステータスツリー
+                一次ステータス
               </div>
-              <div class="inline-buttons">
-                <div class="pill">能力P: <span id="stat-points"></span></div>
-              </div>
-            </div>
-            <div class="stat-tree-note">
-              起点が上、枝が下に伸びる構成。主要ノードは光彩強調で目立たせています。
-            </div>
-            <div class="stat-tree-legend">
-              <div class="legend-item">
-                <span class="legend-dot sword"></span>剣士
-              </div>
-              <div class="legend-item">
-                <span class="legend-dot mage"></span>魔法
-              </div>
-              <div class="legend-item">
-                <span class="legend-dot holy"></span>聖職
-              </div>
-              <div class="legend-item">
-                <span class="legend-dot vamp"></span>吸血
-              </div>
-              <div class="legend-item">
-                <span class="legend-dot detour"></span>寄り道ノード
+              <div style="display: flex; align-items: center; gap: 6px">
+                <div class="inline-buttons">
+                  <div class="pill">能力P: <span id="stat-points"></span></div>
+                </div>
+                <button
+                  id="stat-step"
+                  class="step-button"
+                  aria-label="増減幅を切り替え"
+                >
+                  ±1
+                </button>
+                <button
+                  id="reset-stats"
+                  class="help-icon"
+                  aria-label="ステータスをリセット"
+                >
+                  ↺
+                </button>
               </div>
             </div>
-            <div
-              id="stat-tree"
-              class="stat-tree"
-              role="img"
-              aria-label="ステータスツリー"
-            ></div>
+            <div id="primary-stats" class="primary-grid"></div>
           </div>
         </div>
         <div id="player-equipment-view" class="player-modal-page hidden">
@@ -12843,699 +12628,6 @@
         let skillSummaryVisible = false;
         let pendingResetSpent = 0;
         let playerModalPage = "status";
-        let statTreeRendered = false;
-        let statTreeRenderWidth = 0;
-
-        const STAT_TREE_UNIT = 68;
-        const STAT_TREE_PADDING = 90;
-
-        const STAT_TREE_NODES = [
-          {
-            id: "origin",
-            label: "起点",
-            note: "全職共通",
-            group: "core",
-            tier: "origin",
-            x: 0,
-            y: 0,
-          },
-          {
-            id: "sword_origin",
-            label: "剣士起点",
-            note: "近接武勇",
-            group: "sword",
-            tier: "class",
-            x: -6,
-            y: 1,
-          },
-          {
-            id: "sword_fast",
-            label: "迅刃の構え",
-            note: "手数ビルド",
-            group: "sword",
-            tier: "major",
-            x: -7,
-            y: 2,
-          },
-          {
-            id: "sword_fast_1",
-            label: "連撃体術",
-            note: "速度/命中",
-            group: "sword",
-            tier: "minor",
-            x: -8,
-            y: 3,
-          },
-          {
-            id: "sword_fast_2",
-            label: "刃風乱舞",
-            note: "連撃強化",
-            group: "sword",
-            tier: "major",
-            x: -7,
-            y: 4,
-          },
-          {
-            id: "sword_fast_3",
-            label: "疾風転身",
-            note: "回避/CT",
-            group: "sword",
-            tier: "minor",
-            x: -8,
-            y: 5,
-          },
-          {
-            id: "sword_fast_4",
-            label: "千刃剣聖",
-            note: "手数特化",
-            group: "sword",
-            tier: "major",
-            x: -7,
-            y: 6,
-          },
-          {
-            id: "sword_heavy",
-            label: "巨刃の誓い",
-            note: "一撃特化",
-            group: "sword",
-            tier: "major",
-            x: -5,
-            y: 2,
-          },
-          {
-            id: "sword_heavy_1",
-            label: "溜め集中",
-            note: "会心/貫通",
-            group: "sword",
-            tier: "minor",
-            x: -4,
-            y: 3,
-          },
-          {
-            id: "sword_heavy_2",
-            label: "断界斬",
-            note: "単発倍率",
-            group: "sword",
-            tier: "major",
-            x: -5,
-            y: 4,
-          },
-          {
-            id: "sword_heavy_3",
-            label: "甲冑割り",
-            note: "防御無視",
-            group: "sword",
-            tier: "minor",
-            x: -4,
-            y: 5,
-          },
-          {
-            id: "sword_heavy_4",
-            label: "一撃覇王",
-            note: "確殺ライン",
-            group: "sword",
-            tier: "major",
-            x: -5,
-            y: 6,
-          },
-          {
-            id: "sword_guard",
-            label: "守勢の構え",
-            note: "防御/反撃",
-            group: "sword",
-            tier: "major",
-            x: -6,
-            y: 2,
-          },
-          {
-            id: "sword_guard_1",
-            label: "鉄壁の陣",
-            note: "耐久強化",
-            group: "sword",
-            tier: "minor",
-            x: -6,
-            y: 3,
-          },
-          {
-            id: "sword_guard_2",
-            label: "反撃の号令",
-            note: "カウンター",
-            group: "sword",
-            tier: "major",
-            x: -6,
-            y: 4,
-          },
-          {
-            id: "sword_guard_3",
-            label: "不屈防壁",
-            note: "壁役支援",
-            group: "sword",
-            tier: "minor",
-            x: -6,
-            y: 5,
-          },
-          {
-            id: "sword_guard_4",
-            label: "要塞英雄",
-            note: "守護特化",
-            group: "sword",
-            tier: "major",
-            x: -6,
-            y: 6,
-          },
-          {
-            id: "mage_origin",
-            label: "魔法起点",
-            note: "術式知覚",
-            group: "mage",
-            tier: "class",
-            x: -2,
-            y: 1,
-          },
-          {
-            id: "mage_burst",
-            label: "元素爆裂",
-            note: "範囲火力",
-            group: "mage",
-            tier: "major",
-            x: -3,
-            y: 2,
-          },
-          {
-            id: "mage_burst_1",
-            label: "炎晶炉",
-            note: "燃焼/DoT",
-            group: "mage",
-            tier: "minor",
-            x: -4,
-            y: 3,
-          },
-          {
-            id: "mage_burst_2",
-            label: "流星掌握",
-            note: "高倍率",
-            group: "mage",
-            tier: "major",
-            x: -3,
-            y: 4,
-          },
-          {
-            id: "mage_burst_3",
-            label: "灼熱臨界",
-            note: "会心/貫通",
-            group: "mage",
-            tier: "minor",
-            x: -4,
-            y: 5,
-          },
-          {
-            id: "mage_burst_4",
-            label: "終末メテオ",
-            note: "一掃特化",
-            group: "mage",
-            tier: "major",
-            x: -3,
-            y: 6,
-          },
-          {
-            id: "mage_control",
-            label: "術式制御",
-            note: "詠唱短縮",
-            group: "mage",
-            tier: "major",
-            x: -1,
-            y: 2,
-          },
-          {
-            id: "mage_control_1",
-            label: "時間圧縮",
-            note: "CT短縮",
-            group: "mage",
-            tier: "minor",
-            x: -1,
-            y: 3,
-          },
-          {
-            id: "mage_control_2",
-            label: "瞬間詠唱",
-            note: "速度特化",
-            group: "mage",
-            tier: "major",
-            x: -1,
-            y: 4,
-          },
-          {
-            id: "mage_control_3",
-            label: "魔力循環",
-            note: "MP回復",
-            group: "mage",
-            tier: "minor",
-            x: -1,
-            y: 5,
-          },
-          {
-            id: "mage_control_4",
-            label: "クロノ掌握",
-            note: "加速支援",
-            group: "mage",
-            tier: "major",
-            x: -1,
-            y: 6,
-          },
-          {
-            id: "mage_barrier",
-            label: "防御魔術",
-            note: "バリア軸",
-            group: "mage",
-            tier: "major",
-            x: -2,
-            y: 2,
-          },
-          {
-            id: "mage_barrier_1",
-            label: "護符展開",
-            note: "被ダメ減",
-            group: "mage",
-            tier: "minor",
-            x: -2,
-            y: 3,
-          },
-          {
-            id: "mage_barrier_2",
-            label: "結界増幅",
-            note: "再生/支援",
-            group: "mage",
-            tier: "major",
-            x: -2,
-            y: 4,
-          },
-          {
-            id: "mage_barrier_3",
-            label: "魔壁再生",
-            note: "継戦強化",
-            group: "mage",
-            tier: "minor",
-            x: -2,
-            y: 5,
-          },
-          {
-            id: "mage_barrier_4",
-            label: "神域防壁",
-            note: "守り極",
-            group: "mage",
-            tier: "major",
-            x: -2,
-            y: 6,
-          },
-          {
-            id: "holy_origin",
-            label: "聖職起点",
-            note: "祈りの軸",
-            group: "holy",
-            tier: "class",
-            x: 2,
-            y: 1,
-          },
-          {
-            id: "holy_support",
-            label: "祈祷奉仕",
-            note: "回復支援",
-            group: "holy",
-            tier: "major",
-            x: 1,
-            y: 2,
-          },
-          {
-            id: "holy_support_1",
-            label: "祝福の雨",
-            note: "再生強化",
-            group: "holy",
-            tier: "minor",
-            x: 1,
-            y: 3,
-          },
-          {
-            id: "holy_support_2",
-            label: "聖歌",
-            note: "耐性/バフ",
-            group: "holy",
-            tier: "major",
-            x: 1,
-            y: 4,
-          },
-          {
-            id: "holy_support_3",
-            label: "守護の翼",
-            note: "被ダメ減",
-            group: "holy",
-            tier: "minor",
-            x: 1,
-            y: 5,
-          },
-          {
-            id: "holy_support_4",
-            label: "慈愛大祭",
-            note: "全体支援",
-            group: "holy",
-            tier: "major",
-            x: 1,
-            y: 6,
-          },
-          {
-            id: "holy_punish",
-            label: "神罰の宣告",
-            note: "聖火力",
-            group: "holy",
-            tier: "major",
-            x: 3,
-            y: 2,
-          },
-          {
-            id: "holy_punish_1",
-            label: "裁きの光",
-            note: "会心/貫通",
-            group: "holy",
-            tier: "minor",
-            x: 4,
-            y: 3,
-          },
-          {
-            id: "holy_punish_2",
-            label: "光槍",
-            note: "単体火力",
-            group: "holy",
-            tier: "major",
-            x: 3,
-            y: 4,
-          },
-          {
-            id: "holy_punish_3",
-            label: "裁定の刻",
-            note: "防御無視",
-            group: "holy",
-            tier: "minor",
-            x: 4,
-            y: 5,
-          },
-          {
-            id: "holy_punish_4",
-            label: "天罰降臨",
-            note: "高火力",
-            group: "holy",
-            tier: "major",
-            x: 3,
-            y: 6,
-          },
-          {
-            id: "holy_guard",
-            label: "結界祈祷",
-            note: "守り特化",
-            group: "holy",
-            tier: "major",
-            x: 2,
-            y: 2,
-          },
-          {
-            id: "holy_guard_1",
-            label: "聖盾陣",
-            note: "バリア",
-            group: "holy",
-            tier: "minor",
-            x: 2,
-            y: 3,
-          },
-          {
-            id: "holy_guard_2",
-            label: "献身の誓",
-            note: "かばう",
-            group: "holy",
-            tier: "major",
-            x: 2,
-            y: 4,
-          },
-          {
-            id: "holy_guard_3",
-            label: "浄化の域",
-            note: "解除/耐性",
-            group: "holy",
-            tier: "minor",
-            x: 2,
-            y: 5,
-          },
-          {
-            id: "holy_guard_4",
-            label: "大聖壁",
-            note: "壁役極地",
-            group: "holy",
-            tier: "major",
-            x: 2,
-            y: 6,
-          },
-          {
-            id: "vamp_origin",
-            label: "吸血起点",
-            note: "血の契約",
-            group: "vamp",
-            tier: "class",
-            x: 6,
-            y: 1,
-          },
-          {
-            id: "vamp_blood",
-            label: "血刃の契り",
-            note: "吸収火力",
-            group: "vamp",
-            tier: "major",
-            x: 5,
-            y: 2,
-          },
-          {
-            id: "vamp_blood_1",
-            label: "渇望の連撃",
-            note: "手数吸収",
-            group: "vamp",
-            tier: "minor",
-            x: 4,
-            y: 3,
-          },
-          {
-            id: "vamp_blood_2",
-            label: "鮮血輪舞",
-            note: "範囲吸収",
-            group: "vamp",
-            tier: "major",
-            x: 5,
-            y: 4,
-          },
-          {
-            id: "vamp_blood_3",
-            label: "紅牙",
-            note: "会心/吸収",
-            group: "vamp",
-            tier: "minor",
-            x: 4,
-            y: 5,
-          },
-          {
-            id: "vamp_blood_4",
-            label: "真祖の剣",
-            note: "高吸収",
-            group: "vamp",
-            tier: "major",
-            x: 5,
-            y: 6,
-          },
-          {
-            id: "vamp_curse",
-            label: "呪血の系譜",
-            note: "弱体/DoT",
-            group: "vamp",
-            tier: "major",
-            x: 7,
-            y: 2,
-          },
-          {
-            id: "vamp_curse_1",
-            label: "腐蝕の瘴気",
-            note: "弱体付与",
-            group: "vamp",
-            tier: "minor",
-            x: 8,
-            y: 3,
-          },
-          {
-            id: "vamp_curse_2",
-            label: "血毒紋",
-            note: "DoT強化",
-            group: "vamp",
-            tier: "major",
-            x: 7,
-            y: 4,
-          },
-          {
-            id: "vamp_curse_3",
-            label: "呪詛拡散",
-            note: "範囲化",
-            group: "vamp",
-            tier: "minor",
-            x: 8,
-            y: 5,
-          },
-          {
-            id: "vamp_curse_4",
-            label: "疫血皇",
-            note: "支配特化",
-            group: "vamp",
-            tier: "major",
-            x: 7,
-            y: 6,
-          },
-          {
-            id: "vamp_shadow",
-            label: "影走り",
-            note: "回避/速度",
-            group: "vamp",
-            tier: "major",
-            x: 6,
-            y: 2,
-          },
-          {
-            id: "vamp_shadow_1",
-            label: "蝙蝠の翼",
-            note: "移動強化",
-            group: "vamp",
-            tier: "minor",
-            x: 6,
-            y: 3,
-          },
-          {
-            id: "vamp_shadow_2",
-            label: "影縫い",
-            note: "妨害",
-            group: "vamp",
-            tier: "major",
-            x: 6,
-            y: 4,
-          },
-          {
-            id: "vamp_shadow_3",
-            label: "闇歩",
-            note: "回避/CT",
-            group: "vamp",
-            tier: "minor",
-            x: 6,
-            y: 5,
-          },
-          {
-            id: "vamp_shadow_4",
-            label: "夜王の舞",
-            note: "高速特化",
-            group: "vamp",
-            tier: "major",
-            x: 6,
-            y: 6,
-          },
-          {
-            id: "detour_blade_mage",
-            label: "魔剣回路",
-            note: "剣士↔魔法",
-            group: "hybrid",
-            tier: "detour",
-            x: -4,
-            y: 3,
-          },
-          {
-            id: "detour_mage_holy",
-            label: "祈導式",
-            note: "魔法↔聖職",
-            group: "hybrid",
-            tier: "detour",
-            x: 0,
-            y: 3,
-          },
-          {
-            id: "detour_holy_vamp",
-            label: "聖血契約",
-            note: "聖職↔吸血",
-            group: "hybrid",
-            tier: "detour",
-            x: 4,
-            y: 3,
-          },
-        ];
-
-        const STAT_TREE_EDGES = [
-          { from: "origin", to: "sword_origin" },
-          { from: "origin", to: "mage_origin" },
-          { from: "origin", to: "holy_origin" },
-          { from: "origin", to: "vamp_origin" },
-          { from: "sword_origin", to: "sword_fast" },
-          { from: "sword_fast", to: "sword_fast_1" },
-          { from: "sword_fast_1", to: "sword_fast_2" },
-          { from: "sword_fast_2", to: "sword_fast_3" },
-          { from: "sword_fast_3", to: "sword_fast_4" },
-          { from: "sword_origin", to: "sword_heavy" },
-          { from: "sword_heavy", to: "sword_heavy_1" },
-          { from: "sword_heavy_1", to: "sword_heavy_2" },
-          { from: "sword_heavy_2", to: "sword_heavy_3" },
-          { from: "sword_heavy_3", to: "sword_heavy_4" },
-          { from: "sword_origin", to: "sword_guard" },
-          { from: "sword_guard", to: "sword_guard_1" },
-          { from: "sword_guard_1", to: "sword_guard_2" },
-          { from: "sword_guard_2", to: "sword_guard_3" },
-          { from: "sword_guard_3", to: "sword_guard_4" },
-          { from: "mage_origin", to: "mage_burst" },
-          { from: "mage_burst", to: "mage_burst_1" },
-          { from: "mage_burst_1", to: "mage_burst_2" },
-          { from: "mage_burst_2", to: "mage_burst_3" },
-          { from: "mage_burst_3", to: "mage_burst_4" },
-          { from: "mage_origin", to: "mage_control" },
-          { from: "mage_control", to: "mage_control_1" },
-          { from: "mage_control_1", to: "mage_control_2" },
-          { from: "mage_control_2", to: "mage_control_3" },
-          { from: "mage_control_3", to: "mage_control_4" },
-          { from: "mage_origin", to: "mage_barrier" },
-          { from: "mage_barrier", to: "mage_barrier_1" },
-          { from: "mage_barrier_1", to: "mage_barrier_2" },
-          { from: "mage_barrier_2", to: "mage_barrier_3" },
-          { from: "mage_barrier_3", to: "mage_barrier_4" },
-          { from: "holy_origin", to: "holy_support" },
-          { from: "holy_support", to: "holy_support_1" },
-          { from: "holy_support_1", to: "holy_support_2" },
-          { from: "holy_support_2", to: "holy_support_3" },
-          { from: "holy_support_3", to: "holy_support_4" },
-          { from: "holy_origin", to: "holy_punish" },
-          { from: "holy_punish", to: "holy_punish_1" },
-          { from: "holy_punish_1", to: "holy_punish_2" },
-          { from: "holy_punish_2", to: "holy_punish_3" },
-          { from: "holy_punish_3", to: "holy_punish_4" },
-          { from: "holy_origin", to: "holy_guard" },
-          { from: "holy_guard", to: "holy_guard_1" },
-          { from: "holy_guard_1", to: "holy_guard_2" },
-          { from: "holy_guard_2", to: "holy_guard_3" },
-          { from: "holy_guard_3", to: "holy_guard_4" },
-          { from: "vamp_origin", to: "vamp_blood" },
-          { from: "vamp_blood", to: "vamp_blood_1" },
-          { from: "vamp_blood_1", to: "vamp_blood_2" },
-          { from: "vamp_blood_2", to: "vamp_blood_3" },
-          { from: "vamp_blood_3", to: "vamp_blood_4" },
-          { from: "vamp_origin", to: "vamp_curse" },
-          { from: "vamp_curse", to: "vamp_curse_1" },
-          { from: "vamp_curse_1", to: "vamp_curse_2" },
-          { from: "vamp_curse_2", to: "vamp_curse_3" },
-          { from: "vamp_curse_3", to: "vamp_curse_4" },
-          { from: "vamp_origin", to: "vamp_shadow" },
-          { from: "vamp_shadow", to: "vamp_shadow_1" },
-          { from: "vamp_shadow_1", to: "vamp_shadow_2" },
-          { from: "vamp_shadow_2", to: "vamp_shadow_3" },
-          { from: "vamp_shadow_3", to: "vamp_shadow_4" },
-          { from: "sword_heavy_1", to: "detour_blade_mage", type: "detour" },
-          { from: "mage_control_1", to: "detour_blade_mage", type: "detour" },
-          { from: "mage_barrier_1", to: "detour_mage_holy", type: "detour" },
-          { from: "holy_support_1", to: "detour_mage_holy", type: "detour" },
-          { from: "holy_punish_1", to: "detour_holy_vamp", type: "detour" },
-          { from: "vamp_blood_1", to: "detour_holy_vamp", type: "detour" },
-        ];
 
         const displayNumber = (num, { isPercent = false } = {}) => {
           if (isPercent) {
@@ -13559,120 +12651,6 @@
           const bonusSign = stat.bonus > 0 ? "+" : "";
           return `<span class="total">${total}</span> (<span class="base">${stat.base}</span> <span class="bonus">${bonusSign}${stat.bonus}</span>)`;
         };
-
-        function renderStatTree() {
-          const container = document.getElementById("stat-tree");
-          if (!container) return;
-          container.innerHTML = "";
-
-          const nodes = STAT_TREE_NODES;
-          if (!nodes.length) return;
-
-          const bounds = nodes.reduce(
-            (acc, node) => {
-              acc.minX = Math.min(acc.minX, node.x);
-              acc.maxX = Math.max(acc.maxX, node.x);
-              acc.minY = Math.min(acc.minY, node.y);
-              acc.maxY = Math.max(acc.maxY, node.y);
-              return acc;
-            },
-            {
-              minX: Number.POSITIVE_INFINITY,
-              maxX: Number.NEGATIVE_INFINITY,
-              minY: Number.POSITIVE_INFINITY,
-              maxY: Number.NEGATIVE_INFINITY,
-            },
-          );
-
-          const width =
-            (bounds.maxX - bounds.minX) * STAT_TREE_UNIT +
-            STAT_TREE_PADDING * 2;
-          const height =
-            (bounds.maxY - bounds.minY) * STAT_TREE_UNIT +
-            STAT_TREE_PADDING * 2;
-
-          const canvas = document.createElement("div");
-          canvas.className = "stat-tree-canvas";
-          canvas.style.width = `${width}px`;
-          canvas.style.height = `${height}px`;
-
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg",
-          );
-          svg.classList.add("stat-tree-lines");
-          svg.setAttribute("width", `${width}`);
-          svg.setAttribute("height", `${height}`);
-
-          const positionMap = new Map();
-          nodes.forEach((node) => {
-            const px =
-              (node.x - bounds.minX) * STAT_TREE_UNIT + STAT_TREE_PADDING;
-            const py =
-              (node.y - bounds.minY) * STAT_TREE_UNIT + STAT_TREE_PADDING;
-            positionMap.set(node.id, { x: px, y: py });
-          });
-
-          STAT_TREE_EDGES.forEach((edge) => {
-            const from = positionMap.get(edge.from);
-            const to = positionMap.get(edge.to);
-            if (!from || !to) return;
-            const line = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "line",
-            );
-            line.setAttribute("x1", `${from.x}`);
-            line.setAttribute("y1", `${from.y}`);
-            line.setAttribute("x2", `${to.x}`);
-            line.setAttribute("y2", `${to.y}`);
-            line.classList.add("stat-tree-line");
-            if (edge.type === "detour") {
-              line.classList.add("is-detour");
-            }
-            svg.appendChild(line);
-          });
-
-          canvas.appendChild(svg);
-
-          nodes.forEach((node) => {
-            const pos = positionMap.get(node.id);
-            if (!pos) return;
-            const element = document.createElement("div");
-            element.className = "stat-tree-node";
-            if (node.tier === "origin") element.classList.add("is-origin");
-            if (node.tier === "class") element.classList.add("is-class");
-            if (node.tier === "major") element.classList.add("is-major");
-            if (node.tier === "detour") element.classList.add("is-detour");
-            element.dataset.group = node.group || "core";
-            element.style.left = `${pos.x}px`;
-            element.style.top = `${pos.y}px`;
-
-            const label = document.createElement("div");
-            label.className = "node-label";
-            label.textContent = node.label;
-
-            const note = document.createElement("div");
-            note.className = "node-note";
-            note.textContent = node.note;
-
-            element.appendChild(label);
-            element.appendChild(note);
-            canvas.appendChild(element);
-          });
-
-          container.appendChild(canvas);
-          statTreeRendered = true;
-          statTreeRenderWidth = container.clientWidth;
-        }
-
-        function ensureStatTree() {
-          const container = document.getElementById("stat-tree");
-          if (!container) return;
-          const width = container.clientWidth;
-          if (!statTreeRendered || Math.abs(width - statTreeRenderWidth) > 4) {
-            renderStatTree();
-          }
-        }
 
         const statTotal = (key) => {
           const stat = player.primary[key];
@@ -15978,14 +14956,10 @@ function showDamagePopup(
             `EXP ${displayExp} / ${displayExpToLevel}`;
           document.getElementById("level").textContent = player.level;
           document.getElementById("gold").textContent = formatGold(player.gold);
-          const statPointsLabel = document.getElementById("stat-points");
-          if (statPointsLabel) {
-            statPointsLabel.textContent = player.statPoints;
-          }
-          const skillPointsLabel = document.getElementById("skill-points-skill");
-          if (skillPointsLabel) {
-            skillPointsLabel.textContent = player.skillPoints;
-          }
+          document.getElementById("stat-points").textContent =
+            player.statPoints;
+          document.getElementById("skill-points-skill").textContent =
+            player.skillPoints;
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
           updateBars("mp-bar", displayMp, displayMaxMp, "mp");
           updateBars("exp-bar", displayExp, displayExpToLevel, "exp");
@@ -18002,7 +16976,6 @@ function showDamagePopup(
 
         function renderPrimaryStats() {
           const container = document.getElementById("primary-stats");
-          if (!container) return;
           container.innerHTML = "";
           const step = getAdjustStep();
 
@@ -18243,8 +17216,6 @@ function showDamagePopup(
           playerModalEquipmentButton?.classList.toggle("active", isEquipment);
           if (isEquipment) {
             renderEquipmentOverview();
-          } else {
-            requestAnimationFrame(() => ensureStatTree());
           }
         }
 
@@ -20880,7 +19851,6 @@ function showDamagePopup(
           updateUI();
           setPlayerModalPage("status");
           playerModal.classList.remove("hidden");
-          requestAnimationFrame(() => ensureStatTree());
         }
 
         function closePlayerModal() {
@@ -22551,12 +21521,11 @@ function showDamagePopup(
         memoModal.addEventListener("click", (e) => {
           if (e.target === memoModal) memoModal.classList.add("hidden");
         });
-        window.addEventListener("resize", () => ensureStatTree());
 
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton?.addEventListener("click", () => {
+        statStepButton.addEventListener("click", () => {
           currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
           updateStepButton();
           renderPrimaryStats();
@@ -22585,7 +21554,7 @@ function showDamagePopup(
           }
         });
 
-        resetButton?.addEventListener("click", () => {
+        resetButton.addEventListener("click", () => {
           pendingResetSpent = Object.values(player.allocations).reduce(
             (a, b) => a + b,
             0,
