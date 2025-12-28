@@ -1655,37 +1655,92 @@
         align-items: start;
       }
 
-      .status-tree {
+      .status-tree-page {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 8, 12, 0.98);
+        z-index: 40;
         display: grid;
+        grid-template-rows: auto 1fr;
         gap: 10px;
+        padding: 12px;
       }
 
-      .status-tree-meta {
+      .status-tree-page.hidden {
+        display: none;
+      }
+
+      .status-tree-header {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .status-tree-header-actions {
+        display: flex;
+        align-items: center;
         gap: 8px;
       }
 
-      .status-tree-wrapper {
+      .status-tree-body {
+        display: grid;
+        grid-template-columns: minmax(220px, 320px) 1fr;
+        gap: 10px;
+        min-height: 0;
+      }
+
+      .status-tree-panel {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 12px;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      .status-tree-canvas {
         position: relative;
-        height: 320px;
-        border-radius: 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
         background:
           radial-gradient(
-            circle at 30% 20%,
+            circle at 20% 20%,
             rgba(52, 211, 153, 0.12),
-            transparent 40%
+            transparent 45%
           ),
           radial-gradient(
-            circle at 70% 80%,
-            rgba(96, 165, 250, 0.12),
-            transparent 42%
+            circle at 80% 70%,
+            rgba(96, 165, 250, 0.14),
+            transparent 50%
           ),
-          rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        box-shadow: inset 0 0 25px rgba(15, 23, 42, 0.6);
+          rgba(8, 12, 20, 0.95);
         overflow: hidden;
+        min-height: 0;
+      }
+
+      .status-tree-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 3;
+      }
+
+      .status-tree-viewport {
+        position: absolute;
+        inset: 0;
+        cursor: grab;
+        transform-origin: 0 0;
+      }
+
+      .status-tree-viewport.dragging {
+        cursor: grabbing;
       }
 
       .status-tree-lines {
@@ -1697,17 +1752,17 @@
       }
 
       .status-tree-lines line {
-        stroke: rgba(148, 163, 184, 0.35);
-        stroke-width: 1.5;
+        stroke: rgba(148, 163, 184, 0.28);
+        stroke-width: 2;
       }
 
       .status-tree-lines line.available {
-        stroke: rgba(96, 165, 250, 0.55);
+        stroke: rgba(96, 165, 250, 0.6);
       }
 
       .status-tree-lines line.active {
-        stroke: rgba(52, 211, 153, 0.75);
-        stroke-width: 2;
+        stroke: rgba(52, 211, 153, 0.9);
+        stroke-width: 3;
       }
 
       .status-tree-nodes {
@@ -1723,11 +1778,11 @@
       }
 
       .status-tree-node button {
-        width: 58px;
-        height: 58px;
+        width: 64px;
+        height: 64px;
         border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.35);
-        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(10, 15, 25, 0.9);
         color: var(--text);
         font-size: 11px;
         font-weight: 700;
@@ -1784,7 +1839,7 @@
       .status-tree-detail {
         border-radius: 12px;
         padding: 10px 12px;
-        background: rgba(15, 23, 42, 0.7);
+        background: rgba(12, 18, 28, 0.95);
         border: 1px solid rgba(148, 163, 184, 0.2);
         display: grid;
         gap: 6px;
@@ -3561,28 +3616,14 @@
             <div class="section-title" style="margin: 2px 0 4px">
               ステータスツリー
             </div>
-            <div class="status-tree">
-              <div class="status-tree-meta">
-                <div class="pill">能力P: <span id="stat-points"></span></div>
-                <button
-                  id="reset-stats"
-                  class="help-icon"
-                  aria-label="ステータスツリーをリセット"
-                >
-                  ↺
-                </button>
-              </div>
-              <div class="status-tree-wrapper">
-                <svg
-                  id="status-tree-lines"
-                  class="status-tree-lines"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                ></svg>
-                <div id="status-tree-nodes" class="status-tree-nodes"></div>
-              </div>
-              <div id="status-tree-detail" class="status-tree-detail"></div>
+            <div class="help-panel" style="margin-bottom: 8px">
+              能力Pを使ってツリーを解放します。広大なツリーは別ページで確認できます。
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center">
+              <div class="pill">能力P: <span id="stat-points"></span></div>
+              <button id="open-status-tree" class="primary">
+                ツリーを開く
+              </button>
             </div>
           </div>
         </div>
@@ -3604,6 +3645,47 @@
             ステータス
           </button>
           <button id="player-modal-equipment-btn">装備</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="status-tree-page"
+      class="status-tree-page hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="status-tree-header">
+        <div>
+          <div class="section-title" style="margin: 0">ステータスツリー</div>
+          <div class="subtle" style="margin-top: 4px">
+            PoE風の円形ツリーで能力Pを解放できます
+          </div>
+        </div>
+        <div class="status-tree-header-actions">
+          <div class="pill">能力P: <span id="status-tree-points"></span></div>
+          <button id="reset-stats" class="help-icon">↺</button>
+          <button id="status-tree-close" class="modal-close">×</button>
+        </div>
+      </div>
+      <div class="status-tree-body">
+        <div class="status-tree-panel">
+          <div id="status-tree-detail" class="status-tree-detail"></div>
+        </div>
+        <div class="status-tree-canvas" id="status-tree-canvas">
+          <div class="status-tree-controls">
+            <button id="status-tree-zoom-in" class="mini-btn">＋</button>
+            <button id="status-tree-zoom-out" class="mini-btn">－</button>
+            <button id="status-tree-zoom-reset" class="mini-btn">リセット</button>
+          </div>
+          <div class="status-tree-viewport" id="status-tree-viewport">
+            <svg
+              id="status-tree-lines"
+              class="status-tree-lines"
+              aria-hidden="true"
+            ></svg>
+            <div id="status-tree-nodes" class="status-tree-nodes"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -12764,199 +12846,235 @@
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
         const STATUS_TREE_ROOT_ID = "core";
-        const STATUS_TREE_NODES = [
+        const STATUS_TREE_LAYOUT = {
+          size: 2000,
+          center: { x: 1000, y: 1000 },
+          baseRadius: 180,
+          step: 190,
+        };
+        const STATUS_TREE_BRANCHES = [
           {
-            id: "core",
-            label: "起点",
-            desc: "全ステータス+1",
-            cost: 0,
-            position: { x: 50, y: 10 },
-            links: ["str1", "agi1", "vit1", "luck1", "int1"],
-            effects: {
-              primary: { str: 1, int: 1, vit: 1, agi: 1, luck: 1 },
-            },
+            key: "warrior",
+            label: "戦士",
+            angle: -110,
+            curve: 6,
+            nodes: [
+              {
+                id: "warrior1",
+                label: "剛力",
+                desc: "力+3",
+                cost: 1,
+                effects: { primary: { str: 3 } },
+              },
+              {
+                id: "warrior2",
+                label: "斬撃",
+                desc: "物理攻撃+16",
+                cost: 1,
+                effects: { secondary: { physAtk: 16 } },
+              },
+              {
+                id: "warrior3",
+                label: "猛進",
+                desc: "物理貫通+5%",
+                cost: 1,
+                effects: { secondary: { physPen: 5 } },
+              },
+              {
+                id: "warrior4",
+                label: "覇気",
+                desc: "クリ率+3%",
+                cost: 2,
+                effects: { secondary: { critRate: 3 } },
+              },
+            ],
           },
           {
-            id: "str1",
-            label: "筋力訓練",
-            desc: "力+2",
-            cost: 1,
-            position: { x: 24, y: 28 },
-            links: ["str2"],
-            effects: { primary: { str: 2 } },
+            key: "ranger",
+            label: "斥候",
+            angle: -30,
+            curve: -6,
+            nodes: [
+              {
+                id: "ranger1",
+                label: "俊敏",
+                desc: "敏捷+3",
+                cost: 1,
+                effects: { primary: { agi: 3 } },
+              },
+              {
+                id: "ranger2",
+                label: "疾風",
+                desc: "行動速度+3",
+                cost: 1,
+                effects: { secondary: { speed: 3 } },
+              },
+              {
+                id: "ranger3",
+                label: "影走り",
+                desc: "回避率+5%",
+                cost: 1,
+                effects: { secondary: { evade: 5 } },
+              },
+              {
+                id: "ranger4",
+                label: "急所狙い",
+                desc: "クリ率+2% / 命中+4%",
+                cost: 2,
+                effects: { secondary: { critRate: 2, accuracy: 4 } },
+              },
+            ],
           },
           {
-            id: "str2",
-            label: "猛攻",
-            desc: "物理攻撃+10",
-            cost: 1,
-            position: { x: 14, y: 44 },
-            links: ["str3"],
-            effects: { secondary: { physAtk: 10 } },
+            key: "cleric",
+            label: "聖職",
+            angle: 40,
+            curve: 5,
+            nodes: [
+              {
+                id: "cleric1",
+                label: "耐久",
+                desc: "体力+3",
+                cost: 1,
+                effects: { primary: { vit: 3 } },
+              },
+              {
+                id: "cleric2",
+                label: "堅守",
+                desc: "最大HP+60",
+                cost: 1,
+                effects: { secondary: { hp: 60 } },
+              },
+              {
+                id: "cleric3",
+                label: "守護",
+                desc: "被ダメ軽減+4%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 4 } },
+              },
+              {
+                id: "cleric4",
+                label: "光壁",
+                desc: "バリア+28",
+                cost: 2,
+                effects: { secondary: { barrier: 28 } },
+              },
+            ],
           },
           {
-            id: "str3",
-            label: "破砕",
-            desc: "物理貫通+4%",
-            cost: 1,
-            position: { x: 24, y: 60 },
-            links: ["str4"],
-            effects: { secondary: { physPen: 4 } },
+            key: "mage",
+            label: "魔法",
+            angle: 120,
+            curve: -6,
+            nodes: [
+              {
+                id: "mage1",
+                label: "知恵",
+                desc: "知識+3",
+                cost: 1,
+                effects: { primary: { int: 3 } },
+              },
+              {
+                id: "mage2",
+                label: "魔力",
+                desc: "魔法攻撃+16",
+                cost: 1,
+                effects: { secondary: { magAtk: 16 } },
+              },
+              {
+                id: "mage3",
+                label: "詠唱",
+                desc: "CT短縮+4%",
+                cost: 1,
+                effects: { secondary: { cooldown: 4 } },
+              },
+              {
+                id: "mage4",
+                label: "穿つ魔眼",
+                desc: "魔法貫通+6%",
+                cost: 2,
+                effects: { secondary: { magPen: 6 } },
+              },
+            ],
           },
           {
-            id: "str4",
-            label: "暴撃",
-            desc: "物理攻撃+18 / クリ率+2%",
-            cost: 2,
-            position: { x: 14, y: 78 },
-            links: [],
-            effects: { secondary: { physAtk: 18, critRate: 2 } },
-          },
-          {
-            id: "agi1",
-            label: "敏捷訓練",
-            desc: "敏捷+2",
-            cost: 1,
-            position: { x: 34, y: 24 },
-            links: ["agi2"],
-            effects: { primary: { agi: 2 } },
-          },
-          {
-            id: "agi2",
-            label: "加速",
-            desc: "行動速度+2",
-            cost: 1,
-            position: { x: 30, y: 38 },
-            links: ["agi3"],
-            effects: { secondary: { speed: 2 } },
-          },
-          {
-            id: "agi3",
-            label: "残像",
-            desc: "回避率+4%",
-            cost: 1,
-            position: { x: 34, y: 52 },
-            links: ["agi4"],
-            effects: { secondary: { evade: 4 } },
-          },
-          {
-            id: "agi4",
-            label: "瞬撃",
-            desc: "クリ率+2%",
-            cost: 1,
-            position: { x: 30, y: 66 },
-            links: [],
-            effects: { secondary: { critRate: 2 } },
-          },
-          {
-            id: "vit1",
-            label: "体力訓練",
-            desc: "体力+2",
-            cost: 1,
-            position: { x: 50, y: 30 },
-            links: ["vit2"],
-            effects: { primary: { vit: 2 } },
-          },
-          {
-            id: "vit2",
-            label: "堅牢",
-            desc: "最大HP+40",
-            cost: 1,
-            position: { x: 50, y: 48 },
-            links: ["vit3"],
-            effects: { secondary: { hp: 40 } },
-          },
-          {
-            id: "vit3",
-            label: "不屈",
-            desc: "被ダメ軽減+3%",
-            cost: 1,
-            position: { x: 50, y: 66 },
-            links: ["vit4"],
-            effects: { secondary: { damageReduction: 3 } },
-          },
-          {
-            id: "vit4",
-            label: "障壁",
-            desc: "バリア+20",
-            cost: 2,
-            position: { x: 50, y: 84 },
-            links: [],
-            effects: { secondary: { barrier: 20 } },
-          },
-          {
-            id: "luck1",
-            label: "幸運訓練",
-            desc: "運+2",
-            cost: 1,
-            position: { x: 66, y: 24 },
-            links: ["luck2"],
-            effects: { primary: { luck: 2 } },
-          },
-          {
-            id: "luck2",
-            label: "拾得眼",
-            desc: "ドロップ率+6%",
-            cost: 1,
-            position: { x: 70, y: 38 },
-            links: ["luck3"],
-            effects: { secondary: { dropRate: 6 } },
-          },
-          {
-            id: "luck3",
-            label: "宝飾感覚",
-            desc: "レアリティ+4%",
-            cost: 1,
-            position: { x: 66, y: 52 },
-            links: ["luck4"],
-            effects: { secondary: { rarity: 4 } },
-          },
-          {
-            id: "luck4",
-            label: "致命賭博",
-            desc: "クリダメ+6%",
-            cost: 1,
-            position: { x: 70, y: 66 },
-            links: [],
-            effects: { secondary: { critDamage: 6 } },
-          },
-          {
-            id: "int1",
-            label: "知識訓練",
-            desc: "知識+2",
-            cost: 1,
-            position: { x: 76, y: 28 },
-            links: ["int2"],
-            effects: { primary: { int: 2 } },
-          },
-          {
-            id: "int2",
-            label: "魔力循環",
-            desc: "魔法攻撃+10",
-            cost: 1,
-            position: { x: 86, y: 44 },
-            links: ["int3"],
-            effects: { secondary: { magAtk: 10 } },
-          },
-          {
-            id: "int3",
-            label: "詠唱短縮",
-            desc: "CT短縮+3%",
-            cost: 1,
-            position: { x: 76, y: 60 },
-            links: ["int4"],
-            effects: { secondary: { cooldown: 3 } },
-          },
-          {
-            id: "int4",
-            label: "深奥",
-            desc: "魔法貫通+6%",
-            cost: 2,
-            position: { x: 86, y: 78 },
-            links: [],
-            effects: { secondary: { magPen: 6 } },
+            key: "trickster",
+            label: "幸運",
+            angle: 200,
+            curve: 6,
+            nodes: [
+              {
+                id: "luck1",
+                label: "福運",
+                desc: "運+3",
+                cost: 1,
+                effects: { primary: { luck: 3 } },
+              },
+              {
+                id: "luck2",
+                label: "拾得眼",
+                desc: "ドロップ率+8%",
+                cost: 1,
+                effects: { secondary: { dropRate: 8 } },
+              },
+              {
+                id: "luck3",
+                label: "宝飾感覚",
+                desc: "レアリティ+6%",
+                cost: 1,
+                effects: { secondary: { rarity: 6 } },
+              },
+              {
+                id: "luck4",
+                label: "致命賭博",
+                desc: "クリダメ+8%",
+                cost: 2,
+                effects: { secondary: { critDamage: 8 } },
+              },
+            ],
           },
         ];
+
+        function buildStatusTreeNodes() {
+          const { center, baseRadius, step } = STATUS_TREE_LAYOUT;
+          const nodes = [
+            {
+              id: STATUS_TREE_ROOT_ID,
+              label: "起点",
+              desc: "全ステータス+1",
+              cost: 0,
+              position: { x: center.x, y: center.y },
+              links: [],
+              effects: {
+                primary: { str: 1, int: 1, vit: 1, agi: 1, luck: 1 },
+              },
+            },
+          ];
+
+          STATUS_TREE_BRANCHES.forEach((branch) => {
+            let prevId = STATUS_TREE_ROOT_ID;
+            branch.nodes.forEach((node, index) => {
+              const angle =
+                ((branch.angle + branch.curve * index) * Math.PI) / 180;
+              const radius = baseRadius + step * index;
+              const position = {
+                x: Math.round(center.x + Math.cos(angle) * radius),
+                y: Math.round(center.y + Math.sin(angle) * radius),
+              };
+              nodes.push({
+                ...node,
+                position,
+                links: [],
+              });
+              const prev = nodes.find((item) => item.id === prevId);
+              if (prev) prev.links.push(node.id);
+              prevId = node.id;
+            });
+          });
+          return nodes;
+        }
+
+        const STATUS_TREE_NODES = buildStatusTreeNodes();
         const STATUS_TREE_NODE_MAP = new Map(
           STATUS_TREE_NODES.map((node) => [node.id, node]),
         );
@@ -15313,6 +15431,7 @@ function showDamagePopup(
           document.getElementById("gold").textContent = formatGold(player.gold);
           document.getElementById("stat-points").textContent =
             player.statPoints;
+          if (statusTreePoints) statusTreePoints.textContent = player.statPoints;
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
@@ -17468,12 +17587,70 @@ function showDamagePopup(
           }
         }
 
+        const statusTreeTransform = {
+          scale: 0.85,
+          x: 0,
+          y: 0,
+        };
+        let statusTreeDragging = false;
+        let statusTreeDragOrigin = { x: 0, y: 0 };
+
+        function applyStatusTreeTransform() {
+          if (!statusTreeViewport) return;
+          statusTreeViewport.style.transform = `translate(${statusTreeTransform.x}px, ${statusTreeTransform.y}px) scale(${statusTreeTransform.scale})`;
+        }
+
+        function clampStatusTreeScale(value) {
+          return Math.min(1.8, Math.max(0.5, value));
+        }
+
+        function centerStatusTree() {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const { center } = STATUS_TREE_LAYOUT;
+          statusTreeTransform.scale = 0.85;
+          statusTreeTransform.x =
+            rect.width / 2 - center.x * statusTreeTransform.scale;
+          statusTreeTransform.y =
+            rect.height / 2 - center.y * statusTreeTransform.scale;
+          applyStatusTreeTransform();
+        }
+
+        function zoomStatusTree(deltaScale, anchor) {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const nextScale = clampStatusTreeScale(
+            statusTreeTransform.scale + deltaScale,
+          );
+          if (nextScale === statusTreeTransform.scale) return;
+          const originX = anchor?.x ?? rect.width / 2;
+          const originY = anchor?.y ?? rect.height / 2;
+          const dx = originX - statusTreeTransform.x;
+          const dy = originY - statusTreeTransform.y;
+          const scaleRatio = nextScale / statusTreeTransform.scale;
+          statusTreeTransform.x = originX - dx * scaleRatio;
+          statusTreeTransform.y = originY - dy * scaleRatio;
+          statusTreeTransform.scale = nextScale;
+          applyStatusTreeTransform();
+        }
+
         function renderStatusTree() {
           if (!statusTreeNodesContainer || !statusTreeLines) return;
           normalizeStatusTreeState();
           const unlockedSet = getStatusTreeUnlockedSet();
           statusTreeNodesContainer.innerHTML = "";
           statusTreeLines.innerHTML = "";
+
+          const size = STATUS_TREE_LAYOUT.size;
+          statusTreeNodesContainer.style.width = `${size}px`;
+          statusTreeNodesContainer.style.height = `${size}px`;
+          statusTreeLines.setAttribute("viewBox", `0 0 ${size} ${size}`);
+          statusTreeLines.setAttribute("width", `${size}`);
+          statusTreeLines.setAttribute("height", `${size}`);
+          if (statusTreeViewport) {
+            statusTreeViewport.style.width = `${size}px`;
+            statusTreeViewport.style.height = `${size}px`;
+          }
 
           const renderedLines = new Set();
           STATUS_TREE_NODES.forEach((node) => {
@@ -17517,8 +17694,8 @@ function showDamagePopup(
             if (node.id === selectedStatusNodeId) {
               nodeEl.classList.add("selected");
             }
-            nodeEl.style.left = `${node.position.x}%`;
-            nodeEl.style.top = `${node.position.y}%`;
+            nodeEl.style.left = `${node.position.x}px`;
+            nodeEl.style.top = `${node.position.y}px`;
 
             const button = document.createElement("button");
             button.type = "button";
@@ -17541,7 +17718,49 @@ function showDamagePopup(
             statusTreeNodesContainer.appendChild(nodeEl);
           });
 
+          if (statusTreePoints) {
+            statusTreePoints.textContent = player.statPoints;
+          }
           renderStatusTreeDetail();
+        }
+
+        function openStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.remove("hidden");
+          renderStatusTree();
+          requestAnimationFrame(() => centerStatusTree());
+        }
+
+        function closeStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.add("hidden");
+        }
+
+        function startStatusTreeDrag(event) {
+          if (!statusTreeCanvas || !statusTreeViewport) return;
+          if (event.button !== 0) return;
+          if (event.target.closest("button")) return;
+          statusTreeDragging = true;
+          statusTreeDragOrigin = {
+            x: event.clientX - statusTreeTransform.x,
+            y: event.clientY - statusTreeTransform.y,
+          };
+          statusTreeViewport.classList.add("dragging");
+          statusTreeCanvas.setPointerCapture?.(event.pointerId);
+        }
+
+        function moveStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeTransform.x = event.clientX - statusTreeDragOrigin.x;
+          statusTreeTransform.y = event.clientY - statusTreeDragOrigin.y;
+          applyStatusTreeTransform();
+        }
+
+        function endStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeDragging = false;
+          statusTreeViewport?.classList.remove("dragging");
+          statusTreeCanvas?.releasePointerCapture?.(event.pointerId);
         }
 
         function renderEquipmentList() {
@@ -19056,6 +19275,21 @@ function showDamagePopup(
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
         const resetButton = document.getElementById("reset-stats");
+        const openStatusTreeButton =
+          document.getElementById("open-status-tree");
+        const statusTreePage = document.getElementById("status-tree-page");
+        const statusTreeCloseButton =
+          document.getElementById("status-tree-close");
+        const statusTreePoints = document.getElementById("status-tree-points");
+        const statusTreeCanvas = document.getElementById("status-tree-canvas");
+        const statusTreeViewport =
+          document.getElementById("status-tree-viewport");
+        const statusTreeZoomInButton =
+          document.getElementById("status-tree-zoom-in");
+        const statusTreeZoomOutButton =
+          document.getElementById("status-tree-zoom-out");
+        const statusTreeZoomResetButton =
+          document.getElementById("status-tree-zoom-reset");
         const statusTreeNodesContainer = document.getElementById(
           "status-tree-nodes",
         );
@@ -21875,6 +22109,32 @@ function showDamagePopup(
         document
           .getElementById("btn-player-modal")
           .addEventListener("click", openPlayerModal);
+        openStatusTreeButton?.addEventListener("click", openStatusTreePage);
+        statusTreeCloseButton?.addEventListener("click", closeStatusTreePage);
+        statusTreeZoomInButton?.addEventListener("click", () =>
+          zoomStatusTree(0.12),
+        );
+        statusTreeZoomOutButton?.addEventListener("click", () =>
+          zoomStatusTree(-0.12),
+        );
+        statusTreeZoomResetButton?.addEventListener("click", centerStatusTree);
+        statusTreeCanvas?.addEventListener(
+          "wheel",
+          (event) => {
+            event.preventDefault();
+            const rect = statusTreeCanvas.getBoundingClientRect();
+            zoomStatusTree(event.deltaY < 0 ? 0.1 : -0.1, {
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top,
+            });
+          },
+          { passive: false },
+        );
+        statusTreeCanvas?.addEventListener("pointerdown", startStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointermove", moveStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerup", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerleave", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointercancel", endStatusTreeDrag);
         playerModalStatusButton?.addEventListener("click", () =>
           setPlayerModalPage("status"),
         );
