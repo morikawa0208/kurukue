@@ -1655,6 +1655,216 @@
         align-items: start;
       }
 
+      .status-tree-page {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 8, 12, 0.98);
+        z-index: 120;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .status-tree-page.hidden {
+        display: none;
+      }
+
+      .status-tree-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .status-tree-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .status-tree-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(120px, 180px) 1fr;
+        gap: 10px;
+        min-height: 0;
+      }
+
+      .status-tree-panel {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 12px;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      .status-tree-canvas {
+        position: relative;
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background:
+          radial-gradient(
+            circle at 20% 20%,
+            rgba(52, 211, 153, 0.12),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(96, 165, 250, 0.14),
+            transparent 50%
+          ),
+          rgba(8, 12, 20, 0.95);
+        overflow: hidden;
+        min-height: 420px;
+      }
+
+      .status-tree-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 3;
+      }
+
+      .status-tree-viewport {
+        position: absolute;
+        inset: 0;
+        cursor: grab;
+        transform-origin: 0 0;
+      }
+
+      .status-tree-viewport.dragging {
+        cursor: grabbing;
+      }
+
+      .status-tree-lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .status-tree-lines line {
+        stroke: rgba(148, 163, 184, 0.28);
+        stroke-width: 2;
+      }
+
+      .status-tree-lines line.available {
+        stroke: rgba(96, 165, 250, 0.6);
+      }
+
+      .status-tree-lines line.active {
+        stroke: rgba(52, 211, 153, 0.9);
+        stroke-width: 3;
+      }
+
+      .status-tree-nodes {
+        position: absolute;
+        inset: 0;
+      }
+
+      .status-tree-node {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+      }
+
+      .status-tree-node button {
+        width: 64px;
+        height: 64px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(10, 15, 25, 0.9);
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 6px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .status-tree-node.unlocked button {
+        border-color: rgba(52, 211, 153, 0.7);
+        box-shadow:
+          0 0 0 2px rgba(52, 211, 153, 0.25),
+          0 8px 18px rgba(52, 211, 153, 0.25);
+      }
+
+      .status-tree-node.available button {
+        border-color: rgba(96, 165, 250, 0.7);
+        box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.35);
+      }
+
+      .status-tree-node.locked button {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status-tree-node.selected button {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow:
+          0 0 0 2px rgba(251, 191, 36, 0.45),
+          0 12px 24px rgba(0, 0, 0, 0.35);
+        border-color: rgba(251, 191, 36, 0.9);
+      }
+
+      .status-tree-cost {
+        position: absolute;
+        bottom: -6px;
+        right: -6px;
+        background: rgba(15, 23, 42, 0.9);
+        color: #fef3c7;
+        border: 1px solid rgba(251, 191, 36, 0.6);
+        border-radius: 999px;
+        font-size: 10px;
+        padding: 1px 6px;
+        font-weight: 700;
+      }
+
+      .status-tree-detail {
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(12, 18, 28, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+      }
+
+      .status-tree-detail .detail-title {
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .status-tree-detail .detail-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+      }
+
+      .status-tree-detail .detail-list {
+        display: grid;
+        gap: 4px;
+        color: var(--muted);
+      }
+
       .stat-row {
         display: flex;
         justify-content: space-between;
@@ -3203,7 +3413,7 @@
         <div class="guidance-body">
           <div class="guidance-title">Lv2到達おめでとう！</div>
           <div class="guidance-text">
-            レベルが上がるとステータスポイント5ポイント、スキルポイント1ポイント付与される。リセットも出来るので色々試してみてください。
+            レベルが上がると能力P5ポイントとスキルP1ポイントが付与されます。能力Pはステータスツリーで解放できます。リセットも出来るので色々試してみてください。
           </div>
           <div class="guidance-actions">
             <button id="level-up-guidance-close" type="button">OK</button>
@@ -3404,38 +3614,18 @@
             <div id="secondary-stats" class="stat-grid"></div>
           </div>
           <div class="primary-fixed">
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 8px;
-              "
-            >
-              <div class="section-title" style="margin: 2px 0 4px">
-                一次ステータス
-              </div>
-              <div style="display: flex; align-items: center; gap: 6px">
-                <div class="inline-buttons">
-                  <div class="pill">能力P: <span id="stat-points"></span></div>
-                </div>
-                <button
-                  id="stat-step"
-                  class="step-button"
-                  aria-label="増減幅を切り替え"
-                >
-                  ±1
-                </button>
-                <button
-                  id="reset-stats"
-                  class="help-icon"
-                  aria-label="ステータスをリセット"
-                >
-                  ↺
-                </button>
-              </div>
+            <div class="section-title" style="margin: 2px 0 4px">
+              ステータスツリー
             </div>
-            <div id="primary-stats" class="primary-grid"></div>
+            <div class="help-panel" style="margin-bottom: 8px">
+              能力Pを使ってツリーを解放します。広大なツリーは別ページで確認できます。
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center">
+              <div class="pill">能力P: <span id="stat-points"></span></div>
+              <button id="open-status-tree" class="primary">
+                ツリーを開く
+              </button>
+            </div>
           </div>
         </div>
         <div id="player-equipment-view" class="player-modal-page hidden">
@@ -3456,6 +3646,47 @@
             ステータス
           </button>
           <button id="player-modal-equipment-btn">装備</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="status-tree-page"
+      class="status-tree-page hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="status-tree-header">
+        <div>
+          <div class="section-title" style="margin: 0">ステータスツリー</div>
+          <div class="subtle" style="margin-top: 4px">
+            PoE風の円形ツリーで能力Pを解放できます
+          </div>
+        </div>
+        <div class="status-tree-header-actions">
+          <div class="pill">能力P: <span id="status-tree-points"></span></div>
+          <button id="reset-stats" class="help-icon">↺</button>
+          <button id="status-tree-close" class="modal-close">×</button>
+        </div>
+      </div>
+      <div class="status-tree-body">
+        <div class="status-tree-panel">
+          <div id="status-tree-detail" class="status-tree-detail"></div>
+        </div>
+        <div class="status-tree-canvas" id="status-tree-canvas">
+          <div class="status-tree-controls">
+            <button id="status-tree-zoom-in" class="mini-btn">＋</button>
+            <button id="status-tree-zoom-out" class="mini-btn">－</button>
+            <button id="status-tree-zoom-reset" class="mini-btn">リセット</button>
+          </div>
+          <div class="status-tree-viewport" id="status-tree-viewport">
+            <svg
+              id="status-tree-lines"
+              class="status-tree-lines"
+              aria-hidden="true"
+            ></svg>
+            <div id="status-tree-nodes" class="status-tree-nodes"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3518,14 +3749,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <div class="section-title" style="margin: 0">
-            ステータスをリセット
+            ステータスツリーをリセット
           </div>
           <button id="reset-close" class="modal-close" aria-label="閉じる">
             ×
           </button>
         </div>
         <div>
-          振り分けたポイント(<span id="reset-spent"></span
+          使用したポイント(<span id="reset-spent"></span
           >P)を戻します。よろしいですか？
         </div>
         <div class="modal-actions">
@@ -10448,12 +10679,8 @@
             agi: { label: "敏捷", base: 2, bonus: 0 },
             luck: { label: "運", base: 2, bonus: 0 },
           },
-          allocations: {
-            str: 0,
-            int: 0,
-            vit: 0,
-            agi: 0,
-            luck: 0,
+          statusTree: {
+            unlocked: ["core"],
           },
           bonus: createEmptyBonus(),
           baseBonus: createEmptyBonus(),
@@ -12619,8 +12846,315 @@
         );
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
-        const stepOptions = [1, 10, 50];
-        let currentStepIndex = 0;
+        const STATUS_TREE_ROOT_ID = "core";
+        const STATUS_TREE_LAYOUT = {
+          size: 2000,
+          center: { x: 1000, y: 1000 },
+          baseRadius: 180,
+          step: 190,
+        };
+        const STATUS_TREE_JUNCTIONS = [
+          {
+            id: "junctionNorth",
+            label: "交差路",
+            desc: "敏捷+1 / 行動速度+1",
+            cost: 1,
+            position: { x: 1000, y: 620 },
+            links: ["ranger2", "mage2"],
+            effects: { primary: { agi: 1 }, secondary: { speed: 1 } },
+          },
+          {
+            id: "junctionWest",
+            label: "交差路",
+            desc: "力+1 / 体力+1",
+            cost: 1,
+            position: { x: 680, y: 980 },
+            links: ["warrior2", "cleric2"],
+            effects: { primary: { str: 1, vit: 1 } },
+          },
+          {
+            id: "junctionEast",
+            label: "交差路",
+            desc: "知識+1 / 運+1",
+            cost: 1,
+            position: { x: 1320, y: 980 },
+            links: ["mage2", "luck2"],
+            effects: { primary: { int: 1, luck: 1 } },
+          },
+        ];
+        const STATUS_TREE_BRANCHES = [
+          {
+            key: "warrior",
+            label: "戦士",
+            angle: -110,
+            curve: 6,
+            nodes: [
+              {
+                id: "warrior1",
+                label: "剛力",
+                desc: "力+3",
+                cost: 1,
+                effects: { primary: { str: 3 } },
+              },
+              {
+                id: "warrior2",
+                label: "斬撃",
+                desc: "物理攻撃+16",
+                cost: 1,
+                effects: { secondary: { physAtk: 16 } },
+              },
+              {
+                id: "warrior3",
+                label: "猛進",
+                desc: "物理貫通+5%",
+                cost: 1,
+                effects: { secondary: { physPen: 5 } },
+              },
+              {
+                id: "warrior4",
+                label: "覇気",
+                desc: "攻撃回数+1 (特性)",
+                cost: 3,
+                effects: { special: { attackCountBonus: 1 } },
+              },
+            ],
+          },
+          {
+            key: "ranger",
+            label: "斥候",
+            angle: -30,
+            curve: -6,
+            nodes: [
+              {
+                id: "ranger1",
+                label: "俊敏",
+                desc: "敏捷+3",
+                cost: 1,
+                effects: { primary: { agi: 3 } },
+              },
+              {
+                id: "ranger2",
+                label: "疾風",
+                desc: "行動速度+3",
+                cost: 1,
+                effects: { secondary: { speed: 3 } },
+              },
+              {
+                id: "ranger3",
+                label: "影走り",
+                desc: "回避率+5%",
+                cost: 1,
+                effects: { secondary: { evade: 5 } },
+              },
+              {
+                id: "ranger4",
+                label: "急所狙い",
+                desc: "クリ率+2% / 命中+4%",
+                cost: 2,
+                effects: { secondary: { critRate: 2, accuracy: 4 } },
+              },
+              {
+                id: "ranger5",
+                label: "連携射",
+                desc: "同時攻撃対象+1 (特性)",
+                cost: 3,
+                effects: { special: { attackTargetsBonus: 1 } },
+              },
+            ],
+          },
+          {
+            key: "cleric",
+            label: "聖職",
+            angle: 40,
+            curve: 5,
+            nodes: [
+              {
+                id: "cleric1",
+                label: "耐久",
+                desc: "体力+3",
+                cost: 1,
+                effects: { primary: { vit: 3 } },
+              },
+              {
+                id: "cleric2",
+                label: "堅守",
+                desc: "最大HP+60",
+                cost: 1,
+                effects: { secondary: { hp: 60 } },
+              },
+              {
+                id: "cleric3",
+                label: "守護",
+                desc: "被ダメ軽減+4%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 4 } },
+              },
+              {
+                id: "cleric4",
+                label: "光壁",
+                desc: "バリア+28",
+                cost: 2,
+                effects: { secondary: { barrier: 28 } },
+              },
+              {
+                id: "cleric5",
+                label: "再生祈願",
+                desc: "HP再生+4 (特性)",
+                cost: 3,
+                effects: { secondary: { hpRegen: 4 } },
+              },
+            ],
+          },
+          {
+            key: "mage",
+            label: "魔法",
+            angle: 120,
+            curve: -6,
+            nodes: [
+              {
+                id: "mage1",
+                label: "知恵",
+                desc: "知識+3",
+                cost: 1,
+                effects: { primary: { int: 3 } },
+              },
+              {
+                id: "mage2",
+                label: "魔力",
+                desc: "魔法攻撃+16",
+                cost: 1,
+                effects: { secondary: { magAtk: 16 } },
+              },
+              {
+                id: "mage3",
+                label: "詠唱",
+                desc: "CT短縮+4%",
+                cost: 1,
+                effects: { secondary: { cooldown: 4 } },
+              },
+              {
+                id: "mage4",
+                label: "穿つ魔眼",
+                desc: "魔法貫通+6%",
+                cost: 2,
+                effects: { secondary: { magPen: 6 } },
+              },
+              {
+                id: "mage5",
+                label: "魔導連鎖",
+                desc: "スキルCT短縮+6% (特性)",
+                cost: 3,
+                effects: { secondary: { cooldown: 6 } },
+              },
+            ],
+          },
+          {
+            key: "trickster",
+            label: "幸運",
+            angle: 200,
+            curve: 6,
+            nodes: [
+              {
+                id: "luck1",
+                label: "福運",
+                desc: "運+3",
+                cost: 1,
+                effects: { primary: { luck: 3 } },
+              },
+              {
+                id: "luck2",
+                label: "拾得眼",
+                desc: "ドロップ率+8%",
+                cost: 1,
+                effects: { secondary: { dropRate: 8 } },
+              },
+              {
+                id: "luck3",
+                label: "宝飾感覚",
+                desc: "レアリティ+6%",
+                cost: 1,
+                effects: { secondary: { rarity: 6 } },
+              },
+              {
+                id: "luck4",
+                label: "致命賭博",
+                desc: "クリダメ+8%",
+                cost: 2,
+                effects: { secondary: { critDamage: 8 } },
+              },
+              {
+                id: "luck5",
+                label: "幸運連鎖",
+                desc: "ドロップ率+12% (特性)",
+                cost: 3,
+                effects: { secondary: { dropRate: 12 } },
+              },
+            ],
+          },
+        ];
+
+        function buildStatusTreeNodes() {
+          const { center, baseRadius, step } = STATUS_TREE_LAYOUT;
+          const nodes = [
+            {
+              id: STATUS_TREE_ROOT_ID,
+              label: "起点",
+              desc: "全ステータス+1",
+              cost: 0,
+              position: { x: center.x, y: center.y },
+              links: [],
+              effects: {
+                primary: { str: 1, int: 1, vit: 1, agi: 1, luck: 1 },
+              },
+            },
+          ];
+
+          STATUS_TREE_BRANCHES.forEach((branch) => {
+            let prevId = STATUS_TREE_ROOT_ID;
+            branch.nodes.forEach((node, index) => {
+              const angle =
+                ((branch.angle + branch.curve * index) * Math.PI) / 180;
+              const radius = baseRadius + step * index;
+              const position = {
+                x: Math.round(center.x + Math.cos(angle) * radius),
+                y: Math.round(center.y + Math.sin(angle) * radius),
+              };
+              nodes.push({
+                ...node,
+                position,
+                links: [],
+              });
+              const prev = nodes.find((item) => item.id === prevId);
+              if (prev) prev.links.push(node.id);
+              prevId = node.id;
+            });
+          });
+          STATUS_TREE_JUNCTIONS.forEach((junction) => {
+            nodes.push({ ...junction, links: [...(junction.links || [])] });
+            (junction.links || []).forEach((linkId) => {
+              const target = nodes.find((item) => item.id === linkId);
+              if (target && !target.links.includes(junction.id)) {
+                target.links.push(junction.id);
+              }
+            });
+          });
+          return nodes;
+        }
+
+        const STATUS_TREE_NODES = buildStatusTreeNodes();
+        const STATUS_TREE_NODE_MAP = new Map(
+          STATUS_TREE_NODES.map((node) => [node.id, node]),
+        );
+        const STATUS_TREE_NEIGHBORS = STATUS_TREE_NODES.reduce((acc, node) => {
+          acc[node.id] = new Set(acc[node.id] || []);
+          (node.links || []).forEach((linked) => {
+            acc[node.id].add(linked);
+            if (!acc[linked]) acc[linked] = new Set();
+            acc[linked].add(node.id);
+          });
+          return acc;
+        }, {});
+        let selectedStatusNodeId = STATUS_TREE_ROOT_ID;
         const skillStepOptions = [1, 10, 50];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
@@ -13438,14 +13972,21 @@
 
         function recalcDerivedStats() {
           const equipmentBonuses = collectEquipmentBonuses();
+          const statusTreeBonuses = calculateStatusTreeBonuses();
           player.equipmentBonus = equipmentBonuses.secondary;
           player.equipmentPrimaryBonus = equipmentBonuses.primary;
           player.equipmentPrimaryPerLevel = equipmentBonuses.primaryPerLevel;
           player.equipmentPrimaryFixed = equipmentBonuses.primaryFixed;
-          player.attackCountBonus = equipmentBonuses.attackCountBonus || 0;
+          const statusTreeSpecial = statusTreeBonuses.special || {};
+          player.attackCountBonus =
+            (equipmentBonuses.attackCountBonus || 0) +
+            (statusTreeSpecial.attackCountBonus || 0);
           player.attackTargetsBonus =
-            equipmentBonuses.attackTargetsBonus || 0;
+            (equipmentBonuses.attackTargetsBonus || 0) +
+            (statusTreeSpecial.attackTargetsBonus || 0);
           player.legendaryUniqueOptions = equipmentBonuses.uniqueOptions || [];
+          player.statusTreePrimaryBonus = statusTreeBonuses.primary;
+          player.statusTreeSecondaryBonus = statusTreeBonuses.secondary;
 
           const perLevelPrimaryBonus = calcPrimaryPerLevelBonus(
             equipmentBonuses.primaryPerLevel,
@@ -13456,7 +13997,8 @@
             const baseValue = player.primary[key].base;
             const additive =
               (equipmentBonuses.primary[key] ?? 0) +
-              (perLevelPrimaryBonus[key] ?? 0);
+              (perLevelPrimaryBonus[key] ?? 0) +
+              (statusTreeBonuses.primary[key] ?? 0);
             const fixedValue =
               typeof equipmentBonuses.primaryFixed?.[key] === "number"
                 ? equipmentBonuses.primaryFixed[key]
@@ -13493,7 +14035,10 @@
               Math.floor(player.attackCount),
             );
           }
-          player.bonus = mergeBonuses(player.baseBonus, player.equipmentBonus);
+          player.bonus = mergeBonuses(
+            mergeBonuses(player.baseBonus, statusTreeBonuses.secondary),
+            player.equipmentBonus,
+          );
           const derived = calcSecondaryStats();
           const prevMaxHp = player.maxHp || derived.maxHp.total;
           const prevMaxMp = player.maxMp || derived.maxMp.total;
@@ -14931,7 +15476,6 @@ function showDamagePopup(
         function updateUI(derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           lastDerivedStats = derived;
-          updateStepButton();
           document.getElementById("floor-inline").textContent = game.floor;
           const displayHp = roundBattleValue(player.hp);
           const displayBarrier = Math.max(
@@ -14958,6 +15502,7 @@ function showDamagePopup(
           document.getElementById("gold").textContent = formatGold(player.gold);
           document.getElementById("stat-points").textContent =
             player.statPoints;
+          if (statusTreePoints) statusTreePoints.textContent = player.statPoints;
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
@@ -14968,7 +15513,7 @@ function showDamagePopup(
           renderEnemies();
           renderActions();
           renderSecondaryStats(derived);
-          renderPrimaryStats();
+          renderStatusTree();
           if (
             !playerModal.classList.contains("hidden") &&
             playerModalPage === "equipment"
@@ -16927,40 +17472,89 @@ function showDamagePopup(
           });
         }
 
-        function adjustPrimary(key, delta) {
-          if (delta === 0) return;
-          if (delta > 0) {
-            const use = Math.min(delta, player.statPoints);
-            if (use <= 0) return;
-            player.statPoints -= use;
-            player.primary[key].base += use;
-            player.allocations[key] += use;
-            log(`能力Pを使用: ${player.primary[key].label} +${use}`, "good");
-          } else {
-            const refundable = player.allocations[key];
-            const giveBack = Math.min(refundable, Math.abs(delta));
-            if (giveBack <= 0) return;
-            player.primary[key].base -= giveBack;
-            player.allocations[key] -= giveBack;
-            player.statPoints += giveBack;
-            log(
-              `能力Pを返却: ${player.primary[key].label} -${giveBack}`,
-              "info",
-            );
+        function normalizeStatusTreeState() {
+          if (!player.statusTree || typeof player.statusTree !== "object") {
+            player.statusTree = { unlocked: [STATUS_TREE_ROOT_ID] };
           }
+          if (!Array.isArray(player.statusTree.unlocked)) {
+            player.statusTree.unlocked = [];
+          }
+          player.statusTree.unlocked = player.statusTree.unlocked.filter((id) =>
+            STATUS_TREE_NODE_MAP.has(id),
+          );
+          if (!player.statusTree.unlocked.includes(STATUS_TREE_ROOT_ID)) {
+            player.statusTree.unlocked.unshift(STATUS_TREE_ROOT_ID);
+          }
+          if (!STATUS_TREE_NODE_MAP.has(selectedStatusNodeId)) {
+            selectedStatusNodeId = STATUS_TREE_ROOT_ID;
+          }
+        }
+
+        function getStatusTreeUnlockedSet() {
+          normalizeStatusTreeState();
+          return new Set(player.statusTree.unlocked);
+        }
+
+        function getStatusTreeSpentPoints() {
+          normalizeStatusTreeState();
+          return player.statusTree.unlocked.reduce((sum, id) => {
+            const node = STATUS_TREE_NODE_MAP.get(id);
+            if (!node || id === STATUS_TREE_ROOT_ID) return sum;
+            return sum + (node.cost || 0);
+          }, 0);
+        }
+
+        function canUnlockStatusNode(node, unlockedSet) {
+          if (!node || unlockedSet.has(node.id)) return false;
+          if ((node.cost || 0) <= 0) return false;
+          const neighbors = STATUS_TREE_NEIGHBORS[node.id] || new Set();
+          return Array.from(neighbors).some((id) => unlockedSet.has(id));
+        }
+
+        function calculateStatusTreeBonuses() {
+          const primary = createEmptyPrimaryBonus();
+          const secondary = createEmptyBonus();
+          const special = { attackCountBonus: 0, attackTargetsBonus: 0 };
+          const unlockedSet = getStatusTreeUnlockedSet();
+          unlockedSet.forEach((id) => {
+            const node = STATUS_TREE_NODE_MAP.get(id);
+            if (!node) return;
+            const primaryEffects = node.effects?.primary || {};
+            const secondaryEffects = node.effects?.secondary || {};
+            const specialEffects = node.effects?.special || {};
+            Object.entries(primaryEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              primary[key] = (primary[key] ?? 0) + value;
+            });
+            Object.entries(secondaryEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              secondary[key] = (secondary[key] ?? 0) + value;
+            });
+            Object.entries(specialEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              special[key] = (special[key] ?? 0) + value;
+            });
+          });
+          return { primary, secondary, special };
+        }
+
+        function unlockStatusNode(node) {
+          const unlockedSet = getStatusTreeUnlockedSet();
+          if (!node || unlockedSet.has(node.id)) return;
+          if (!canUnlockStatusNode(node, unlockedSet)) {
+            log("隣接ノードを解放すると取得できます", "warning");
+            return;
+          }
+          if (player.statPoints < node.cost) {
+            log("能力Pが足りません", "warning");
+            return;
+          }
+          player.statPoints -= node.cost;
+          player.statusTree.unlocked.push(node.id);
+          selectedStatusNodeId = node.id;
+          log(`🌿 ${node.label} を解放した`, "good");
           updateUI();
-          maybeAutoSave("ステータス調整");
-        }
-
-        function getAdjustStep() {
-          return stepOptions[currentStepIndex];
-        }
-
-        function updateStepButton() {
-          if (!statStepButton) return;
-          const step = getAdjustStep();
-          statStepButton.textContent = `±${step}`;
-          statStepButton.title = `増減幅 ${step}`;
+          maybeAutoSave("ステータスツリー解放");
         }
 
         function getSkillAdjustStep() {
@@ -16974,54 +17568,297 @@ function showDamagePopup(
           skillStepButton.title = `スキル増減幅 ${step}`;
         }
 
-        function renderPrimaryStats() {
-          const container = document.getElementById("primary-stats");
-          container.innerHTML = "";
-          const step = getAdjustStep();
-
-          primaryOrder.forEach((key) => {
-            const stat = player.primary[key];
-            const row = document.createElement("div");
-            row.className = "stat-row primary-row";
-
-            const info = document.createElement("div");
-            info.className = "primary-info";
-
-            const label = document.createElement("div");
-            label.className = "stat-label inline";
-            label.textContent = stat.label;
-
-            const value = document.createElement("div");
-            value.className = "stat-value";
-            value.innerHTML = formatPrimaryValue(stat);
-
-            info.appendChild(label);
-            info.appendChild(value);
-
-            const actions = document.createElement("div");
-            actions.className = "primary-actions";
-
-            const inc = document.createElement("button");
-            inc.textContent = `+${step}`;
-            inc.classList.add("mini-btn");
-            inc.disabled = player.statPoints <= 0;
-            inc.title = `${step}ポイント増加`;
-            inc.onclick = () => adjustPrimary(key, step);
-
-            const dec = document.createElement("button");
-            dec.textContent = `-${step}`;
-            dec.classList.add("mini-btn");
-            dec.disabled = player.allocations[key] <= 0;
-            dec.title = `${step}ポイント減少`;
-            dec.onclick = () => adjustPrimary(key, -step);
-
-            actions.appendChild(inc);
-            actions.appendChild(dec);
-
-            row.appendChild(info);
-            row.appendChild(actions);
-            container.appendChild(row);
+        function formatStatusTreeBonusList(node) {
+          const list = [];
+          const primaryEffects = node.effects?.primary || {};
+          const secondaryEffects = node.effects?.secondary || {};
+          const specialEffects = node.effects?.special || {};
+          Object.entries(primaryEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            const label = player.primary?.[key]?.label || key.toUpperCase();
+            list.push(`${label}+${value}`);
           });
+          Object.entries(secondaryEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            const def = EQUIPMENT_STAT_BY_KEY[key];
+            const label = def?.label || key;
+            const unit = def?.unit || "";
+            const isPercent = unit === "%";
+            const formatted = displayNumber(value, { isPercent });
+            list.push(`${label}+${formatted}${unit}`);
+          });
+          Object.entries(specialEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            if (key === "attackCountBonus") {
+              list.push(`攻撃回数+${value}`);
+            } else if (key === "attackTargetsBonus") {
+              list.push(`同時攻撃対象+${value}`);
+            } else {
+              list.push(`${key}+${value}`);
+            }
+          });
+          return list;
+        }
+
+        function renderStatusTreeDetail() {
+          if (!statusTreeDetail) return;
+          normalizeStatusTreeState();
+          const node =
+            STATUS_TREE_NODE_MAP.get(selectedStatusNodeId) ||
+            STATUS_TREE_NODE_MAP.get(STATUS_TREE_ROOT_ID);
+          if (!node) return;
+          const unlockedSet = getStatusTreeUnlockedSet();
+          const isUnlocked = unlockedSet.has(node.id);
+          const canUnlock = canUnlockStatusNode(node, unlockedSet);
+
+          statusTreeDetail.innerHTML = "";
+
+          const title = document.createElement("div");
+          title.className = "detail-title";
+          title.textContent = node.label;
+          statusTreeDetail.appendChild(title);
+
+          if (node.desc) {
+            const desc = document.createElement("div");
+            desc.textContent = node.desc;
+            statusTreeDetail.appendChild(desc);
+          }
+
+          const status = document.createElement("div");
+          status.className = "detail-status";
+          const statusText = isUnlocked
+            ? "解放済み"
+            : canUnlock
+              ? "解放可能"
+              : "未解放";
+          status.textContent = `状態: ${statusText}`;
+          statusTreeDetail.appendChild(status);
+
+          const costText =
+            node.cost && node.cost > 0 ? `必要P: ${node.cost}` : "必要P: 0";
+          const cost = document.createElement("div");
+          cost.textContent = costText;
+          statusTreeDetail.appendChild(cost);
+
+          const list = document.createElement("div");
+          list.className = "detail-list";
+          const bonusList = formatStatusTreeBonusList(node);
+          if (bonusList.length) {
+            bonusList.forEach((text) => {
+              const row = document.createElement("div");
+              row.textContent = `・${text}`;
+              list.appendChild(row);
+            });
+          } else {
+            const row = document.createElement("div");
+            row.textContent = "・効果なし";
+            list.appendChild(row);
+          }
+          statusTreeDetail.appendChild(list);
+
+          if (!isUnlocked) {
+            const hint = document.createElement("div");
+            hint.className = "subtle";
+            hint.textContent = canUnlock
+              ? "隣接ノードが解放済みです"
+              : "隣接ノードを先に解放してください";
+            statusTreeDetail.appendChild(hint);
+          }
+
+          if (!isUnlocked && canUnlock) {
+            const button = document.createElement("button");
+            button.className = "primary";
+            button.textContent = `解放する (P${node.cost})`;
+            button.disabled = player.statPoints < node.cost;
+            button.addEventListener("click", () => unlockStatusNode(node));
+            statusTreeDetail.appendChild(button);
+          }
+        }
+
+        const statusTreeTransform = {
+          scale: 0.85,
+          x: 0,
+          y: 0,
+        };
+        let statusTreeDragging = false;
+        let statusTreeDragOrigin = { x: 0, y: 0 };
+
+        function applyStatusTreeTransform() {
+          if (!statusTreeViewport) return;
+          statusTreeViewport.style.transform = `translate(${statusTreeTransform.x}px, ${statusTreeTransform.y}px) scale(${statusTreeTransform.scale})`;
+        }
+
+        function getStatusTreeMinScale() {
+          if (!statusTreeCanvas) return 0.3;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const padding = 40;
+          const minScaleX = (rect.width - padding) / STATUS_TREE_LAYOUT.size;
+          const minScaleY = (rect.height - padding) / STATUS_TREE_LAYOUT.size;
+          return Math.max(0.2, Math.min(minScaleX, minScaleY, 0.85));
+        }
+
+        function clampStatusTreeScale(value) {
+          const minScale = getStatusTreeMinScale();
+          return Math.min(1.8, Math.max(minScale, value));
+        }
+
+        function centerStatusTree() {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const { center } = STATUS_TREE_LAYOUT;
+          statusTreeTransform.scale = clampStatusTreeScale(0.85);
+          statusTreeTransform.x =
+            rect.width / 2 - center.x * statusTreeTransform.scale;
+          statusTreeTransform.y =
+            rect.height / 2 - center.y * statusTreeTransform.scale;
+          applyStatusTreeTransform();
+        }
+
+        function zoomStatusTree(deltaScale, anchor) {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const nextScale = clampStatusTreeScale(
+            statusTreeTransform.scale + deltaScale,
+          );
+          if (nextScale === statusTreeTransform.scale) return;
+          const originX = anchor?.x ?? rect.width / 2;
+          const originY = anchor?.y ?? rect.height / 2;
+          const dx = originX - statusTreeTransform.x;
+          const dy = originY - statusTreeTransform.y;
+          const scaleRatio = nextScale / statusTreeTransform.scale;
+          statusTreeTransform.x = originX - dx * scaleRatio;
+          statusTreeTransform.y = originY - dy * scaleRatio;
+          statusTreeTransform.scale = nextScale;
+          applyStatusTreeTransform();
+        }
+
+        function renderStatusTree() {
+          if (!statusTreeNodesContainer || !statusTreeLines) return;
+          normalizeStatusTreeState();
+          const unlockedSet = getStatusTreeUnlockedSet();
+          statusTreeNodesContainer.innerHTML = "";
+          statusTreeLines.innerHTML = "";
+
+          const size = STATUS_TREE_LAYOUT.size;
+          statusTreeNodesContainer.style.width = `${size}px`;
+          statusTreeNodesContainer.style.height = `${size}px`;
+          statusTreeLines.setAttribute("viewBox", `0 0 ${size} ${size}`);
+          statusTreeLines.setAttribute("width", `${size}`);
+          statusTreeLines.setAttribute("height", `${size}`);
+          if (statusTreeViewport) {
+            statusTreeViewport.style.width = `${size}px`;
+            statusTreeViewport.style.height = `${size}px`;
+          }
+
+          const renderedLines = new Set();
+          STATUS_TREE_NODES.forEach((node) => {
+            (node.links || []).forEach((linkedId) => {
+              const linked = STATUS_TREE_NODE_MAP.get(linkedId);
+              if (!linked) return;
+              const key = [node.id, linkedId].sort().join("-");
+              if (renderedLines.has(key)) return;
+              renderedLines.add(key);
+              const line = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line",
+              );
+              line.setAttribute("x1", node.position.x);
+              line.setAttribute("y1", node.position.y);
+              line.setAttribute("x2", linked.position.x);
+              line.setAttribute("y2", linked.position.y);
+              const nodeUnlocked = unlockedSet.has(node.id);
+              const linkedUnlocked = unlockedSet.has(linkedId);
+              if (nodeUnlocked && linkedUnlocked) {
+                line.classList.add("active");
+              } else if (nodeUnlocked || linkedUnlocked) {
+                line.classList.add("available");
+              }
+              statusTreeLines.appendChild(line);
+            });
+          });
+
+          STATUS_TREE_NODES.forEach((node) => {
+            const unlocked = unlockedSet.has(node.id);
+            const canUnlock = canUnlockStatusNode(node, unlockedSet);
+            const nodeEl = document.createElement("div");
+            nodeEl.className = "status-tree-node";
+            if (unlocked) {
+              nodeEl.classList.add("unlocked");
+            } else if (canUnlock) {
+              nodeEl.classList.add("available");
+            } else {
+              nodeEl.classList.add("locked");
+            }
+            if (node.id === selectedStatusNodeId) {
+              nodeEl.classList.add("selected");
+            }
+            nodeEl.style.left = `${node.position.x}px`;
+            nodeEl.style.top = `${node.position.y}px`;
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = node.label;
+            button.addEventListener("click", () => {
+              selectedStatusNodeId = node.id;
+              renderStatusTree();
+              renderStatusTreeDetail();
+            });
+
+            const cost =
+              node.cost && node.cost > 0 ? document.createElement("div") : null;
+            if (cost) {
+              cost.className = "status-tree-cost";
+              cost.textContent = `P${node.cost}`;
+            }
+
+            nodeEl.appendChild(button);
+            if (cost) nodeEl.appendChild(cost);
+            statusTreeNodesContainer.appendChild(nodeEl);
+          });
+
+          if (statusTreePoints) {
+            statusTreePoints.textContent = player.statPoints;
+          }
+          renderStatusTreeDetail();
+        }
+
+        function openStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.remove("hidden");
+          renderStatusTree();
+          requestAnimationFrame(() => centerStatusTree());
+        }
+
+        function closeStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.add("hidden");
+        }
+
+        function startStatusTreeDrag(event) {
+          if (!statusTreeCanvas || !statusTreeViewport) return;
+          if (event.button !== 0) return;
+          if (event.target.closest("button")) return;
+          statusTreeDragging = true;
+          statusTreeDragOrigin = {
+            x: event.clientX - statusTreeTransform.x,
+            y: event.clientY - statusTreeTransform.y,
+          };
+          statusTreeViewport.classList.add("dragging");
+          statusTreeCanvas.setPointerCapture?.(event.pointerId);
+        }
+
+        function moveStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeTransform.x = event.clientX - statusTreeDragOrigin.x;
+          statusTreeTransform.y = event.clientY - statusTreeDragOrigin.y;
+          applyStatusTreeTransform();
+        }
+
+        function endStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeDragging = false;
+          statusTreeViewport?.classList.remove("dragging");
+          statusTreeCanvas?.releasePointerCapture?.(event.pointerId);
         }
 
         function renderEquipmentList() {
@@ -18536,7 +19373,26 @@ function showDamagePopup(
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
         const resetButton = document.getElementById("reset-stats");
-        const statStepButton = document.getElementById("stat-step");
+        const openStatusTreeButton =
+          document.getElementById("open-status-tree");
+        const statusTreePage = document.getElementById("status-tree-page");
+        const statusTreeCloseButton =
+          document.getElementById("status-tree-close");
+        const statusTreePoints = document.getElementById("status-tree-points");
+        const statusTreeCanvas = document.getElementById("status-tree-canvas");
+        const statusTreeViewport =
+          document.getElementById("status-tree-viewport");
+        const statusTreeZoomInButton =
+          document.getElementById("status-tree-zoom-in");
+        const statusTreeZoomOutButton =
+          document.getElementById("status-tree-zoom-out");
+        const statusTreeZoomResetButton =
+          document.getElementById("status-tree-zoom-reset");
+        const statusTreeNodesContainer = document.getElementById(
+          "status-tree-nodes",
+        );
+        const statusTreeLines = document.getElementById("status-tree-lines");
+        const statusTreeDetail = document.getElementById("status-tree-detail");
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
@@ -21298,18 +22154,14 @@ function showDamagePopup(
 
         function resetAllocations() {
           const spent = pendingResetSpent;
-          Object.entries(player.allocations).forEach(([key, amount]) => {
-            if (amount > 0) {
-              player.primary[key].base -= amount;
-              player.allocations[key] = 0;
-            }
-          });
+          normalizeStatusTreeState();
+          player.statusTree.unlocked = [STATUS_TREE_ROOT_ID];
           player.statPoints += spent;
           recalcDerivedStats();
           updateUI();
-          log("ステータスをリセットしました", "info");
+          log("ステータスツリーをリセットしました", "info");
           pendingResetSpent = 0;
-          maybeAutoSave("ステータス振り直し");
+          maybeAutoSave("ステータスツリー振り直し");
         }
 
         function retryBossFloor() {
@@ -21355,6 +22207,32 @@ function showDamagePopup(
         document
           .getElementById("btn-player-modal")
           .addEventListener("click", openPlayerModal);
+        openStatusTreeButton?.addEventListener("click", openStatusTreePage);
+        statusTreeCloseButton?.addEventListener("click", closeStatusTreePage);
+        statusTreeZoomInButton?.addEventListener("click", () =>
+          zoomStatusTree(0.12),
+        );
+        statusTreeZoomOutButton?.addEventListener("click", () =>
+          zoomStatusTree(-0.12),
+        );
+        statusTreeZoomResetButton?.addEventListener("click", centerStatusTree);
+        statusTreeCanvas?.addEventListener(
+          "wheel",
+          (event) => {
+            event.preventDefault();
+            const rect = statusTreeCanvas.getBoundingClientRect();
+            zoomStatusTree(event.deltaY < 0 ? 0.1 : -0.1, {
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top,
+            });
+          },
+          { passive: false },
+        );
+        statusTreeCanvas?.addEventListener("pointerdown", startStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointermove", moveStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerup", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerleave", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointercancel", endStatusTreeDrag);
         playerModalStatusButton?.addEventListener("click", () =>
           setPlayerModalPage("status"),
         );
@@ -21525,12 +22403,6 @@ function showDamagePopup(
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton.addEventListener("click", () => {
-          currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
-          updateStepButton();
-          renderPrimaryStats();
-        });
-
         skillStepButton?.addEventListener("click", () => {
           currentSkillStepIndex =
             (currentSkillStepIndex + 1) % skillStepOptions.length;
@@ -21555,10 +22427,7 @@ function showDamagePopup(
         });
 
         resetButton.addEventListener("click", () => {
-          pendingResetSpent = Object.values(player.allocations).reduce(
-            (a, b) => a + b,
-            0,
-          );
+          pendingResetSpent = getStatusTreeSpentPoints();
           if (pendingResetSpent === 0) {
             log("リセットするポイントがありません", "info");
             return;
