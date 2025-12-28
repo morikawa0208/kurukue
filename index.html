@@ -12853,6 +12853,56 @@
             ],
             branches: [
               {
+                name: "剣士の序盤分岐・鋭刃",
+                angleOffset: -12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "剣筋の整え", secondary: { physAtk: 2 } },
+                  { label: "踏み込み", primary: { agi: 1 }, secondary: { speed: 1 } },
+                  { label: "初動の鋭さ", secondary: { critRate: 1 } },
+                  {
+                    label: "鋭刃の核心",
+                    secondary: { physAtk: 3, critRate: 1 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "hit",
+                        type: "status",
+                        key: "bleed",
+                        chance: 25,
+                        duration: 2,
+                        label: "鋭刃裂傷",
+                        text: "通常攻撃で出血(25%/2T)",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "剣士の序盤分岐・堅陣",
+                angleOffset: 12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "体幹の鍛錬", primary: { vit: 1 }, secondary: { physDef: 2 } },
+                  { label: "受け流し", secondary: { block: 1 } },
+                  { label: "堅牢な足場", secondary: { damageReduction: 1 } },
+                  {
+                    label: "堅陣の核心",
+                    secondary: { block: 2, damageReduction: 2 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "kill",
+                        type: "heal",
+                        percent: 5,
+                        label: "堅陣の回復",
+                        text: "撃破時、HP5%回復",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
                 name: "疾風の剣",
                 angleOffset: -25,
                 anchorIndex: 0,
@@ -13178,6 +13228,56 @@
               },
             ],
             branches: [
+              ^_^らら
+                name: "魔法の序盤分岐・詠唱補助",
+                angleOffset: -12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "詠唱姿勢", secondary: { cooldown: 1 } },
+                  { label: "魔力整理", secondary: { mp: 20 } },
+                  { label: "集中の基礎", primary: { int: 1 }, secondary: { magAtk: 1 } },
+                  {
+                    label: "詠唱補助の核心",
+                    secondary: { cooldown: 2, magAtk: 2 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "skill",
+                        type: "cooldown",
+                        amount: 1,
+                        label: "詠唱短縮",
+                        text: "スキル命中時、CT-1",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "魔法の序盤分岐・魔盾",
+                angleOffset: 12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "防御魔術", secondary: { magDef: 2 } },
+                  { label: "護りの気配", secondary: { barrier: 15 } },
+                  { label: "静寂の意志", secondary: { debuffResist: 1 } },
+                  {
+                    label: "魔盾の核心",
+                    secondary: { barrier: 20, magDef: 2 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "hit",
+                        type: "status",
+                        key: "silence",
+                        chance: 15,
+                        duration: 1,
+                        label: "封魔の符",
+                        text: "通常攻撃で沈黙(15%/1T)",
+                      },
+                    ],
+                  },
+                ],
+              },
               {
                 name: "連詠唱",
                 angleOffset: -25,
@@ -13484,6 +13584,56 @@
             ],
             branches: [
               {
+                name: "聖職の序盤分岐・守り",
+                angleOffset: -12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "祈りの盾", secondary: { barrier: 15 } },
+                  { label: "護りの足場", primary: { vit: 1 }, secondary: { physDef: 1 } },
+                  { label: "静かな守護", secondary: { damageReduction: 1 } },
+                  {
+                    label: "守りの核心",
+                    secondary: { barrier: 20, damageReduction: 1 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "kill",
+                        type: "heal",
+                        percent: 5,
+                        label: "祈りの回復",
+                        text: "撃破時、HP5%回復",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "聖職の序盤分岐・浄化",
+                angleOffset: 12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "浄化の灯", secondary: { magAtk: 2 } },
+                  { label: "浄化の息", secondary: { debuffResist: 1 } },
+                  { label: "清浄な心", primary: { int: 1 }, secondary: { magPen: 1 } },
+                  {
+                    label: "浄化の核心",
+                    secondary: { magAtk: 2, magPen: 1 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "skill",
+                        type: "status",
+                        key: "burn",
+                        chance: 20,
+                        duration: 2,
+                        label: "浄火の刻印",
+                        text: "スキル命中時、火傷(20%/2T)",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
                 name: "守護支援",
                 angleOffset: -25,
                 anchorIndex: 0,
@@ -13778,6 +13928,56 @@
               },
             ],
             branches: [
+              {
+                name: "吸血の序盤分岐・渇き",
+                angleOffset: -12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "血の気配", secondary: { lifeSteal: 1 } },
+                  { label: "影の歩み", primary: { agi: 1 }, secondary: { evade: 1 } },
+                  { label: "夜の爪", secondary: { physAtk: 2 } },
+                  {
+                    label: "渇きの核心",
+                    secondary: { lifeSteal: 2, physAtk: 2 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "hit",
+                        type: "status",
+                        key: "poison",
+                        chance: 20,
+                        duration: 2,
+                        label: "血毒",
+                        text: "通常攻撃で毒(20%/2T)",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                name: "吸血の序盤分岐・闇耐性",
+                angleOffset: 12,
+                anchorIndex: 1,
+                nodes: [
+                  { label: "夜の耐性", secondary: { dotResist: 1 } },
+                  { label: "沈静の血", secondary: { hpRegen: 1 } },
+                  { label: "不穏な静寂", primary: { vit: 1 }, secondary: { damageReduction: 1 } },
+                  {
+                    label: "闇耐性の核心",
+                    secondary: { damageReduction: 2, hp: 15 },
+                    major: true,
+                    specials: [
+                      {
+                        trigger: "kill",
+                        type: "mp",
+                        percent: 5,
+                        label: "闇の還流",
+                        text: "撃破時、MP5%回復",
+                      },
+                    ],
+                  },
+                ],
+              },
               {
                 name: "吸血乱舞",
                 angleOffset: -25,
