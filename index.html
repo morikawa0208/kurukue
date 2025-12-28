@@ -1824,6 +1824,29 @@
         border-color: rgba(251, 191, 36, 0.9);
       }
 
+      .status-tree-node.major button {
+        width: 84px;
+        height: 84px;
+        font-size: 12px;
+        font-weight: 800;
+        background:
+          radial-gradient(
+            circle at 30% 20%,
+            rgba(251, 191, 36, 0.3),
+            transparent 60%
+          ),
+          rgba(20, 16, 10, 0.92);
+        border-color: rgba(251, 191, 36, 0.85);
+        box-shadow:
+          0 0 0 2px rgba(251, 191, 36, 0.35),
+          0 18px 40px rgba(251, 191, 36, 0.25);
+      }
+
+      .status-tree-node.major .status-tree-cost {
+        font-size: 11px;
+        padding: 2px 8px;
+      }
+
       .status-tree-cost {
         position: absolute;
         bottom: -6px;
@@ -12848,10 +12871,10 @@
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
         const STATUS_TREE_ROOT_ID = "core";
         const STATUS_TREE_LAYOUT = {
-          size: 2000,
-          center: { x: 1000, y: 1000 },
-          baseRadius: 180,
-          step: 190,
+          size: 3600,
+          center: { x: 1800, y: 1800 },
+          baseRadius: 220,
+          step: 120,
         };
         const STATUS_TREE_JUNCTIONS = [
           {
@@ -12859,27 +12882,81 @@
             label: "交差路",
             desc: "敏捷+1 / 行動速度+1",
             cost: 1,
-            position: { x: 1000, y: 620 },
-            links: ["ranger2", "mage2"],
+            position: { x: 1800, y: 1332 },
+            links: ["ranger4", "mage4"],
             effects: { primary: { agi: 1 }, secondary: { speed: 1 } },
+          },
+          {
+            id: "junctionNorthFar",
+            label: "交差路",
+            desc: "クリ率+2% / CT短縮+2%",
+            cost: 1,
+            position: { x: 1800, y: 1008 },
+            links: ["ranger7", "mage7"],
+            effects: { secondary: { critRate: 2, cooldown: 2 } },
           },
           {
             id: "junctionWest",
             label: "交差路",
             desc: "力+1 / 体力+1",
             cost: 1,
-            position: { x: 680, y: 980 },
-            links: ["warrior2", "cleric2"],
+            position: { x: 1260, y: 1800 },
+            links: ["warrior4", "cleric4"],
             effects: { primary: { str: 1, vit: 1 } },
+          },
+          {
+            id: "junctionWestFar",
+            label: "交差路",
+            desc: "被ダメ軽減+2% / ブロック+2%",
+            cost: 1,
+            position: { x: 1116, y: 2124 },
+            links: ["warrior8", "cleric8"],
+            effects: { secondary: { damageReduction: 2, block: 2 } },
           },
           {
             id: "junctionEast",
             label: "交差路",
             desc: "知識+1 / 運+1",
             cost: 1,
-            position: { x: 1320, y: 980 },
-            links: ["mage2", "luck2"],
+            position: { x: 2340, y: 1800 },
+            links: ["mage4", "luck4"],
             effects: { primary: { int: 1, luck: 1 } },
+          },
+          {
+            id: "junctionEastFar",
+            label: "交差路",
+            desc: "レア率+3% / 魔法貫通+3%",
+            cost: 1,
+            position: { x: 2484, y: 2124 },
+            links: ["mage8", "luck8"],
+            effects: { secondary: { rarity: 3, magPen: 3 } },
+          },
+          {
+            id: "junctionSouth",
+            label: "交差路",
+            desc: "最大HP+30 / ドロップ率+6%",
+            cost: 1,
+            position: { x: 1800, y: 2484 },
+            links: ["cleric9", "luck9"],
+            effects: { secondary: { hp: 30, dropRate: 6 } },
+          },
+          {
+            id: "junctionSouthWest",
+            label: "交差路",
+            desc: "物理攻撃+10 / バリア+20",
+            cost: 1,
+            position: { x: 1476, y: 2592 },
+            links: ["warrior10", "cleric10"],
+            effects: { secondary: { physAtk: 10, barrier: 20 } },
+          },
+          {
+            id: "junctionSouthEast",
+            label: "交差路",
+            desc: "魔法攻撃+10 / ゴールド率+8%",
+            cost: 1,
+            position: { x: 2124, y: 2592 },
+            links: ["mage10", "luck10"],
+            effects: { secondary: { magAtk: 10, goldChance: 8 } },
           },
         ];
         const STATUS_TREE_BRANCHES = [
@@ -12887,7 +12964,7 @@
             key: "warrior",
             label: "戦士",
             angle: -110,
-            curve: 6,
+            curve: 5.4,
             nodes: [
               {
                 id: "warrior1",
@@ -12912,10 +12989,84 @@
               },
               {
                 id: "warrior4",
+                label: "鍛錬",
+                desc: "物理防御+8",
+                cost: 1,
+                effects: { secondary: { physDef: 8 } },
+              },
+              {
+                id: "warrior5",
+                label: "闘志",
+                desc: "クリ率+2%",
+                cost: 1,
+                effects: { secondary: { critRate: 2 } },
+              },
+              {
+                id: "warrior6",
+                label: "血の誓い",
+                desc: "HP吸収+2%",
+                cost: 1,
+                effects: { secondary: { lifeSteal: 2 } },
+              },
+              {
+                id: "warrior7",
+                label: "粉砕",
+                desc: "物理攻撃+26",
+                cost: 1,
+                effects: { secondary: { physAtk: 26 } },
+              },
+              {
+                id: "warrior8",
+                label: "鉄壁",
+                desc: "被ダメ軽減+3%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 3 } },
+              },
+              {
+                id: "warrior9",
+                label: "防衛線",
+                desc: "ブロック率+4%",
+                cost: 1,
+                effects: { secondary: { block: 4 } },
+              },
+              {
+                id: "warrior10",
+                label: "裂傷",
+                desc: "物理貫通+6%",
+                cost: 1,
+                effects: { secondary: { physPen: 6 } },
+              },
+              {
+                id: "warrior11",
+                label: "剛腕",
+                desc: "力+4",
+                cost: 1,
+                effects: { primary: { str: 4 } },
+              },
+              {
+                id: "warrior12",
+                label: "逆襲",
+                desc: "クリダメ+6%",
+                cost: 1,
+                effects: { secondary: { critDamage: 6 } },
+              },
+              {
+                id: "warrior13",
                 label: "覇気",
                 desc: "攻撃回数+1 (特性)",
                 cost: 3,
+                tier: "major",
                 effects: { special: { attackCountBonus: 1 } },
+              },
+              {
+                id: "warrior14",
+                label: "戦神の咆哮",
+                desc: "物理攻撃+40 / 被ダメ軽減+4%",
+                cost: 4,
+                tier: "major",
+                effects: {
+                  secondary: { physAtk: 40, damageReduction: 4 },
+                },
               },
             ],
           },
@@ -12923,7 +13074,7 @@
             key: "ranger",
             label: "斥候",
             angle: -30,
-            curve: -6,
+            curve: -5.2,
             nodes: [
               {
                 id: "ranger1",
@@ -12949,16 +13100,81 @@
               {
                 id: "ranger4",
                 label: "急所狙い",
-                desc: "クリ率+2% / 命中+4%",
+                desc: "クリ率+2% / 回避率+4%",
                 cost: 2,
-                effects: { secondary: { critRate: 2, accuracy: 4 } },
+                effects: { secondary: { critRate: 2, evade: 4 } },
               },
               {
                 id: "ranger5",
+                label: "足捌き",
+                desc: "敏捷+2 / 行動速度+2",
+                cost: 1,
+                effects: { primary: { agi: 2 }, secondary: { speed: 2 } },
+              },
+              {
+                id: "ranger6",
+                label: "影歩",
+                desc: "回避率+6%",
+                cost: 1,
+                effects: { secondary: { evade: 6 } },
+              },
+              {
+                id: "ranger7",
+                label: "精密射撃",
+                desc: "行動速度+2 / クリ率+2%",
+                cost: 1,
+                effects: { secondary: { speed: 2, critRate: 2 } },
+              },
+              {
+                id: "ranger8",
+                label: "早撃ち",
+                desc: "CT短縮+3%",
+                cost: 1,
+                effects: { secondary: { cooldown: 3 } },
+              },
+              {
+                id: "ranger9",
+                label: "連弾",
+                desc: "クリダメ+6%",
+                cost: 1,
+                effects: { secondary: { critDamage: 6 } },
+              },
+              {
+                id: "ranger10",
+                label: "穿貫",
+                desc: "物理貫通+4%",
+                cost: 1,
+                effects: { secondary: { physPen: 4 } },
+              },
+              {
+                id: "ranger11",
+                label: "狩人の知恵",
+                desc: "敏捷+3",
+                cost: 1,
+                effects: { primary: { agi: 3 } },
+              },
+              {
+                id: "ranger12",
+                label: "狙撃",
+                desc: "クリ率+3%",
+                cost: 1,
+                effects: { secondary: { critRate: 3 } },
+              },
+              {
+                id: "ranger13",
                 label: "連携射",
                 desc: "同時攻撃対象+1 (特性)",
                 cost: 3,
+                tier: "major",
                 effects: { special: { attackTargetsBonus: 1 } },
+              },
+              {
+                id: "ranger14",
+                label: "疾風の舞",
+                desc: "行動速度+5 / 回避率+8%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { speed: 5, evade: 8 } },
               },
             ],
           },
@@ -12966,7 +13182,7 @@
             key: "cleric",
             label: "聖職",
             angle: 40,
-            curve: 5,
+            curve: 4.6,
             nodes: [
               {
                 id: "cleric1",
@@ -12993,15 +13209,80 @@
                 id: "cleric4",
                 label: "光壁",
                 desc: "バリア+28",
-                cost: 2,
+                cost: 1,
                 effects: { secondary: { barrier: 28 } },
               },
               {
                 id: "cleric5",
                 label: "再生祈願",
-                desc: "HP再生+4 (特性)",
-                cost: 3,
+                desc: "HP再生+4",
+                cost: 1,
                 effects: { secondary: { hpRegen: 4 } },
+              },
+              {
+                id: "cleric6",
+                label: "護盾",
+                desc: "ブロック率+4%",
+                cost: 1,
+                effects: { secondary: { block: 4 } },
+              },
+              {
+                id: "cleric7",
+                label: "清浄",
+                desc: "行動阻害抵抗+6%",
+                cost: 1,
+                effects: { secondary: { controlResist: 6 } },
+              },
+              {
+                id: "cleric8",
+                label: "重厚",
+                desc: "最大HP+90",
+                cost: 1,
+                effects: { secondary: { hp: 90 } },
+              },
+              {
+                id: "cleric9",
+                label: "堅忍",
+                desc: "被ダメ軽減+5%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 5 } },
+              },
+              {
+                id: "cleric10",
+                label: "聖盾",
+                desc: "バリア+36",
+                cost: 1,
+                effects: { secondary: { barrier: 36 } },
+              },
+              {
+                id: "cleric11",
+                label: "厚命",
+                desc: "体力+4",
+                cost: 1,
+                effects: { primary: { vit: 4 } },
+              },
+              {
+                id: "cleric12",
+                label: "再生祈祷",
+                desc: "HP再生+6",
+                cost: 1,
+                effects: { secondary: { hpRegen: 6 } },
+              },
+              {
+                id: "cleric13",
+                label: "守護の誓約",
+                desc: "被ダメ軽減+6% / バリア+40",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { damageReduction: 6, barrier: 40 } },
+              },
+              {
+                id: "cleric14",
+                label: "聖域",
+                desc: "ブロック率+6% / 抵抗+8%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { block: 6, controlResist: 8 } },
               },
             ],
           },
@@ -13009,7 +13290,7 @@
             key: "mage",
             label: "魔法",
             angle: 120,
-            curve: -6,
+            curve: -4.8,
             nodes: [
               {
                 id: "mage1",
@@ -13036,15 +13317,80 @@
                 id: "mage4",
                 label: "穿つ魔眼",
                 desc: "魔法貫通+6%",
-                cost: 2,
+                cost: 1,
                 effects: { secondary: { magPen: 6 } },
               },
               {
                 id: "mage5",
+                label: "魔力循環",
+                desc: "最大MP+40",
+                cost: 1,
+                effects: { secondary: { mp: 40 } },
+              },
+              {
+                id: "mage6",
+                label: "魔弾",
+                desc: "魔法攻撃+24",
+                cost: 1,
+                effects: { secondary: { magAtk: 24 } },
+              },
+              {
+                id: "mage7",
+                label: "詠唱短縮",
+                desc: "CT短縮+5%",
+                cost: 1,
+                effects: { secondary: { cooldown: 5 } },
+              },
+              {
+                id: "mage8",
+                label: "魔眼強化",
+                desc: "クリ率+3%",
+                cost: 1,
+                effects: { secondary: { critRate: 3 } },
+              },
+              {
+                id: "mage9",
+                label: "深奥",
+                desc: "魔法貫通+8%",
+                cost: 1,
+                effects: { secondary: { magPen: 8 } },
+              },
+              {
+                id: "mage10",
+                label: "叡智",
+                desc: "知識+4",
+                cost: 1,
+                effects: { primary: { int: 4 } },
+              },
+              {
+                id: "mage11",
+                label: "暴走魔力",
+                desc: "クリダメ+8%",
+                cost: 1,
+                effects: { secondary: { critDamage: 8 } },
+              },
+              {
+                id: "mage12",
+                label: "魔導核",
+                desc: "最大MP+60",
+                cost: 1,
+                effects: { secondary: { mp: 60 } },
+              },
+              {
+                id: "mage13",
                 label: "魔導連鎖",
-                desc: "スキルCT短縮+6% (特性)",
+                desc: "攻撃回数+1 (特性)",
                 cost: 3,
-                effects: { secondary: { cooldown: 6 } },
+                tier: "major",
+                effects: { special: { attackCountBonus: 1 } },
+              },
+              {
+                id: "mage14",
+                label: "秘奥",
+                desc: "魔法攻撃+40 / CT短縮+6%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { magAtk: 40, cooldown: 6 } },
               },
             ],
           },
@@ -13052,7 +13398,7 @@
             key: "trickster",
             label: "幸運",
             angle: 200,
-            curve: 6,
+            curve: 5.5,
             nodes: [
               {
                 id: "luck1",
@@ -13079,15 +13425,80 @@
                 id: "luck4",
                 label: "致命賭博",
                 desc: "クリダメ+8%",
-                cost: 2,
+                cost: 1,
                 effects: { secondary: { critDamage: 8 } },
               },
               {
                 id: "luck5",
-                label: "幸運連鎖",
-                desc: "ドロップ率+12% (特性)",
-                cost: 3,
-                effects: { secondary: { dropRate: 12 } },
+                label: "金運",
+                desc: "ゴールド率+10%",
+                cost: 1,
+                effects: { secondary: { goldChance: 10 } },
+              },
+              {
+                id: "luck6",
+                label: "称号狩り",
+                desc: "称号付与率+6%",
+                cost: 1,
+                effects: { secondary: { titleChance: 6 } },
+              },
+              {
+                id: "luck7",
+                label: "名持ち探知",
+                desc: "ネームド遭遇率+8%",
+                cost: 1,
+                effects: { secondary: { namedRate: 8 } },
+              },
+              {
+                id: "luck8",
+                label: "拾得上手",
+                desc: "ドロップ率+10%",
+                cost: 1,
+                effects: { secondary: { dropRate: 10 } },
+              },
+              {
+                id: "luck9",
+                label: "宝飾眼",
+                desc: "レアリティ+8%",
+                cost: 1,
+                effects: { secondary: { rarity: 8 } },
+              },
+              {
+                id: "luck10",
+                label: "開運",
+                desc: "運+4",
+                cost: 1,
+                effects: { primary: { luck: 4 } },
+              },
+              {
+                id: "luck11",
+                label: "強運",
+                desc: "クリ率+2%",
+                cost: 1,
+                effects: { secondary: { critRate: 2 } },
+              },
+              {
+                id: "luck12",
+                label: "宝運の連鎖",
+                desc: "ドロップ率+14%",
+                cost: 1,
+                effects: { secondary: { dropRate: 14 } },
+              },
+              {
+                id: "luck13",
+                label: "大盤振る舞い",
+                desc: "ドロップ率+20% / レア率+10%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { dropRate: 20, rarity: 10 } },
+              },
+              {
+                id: "luck14",
+                label: "運命の偏り",
+                desc: "クリダメ+12% / ゴールド率+20%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { critDamage: 12, goldChance: 20 } },
               },
             ],
           },
@@ -17782,6 +18193,9 @@ function showDamagePopup(
             const canUnlock = canUnlockStatusNode(node, unlockedSet);
             const nodeEl = document.createElement("div");
             nodeEl.className = "status-tree-node";
+            if (node.tier === "major") {
+              nodeEl.classList.add("major");
+            }
             if (unlocked) {
               nodeEl.classList.add("unlocked");
             } else if (canUnlock) {
