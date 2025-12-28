@@ -1655,6 +1655,239 @@
         align-items: start;
       }
 
+      .status-tree-page {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 8, 12, 0.98);
+        z-index: 120;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .status-tree-page.hidden {
+        display: none;
+      }
+
+      .status-tree-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+
+      .status-tree-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .status-tree-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(120px, 180px) 1fr;
+        gap: 10px;
+        min-height: 0;
+      }
+
+      .status-tree-panel {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 12px;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      .status-tree-canvas {
+        position: relative;
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background:
+          radial-gradient(
+            circle at 20% 20%,
+            rgba(52, 211, 153, 0.12),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(96, 165, 250, 0.14),
+            transparent 50%
+          ),
+          rgba(8, 12, 20, 0.95);
+        overflow: hidden;
+        min-height: 420px;
+      }
+
+      .status-tree-controls {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 3;
+      }
+
+      .status-tree-viewport {
+        position: absolute;
+        inset: 0;
+        cursor: grab;
+        transform-origin: 0 0;
+      }
+
+      .status-tree-viewport.dragging {
+        cursor: grabbing;
+      }
+
+      .status-tree-lines {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .status-tree-lines line {
+        stroke: rgba(148, 163, 184, 0.28);
+        stroke-width: 2;
+      }
+
+      .status-tree-lines line.available {
+        stroke: rgba(96, 165, 250, 0.6);
+      }
+
+      .status-tree-lines line.active {
+        stroke: rgba(52, 211, 153, 0.9);
+        stroke-width: 3;
+      }
+
+      .status-tree-nodes {
+        position: absolute;
+        inset: 0;
+      }
+
+      .status-tree-node {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+      }
+
+      .status-tree-node button {
+        width: 64px;
+        height: 64px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(10, 15, 25, 0.9);
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 6px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .status-tree-node.unlocked button {
+        border-color: rgba(52, 211, 153, 0.7);
+        box-shadow:
+          0 0 0 2px rgba(52, 211, 153, 0.25),
+          0 8px 18px rgba(52, 211, 153, 0.25);
+      }
+
+      .status-tree-node.available button {
+        border-color: rgba(96, 165, 250, 0.7);
+        box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.35);
+      }
+
+      .status-tree-node.locked button {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .status-tree-node.selected button {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow:
+          0 0 0 2px rgba(251, 191, 36, 0.45),
+          0 12px 24px rgba(0, 0, 0, 0.35);
+        border-color: rgba(251, 191, 36, 0.9);
+      }
+
+      .status-tree-node.major button {
+        width: 84px;
+        height: 84px;
+        font-size: 12px;
+        font-weight: 800;
+        background:
+          radial-gradient(
+            circle at 30% 20%,
+            rgba(251, 191, 36, 0.3),
+            transparent 60%
+          ),
+          rgba(20, 16, 10, 0.92);
+        border-color: rgba(251, 191, 36, 0.85);
+        box-shadow:
+          0 0 0 2px rgba(251, 191, 36, 0.35),
+          0 18px 40px rgba(251, 191, 36, 0.25);
+      }
+
+      .status-tree-node.major .status-tree-cost {
+        font-size: 11px;
+        padding: 2px 8px;
+      }
+
+      .status-tree-cost {
+        position: absolute;
+        bottom: -6px;
+        right: -6px;
+        background: rgba(15, 23, 42, 0.9);
+        color: #fef3c7;
+        border: 1px solid rgba(251, 191, 36, 0.6);
+        border-radius: 999px;
+        font-size: 10px;
+        padding: 1px 6px;
+        font-weight: 700;
+      }
+
+      .status-tree-detail {
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: rgba(12, 18, 28, 0.95);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+      }
+
+      .status-tree-detail .detail-title {
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .status-tree-detail .detail-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 700;
+      }
+
+      .status-tree-detail .detail-list {
+        display: grid;
+        gap: 4px;
+        color: var(--muted);
+      }
+
       .stat-row {
         display: flex;
         justify-content: space-between;
@@ -3203,7 +3436,7 @@
         <div class="guidance-body">
           <div class="guidance-title">Lv2到達おめでとう！</div>
           <div class="guidance-text">
-            レベルが上がるとステータスポイント5ポイント、スキルポイント1ポイント付与される。リセットも出来るので色々試してみてください。
+            レベルが上がると能力P5ポイントとスキルP1ポイントが付与されます。能力Pはステータスツリーで解放できます。リセットも出来るので色々試してみてください。
           </div>
           <div class="guidance-actions">
             <button id="level-up-guidance-close" type="button">OK</button>
@@ -3404,38 +3637,18 @@
             <div id="secondary-stats" class="stat-grid"></div>
           </div>
           <div class="primary-fixed">
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 8px;
-              "
-            >
-              <div class="section-title" style="margin: 2px 0 4px">
-                一次ステータス
-              </div>
-              <div style="display: flex; align-items: center; gap: 6px">
-                <div class="inline-buttons">
-                  <div class="pill">能力P: <span id="stat-points"></span></div>
-                </div>
-                <button
-                  id="stat-step"
-                  class="step-button"
-                  aria-label="増減幅を切り替え"
-                >
-                  ±1
-                </button>
-                <button
-                  id="reset-stats"
-                  class="help-icon"
-                  aria-label="ステータスをリセット"
-                >
-                  ↺
-                </button>
-              </div>
+            <div class="section-title" style="margin: 2px 0 4px">
+              ステータスツリー
             </div>
-            <div id="primary-stats" class="primary-grid"></div>
+            <div class="help-panel" style="margin-bottom: 8px">
+              能力Pを使ってツリーを解放します。広大なツリーは別ページで確認できます。
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center">
+              <div class="pill">能力P: <span id="stat-points"></span></div>
+              <button id="open-status-tree" class="primary">
+                ツリーを開く
+              </button>
+            </div>
           </div>
         </div>
         <div id="player-equipment-view" class="player-modal-page hidden">
@@ -3456,6 +3669,47 @@
             ステータス
           </button>
           <button id="player-modal-equipment-btn">装備</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="status-tree-page"
+      class="status-tree-page hidden"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="status-tree-header">
+        <div>
+          <div class="section-title" style="margin: 0">ステータスツリー</div>
+          <div class="subtle" style="margin-top: 4px">
+            PoE風の円形ツリーで能力Pを解放できます
+          </div>
+        </div>
+        <div class="status-tree-header-actions">
+          <div class="pill">能力P: <span id="status-tree-points"></span></div>
+          <button id="reset-stats" class="help-icon">↺</button>
+          <button id="status-tree-close" class="modal-close">×</button>
+        </div>
+      </div>
+      <div class="status-tree-body">
+        <div class="status-tree-panel">
+          <div id="status-tree-detail" class="status-tree-detail"></div>
+        </div>
+        <div class="status-tree-canvas" id="status-tree-canvas">
+          <div class="status-tree-controls">
+            <button id="status-tree-zoom-in" class="mini-btn">＋</button>
+            <button id="status-tree-zoom-out" class="mini-btn">－</button>
+            <button id="status-tree-zoom-reset" class="mini-btn">リセット</button>
+          </div>
+          <div class="status-tree-viewport" id="status-tree-viewport">
+            <svg
+              id="status-tree-lines"
+              class="status-tree-lines"
+              aria-hidden="true"
+            ></svg>
+            <div id="status-tree-nodes" class="status-tree-nodes"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3518,14 +3772,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <div class="section-title" style="margin: 0">
-            ステータスをリセット
+            ステータスツリーをリセット
           </div>
           <button id="reset-close" class="modal-close" aria-label="閉じる">
             ×
           </button>
         </div>
         <div>
-          振り分けたポイント(<span id="reset-spent"></span
+          使用したポイント(<span id="reset-spent"></span
           >P)を戻します。よろしいですか？
         </div>
         <div class="modal-actions">
@@ -10448,12 +10702,8 @@
             agi: { label: "敏捷", base: 2, bonus: 0 },
             luck: { label: "運", base: 2, bonus: 0 },
           },
-          allocations: {
-            str: 0,
-            int: 0,
-            vit: 0,
-            agi: 0,
-            luck: 0,
+          statusTree: {
+            unlocked: ["core"],
           },
           bonus: createEmptyBonus(),
           baseBonus: createEmptyBonus(),
@@ -12619,8 +12869,1519 @@
         );
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
-        const stepOptions = [1, 10, 50];
-        let currentStepIndex = 0;
+        const STATUS_TREE_ROOT_ID = "core";
+        const STATUS_TREE_LAYOUT = {
+          size: 3600,
+          center: { x: 1800, y: 1800 },
+          baseRadius: 220,
+          step: 120,
+        };
+        const STATUS_TREE_JUNCTIONS = [
+          {
+            id: "junctionNorth",
+            label: "交差路",
+            desc: "敏捷+1 / 行動速度+1",
+            cost: 1,
+            position: { x: 1800, y: 1332 },
+            links: ["ranger4", "mage4"],
+            effects: { primary: { agi: 1 }, secondary: { speed: 1 } },
+          },
+          {
+            id: "junctionNorthFar",
+            label: "交差路",
+            desc: "クリ率+2% / CT短縮+2%",
+            cost: 1,
+            position: { x: 1800, y: 1008 },
+            links: ["ranger7", "mage7"],
+            effects: { secondary: { critRate: 2, cooldown: 2 } },
+          },
+          {
+            id: "junctionWest",
+            label: "交差路",
+            desc: "力+1 / 体力+1",
+            cost: 1,
+            position: { x: 1260, y: 1800 },
+            links: ["warrior4", "cleric4"],
+            effects: { primary: { str: 1, vit: 1 } },
+          },
+          {
+            id: "junctionWestFar",
+            label: "交差路",
+            desc: "被ダメ軽減+2% / ブロック+2%",
+            cost: 1,
+            position: { x: 1116, y: 2124 },
+            links: ["warrior8", "cleric8"],
+            effects: { secondary: { damageReduction: 2, block: 2 } },
+          },
+          {
+            id: "junctionEast",
+            label: "交差路",
+            desc: "知識+1 / 運+1",
+            cost: 1,
+            position: { x: 2340, y: 1800 },
+            links: ["mage4", "luck4"],
+            effects: { primary: { int: 1, luck: 1 } },
+          },
+          {
+            id: "junctionEastFar",
+            label: "交差路",
+            desc: "レア率+3% / 魔法貫通+3%",
+            cost: 1,
+            position: { x: 2484, y: 2124 },
+            links: ["mage8", "luck8"],
+            effects: { secondary: { rarity: 3, magPen: 3 } },
+          },
+          {
+            id: "junctionSouth",
+            label: "交差路",
+            desc: "最大HP+30 / ドロップ率+6%",
+            cost: 1,
+            position: { x: 1800, y: 2484 },
+            links: ["cleric9", "luck9"],
+            effects: { secondary: { hp: 30, dropRate: 6 } },
+          },
+          {
+            id: "junctionSouthWest",
+            label: "交差路",
+            desc: "物理攻撃+10 / バリア+20",
+            cost: 1,
+            position: { x: 1476, y: 2592 },
+            links: ["warrior10", "cleric10"],
+            effects: { secondary: { physAtk: 10, barrier: 20 } },
+          },
+          {
+            id: "junctionSouthEast",
+            label: "交差路",
+            desc: "魔法攻撃+10 / ゴールド率+8%",
+            cost: 1,
+            position: { x: 2124, y: 2592 },
+            links: ["mage10", "luck10"],
+            effects: { secondary: { magAtk: 10, goldChance: 8 } },
+          },
+        ];
+        const STATUS_TREE_BRANCHES = [
+          {
+            key: "warrior",
+            label: "戦士",
+            angle: -114,
+            curve: 4.8,
+            nodes: [
+              {
+                id: "warrior1",
+                label: "剛力",
+                desc: "力+3",
+                cost: 1,
+                effects: { primary: { str: 3 } },
+              },
+              {
+                id: "warrior2",
+                label: "斬撃",
+                desc: "物理攻撃+16",
+                cost: 1,
+                effects: { secondary: { physAtk: 16 } },
+              },
+              {
+                id: "warrior3",
+                label: "猛進",
+                desc: "物理貫通+5%",
+                cost: 1,
+                effects: { secondary: { physPen: 5 } },
+              },
+              {
+                id: "warrior4",
+                label: "鍛錬",
+                desc: "物理防御+10",
+                cost: 1,
+                effects: { secondary: { physDef: 10 } },
+              },
+              {
+                id: "warrior5",
+                label: "闘志",
+                desc: "クリ率+2%",
+                cost: 1,
+                effects: { secondary: { critRate: 2 } },
+              },
+              {
+                id: "warrior6",
+                label: "血の誓い",
+                desc: "HP吸収+2%",
+                cost: 1,
+                effects: { secondary: { lifeSteal: 2 } },
+              },
+              {
+                id: "warrior7",
+                label: "粉砕",
+                desc: "物理攻撃+26",
+                cost: 1,
+                effects: { secondary: { physAtk: 26 } },
+              },
+              {
+                id: "warrior8",
+                label: "鉄壁",
+                desc: "被ダメ軽減+3%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 3 } },
+              },
+              {
+                id: "warrior9",
+                label: "防衛線",
+                desc: "ブロック率+4%",
+                cost: 1,
+                effects: { secondary: { block: 4 } },
+              },
+              {
+                id: "warrior10",
+                label: "裂傷",
+                desc: "物理貫通+6%",
+                cost: 1,
+                effects: { secondary: { physPen: 6 } },
+              },
+              {
+                id: "warrior11",
+                label: "剛腕",
+                desc: "力+4",
+                cost: 1,
+                effects: { primary: { str: 4 } },
+              },
+              {
+                id: "warrior12",
+                label: "逆襲",
+                desc: "クリダメ+6%",
+                cost: 1,
+                effects: { secondary: { critDamage: 6 } },
+              },
+              {
+                id: "warrior13",
+                label: "覇気",
+                desc: "攻撃回数+1 (特性)",
+                cost: 3,
+                tier: "major",
+                effects: { special: { attackCountBonus: 1 } },
+              },
+              {
+                id: "warrior14",
+                label: "戦神の咆哮",
+                desc: "物理攻撃+40 / 被ダメ軽減+4%",
+                cost: 4,
+                tier: "major",
+                effects: {
+                  secondary: { physAtk: 40, damageReduction: 4 },
+                },
+              },
+              {
+                id: "warrior15",
+                label: "連撃術",
+                desc: "行動速度+3",
+                cost: 1,
+                effects: { secondary: { speed: 3 } },
+              },
+              {
+                id: "warrior16",
+                label: "重撃心得",
+                desc: "物理攻撃+28 / クリダメ+6%",
+                cost: 2,
+                effects: { secondary: { physAtk: 28, critDamage: 6 } },
+              },
+            ],
+            sideBranches: [
+              {
+                startIndex: 3,
+                angleOffset: -34,
+                nodes: [
+                  {
+                    id: "warrior_guard1",
+                    label: "盾技",
+                    desc: "ブロック率+4%",
+                    cost: 1,
+                    effects: { secondary: { block: 4 } },
+                  },
+                  {
+                    id: "warrior_guard2",
+                    label: "守備陣形",
+                    desc: "被ダメ軽減+3%",
+                    cost: 1,
+                    effects: { secondary: { damageReduction: 3 } },
+                  },
+                  {
+                    id: "warrior_guard3",
+                    label: "護身術",
+                    desc: "ターン開始時ガード+1T (特性)",
+                    cost: 2,
+                    tier: "major",
+                    effects: { special: { guardOnStart: 1 } },
+                  },
+                  {
+                    id: "warrior_guard4",
+                    label: "城塞",
+                    desc: "バリア+60",
+                    cost: 2,
+                    effects: { secondary: { barrier: 60 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 6,
+                angleOffset: 26,
+                nodes: [
+                  {
+                    id: "warrior_duelist1",
+                    label: "連続斬",
+                    desc: "攻撃回数+1 (特性)",
+                    cost: 3,
+                    tier: "major",
+                    effects: { special: { attackCountBonus: 1 } },
+                  },
+                  {
+                    id: "warrior_duelist2",
+                    label: "血潮",
+                    desc: "HP吸収+3%",
+                    cost: 1,
+                    effects: { secondary: { lifeSteal: 3 } },
+                  },
+                  {
+                    id: "warrior_duelist3",
+                    label: "剣舞",
+                    desc: "行動速度+3 / クリ率+2%",
+                    cost: 1,
+                    effects: { secondary: { speed: 3, critRate: 2 } },
+                  },
+                  {
+                    id: "warrior_duelist4",
+                    label: "紅蓮撃",
+                    desc: "物理攻撃+30",
+                    cost: 1,
+                    effects: { secondary: { physAtk: 30 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 9,
+                angleOffset: -22,
+                nodes: [
+                  {
+                    id: "warrior_burst1",
+                    label: "破甲",
+                    desc: "物理貫通+8%",
+                    cost: 1,
+                    effects: { secondary: { physPen: 8 } },
+                  },
+                  {
+                    id: "warrior_burst2",
+                    label: "怒気",
+                    desc: "クリダメ+8%",
+                    cost: 1,
+                    effects: { secondary: { critDamage: 8 } },
+                  },
+                  {
+                    id: "warrior_burst3",
+                    label: "猛撃",
+                    desc: "物理攻撃+35",
+                    cost: 1,
+                    effects: { secondary: { physAtk: 35 } },
+                  },
+                  {
+                    id: "warrior_burst4",
+                    label: "剛撃奥義",
+                    desc: "物理攻撃+50 / クリダメ+10%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { physAtk: 50, critDamage: 10 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 12,
+                angleOffset: 35,
+                nodes: [
+                  {
+                    id: "warrior_str1",
+                    label: "筋骨",
+                    desc: "力+4",
+                    cost: 1,
+                    effects: { primary: { str: 4 } },
+                  },
+                  {
+                    id: "warrior_str2",
+                    label: "筋力鍛錬",
+                    desc: "物理防御+12",
+                    cost: 1,
+                    effects: { secondary: { physDef: 12 } },
+                  },
+                  {
+                    id: "warrior_str3",
+                    label: "剛体",
+                    desc: "最大HP+80",
+                    cost: 1,
+                    effects: { secondary: { hp: 80 } },
+                  },
+                  {
+                    id: "warrior_str4",
+                    label: "不撓",
+                    desc: "被ダメ軽減+4%",
+                    cost: 2,
+                    effects: { secondary: { damageReduction: 4 } },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "ranger",
+            label: "斥候",
+            angle: -30,
+            curve: -4.8,
+            nodes: [
+              {
+                id: "ranger1",
+                label: "俊敏",
+                desc: "敏捷+3",
+                cost: 1,
+                effects: { primary: { agi: 3 } },
+              },
+              {
+                id: "ranger2",
+                label: "疾風",
+                desc: "行動速度+3",
+                cost: 1,
+                effects: { secondary: { speed: 3 } },
+              },
+              {
+                id: "ranger3",
+                label: "影走り",
+                desc: "回避率+5%",
+                cost: 1,
+                effects: { secondary: { evade: 5 } },
+              },
+              {
+                id: "ranger4",
+                label: "急所狙い",
+                desc: "クリ率+2% / 回避率+4%",
+                cost: 2,
+                effects: { secondary: { critRate: 2, evade: 4 } },
+              },
+              {
+                id: "ranger5",
+                label: "足捌き",
+                desc: "敏捷+2 / 行動速度+2",
+                cost: 1,
+                effects: { primary: { agi: 2 }, secondary: { speed: 2 } },
+              },
+              {
+                id: "ranger6",
+                label: "影歩",
+                desc: "回避率+6%",
+                cost: 1,
+                effects: { secondary: { evade: 6 } },
+              },
+              {
+                id: "ranger7",
+                label: "精密射撃",
+                desc: "行動速度+2 / クリ率+2%",
+                cost: 1,
+                effects: { secondary: { speed: 2, critRate: 2 } },
+              },
+              {
+                id: "ranger8",
+                label: "早撃ち",
+                desc: "CT短縮+3%",
+                cost: 1,
+                effects: { secondary: { cooldown: 3 } },
+              },
+              {
+                id: "ranger9",
+                label: "連弾",
+                desc: "クリダメ+6%",
+                cost: 1,
+                effects: { secondary: { critDamage: 6 } },
+              },
+              {
+                id: "ranger10",
+                label: "穿貫",
+                desc: "物理貫通+4%",
+                cost: 1,
+                effects: { secondary: { physPen: 4 } },
+              },
+              {
+                id: "ranger11",
+                label: "狩人の知恵",
+                desc: "敏捷+3",
+                cost: 1,
+                effects: { primary: { agi: 3 } },
+              },
+              {
+                id: "ranger12",
+                label: "狙撃",
+                desc: "クリ率+3%",
+                cost: 1,
+                effects: { secondary: { critRate: 3 } },
+              },
+              {
+                id: "ranger13",
+                label: "連携射",
+                desc: "同時攻撃対象+1 (特性)",
+                cost: 3,
+                tier: "major",
+                effects: { special: { attackTargetsBonus: 1 } },
+              },
+              {
+                id: "ranger14",
+                label: "疾風の舞",
+                desc: "行動速度+5 / 回避率+8%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { speed: 5, evade: 8 } },
+              },
+              {
+                id: "ranger15",
+                label: "狩猟本能",
+                desc: "敏捷+4",
+                cost: 1,
+                effects: { primary: { agi: 4 } },
+              },
+              {
+                id: "ranger16",
+                label: "俊敏連携",
+                desc: "行動速度+3 / クリ率+2%",
+                cost: 2,
+                effects: { secondary: { speed: 3, critRate: 2 } },
+              },
+            ],
+            sideBranches: [
+              {
+                startIndex: 3,
+                angleOffset: -30,
+                nodes: [
+                  {
+                    id: "ranger_evasion1",
+                    label: "影潜り",
+                    desc: "回避率+7%",
+                    cost: 1,
+                    effects: { secondary: { evade: 7 } },
+                  },
+                  {
+                    id: "ranger_evasion2",
+                    label: "影縫い",
+                    desc: "行動速度+3",
+                    cost: 1,
+                    effects: { secondary: { speed: 3 } },
+                  },
+                  {
+                    id: "ranger_evasion3",
+                    label: "幻影",
+                    desc: "回避率+10% / クリ率+2%",
+                    cost: 3,
+                    tier: "major",
+                    effects: { secondary: { evade: 10, critRate: 2 } },
+                  },
+                  {
+                    id: "ranger_evasion4",
+                    label: "疾走影",
+                    desc: "回避率+6% / CT短縮+2%",
+                    cost: 2,
+                    effects: { secondary: { evade: 6, cooldown: 2 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 6,
+                angleOffset: 28,
+                nodes: [
+                  {
+                    id: "ranger_precision1",
+                    label: "狙撃術",
+                    desc: "クリ率+3% / クリダメ+4%",
+                    cost: 1,
+                    effects: { secondary: { critRate: 3, critDamage: 4 } },
+                  },
+                  {
+                    id: "ranger_precision2",
+                    label: "弱点看破",
+                    desc: "物理貫通+6%",
+                    cost: 1,
+                    effects: { secondary: { physPen: 6 } },
+                  },
+                  {
+                    id: "ranger_precision3",
+                    label: "貫通射",
+                    desc: "物理攻撃+28",
+                    cost: 1,
+                    effects: { secondary: { physAtk: 28 } },
+                  },
+                  {
+                    id: "ranger_precision4",
+                    label: "狩人の眼",
+                    desc: "クリ率+5% / クリダメ+8%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { critRate: 5, critDamage: 8 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 9,
+                angleOffset: -18,
+                nodes: [
+                  {
+                    id: "ranger_multi1",
+                    label: "連携術",
+                    desc: "同時攻撃対象+1 (特性)",
+                    cost: 3,
+                    tier: "major",
+                    effects: { special: { attackTargetsBonus: 1 } },
+                  },
+                  {
+                    id: "ranger_multi2",
+                    label: "速射",
+                    desc: "行動速度+4",
+                    cost: 1,
+                    effects: { secondary: { speed: 4 } },
+                  },
+                  {
+                    id: "ranger_multi3",
+                    label: "連射",
+                    desc: "物理攻撃+24",
+                    cost: 1,
+                    effects: { secondary: { physAtk: 24 } },
+                  },
+                  {
+                    id: "ranger_multi4",
+                    label: "狩場連結",
+                    desc: "クリ率+2% / CT短縮+3%",
+                    cost: 2,
+                    effects: { secondary: { critRate: 2, cooldown: 3 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 12,
+                angleOffset: 36,
+                nodes: [
+                  {
+                    id: "ranger_trick1",
+                    label: "罠術",
+                    desc: "CT短縮+4%",
+                    cost: 1,
+                    effects: { secondary: { cooldown: 4 } },
+                  },
+                  {
+                    id: "ranger_trick2",
+                    label: "足止め",
+                    desc: "行動阻害抵抗+5%",
+                    cost: 1,
+                    effects: { secondary: { controlResist: 5 } },
+                  },
+                  {
+                    id: "ranger_trick3",
+                    label: "罠師の才",
+                    desc: "クリ率+2% / 回避率+6%",
+                    cost: 2,
+                    effects: { secondary: { critRate: 2, evade: 6 } },
+                  },
+                  {
+                    id: "ranger_trick4",
+                    label: "狩人の策略",
+                    desc: "クリ率+4% / CT短縮+4%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { critRate: 4, cooldown: 4 } },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "cleric",
+            label: "聖職",
+            angle: 42,
+            curve: 4.4,
+            nodes: [
+              {
+                id: "cleric1",
+                label: "耐久",
+                desc: "体力+3",
+                cost: 1,
+                effects: { primary: { vit: 3 } },
+              },
+              {
+                id: "cleric2",
+                label: "堅守",
+                desc: "最大HP+60",
+                cost: 1,
+                effects: { secondary: { hp: 60 } },
+              },
+              {
+                id: "cleric3",
+                label: "守護",
+                desc: "被ダメ軽減+4%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 4 } },
+              },
+              {
+                id: "cleric4",
+                label: "光壁",
+                desc: "バリア+28",
+                cost: 1,
+                effects: { secondary: { barrier: 28 } },
+              },
+              {
+                id: "cleric5",
+                label: "再生祈願",
+                desc: "HP再生+4",
+                cost: 1,
+                effects: { secondary: { hpRegen: 4 } },
+              },
+              {
+                id: "cleric6",
+                label: "護盾",
+                desc: "ブロック率+4%",
+                cost: 1,
+                effects: { secondary: { block: 4 } },
+              },
+              {
+                id: "cleric7",
+                label: "清浄",
+                desc: "行動阻害抵抗+6%",
+                cost: 1,
+                effects: { secondary: { controlResist: 6 } },
+              },
+              {
+                id: "cleric8",
+                label: "重厚",
+                desc: "最大HP+90",
+                cost: 1,
+                effects: { secondary: { hp: 90 } },
+              },
+              {
+                id: "cleric9",
+                label: "堅忍",
+                desc: "被ダメ軽減+5%",
+                cost: 1,
+                effects: { secondary: { damageReduction: 5 } },
+              },
+              {
+                id: "cleric10",
+                label: "聖盾",
+                desc: "バリア+36",
+                cost: 1,
+                effects: { secondary: { barrier: 36 } },
+              },
+              {
+                id: "cleric11",
+                label: "厚命",
+                desc: "体力+4",
+                cost: 1,
+                effects: { primary: { vit: 4 } },
+              },
+              {
+                id: "cleric12",
+                label: "再生祈祷",
+                desc: "HP再生+6",
+                cost: 1,
+                effects: { secondary: { hpRegen: 6 } },
+              },
+              {
+                id: "cleric13",
+                label: "守護の誓約",
+                desc: "被ダメ軽減+6% / バリア+40",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { damageReduction: 6, barrier: 40 } },
+              },
+              {
+                id: "cleric14",
+                label: "聖域",
+                desc: "ブロック率+6% / 抵抗+8%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { block: 6, controlResist: 8 } },
+              },
+              {
+                id: "cleric15",
+                label: "護りの灯火",
+                desc: "バリア+30",
+                cost: 1,
+                effects: { secondary: { barrier: 30 } },
+              },
+              {
+                id: "cleric16",
+                label: "祝福",
+                desc: "最大HP+70 / HP再生+3",
+                cost: 2,
+                effects: { secondary: { hp: 70, hpRegen: 3 } },
+              },
+            ],
+            sideBranches: [
+              {
+                startIndex: 3,
+                angleOffset: -30,
+                nodes: [
+                  {
+                    id: "cleric_guard1",
+                    label: "護法",
+                    desc: "ターン開始時ガード+1T (特性)",
+                    cost: 2,
+                    tier: "major",
+                    effects: { special: { guardOnStart: 1 } },
+                  },
+                  {
+                    id: "cleric_guard2",
+                    label: "結界術",
+                    desc: "バリア+50",
+                    cost: 1,
+                    effects: { secondary: { barrier: 50 } },
+                  },
+                  {
+                    id: "cleric_guard3",
+                    label: "守護壁",
+                    desc: "被ダメ軽減+4%",
+                    cost: 1,
+                    effects: { secondary: { damageReduction: 4 } },
+                  },
+                  {
+                    id: "cleric_guard4",
+                    label: "不壊",
+                    desc: "ブロック率+6%",
+                    cost: 1,
+                    effects: { secondary: { block: 6 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 6,
+                angleOffset: 24,
+                nodes: [
+                  {
+                    id: "cleric_heal1",
+                    label: "癒しの光",
+                    desc: "ターン開始時HP回復+2% (特性)",
+                    cost: 3,
+                    tier: "major",
+                    effects: { special: { turnStartHealPercent: 2 } },
+                  },
+                  {
+                    id: "cleric_heal2",
+                    label: "再生加護",
+                    desc: "HP再生+5",
+                    cost: 1,
+                    effects: { secondary: { hpRegen: 5 } },
+                  },
+                  {
+                    id: "cleric_heal3",
+                    label: "祈祷強化",
+                    desc: "最大HP+80",
+                    cost: 1,
+                    effects: { secondary: { hp: 80 } },
+                  },
+                  {
+                    id: "cleric_heal4",
+                    label: "安寧",
+                    desc: "弱体化抵抗+8%",
+                    cost: 1,
+                    effects: { secondary: { debuffResist: 8 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 9,
+                angleOffset: -18,
+                nodes: [
+                  {
+                    id: "cleric_tank1",
+                    label: "鉄心",
+                    desc: "被ダメ軽減+4%",
+                    cost: 1,
+                    effects: { secondary: { damageReduction: 4 } },
+                  },
+                  {
+                    id: "cleric_tank2",
+                    label: "耐魔護符",
+                    desc: "魔法防御+14",
+                    cost: 1,
+                    effects: { secondary: { magDef: 14 } },
+                  },
+                  {
+                    id: "cleric_tank3",
+                    label: "堅牢結界",
+                    desc: "バリア+50 / 被ダメ軽減+3%",
+                    cost: 2,
+                    effects: { secondary: { barrier: 50, damageReduction: 3 } },
+                  },
+                  {
+                    id: "cleric_tank4",
+                    label: "守護聖堂",
+                    desc: "被ダメ軽減+6% / ブロック率+6%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { damageReduction: 6, block: 6 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 12,
+                angleOffset: 32,
+                nodes: [
+                  {
+                    id: "cleric_support1",
+                    label: "浄化",
+                    desc: "DoT抵抗+10%",
+                    cost: 1,
+                    effects: { secondary: { dotResist: 10 } },
+                  },
+                  {
+                    id: "cleric_support2",
+                    label: "祈りの旋律",
+                    desc: "HP再生+4 / バリア+30",
+                    cost: 2,
+                    effects: { secondary: { hpRegen: 4, barrier: 30 } },
+                  },
+                  {
+                    id: "cleric_support3",
+                    label: "守護の歌",
+                    desc: "弱体化抵抗+10%",
+                    cost: 1,
+                    effects: { secondary: { debuffResist: 10 } },
+                  },
+                  {
+                    id: "cleric_support4",
+                    label: "天恵",
+                    desc: "最大HP+120 / バリア+60",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { hp: 120, barrier: 60 } },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "mage",
+            label: "魔法",
+            angle: 120,
+            curve: -4.6,
+            nodes: [
+              {
+                id: "mage1",
+                label: "知恵",
+                desc: "知識+3",
+                cost: 1,
+                effects: { primary: { int: 3 } },
+              },
+              {
+                id: "mage2",
+                label: "魔力",
+                desc: "魔法攻撃+16",
+                cost: 1,
+                effects: { secondary: { magAtk: 16 } },
+              },
+              {
+                id: "mage3",
+                label: "詠唱",
+                desc: "CT短縮+4%",
+                cost: 1,
+                effects: { secondary: { cooldown: 4 } },
+              },
+              {
+                id: "mage4",
+                label: "穿つ魔眼",
+                desc: "魔法貫通+6%",
+                cost: 1,
+                effects: { secondary: { magPen: 6 } },
+              },
+              {
+                id: "mage5",
+                label: "魔力循環",
+                desc: "最大MP+40",
+                cost: 1,
+                effects: { secondary: { mp: 40 } },
+              },
+              {
+                id: "mage6",
+                label: "魔弾",
+                desc: "魔法攻撃+24",
+                cost: 1,
+                effects: { secondary: { magAtk: 24 } },
+              },
+              {
+                id: "mage7",
+                label: "詠唱短縮",
+                desc: "CT短縮+5%",
+                cost: 1,
+                effects: { secondary: { cooldown: 5 } },
+              },
+              {
+                id: "mage8",
+                label: "魔眼強化",
+                desc: "クリ率+3%",
+                cost: 1,
+                effects: { secondary: { critRate: 3 } },
+              },
+              {
+                id: "mage9",
+                label: "深奥",
+                desc: "魔法貫通+8%",
+                cost: 1,
+                effects: { secondary: { magPen: 8 } },
+              },
+              {
+                id: "mage10",
+                label: "叡智",
+                desc: "知識+4",
+                cost: 1,
+                effects: { primary: { int: 4 } },
+              },
+              {
+                id: "mage11",
+                label: "暴走魔力",
+                desc: "クリダメ+8%",
+                cost: 1,
+                effects: { secondary: { critDamage: 8 } },
+              },
+              {
+                id: "mage12",
+                label: "魔導核",
+                desc: "最大MP+60",
+                cost: 1,
+                effects: { secondary: { mp: 60 } },
+              },
+              {
+                id: "mage13",
+                label: "魔導連鎖",
+                desc: "攻撃回数+1 (特性)",
+                cost: 3,
+                tier: "major",
+                effects: { special: { attackCountBonus: 1 } },
+              },
+              {
+                id: "mage14",
+                label: "秘奥",
+                desc: "魔法攻撃+40 / CT短縮+6%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { magAtk: 40, cooldown: 6 } },
+              },
+              {
+                id: "mage15",
+                label: "魔導連結",
+                desc: "魔法攻撃+20 / 最大MP+40",
+                cost: 2,
+                effects: { secondary: { magAtk: 20, mp: 40 } },
+              },
+              {
+                id: "mage16",
+                label: "賢者の眼",
+                desc: "魔法貫通+6% / クリ率+2%",
+                cost: 2,
+                effects: { secondary: { magPen: 6, critRate: 2 } },
+              },
+            ],
+            sideBranches: [
+              {
+                startIndex: 3,
+                angleOffset: -30,
+                nodes: [
+                  {
+                    id: "mage_burst1",
+                    label: "魔力集中",
+                    desc: "クリ率+4% / クリダメ+6%",
+                    cost: 2,
+                    effects: { secondary: { critRate: 4, critDamage: 6 } },
+                  },
+                  {
+                    id: "mage_burst2",
+                    label: "魔力共鳴",
+                    desc: "魔法攻撃+30",
+                    cost: 1,
+                    effects: { secondary: { magAtk: 30 } },
+                  },
+                  {
+                    id: "mage_burst3",
+                    label: "爆裂詠唱",
+                    desc: "CT短縮+5%",
+                    cost: 1,
+                    effects: { secondary: { cooldown: 5 } },
+                  },
+                  {
+                    id: "mage_burst4",
+                    label: "秘術増幅",
+                    desc: "魔法攻撃+50 / クリダメ+10%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { magAtk: 50, critDamage: 10 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 6,
+                angleOffset: 26,
+                nodes: [
+                  {
+                    id: "mage_mana1",
+                    label: "魔力泉",
+                    desc: "ターン開始時MP+8 (特性)",
+                    cost: 3,
+                    tier: "major",
+                    effects: { special: { turnStartMpRestore: 8 } },
+                  },
+                  {
+                    id: "mage_mana2",
+                    label: "霊薬",
+                    desc: "最大MP+80",
+                    cost: 1,
+                    effects: { secondary: { mp: 80 } },
+                  },
+                  {
+                    id: "mage_mana3",
+                    label: "魔力循環",
+                    desc: "CT短縮+3%",
+                    cost: 1,
+                    effects: { secondary: { cooldown: 3 } },
+                  },
+                  {
+                    id: "mage_mana4",
+                    label: "奥義の泉",
+                    desc: "最大MP+120 / CT短縮+4%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { mp: 120, cooldown: 4 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 9,
+                angleOffset: -20,
+                nodes: [
+                  {
+                    id: "mage_chain1",
+                    label: "魔導連撃",
+                    desc: "攻撃回数+1 (特性)",
+                    cost: 3,
+                    tier: "major",
+                    effects: { special: { attackCountBonus: 1 } },
+                  },
+                  {
+                    id: "mage_chain2",
+                    label: "魔導速度",
+                    desc: "CT短縮+4%",
+                    cost: 1,
+                    effects: { secondary: { cooldown: 4 } },
+                  },
+                  {
+                    id: "mage_chain3",
+                    label: "魔弾強化",
+                    desc: "魔法攻撃+24",
+                    cost: 1,
+                    effects: { secondary: { magAtk: 24 } },
+                  },
+                  {
+                    id: "mage_chain4",
+                    label: "連鎖魔術",
+                    desc: "魔法攻撃+30 / クリ率+2%",
+                    cost: 2,
+                    effects: { secondary: { magAtk: 30, critRate: 2 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 12,
+                angleOffset: 34,
+                nodes: [
+                  {
+                    id: "mage_arcane1",
+                    label: "秘術障壁",
+                    desc: "バリア+50",
+                    cost: 1,
+                    effects: { secondary: { barrier: 50 } },
+                  },
+                  {
+                    id: "mage_arcane2",
+                    label: "魔防結界",
+                    desc: "魔法防御+14",
+                    cost: 1,
+                    effects: { secondary: { magDef: 14 } },
+                  },
+                  {
+                    id: "mage_arcane3",
+                    label: "秘奥強化",
+                    desc: "魔法貫通+6%",
+                    cost: 1,
+                    effects: { secondary: { magPen: 6 } },
+                  },
+                  {
+                    id: "mage_arcane4",
+                    label: "深淵の核",
+                    desc: "魔法攻撃+40 / バリア+60",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { magAtk: 40, barrier: 60 } },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            key: "trickster",
+            label: "幸運",
+            angle: 202,
+            curve: 5.1,
+            nodes: [
+              {
+                id: "luck1",
+                label: "福運",
+                desc: "運+3",
+                cost: 1,
+                effects: { primary: { luck: 3 } },
+              },
+              {
+                id: "luck2",
+                label: "拾得眼",
+                desc: "ドロップ率+8%",
+                cost: 1,
+                effects: { secondary: { dropRate: 8 } },
+              },
+              {
+                id: "luck3",
+                label: "宝飾感覚",
+                desc: "レアリティ+6%",
+                cost: 1,
+                effects: { secondary: { rarity: 6 } },
+              },
+              {
+                id: "luck4",
+                label: "致命賭博",
+                desc: "クリダメ+8%",
+                cost: 1,
+                effects: { secondary: { critDamage: 8 } },
+              },
+              {
+                id: "luck5",
+                label: "金運",
+                desc: "ゴールド率+10%",
+                cost: 1,
+                effects: { secondary: { goldChance: 10 } },
+              },
+              {
+                id: "luck6",
+                label: "称号狩り",
+                desc: "称号付与率+6%",
+                cost: 1,
+                effects: { secondary: { titleChance: 6 } },
+              },
+              {
+                id: "luck7",
+                label: "名持ち探知",
+                desc: "ネームド遭遇率+8%",
+                cost: 1,
+                effects: { secondary: { namedRate: 8 } },
+              },
+              {
+                id: "luck8",
+                label: "拾得上手",
+                desc: "ドロップ率+10%",
+                cost: 1,
+                effects: { secondary: { dropRate: 10 } },
+              },
+              {
+                id: "luck9",
+                label: "宝飾眼",
+                desc: "レアリティ+8%",
+                cost: 1,
+                effects: { secondary: { rarity: 8 } },
+              },
+              {
+                id: "luck10",
+                label: "開運",
+                desc: "運+4",
+                cost: 1,
+                effects: { primary: { luck: 4 } },
+              },
+              {
+                id: "luck11",
+                label: "強運",
+                desc: "クリ率+2%",
+                cost: 1,
+                effects: { secondary: { critRate: 2 } },
+              },
+              {
+                id: "luck12",
+                label: "宝運の連鎖",
+                desc: "ドロップ率+14%",
+                cost: 1,
+                effects: { secondary: { dropRate: 14 } },
+              },
+              {
+                id: "luck13",
+                label: "大盤振る舞い",
+                desc: "ドロップ率+20% / レア率+10%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { dropRate: 20, rarity: 10 } },
+              },
+              {
+                id: "luck14",
+                label: "運命の偏り",
+                desc: "クリダメ+12% / ゴールド率+20%",
+                cost: 4,
+                tier: "major",
+                effects: { secondary: { critDamage: 12, goldChance: 20 } },
+              },
+              {
+                id: "luck15",
+                label: "幸運の星",
+                desc: "運+4 / クリ率+2%",
+                cost: 2,
+                effects: { primary: { luck: 4 }, secondary: { critRate: 2 } },
+              },
+              {
+                id: "luck16",
+                label: "富の導き",
+                desc: "ゴールド率+12% / 称号率+6%",
+                cost: 2,
+                effects: { secondary: { goldChance: 12, titleChance: 6 } },
+              },
+            ],
+            sideBranches: [
+              {
+                startIndex: 3,
+                angleOffset: -30,
+                nodes: [
+                  {
+                    id: "luck_drop1",
+                    label: "拾得術",
+                    desc: "ドロップ率+12%",
+                    cost: 1,
+                    effects: { secondary: { dropRate: 12 } },
+                  },
+                  {
+                    id: "luck_drop2",
+                    label: "宝飾探索",
+                    desc: "レアリティ+6%",
+                    cost: 1,
+                    effects: { secondary: { rarity: 6 } },
+                  },
+                  {
+                    id: "luck_drop3",
+                    label: "宝運の導き",
+                    desc: "ドロップ率+18% / レア率+8%",
+                    cost: 4,
+                    tier: "major",
+                    effects: { secondary: { dropRate: 18, rarity: 8 } },
+                  },
+                  {
+                    id: "luck_drop4",
+                    label: "宝の嗅覚",
+                    desc: "ネームド遭遇率+10%",
+                    cost: 1,
+                    effects: { secondary: { namedRate: 10 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 6,
+                angleOffset: 26,
+                nodes: [
+                  {
+                    id: "luck_gold1",
+                    label: "金貨の導き",
+                    desc: "ゴールド率+16%",
+                    cost: 1,
+                    effects: { secondary: { goldChance: 16 } },
+                  },
+                  {
+                    id: "luck_gold2",
+                    label: "資産運用",
+                    desc: "称号率+8%",
+                    cost: 1,
+                    effects: { secondary: { titleChance: 8 } },
+                  },
+                  {
+                    id: "luck_gold3",
+                    label: "黄金嗅覚",
+                    desc: "ゴールド率+20% / ドロップ率+10%",
+                    cost: 3,
+                    tier: "major",
+                    effects: { secondary: { goldChance: 20, dropRate: 10 } },
+                  },
+                  {
+                    id: "luck_gold4",
+                    label: "富の連鎖",
+                    desc: "ゴールド率+18% / レア率+6%",
+                    cost: 2,
+                    effects: { secondary: { goldChance: 18, rarity: 6 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 9,
+                angleOffset: -18,
+                nodes: [
+                  {
+                    id: "luck_crit1",
+                    label: "致命勝負",
+                    desc: "クリ率+3% / クリダメ+6%",
+                    cost: 2,
+                    effects: { secondary: { critRate: 3, critDamage: 6 } },
+                  },
+                  {
+                    id: "luck_crit2",
+                    label: "幸運の刃",
+                    desc: "クリダメ+10%",
+                    cost: 1,
+                    effects: { secondary: { critDamage: 10 } },
+                  },
+                  {
+                    id: "luck_crit3",
+                    label: "幸運突破",
+                    desc: "クリ率+4% / クリダメ+8%",
+                    cost: 3,
+                    tier: "major",
+                    effects: { secondary: { critRate: 4, critDamage: 8 } },
+                  },
+                  {
+                    id: "luck_crit4",
+                    label: "賭けの妙",
+                    desc: "クリ率+2% / ゴールド率+10%",
+                    cost: 2,
+                    effects: { secondary: { critRate: 2, goldChance: 10 } },
+                  },
+                ],
+              },
+              {
+                startIndex: 12,
+                angleOffset: 34,
+                nodes: [
+                  {
+                    id: "luck_surprise1",
+                    label: "予兆",
+                    desc: "ネームド遭遇率+12%",
+                    cost: 1,
+                    effects: { secondary: { namedRate: 12 } },
+                  },
+                  {
+                    id: "luck_surprise2",
+                    label: "掘り出し物",
+                    desc: "レアリティ+10%",
+                    cost: 1,
+                    effects: { secondary: { rarity: 10 } },
+                  },
+                  {
+                    id: "luck_surprise3",
+                    label: "偏りの極意",
+                    desc: "ドロップ率+16% / ゴールド率+12%",
+                    cost: 3,
+                    tier: "major",
+                    effects: { secondary: { dropRate: 16, goldChance: 12 } },
+                  },
+                  {
+                    id: "luck_surprise4",
+                    label: "財宝の嗅覚",
+                    desc: "称号率+10% / レア率+6%",
+                    cost: 2,
+                    effects: { secondary: { titleChance: 10, rarity: 6 } },
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+
+        function buildStatusTreeNodes() {
+          const { center, baseRadius, step } = STATUS_TREE_LAYOUT;
+          const nodes = [];
+          const nodeMap = new Map();
+          const anchors = {};
+
+          const addNode = (node) => {
+            nodes.push(node);
+            nodeMap.set(node.id, node);
+          };
+
+          addNode({
+            id: STATUS_TREE_ROOT_ID,
+            label: "起点",
+            desc: "全ステータス+1",
+            cost: 0,
+            position: { x: center.x, y: center.y },
+            links: [],
+            effects: {
+              primary: { str: 1, int: 1, vit: 1, agi: 1, luck: 1 },
+            },
+          });
+
+          STATUS_TREE_BRANCHES.forEach((branch) => {
+            let prevId = STATUS_TREE_ROOT_ID;
+            anchors[branch.key] = [];
+            branch.nodes.forEach((node, index) => {
+              const angle =
+                ((branch.angle + branch.curve * index) * Math.PI) / 180;
+              const radius = baseRadius + step * index;
+              const position = {
+                x: Math.round(center.x + Math.cos(angle) * radius),
+                y: Math.round(center.y + Math.sin(angle) * radius),
+              };
+              addNode({
+                ...node,
+                position,
+                links: [],
+              });
+              const prev = nodeMap.get(prevId);
+              if (prev) prev.links.push(node.id);
+              anchors[branch.key][index] = { id: node.id, position, angle };
+              prevId = node.id;
+            });
+          });
+
+          STATUS_TREE_BRANCHES.forEach((branch) => {
+            (branch.sideBranches || []).forEach((side) => {
+              const anchor = anchors[branch.key]?.[side.startIndex];
+              if (!anchor) return;
+              const baseAngle =
+                anchor.angle + ((side.angleOffset || 0) * Math.PI) / 180;
+              const sideStep = side.step ?? step * 0.75;
+              let prevId = anchor.id;
+              side.nodes.forEach((node, index) => {
+                const distance = sideStep * (index + 1);
+                const position = {
+                  x: Math.round(
+                    anchor.position.x + Math.cos(baseAngle) * distance,
+                  ),
+                  y: Math.round(
+                    anchor.position.y + Math.sin(baseAngle) * distance,
+                  ),
+                };
+                addNode({ ...node, position, links: [] });
+                const prev = nodeMap.get(prevId);
+                if (prev) prev.links.push(node.id);
+                prevId = node.id;
+              });
+            });
+          });
+
+          STATUS_TREE_JUNCTIONS.forEach((junction) => {
+            addNode({ ...junction, links: [...(junction.links || [])] });
+            (junction.links || []).forEach((linkId) => {
+              const target = nodeMap.get(linkId);
+              if (target && !target.links.includes(junction.id)) {
+                target.links.push(junction.id);
+              }
+            });
+          });
+          return nodes;
+        }
+
+        const STATUS_TREE_NODES = buildStatusTreeNodes();
+        const STATUS_TREE_NODE_MAP = new Map(
+          STATUS_TREE_NODES.map((node) => [node.id, node]),
+        );
+        const STATUS_TREE_NEIGHBORS = STATUS_TREE_NODES.reduce((acc, node) => {
+          acc[node.id] = new Set(acc[node.id] || []);
+          (node.links || []).forEach((linked) => {
+            acc[node.id].add(linked);
+            if (!acc[linked]) acc[linked] = new Set();
+            acc[linked].add(node.id);
+          });
+          return acc;
+        }, {});
+        let selectedStatusNodeId = STATUS_TREE_ROOT_ID;
         const skillStepOptions = [1, 10, 50];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
@@ -13438,14 +15199,22 @@
 
         function recalcDerivedStats() {
           const equipmentBonuses = collectEquipmentBonuses();
+          const statusTreeBonuses = calculateStatusTreeBonuses();
           player.equipmentBonus = equipmentBonuses.secondary;
           player.equipmentPrimaryBonus = equipmentBonuses.primary;
           player.equipmentPrimaryPerLevel = equipmentBonuses.primaryPerLevel;
           player.equipmentPrimaryFixed = equipmentBonuses.primaryFixed;
-          player.attackCountBonus = equipmentBonuses.attackCountBonus || 0;
+          const statusTreeSpecial = statusTreeBonuses.special || {};
+          player.statusTreeSpecial = statusTreeSpecial;
+          player.attackCountBonus =
+            (equipmentBonuses.attackCountBonus || 0) +
+            (statusTreeSpecial.attackCountBonus || 0);
           player.attackTargetsBonus =
-            equipmentBonuses.attackTargetsBonus || 0;
+            (equipmentBonuses.attackTargetsBonus || 0) +
+            (statusTreeSpecial.attackTargetsBonus || 0);
           player.legendaryUniqueOptions = equipmentBonuses.uniqueOptions || [];
+          player.statusTreePrimaryBonus = statusTreeBonuses.primary;
+          player.statusTreeSecondaryBonus = statusTreeBonuses.secondary;
 
           const perLevelPrimaryBonus = calcPrimaryPerLevelBonus(
             equipmentBonuses.primaryPerLevel,
@@ -13456,7 +15225,8 @@
             const baseValue = player.primary[key].base;
             const additive =
               (equipmentBonuses.primary[key] ?? 0) +
-              (perLevelPrimaryBonus[key] ?? 0);
+              (perLevelPrimaryBonus[key] ?? 0) +
+              (statusTreeBonuses.primary[key] ?? 0);
             const fixedValue =
               typeof equipmentBonuses.primaryFixed?.[key] === "number"
                 ? equipmentBonuses.primaryFixed[key]
@@ -13493,7 +15263,10 @@
               Math.floor(player.attackCount),
             );
           }
-          player.bonus = mergeBonuses(player.baseBonus, player.equipmentBonus);
+          player.bonus = mergeBonuses(
+            mergeBonuses(player.baseBonus, statusTreeBonuses.secondary),
+            player.equipmentBonus,
+          );
           const derived = calcSecondaryStats();
           const prevMaxHp = player.maxHp || derived.maxHp.total;
           const prevMaxMp = player.maxMp || derived.maxMp.total;
@@ -14712,6 +16485,32 @@
           }
           if (entity === player) {
             tickSkillCooldowns();
+            const statusTreeSpecial = player.statusTreeSpecial || {};
+            const healPercent = statusTreeSpecial.turnStartHealPercent || 0;
+            if (healPercent > 0 && player.maxHp > 0) {
+              const healAmount = roundBattleValue(
+                player.maxHp * (healPercent / 100),
+              );
+              if (healAmount > 0) {
+                const healed = applyHealing(player, healAmount);
+                if (healed > 0) {
+                  log(`✨ 特性効果でHPを ${healed} 回復`, "good");
+                }
+              }
+            }
+            const mpRestore = statusTreeSpecial.turnStartMpRestore || 0;
+            if (mpRestore > 0 && player.maxMp > 0) {
+              const beforeMp = player.mp;
+              player.mp = Math.min(player.maxMp, player.mp + mpRestore);
+              const gained = player.mp - beforeMp;
+              if (gained > 0) {
+                log(`🔷 特性効果でMPを ${gained} 回復`, "info");
+              }
+            }
+            const guardTurns = statusTreeSpecial.guardOnStart || 0;
+            if (guardTurns > 0) {
+              player.buffs.guard = Math.max(player.buffs.guard || 0, guardTurns);
+            }
           }
           applyLegendaryTurnStartEffects(entity);
           const skipTurn =
@@ -14931,7 +16730,6 @@ function showDamagePopup(
         function updateUI(derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           lastDerivedStats = derived;
-          updateStepButton();
           document.getElementById("floor-inline").textContent = game.floor;
           const displayHp = roundBattleValue(player.hp);
           const displayBarrier = Math.max(
@@ -14958,6 +16756,7 @@ function showDamagePopup(
           document.getElementById("gold").textContent = formatGold(player.gold);
           document.getElementById("stat-points").textContent =
             player.statPoints;
+          if (statusTreePoints) statusTreePoints.textContent = player.statPoints;
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
@@ -14968,7 +16767,7 @@ function showDamagePopup(
           renderEnemies();
           renderActions();
           renderSecondaryStats(derived);
-          renderPrimaryStats();
+          renderStatusTree();
           if (
             !playerModal.classList.contains("hidden") &&
             playerModalPage === "equipment"
@@ -16927,40 +18726,95 @@ function showDamagePopup(
           });
         }
 
-        function adjustPrimary(key, delta) {
-          if (delta === 0) return;
-          if (delta > 0) {
-            const use = Math.min(delta, player.statPoints);
-            if (use <= 0) return;
-            player.statPoints -= use;
-            player.primary[key].base += use;
-            player.allocations[key] += use;
-            log(`能力Pを使用: ${player.primary[key].label} +${use}`, "good");
-          } else {
-            const refundable = player.allocations[key];
-            const giveBack = Math.min(refundable, Math.abs(delta));
-            if (giveBack <= 0) return;
-            player.primary[key].base -= giveBack;
-            player.allocations[key] -= giveBack;
-            player.statPoints += giveBack;
-            log(
-              `能力Pを返却: ${player.primary[key].label} -${giveBack}`,
-              "info",
-            );
+        function normalizeStatusTreeState() {
+          if (!player.statusTree || typeof player.statusTree !== "object") {
+            player.statusTree = { unlocked: [STATUS_TREE_ROOT_ID] };
           }
+          if (!Array.isArray(player.statusTree.unlocked)) {
+            player.statusTree.unlocked = [];
+          }
+          player.statusTree.unlocked = player.statusTree.unlocked.filter((id) =>
+            STATUS_TREE_NODE_MAP.has(id),
+          );
+          if (!player.statusTree.unlocked.includes(STATUS_TREE_ROOT_ID)) {
+            player.statusTree.unlocked.unshift(STATUS_TREE_ROOT_ID);
+          }
+          if (!STATUS_TREE_NODE_MAP.has(selectedStatusNodeId)) {
+            selectedStatusNodeId = STATUS_TREE_ROOT_ID;
+          }
+        }
+
+        function getStatusTreeUnlockedSet() {
+          normalizeStatusTreeState();
+          return new Set(player.statusTree.unlocked);
+        }
+
+        function getStatusTreeSpentPoints() {
+          normalizeStatusTreeState();
+          return player.statusTree.unlocked.reduce((sum, id) => {
+            const node = STATUS_TREE_NODE_MAP.get(id);
+            if (!node || id === STATUS_TREE_ROOT_ID) return sum;
+            return sum + (node.cost || 0);
+          }, 0);
+        }
+
+        function canUnlockStatusNode(node, unlockedSet) {
+          if (!node || unlockedSet.has(node.id)) return false;
+          if ((node.cost || 0) <= 0) return false;
+          const neighbors = STATUS_TREE_NEIGHBORS[node.id] || new Set();
+          return Array.from(neighbors).some((id) => unlockedSet.has(id));
+        }
+
+        function calculateStatusTreeBonuses() {
+          const primary = createEmptyPrimaryBonus();
+          const secondary = createEmptyBonus();
+          const special = {
+            attackCountBonus: 0,
+            attackTargetsBonus: 0,
+            guardOnStart: 0,
+            turnStartHealPercent: 0,
+            turnStartMpRestore: 0,
+          };
+          const unlockedSet = getStatusTreeUnlockedSet();
+          unlockedSet.forEach((id) => {
+            const node = STATUS_TREE_NODE_MAP.get(id);
+            if (!node) return;
+            const primaryEffects = node.effects?.primary || {};
+            const secondaryEffects = node.effects?.secondary || {};
+            const specialEffects = node.effects?.special || {};
+            Object.entries(primaryEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              primary[key] = (primary[key] ?? 0) + value;
+            });
+            Object.entries(secondaryEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              secondary[key] = (secondary[key] ?? 0) + value;
+            });
+            Object.entries(specialEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              special[key] = (special[key] ?? 0) + value;
+            });
+          });
+          return { primary, secondary, special };
+        }
+
+        function unlockStatusNode(node) {
+          const unlockedSet = getStatusTreeUnlockedSet();
+          if (!node || unlockedSet.has(node.id)) return;
+          if (!canUnlockStatusNode(node, unlockedSet)) {
+            log("隣接ノードを解放すると取得できます", "warning");
+            return;
+          }
+          if (player.statPoints < node.cost) {
+            log("能力Pが足りません", "warning");
+            return;
+          }
+          player.statPoints -= node.cost;
+          player.statusTree.unlocked.push(node.id);
+          selectedStatusNodeId = node.id;
+          log(`🌿 ${node.label} を解放した`, "good");
           updateUI();
-          maybeAutoSave("ステータス調整");
-        }
-
-        function getAdjustStep() {
-          return stepOptions[currentStepIndex];
-        }
-
-        function updateStepButton() {
-          if (!statStepButton) return;
-          const step = getAdjustStep();
-          statStepButton.textContent = `±${step}`;
-          statStepButton.title = `増減幅 ${step}`;
+          maybeAutoSave("ステータスツリー解放");
         }
 
         function getSkillAdjustStep() {
@@ -16974,54 +18828,306 @@ function showDamagePopup(
           skillStepButton.title = `スキル増減幅 ${step}`;
         }
 
-        function renderPrimaryStats() {
-          const container = document.getElementById("primary-stats");
-          container.innerHTML = "";
-          const step = getAdjustStep();
-
-          primaryOrder.forEach((key) => {
-            const stat = player.primary[key];
-            const row = document.createElement("div");
-            row.className = "stat-row primary-row";
-
-            const info = document.createElement("div");
-            info.className = "primary-info";
-
-            const label = document.createElement("div");
-            label.className = "stat-label inline";
-            label.textContent = stat.label;
-
-            const value = document.createElement("div");
-            value.className = "stat-value";
-            value.innerHTML = formatPrimaryValue(stat);
-
-            info.appendChild(label);
-            info.appendChild(value);
-
-            const actions = document.createElement("div");
-            actions.className = "primary-actions";
-
-            const inc = document.createElement("button");
-            inc.textContent = `+${step}`;
-            inc.classList.add("mini-btn");
-            inc.disabled = player.statPoints <= 0;
-            inc.title = `${step}ポイント増加`;
-            inc.onclick = () => adjustPrimary(key, step);
-
-            const dec = document.createElement("button");
-            dec.textContent = `-${step}`;
-            dec.classList.add("mini-btn");
-            dec.disabled = player.allocations[key] <= 0;
-            dec.title = `${step}ポイント減少`;
-            dec.onclick = () => adjustPrimary(key, -step);
-
-            actions.appendChild(inc);
-            actions.appendChild(dec);
-
-            row.appendChild(info);
-            row.appendChild(actions);
-            container.appendChild(row);
+        function formatStatusTreeBonusList(node) {
+          const list = [];
+          const primaryEffects = node.effects?.primary || {};
+          const secondaryEffects = node.effects?.secondary || {};
+          const specialEffects = node.effects?.special || {};
+          Object.entries(primaryEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            const label = player.primary?.[key]?.label || key.toUpperCase();
+            list.push(`${label}+${value}`);
           });
+          Object.entries(secondaryEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            const def = EQUIPMENT_STAT_BY_KEY[key];
+            const label = def?.label || key;
+            const unit = def?.unit || "";
+            const isPercent = unit === "%";
+            const formatted = displayNumber(value, { isPercent });
+            list.push(`${label}+${formatted}${unit}`);
+          });
+          Object.entries(specialEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            if (key === "attackCountBonus") {
+              list.push(`攻撃回数+${value}`);
+            } else if (key === "attackTargetsBonus") {
+              list.push(`同時攻撃対象+${value}`);
+            } else if (key === "guardOnStart") {
+              list.push(`ターン開始時ガード+${value}T`);
+            } else if (key === "turnStartHealPercent") {
+              list.push(`ターン開始時HP回復+${value}%`);
+            } else if (key === "turnStartMpRestore") {
+              list.push(`ターン開始時MP+${value}`);
+            } else {
+              list.push(`${key}+${value}`);
+            }
+          });
+          return list;
+        }
+
+        function renderStatusTreeDetail() {
+          if (!statusTreeDetail) return;
+          normalizeStatusTreeState();
+          const node =
+            STATUS_TREE_NODE_MAP.get(selectedStatusNodeId) ||
+            STATUS_TREE_NODE_MAP.get(STATUS_TREE_ROOT_ID);
+          if (!node) return;
+          const unlockedSet = getStatusTreeUnlockedSet();
+          const isUnlocked = unlockedSet.has(node.id);
+          const canUnlock = canUnlockStatusNode(node, unlockedSet);
+
+          statusTreeDetail.innerHTML = "";
+
+          const title = document.createElement("div");
+          title.className = "detail-title";
+          title.textContent = node.label;
+          statusTreeDetail.appendChild(title);
+
+          if (node.desc) {
+            const desc = document.createElement("div");
+            desc.textContent = node.desc;
+            statusTreeDetail.appendChild(desc);
+          }
+
+          const status = document.createElement("div");
+          status.className = "detail-status";
+          const statusText = isUnlocked
+            ? "解放済み"
+            : canUnlock
+              ? "解放可能"
+              : "未解放";
+          status.textContent = `状態: ${statusText}`;
+          statusTreeDetail.appendChild(status);
+
+          const costText =
+            node.cost && node.cost > 0 ? `必要P: ${node.cost}` : "必要P: 0";
+          const cost = document.createElement("div");
+          cost.textContent = costText;
+          statusTreeDetail.appendChild(cost);
+
+          const list = document.createElement("div");
+          list.className = "detail-list";
+          const bonusList = formatStatusTreeBonusList(node);
+          if (bonusList.length) {
+            bonusList.forEach((text) => {
+              const row = document.createElement("div");
+              row.textContent = `・${text}`;
+              list.appendChild(row);
+            });
+          } else {
+            const row = document.createElement("div");
+            row.textContent = "・効果なし";
+            list.appendChild(row);
+          }
+          statusTreeDetail.appendChild(list);
+
+          if (!isUnlocked) {
+            const hint = document.createElement("div");
+            hint.className = "subtle";
+            hint.textContent = canUnlock
+              ? "隣接ノードが解放済みです"
+              : "隣接ノードを先に解放してください";
+            statusTreeDetail.appendChild(hint);
+          }
+
+          if (!isUnlocked && canUnlock) {
+            const button = document.createElement("button");
+            button.className = "primary";
+            button.textContent = `解放する (P${node.cost})`;
+            button.disabled = player.statPoints < node.cost;
+            button.addEventListener("click", () => unlockStatusNode(node));
+            statusTreeDetail.appendChild(button);
+          }
+        }
+
+        const statusTreeTransform = {
+          scale: 0.85,
+          x: 0,
+          y: 0,
+        };
+        let statusTreeDragging = false;
+        let statusTreeDragOrigin = { x: 0, y: 0 };
+
+        function applyStatusTreeTransform() {
+          if (!statusTreeViewport) return;
+          statusTreeViewport.style.transform = `translate(${statusTreeTransform.x}px, ${statusTreeTransform.y}px) scale(${statusTreeTransform.scale})`;
+        }
+
+        function getStatusTreeMinScale() {
+          if (!statusTreeCanvas) return 0.3;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const padding = 40;
+          const minScaleX = (rect.width - padding) / STATUS_TREE_LAYOUT.size;
+          const minScaleY = (rect.height - padding) / STATUS_TREE_LAYOUT.size;
+          return Math.max(0.2, Math.min(minScaleX, minScaleY, 0.85));
+        }
+
+        function clampStatusTreeScale(value) {
+          const minScale = getStatusTreeMinScale();
+          return Math.min(1.8, Math.max(minScale, value));
+        }
+
+        function centerStatusTree() {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const { center } = STATUS_TREE_LAYOUT;
+          statusTreeTransform.scale = clampStatusTreeScale(0.85);
+          statusTreeTransform.x =
+            rect.width / 2 - center.x * statusTreeTransform.scale;
+          statusTreeTransform.y =
+            rect.height / 2 - center.y * statusTreeTransform.scale;
+          applyStatusTreeTransform();
+        }
+
+        function zoomStatusTree(deltaScale, anchor) {
+          if (!statusTreeCanvas) return;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const nextScale = clampStatusTreeScale(
+            statusTreeTransform.scale + deltaScale,
+          );
+          if (nextScale === statusTreeTransform.scale) return;
+          const originX = anchor?.x ?? rect.width / 2;
+          const originY = anchor?.y ?? rect.height / 2;
+          const dx = originX - statusTreeTransform.x;
+          const dy = originY - statusTreeTransform.y;
+          const scaleRatio = nextScale / statusTreeTransform.scale;
+          statusTreeTransform.x = originX - dx * scaleRatio;
+          statusTreeTransform.y = originY - dy * scaleRatio;
+          statusTreeTransform.scale = nextScale;
+          applyStatusTreeTransform();
+        }
+
+        function renderStatusTree() {
+          if (!statusTreeNodesContainer || !statusTreeLines) return;
+          normalizeStatusTreeState();
+          const unlockedSet = getStatusTreeUnlockedSet();
+          statusTreeNodesContainer.innerHTML = "";
+          statusTreeLines.innerHTML = "";
+
+          const size = STATUS_TREE_LAYOUT.size;
+          statusTreeNodesContainer.style.width = `${size}px`;
+          statusTreeNodesContainer.style.height = `${size}px`;
+          statusTreeLines.setAttribute("viewBox", `0 0 ${size} ${size}`);
+          statusTreeLines.setAttribute("width", `${size}`);
+          statusTreeLines.setAttribute("height", `${size}`);
+          if (statusTreeViewport) {
+            statusTreeViewport.style.width = `${size}px`;
+            statusTreeViewport.style.height = `${size}px`;
+          }
+
+          const renderedLines = new Set();
+          STATUS_TREE_NODES.forEach((node) => {
+            (node.links || []).forEach((linkedId) => {
+              const linked = STATUS_TREE_NODE_MAP.get(linkedId);
+              if (!linked) return;
+              const key = [node.id, linkedId].sort().join("-");
+              if (renderedLines.has(key)) return;
+              renderedLines.add(key);
+              const line = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line",
+              );
+              line.setAttribute("x1", node.position.x);
+              line.setAttribute("y1", node.position.y);
+              line.setAttribute("x2", linked.position.x);
+              line.setAttribute("y2", linked.position.y);
+              const nodeUnlocked = unlockedSet.has(node.id);
+              const linkedUnlocked = unlockedSet.has(linkedId);
+              if (nodeUnlocked && linkedUnlocked) {
+                line.classList.add("active");
+              } else if (nodeUnlocked || linkedUnlocked) {
+                line.classList.add("available");
+              }
+              statusTreeLines.appendChild(line);
+            });
+          });
+
+          STATUS_TREE_NODES.forEach((node) => {
+            const unlocked = unlockedSet.has(node.id);
+            const canUnlock = canUnlockStatusNode(node, unlockedSet);
+            const nodeEl = document.createElement("div");
+            nodeEl.className = "status-tree-node";
+            if (node.tier === "major") {
+              nodeEl.classList.add("major");
+            }
+            if (unlocked) {
+              nodeEl.classList.add("unlocked");
+            } else if (canUnlock) {
+              nodeEl.classList.add("available");
+            } else {
+              nodeEl.classList.add("locked");
+            }
+            if (node.id === selectedStatusNodeId) {
+              nodeEl.classList.add("selected");
+            }
+            nodeEl.style.left = `${node.position.x}px`;
+            nodeEl.style.top = `${node.position.y}px`;
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = node.label;
+            button.addEventListener("click", () => {
+              selectedStatusNodeId = node.id;
+              renderStatusTree();
+              renderStatusTreeDetail();
+            });
+
+            const cost =
+              node.cost && node.cost > 0 ? document.createElement("div") : null;
+            if (cost) {
+              cost.className = "status-tree-cost";
+              cost.textContent = `P${node.cost}`;
+            }
+
+            nodeEl.appendChild(button);
+            if (cost) nodeEl.appendChild(cost);
+            statusTreeNodesContainer.appendChild(nodeEl);
+          });
+
+          if (statusTreePoints) {
+            statusTreePoints.textContent = player.statPoints;
+          }
+          renderStatusTreeDetail();
+        }
+
+        function openStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.remove("hidden");
+          renderStatusTree();
+          requestAnimationFrame(() => centerStatusTree());
+        }
+
+        function closeStatusTreePage() {
+          if (!statusTreePage) return;
+          statusTreePage.classList.add("hidden");
+        }
+
+        function startStatusTreeDrag(event) {
+          if (!statusTreeCanvas || !statusTreeViewport) return;
+          if (event.button !== 0) return;
+          if (event.target.closest("button")) return;
+          statusTreeDragging = true;
+          statusTreeDragOrigin = {
+            x: event.clientX - statusTreeTransform.x,
+            y: event.clientY - statusTreeTransform.y,
+          };
+          statusTreeViewport.classList.add("dragging");
+          statusTreeCanvas.setPointerCapture?.(event.pointerId);
+        }
+
+        function moveStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeTransform.x = event.clientX - statusTreeDragOrigin.x;
+          statusTreeTransform.y = event.clientY - statusTreeDragOrigin.y;
+          applyStatusTreeTransform();
+        }
+
+        function endStatusTreeDrag(event) {
+          if (!statusTreeDragging) return;
+          statusTreeDragging = false;
+          statusTreeViewport?.classList.remove("dragging");
+          statusTreeCanvas?.releasePointerCapture?.(event.pointerId);
         }
 
         function renderEquipmentList() {
@@ -18536,7 +20642,26 @@ function showDamagePopup(
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
         const resetButton = document.getElementById("reset-stats");
-        const statStepButton = document.getElementById("stat-step");
+        const openStatusTreeButton =
+          document.getElementById("open-status-tree");
+        const statusTreePage = document.getElementById("status-tree-page");
+        const statusTreeCloseButton =
+          document.getElementById("status-tree-close");
+        const statusTreePoints = document.getElementById("status-tree-points");
+        const statusTreeCanvas = document.getElementById("status-tree-canvas");
+        const statusTreeViewport =
+          document.getElementById("status-tree-viewport");
+        const statusTreeZoomInButton =
+          document.getElementById("status-tree-zoom-in");
+        const statusTreeZoomOutButton =
+          document.getElementById("status-tree-zoom-out");
+        const statusTreeZoomResetButton =
+          document.getElementById("status-tree-zoom-reset");
+        const statusTreeNodesContainer = document.getElementById(
+          "status-tree-nodes",
+        );
+        const statusTreeLines = document.getElementById("status-tree-lines");
+        const statusTreeDetail = document.getElementById("status-tree-detail");
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
@@ -21298,18 +23423,14 @@ function showDamagePopup(
 
         function resetAllocations() {
           const spent = pendingResetSpent;
-          Object.entries(player.allocations).forEach(([key, amount]) => {
-            if (amount > 0) {
-              player.primary[key].base -= amount;
-              player.allocations[key] = 0;
-            }
-          });
+          normalizeStatusTreeState();
+          player.statusTree.unlocked = [STATUS_TREE_ROOT_ID];
           player.statPoints += spent;
           recalcDerivedStats();
           updateUI();
-          log("ステータスをリセットしました", "info");
+          log("ステータスツリーをリセットしました", "info");
           pendingResetSpent = 0;
-          maybeAutoSave("ステータス振り直し");
+          maybeAutoSave("ステータスツリー振り直し");
         }
 
         function retryBossFloor() {
@@ -21355,6 +23476,32 @@ function showDamagePopup(
         document
           .getElementById("btn-player-modal")
           .addEventListener("click", openPlayerModal);
+        openStatusTreeButton?.addEventListener("click", openStatusTreePage);
+        statusTreeCloseButton?.addEventListener("click", closeStatusTreePage);
+        statusTreeZoomInButton?.addEventListener("click", () =>
+          zoomStatusTree(0.12),
+        );
+        statusTreeZoomOutButton?.addEventListener("click", () =>
+          zoomStatusTree(-0.12),
+        );
+        statusTreeZoomResetButton?.addEventListener("click", centerStatusTree);
+        statusTreeCanvas?.addEventListener(
+          "wheel",
+          (event) => {
+            event.preventDefault();
+            const rect = statusTreeCanvas.getBoundingClientRect();
+            zoomStatusTree(event.deltaY < 0 ? 0.1 : -0.1, {
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top,
+            });
+          },
+          { passive: false },
+        );
+        statusTreeCanvas?.addEventListener("pointerdown", startStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointermove", moveStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerup", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointerleave", endStatusTreeDrag);
+        statusTreeCanvas?.addEventListener("pointercancel", endStatusTreeDrag);
         playerModalStatusButton?.addEventListener("click", () =>
           setPlayerModalPage("status"),
         );
@@ -21525,12 +23672,6 @@ function showDamagePopup(
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton.addEventListener("click", () => {
-          currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
-          updateStepButton();
-          renderPrimaryStats();
-        });
-
         skillStepButton?.addEventListener("click", () => {
           currentSkillStepIndex =
             (currentSkillStepIndex + 1) % skillStepOptions.length;
@@ -21555,10 +23696,7 @@ function showDamagePopup(
         });
 
         resetButton.addEventListener("click", () => {
-          pendingResetSpent = Object.values(player.allocations).reduce(
-            (a, b) => a + b,
-            0,
-          );
+          pendingResetSpent = getStatusTreeSpentPoints();
           if (pendingResetSpent === 0) {
             log("リセットするポイントがありません", "info");
             return;
