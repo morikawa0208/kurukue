@@ -1655,6 +1655,209 @@
         align-items: start;
       }
 
+      .status-tree-panel {
+        display: grid;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .status-tree-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .status-tree-summary .summary-chip {
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .status-tree-summary .summary-chip strong {
+        font-weight: 800;
+        color: #fef3c7;
+      }
+
+      .status-tree-map {
+        position: relative;
+        border-radius: 14px;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background:
+          radial-gradient(
+            circle at 30% 20%,
+            rgba(96, 165, 250, 0.12),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 70% 80%,
+            rgba(52, 211, 153, 0.12),
+            transparent 45%
+          ),
+          rgba(8, 12, 20, 0.9);
+        overflow: auto;
+        padding: 8px;
+        min-height: 520px;
+        touch-action: pan-x pan-y;
+      }
+
+      .status-tree-canvas {
+        position: relative;
+        width: 900px;
+        height: 900px;
+        margin: 0 auto;
+      }
+
+      .status-tree-svg {
+        position: absolute;
+        inset: 0;
+      }
+
+      .status-tree-edge {
+        stroke: rgba(148, 163, 184, 0.25);
+        stroke-width: 1.4;
+      }
+
+      .status-tree-edge.available {
+        stroke: rgba(96, 165, 250, 0.55);
+      }
+
+      .status-tree-edge.unlocked {
+        stroke: rgba(52, 211, 153, 0.7);
+        stroke-width: 1.8;
+      }
+
+      .status-tree-node {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        background: rgba(15, 23, 42, 0.9);
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+        padding: 0;
+      }
+
+      .status-tree-node .node-core {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        display: block;
+      }
+
+      .status-tree-node.major {
+        width: 26px;
+        height: 26px;
+        border-width: 2px;
+      }
+
+      .status-tree-node.keystone {
+        width: 32px;
+        height: 32px;
+        border-width: 2px;
+      }
+
+      .status-tree-node.core {
+        width: 38px;
+        height: 38px;
+        border-width: 2px;
+      }
+
+      .status-tree-node.available {
+        border-color: rgba(96, 165, 250, 0.9);
+        box-shadow:
+          0 0 0 1px rgba(96, 165, 250, 0.6),
+          0 0 10px rgba(96, 165, 250, 0.35);
+      }
+
+      .status-tree-node.unlocked {
+        border-color: rgba(16, 185, 129, 0.9);
+        box-shadow:
+          0 0 0 2px rgba(16, 185, 129, 0.5),
+          0 0 12px rgba(16, 185, 129, 0.4);
+      }
+
+      .status-tree-node.unlocked .node-core,
+      .status-tree-node.available .node-core {
+        background: var(--node-color, rgba(15, 23, 42, 0.9));
+      }
+
+      .status-tree-node.locked .node-core {
+        background: rgba(15, 23, 42, 0.85);
+      }
+
+      .status-tree-node.selected {
+        outline: 2px solid rgba(248, 250, 252, 0.85);
+        outline-offset: 2px;
+      }
+
+      .status-tree-node:focus-visible {
+        outline: 2px solid var(--accent-2);
+        outline-offset: 2px;
+      }
+
+      .status-tree-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .status-tree-legend .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .status-tree-legend .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--legend-color, rgba(255, 255, 255, 0.4));
+      }
+
+      .status-tree-detail {
+        display: grid;
+        gap: 6px;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      .status-tree-detail .detail-title {
+        font-weight: 700;
+      }
+
+      .status-tree-detail .detail-meta {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .status-tree-detail .detail-bonus {
+        display: grid;
+        gap: 4px;
+        font-size: 12px;
+      }
+
+      .status-tree-detail .bonus-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
       .stat-row {
         display: flex;
         justify-content: space-between;
@@ -3413,19 +3616,12 @@
               "
             >
               <div class="section-title" style="margin: 2px 0 4px">
-                一次ステータス
+                ステータスツリー
               </div>
               <div style="display: flex; align-items: center; gap: 6px">
                 <div class="inline-buttons">
                   <div class="pill">能力P: <span id="stat-points"></span></div>
                 </div>
-                <button
-                  id="stat-step"
-                  class="step-button"
-                  aria-label="増減幅を切り替え"
-                >
-                  ±1
-                </button>
                 <button
                   id="reset-stats"
                   class="help-icon"
@@ -3435,7 +3631,33 @@
                 </button>
               </div>
             </div>
-            <div id="primary-stats" class="primary-grid"></div>
+            <div class="status-tree-panel">
+              <div class="status-tree-summary" id="status-tree-primary-summary">
+                <span class="summary-chip">読み込み中…</span>
+              </div>
+              <div class="status-tree-legend" id="status-tree-legend"></div>
+              <div class="status-tree-map">
+                <div class="status-tree-canvas" id="status-tree-canvas">
+                  <svg
+                    class="status-tree-svg"
+                    id="status-tree-svg"
+                    viewBox="0 0 900 900"
+                    aria-hidden="true"
+                  >
+                    <g id="status-tree-edges"></g>
+                  </svg>
+                </div>
+              </div>
+              <div class="status-tree-detail" id="status-tree-detail">
+                <div class="detail-title" id="status-tree-detail-title">
+                  ノード詳細
+                </div>
+                <div class="detail-meta" id="status-tree-detail-meta">
+                  ノードをタップして効果を確認できます。
+                </div>
+                <div class="detail-bonus" id="status-tree-detail-bonus"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div id="player-equipment-view" class="player-modal-page hidden">
@@ -10459,6 +10681,9 @@
           baseBonus: createEmptyBonus(),
           equipmentBonus: createEmptyBonus(),
           equipmentPrimaryBonus: createEmptyPrimaryBonus(),
+          treeBonus: createEmptyBonus(),
+          treePrimaryBonus: createEmptyPrimaryBonus(),
+          statusTree: { unlocked: { core: true }, spent: 0 },
           legendaryState: {},
           equipment: {
             head: null,
@@ -12619,9 +12844,7 @@
         );
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
-        const stepOptions = [1, 10, 50];
-        let currentStepIndex = 0;
-        const skillStepOptions = [1, 10, 50];
+        const skillStepOptions = [1, 5, 10];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
         let selectedSkillType = "active";
@@ -13446,6 +13669,9 @@
           player.attackTargetsBonus =
             equipmentBonuses.attackTargetsBonus || 0;
           player.legendaryUniqueOptions = equipmentBonuses.uniqueOptions || [];
+          const statusTreeBonuses = calculateStatusTreeBonuses();
+          player.treeBonus = statusTreeBonuses.secondary;
+          player.treePrimaryBonus = statusTreeBonuses.primary;
 
           const perLevelPrimaryBonus = calcPrimaryPerLevelBonus(
             equipmentBonuses.primaryPerLevel,
@@ -13456,7 +13682,8 @@
             const baseValue = player.primary[key].base;
             const additive =
               (equipmentBonuses.primary[key] ?? 0) +
-              (perLevelPrimaryBonus[key] ?? 0);
+              (perLevelPrimaryBonus[key] ?? 0) +
+              (statusTreeBonuses.primary[key] ?? 0);
             const fixedValue =
               typeof equipmentBonuses.primaryFixed?.[key] === "number"
                 ? equipmentBonuses.primaryFixed[key]
@@ -13493,7 +13720,10 @@
               Math.floor(player.attackCount),
             );
           }
-          player.bonus = mergeBonuses(player.baseBonus, player.equipmentBonus);
+          player.bonus = mergeBonuses(
+            mergeBonuses(player.baseBonus, player.treeBonus),
+            player.equipmentBonus,
+          );
           const derived = calcSecondaryStats();
           const prevMaxHp = player.maxHp || derived.maxHp.total;
           const prevMaxMp = player.maxMp || derived.maxMp.total;
@@ -14931,7 +15161,6 @@ function showDamagePopup(
         function updateUI(derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           lastDerivedStats = derived;
-          updateStepButton();
           document.getElementById("floor-inline").textContent = game.floor;
           const displayHp = roundBattleValue(player.hp);
           const displayBarrier = Math.max(
@@ -14968,7 +15197,10 @@ function showDamagePopup(
           renderEnemies();
           renderActions();
           renderSecondaryStats(derived);
-          renderPrimaryStats();
+          renderStatusTreeSummary();
+          renderStatusTreeLegend();
+          renderStatusTree();
+          updateStatusTreeDetail(activeStatusTreeNodeId);
           if (
             !playerModal.classList.contains("hidden") &&
             playerModalPage === "equipment"
@@ -15923,6 +16155,10 @@ function showDamagePopup(
 
           replaceObject(player, payload.player || {});
           replaceObject(game, payload.game || {});
+          ensureStatusTreeState();
+          activeStatusTreeNodeId = STATUS_TREE_NODE_MAP.has(activeStatusTreeNodeId)
+            ? activeStatusTreeNodeId
+            : STATUS_TREE_CONFIG.coreId;
 
           if (typeof game.autoSkillEnabled !== "boolean") {
             game.autoSkillEnabled = false;
@@ -16927,42 +17163,6 @@ function showDamagePopup(
           });
         }
 
-        function adjustPrimary(key, delta) {
-          if (delta === 0) return;
-          if (delta > 0) {
-            const use = Math.min(delta, player.statPoints);
-            if (use <= 0) return;
-            player.statPoints -= use;
-            player.primary[key].base += use;
-            player.allocations[key] += use;
-            log(`能力Pを使用: ${player.primary[key].label} +${use}`, "good");
-          } else {
-            const refundable = player.allocations[key];
-            const giveBack = Math.min(refundable, Math.abs(delta));
-            if (giveBack <= 0) return;
-            player.primary[key].base -= giveBack;
-            player.allocations[key] -= giveBack;
-            player.statPoints += giveBack;
-            log(
-              `能力Pを返却: ${player.primary[key].label} -${giveBack}`,
-              "info",
-            );
-          }
-          updateUI();
-          maybeAutoSave("ステータス調整");
-        }
-
-        function getAdjustStep() {
-          return stepOptions[currentStepIndex];
-        }
-
-        function updateStepButton() {
-          if (!statStepButton) return;
-          const step = getAdjustStep();
-          statStepButton.textContent = `±${step}`;
-          statStepButton.title = `増減幅 ${step}`;
-        }
-
         function getSkillAdjustStep() {
           return skillStepOptions[currentSkillStepIndex];
         }
@@ -16974,53 +17174,1243 @@ function showDamagePopup(
           skillStepButton.title = `スキル増減幅 ${step}`;
         }
 
-        function renderPrimaryStats() {
-          const container = document.getElementById("primary-stats");
-          container.innerHTML = "";
-          const step = getAdjustStep();
+        const STATUS_TREE_CONFIG = buildStatusTreeConfig();
+        const STATUS_TREE_NODE_MAP = new Map(
+          STATUS_TREE_CONFIG.nodes.map((node) => [node.id, node]),
+        );
+        const STATUS_TREE_CONNECTIONS = buildStatusTreeConnections(
+          STATUS_TREE_CONFIG.edges,
+        );
+        const STATUS_TREE_START_NODES = [STATUS_TREE_CONFIG.coreId];
+        let activeStatusTreeNodeId = STATUS_TREE_CONFIG.coreId;
 
+        function buildStatusTreeConnections(edges) {
+          const map = new Map();
+          edges.forEach(([from, to]) => {
+            if (!map.has(from)) map.set(from, new Set());
+            if (!map.has(to)) map.set(to, new Set());
+            map.get(from).add(to);
+            map.get(to).add(from);
+          });
+          return map;
+        }
+
+        function buildStatusTreeConfig() {
+          const size = 900;
+          const center = { x: size / 2, y: size / 2 };
+          const nodes = [];
+          const edges = [];
+
+          const addNode = (node) => {
+            nodes.push(node);
+            return node.id;
+          };
+
+          const addEdge = (from, to) => {
+            edges.push([from, to]);
+          };
+
+          const polar = (radius, angleDeg) => {
+            const rad = ((angleDeg - 90) * Math.PI) / 180;
+            return {
+              x: center.x + Math.cos(rad) * radius,
+              y: center.y + Math.sin(rad) * radius,
+            };
+          };
+
+          const coreId = addNode({
+            id: "core",
+            label: "原初の核",
+            type: "core",
+            classKey: "core",
+            x: center.x,
+            y: center.y,
+            primary: { str: 1, int: 1, vit: 1, agi: 1, luck: 1 },
+            bonus: { hp: 12, mp: 6 },
+            desc: "全ての起点。ここから各職業の運命が伸びる。",
+          });
+
+          const classDefs = [
+            {
+              key: "sword",
+              label: "剣士",
+              color: "#f59e0b",
+              angle: 330,
+              branches: [
+                {
+                  key: "flurry",
+                  label: "連撃",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "斬撃の基本",
+                      primary: { str: 1 },
+                      bonus: { physAtk: 2 },
+                      desc: "剣の振り始めを磨く。",
+                    },
+                    {
+                      label: "手数鍛錬",
+                      bonus: { speed: 1.2, critRate: 0.6 },
+                      desc: "連続攻撃の速度を鍛える。",
+                    },
+                    {
+                      label: "疾風連閃",
+                      type: "major",
+                      bonus: { physAtk: 6, critRate: 2.2, speed: 1.4 },
+                      desc: "風のような連撃で押し切る。",
+                    },
+                    {
+                      label: "乱舞の覇気",
+                      type: "keystone",
+                      bonus: { speed: 2.4, critRate: 3, critDamage: 6 },
+                      desc: "止まらぬ手数が会心を呼ぶ。",
+                    },
+                  ],
+                },
+                {
+                  key: "heavy",
+                  label: "一撃",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "剛撃の習熟",
+                      primary: { str: 1 },
+                      bonus: { physAtk: 2.6 },
+                      desc: "重い一撃の基礎を固める。",
+                    },
+                    {
+                      label: "重撃集中",
+                      bonus: { physAtk: 5, critDamage: 2 },
+                      desc: "一点突破に全力を注ぐ。",
+                    },
+                    {
+                      label: "断空の一刀",
+                      type: "major",
+                      bonus: { physAtk: 8, critDamage: 8 },
+                      desc: "空間を裂く決定打。",
+                    },
+                    {
+                      label: "居合極意",
+                      type: "keystone",
+                      bonus: { critDamage: 14, physPen: 6 },
+                      desc: "初撃が戦局を決する。",
+                    },
+                  ],
+                },
+                {
+                  key: "guard",
+                  label: "守勢",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "盾構え",
+                      primary: { vit: 1 },
+                      bonus: { physDef: 2.6 },
+                      desc: "守りの基本を身に付ける。",
+                    },
+                    {
+                      label: "堅陣",
+                      bonus: { physDef: 5, block: 1.2 },
+                      desc: "敵の攻勢を受け止める。",
+                    },
+                    {
+                      label: "守勢の剣",
+                      type: "major",
+                      bonus: { block: 4, damageReduction: 3 },
+                      desc: "守りが攻撃機会を作る。",
+                    },
+                    {
+                      label: "鉄壁の輪",
+                      type: "keystone",
+                      bonus: { physDef: 10, block: 6, damageReduction: 4 },
+                      desc: "動じない守護者となる。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "heavy",
+                  fromIndex: 1,
+                  angleOffset: -28,
+                  nodes: [
+                    {
+                      label: "剣気放射",
+                      bonus: { physPen: 2.2, critRate: 1 },
+                      desc: "斬撃の衝撃を広げる。",
+                    },
+                    {
+                      label: "破砕衝",
+                      type: "major",
+                      bonus: { physPen: 4.5, physAtk: 4 },
+                      desc: "硬い装甲を砕く。",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "mage",
+              label: "魔導士",
+              color: "#60a5fa",
+              angle: 30,
+              branches: [
+                {
+                  key: "element",
+                  label: "属性連鎖",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "元素契約",
+                      primary: { int: 1 },
+                      bonus: { magAtk: 2.4 },
+                      desc: "属性の基礎を引き出す。",
+                    },
+                    {
+                      label: "魔力循環",
+                      bonus: { magAtk: 4, magPen: 1.5 },
+                      desc: "魔力を循環させる。",
+                    },
+                    {
+                      label: "精霊連鎖",
+                      type: "major",
+                      bonus: { magAtk: 7, magPen: 3.5 },
+                      desc: "属性が連鎖し火力が伸びる。",
+                    },
+                    {
+                      label: "極点魔導",
+                      type: "keystone",
+                      bonus: { magAtk: 12, critRate: 2.5 },
+                      desc: "一点集中で魔力を解放。",
+                    },
+                  ],
+                },
+                {
+                  key: "chant",
+                  label: "詠唱短縮",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "詠唱整理",
+                      primary: { int: 1 },
+                      bonus: { cooldown: 1.2 },
+                      desc: "詠唱の流れを整える。",
+                    },
+                    {
+                      label: "高速刻印",
+                      bonus: { cooldown: 2.4, speed: 1 },
+                      desc: "詠唱と行動を同時に回す。",
+                    },
+                    {
+                      label: "瞬詠術式",
+                      type: "major",
+                      bonus: { cooldown: 4, magAtk: 4 },
+                      desc: "瞬時に術式を展開する。",
+                    },
+                    {
+                      label: "星読みの瞬発",
+                      type: "keystone",
+                      bonus: { cooldown: 6, speed: 2.2, critRate: 2 },
+                      desc: "連続詠唱の起点。",
+                    },
+                  ],
+                },
+                {
+                  key: "barrier",
+                  label: "秘術防壁",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "護符調整",
+                      primary: { vit: 1 },
+                      bonus: { barrier: 6 },
+                      desc: "魔術で防御を固める。",
+                    },
+                    {
+                      label: "反射障壁",
+                      bonus: { magDef: 4, barrier: 9 },
+                      desc: "魔法障壁で身を守る。",
+                    },
+                    {
+                      label: "秘術結界",
+                      type: "major",
+                      bonus: { barrier: 16, magDef: 6 },
+                      desc: "強固な魔法結界を張る。",
+                    },
+                    {
+                      label: "アーク・シールド",
+                      type: "keystone",
+                      bonus: { barrier: 24, controlResist: 4 },
+                      desc: "結界が状態異常を抑制。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "element",
+                  fromIndex: 1,
+                  angleOffset: 25,
+                  nodes: [
+                    {
+                      label: "元素飽和",
+                      bonus: { critDamage: 4, magPen: 2 },
+                      desc: "魔力を飽和させ爆発的に。",
+                    },
+                    {
+                      label: "燐光拡散",
+                      type: "major",
+                      bonus: { magAtk: 6, critRate: 2 },
+                      desc: "連鎖火力の拡張。",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "cleric",
+              label: "聖職者",
+              color: "#a5f3fc",
+              angle: 90,
+              branches: [
+                {
+                  key: "blessing",
+                  label: "祝福回復",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "清癒の祈り",
+                      primary: { vit: 1 },
+                      bonus: { hpRegen: 3, hp: 8 },
+                      desc: "回復の基礎を確立。",
+                    },
+                    {
+                      label: "癒やしの波",
+                      bonus: { hpRegen: 5, barrier: 6 },
+                      desc: "徐々に癒やす力。",
+                    },
+                    {
+                      label: "祝福の泉",
+                      type: "major",
+                      bonus: { hpRegen: 8, hp: 16 },
+                      desc: "持久戦に強い回復源。",
+                    },
+                    {
+                      label: "神域循環",
+                      type: "keystone",
+                      bonus: { hpRegen: 12, barrier: 12, controlResist: 3 },
+                      desc: "回復が守りに変わる。",
+                    },
+                  ],
+                },
+                {
+                  key: "guard",
+                  label: "守護祝祷",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "守護の誓い",
+                      primary: { vit: 1 },
+                      bonus: { damageReduction: 1.5 },
+                      desc: "祝祷で身を守る。",
+                    },
+                    {
+                      label: "浄化符",
+                      bonus: { debuffResist: 3, dotResist: 2 },
+                      desc: "状態異常を祓う。",
+                    },
+                    {
+                      label: "聖護輪",
+                      type: "major",
+                      bonus: {
+                        controlResist: 4,
+                        debuffResist: 4,
+                        dotResist: 4,
+                      },
+                      desc: "仲間の耐性を高める。",
+                    },
+                    {
+                      label: "守護天輪",
+                      type: "keystone",
+                      bonus: { damageReduction: 4, block: 4, hp: 16 },
+                      desc: "防御特化の中心点。",
+                    },
+                  ],
+                },
+                {
+                  key: "holystrike",
+                  label: "聖撃",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "聖印打撃",
+                      primary: { int: 1 },
+                      bonus: { magAtk: 2.4 },
+                      desc: "聖属性の打撃を覚える。",
+                    },
+                    {
+                      label: "浄光",
+                      bonus: { magAtk: 4.5, critRate: 1 },
+                      desc: "聖光で敵を焼く。",
+                    },
+                    {
+                      label: "審判の槌",
+                      type: "major",
+                      bonus: { magAtk: 7, critDamage: 6 },
+                      desc: "敵を裁く一撃。",
+                    },
+                    {
+                      label: "光輝の判決",
+                      type: "keystone",
+                      bonus: { magAtk: 10, critRate: 3, critDamage: 6 },
+                      desc: "聖なる爆発を引き起こす。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "guard",
+                  fromIndex: 1,
+                  angleOffset: -28,
+                  nodes: [
+                    {
+                      label: "祈祷集中",
+                      bonus: { cooldown: 2, hpRegen: 2 },
+                      desc: "祝祷の回転を上げる。",
+                    },
+                    {
+                      label: "聖域拡張",
+                      type: "major",
+                      bonus: { barrier: 10, controlResist: 2 },
+                      desc: "守りの範囲を広げる。",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "shadow",
+              label: "影紋",
+              color: "#c084fc",
+              angle: 150,
+              branches: [
+                {
+                  key: "ambush",
+                  label: "影襲",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "影の足運び",
+                      primary: { agi: 1 },
+                      bonus: { speed: 1.4, evade: 1 },
+                      desc: "敵の視線を避ける。",
+                    },
+                    {
+                      label: "背面捕捉",
+                      bonus: { critRate: 1.6, accuracy: 1.2 },
+                      desc: "隙を見逃さない。",
+                    },
+                    {
+                      label: "影刃連鎖",
+                      type: "major",
+                      bonus: { critRate: 3, critDamage: 6 },
+                      desc: "影から連続で突く。",
+                    },
+                    {
+                      label: "夜烏の舞",
+                      type: "keystone",
+                      bonus: { speed: 2.6, evade: 3, critRate: 2 },
+                      desc: "高速回避と連撃の融合。",
+                    },
+                  ],
+                },
+                {
+                  key: "assassin",
+                  label: "奇襲",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "急所観察",
+                      primary: { agi: 1 },
+                      bonus: { critDamage: 3 },
+                      desc: "急所への意識を高める。",
+                    },
+                    {
+                      label: "刺突研磨",
+                      bonus: { physPen: 2.5, critDamage: 4 },
+                      desc: "防御を崩す刺突。",
+                    },
+                    {
+                      label: "月影の殺意",
+                      type: "major",
+                      bonus: { critDamage: 9, physPen: 4 },
+                      desc: "一撃必殺の破壊力。",
+                    },
+                    {
+                      label: "暗殺契約",
+                      type: "keystone",
+                      bonus: { critDamage: 12, critRate: 3, speed: 1.4 },
+                      desc: "影が敵を選んで裁く。",
+                    },
+                  ],
+                },
+                {
+                  key: "toxin",
+                  label: "毒刃",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "毒刃の手ほどき",
+                      primary: { luck: 1 },
+                      bonus: { lifeSteal: 1.2 },
+                      desc: "毒による削りを習得。",
+                    },
+                    {
+                      label: "侵蝕の刃",
+                      bonus: { debuffResist: 2, dotResist: 2 },
+                      desc: "毒と耐性を両立。",
+                    },
+                    {
+                      label: "影毒領域",
+                      type: "major",
+                      bonus: { lifeSteal: 3, critRate: 2 },
+                      desc: "毒の浸食が確実性を上げる。",
+                    },
+                    {
+                      label: "夜毒式",
+                      type: "keystone",
+                      bonus: { lifeSteal: 4.5, critDamage: 6, evade: 2 },
+                      desc: "毒と暗殺の複合型。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "ambush",
+                  fromIndex: 1,
+                  angleOffset: 25,
+                  nodes: [
+                    {
+                      label: "煙幕",
+                      bonus: { evade: 3, controlResist: 2 },
+                      desc: "煙で敵の動きを乱す。",
+                    },
+                    {
+                      label: "無音の跳躍",
+                      type: "major",
+                      bonus: { speed: 2, evade: 3 },
+                      desc: "影を渡る。",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "hunter",
+              label: "狩人",
+              color: "#34d399",
+              angle: 210,
+              branches: [
+                {
+                  key: "snipe",
+                  label: "狙撃",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "狙いの構え",
+                      primary: { agi: 1 },
+                      bonus: { accuracy: 2, physAtk: 2 },
+                      desc: "遠距離の基礎。",
+                    },
+                    {
+                      label: "照準維持",
+                      bonus: { accuracy: 3.5, critRate: 1.2 },
+                      desc: "安定した命中。",
+                    },
+                    {
+                      label: "貫通矢",
+                      type: "major",
+                      bonus: { physPen: 4, critRate: 2 },
+                      desc: "狙撃の貫通力。",
+                    },
+                    {
+                      label: "絶対必中",
+                      type: "keystone",
+                      bonus: { accuracy: 8, critDamage: 6 },
+                      desc: "一矢で決める。",
+                    },
+                  ],
+                },
+                {
+                  key: "trap",
+                  label: "罠師",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "罠の知識",
+                      primary: { int: 1 },
+                      bonus: { cooldown: 1.4 },
+                      desc: "罠の仕込みを早める。",
+                    },
+                    {
+                      label: "拘束の縄",
+                      bonus: { controlResist: 2, debuffResist: 2 },
+                      desc: "罠を扱う耐性。",
+                    },
+                    {
+                      label: "連鎖罠",
+                      type: "major",
+                      bonus: { cooldown: 3.5, speed: 1.4 },
+                      desc: "罠連鎖で主導権を取る。",
+                    },
+                    {
+                      label: "狩猟圏支配",
+                      type: "keystone",
+                      bonus: { controlResist: 4, critRate: 2, speed: 1.6 },
+                      desc: "罠による制圧。",
+                    },
+                  ],
+                },
+                {
+                  key: "tracker",
+                  label: "探索",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "採取眼",
+                      primary: { luck: 1 },
+                      bonus: { dropRate: 2 },
+                      desc: "良い獲物を見抜く。",
+                    },
+                    {
+                      label: "獣道勘",
+                      bonus: { rarity: 1.5, namedRate: 1.5 },
+                      desc: "希少な獲物の痕跡。",
+                    },
+                    {
+                      label: "狩場整備",
+                      type: "major",
+                      bonus: { dropRate: 4, rarity: 3 },
+                      desc: "ドロップ効率を上げる。",
+                    },
+                    {
+                      label: "黄金の導き",
+                      type: "keystone",
+                      bonus: { goldChance: 8, titleChance: 4 },
+                      desc: "探索の成果が富になる。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "snipe",
+                  fromIndex: 1,
+                  angleOffset: -28,
+                  nodes: [
+                    {
+                      label: "視界確保",
+                      bonus: { accuracy: 2.4, speed: 1 },
+                      desc: "狙撃体勢を保つ。",
+                    },
+                    {
+                      label: "夜目の狙撃",
+                      type: "major",
+                      bonus: { critRate: 2.4, accuracy: 3 },
+                      desc: "暗所でも外さない。",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "guardian",
+              label: "守護騎士",
+              color: "#f97316",
+              angle: 270,
+              branches: [
+                {
+                  key: "fortress",
+                  label: "防壁",
+                  angleOffset: -18,
+                  nodes: [
+                    {
+                      label: "巨盾整備",
+                      primary: { vit: 1 },
+                      bonus: { physDef: 3 },
+                      desc: "防壁の基礎。",
+                    },
+                    {
+                      label: "鋼の躯",
+                      bonus: { physDef: 5, damageReduction: 1.4 },
+                      desc: "体全体で守る。",
+                    },
+                    {
+                      label: "不動の壁",
+                      type: "major",
+                      bonus: { physDef: 8, block: 3 },
+                      desc: "敵の攻撃を止める。",
+                    },
+                    {
+                      label: "絶対防衛線",
+                      type: "keystone",
+                      bonus: { damageReduction: 5, block: 6, hp: 18 },
+                      desc: "パーティの防壁となる。",
+                    },
+                  ],
+                },
+                {
+                  key: "taunt",
+                  label: "挑発",
+                  angleOffset: 0,
+                  nodes: [
+                    {
+                      label: "圧の一喝",
+                      primary: { str: 1 },
+                      bonus: { hp: 8, physDef: 2 },
+                      desc: "敵の視線を引く。",
+                    },
+                    {
+                      label: "鉄の咆哮",
+                      bonus: { hp: 12, block: 1.5 },
+                      desc: "敵の攻撃を受け止める。",
+                    },
+                    {
+                      label: "守勢鼓舞",
+                      type: "major",
+                      bonus: { hp: 18, damageReduction: 2.5 },
+                      desc: "耐久力で支える。",
+                    },
+                    {
+                      label: "鉄壁戦魂",
+                      type: "keystone",
+                      bonus: { hp: 24, block: 4, controlResist: 3 },
+                      desc: "揺るがぬ守護。",
+                    },
+                  ],
+                },
+                {
+                  key: "banner",
+                  label: "戦旗",
+                  angleOffset: 18,
+                  nodes: [
+                    {
+                      label: "守護の旗印",
+                      primary: { vit: 1 },
+                      bonus: { hpRegen: 2, hp: 6 },
+                      desc: "旗印で士気を保つ。",
+                    },
+                    {
+                      label: "鼓舞陣形",
+                      bonus: { hpRegen: 3.5, damageReduction: 1.5 },
+                      desc: "陣形を整えて粘る。",
+                    },
+                    {
+                      label: "不屈の戦旗",
+                      type: "major",
+                      bonus: { hpRegen: 6, hp: 14 },
+                      desc: "長期戦で強い。",
+                    },
+                    {
+                      label: "守護王の旗",
+                      type: "keystone",
+                      bonus: { hpRegen: 8, hp: 20, block: 2 },
+                      desc: "味方を守る象徴。",
+                    },
+                  ],
+                },
+              ],
+              sideBranches: [
+                {
+                  fromBranch: "fortress",
+                  fromIndex: 1,
+                  angleOffset: 28,
+                  nodes: [
+                    {
+                      label: "鉄鎖",
+                      bonus: { block: 2, controlResist: 1 },
+                      desc: "動じない鎖。",
+                    },
+                    {
+                      label: "防陣強化",
+                      type: "major",
+                      bonus: { physDef: 5, damageReduction: 2 },
+                      desc: "防陣を一段強化。",
+                    },
+                  ],
+                },
+              ],
+            },
+          ];
+
+          const hubRadius = 140;
+          const branchStartRadius = 230;
+          const branchSpacing = 70;
+          const sideSpacing = 58;
+
+          const classHubIds = {};
+          classDefs.forEach((classDef) => {
+            const hubPos = polar(hubRadius, classDef.angle);
+            const hubId = addNode({
+              id: `${classDef.key}-hub`,
+              label: `${classDef.label}の起点`,
+              type: "major",
+              classKey: classDef.key,
+              x: hubPos.x,
+              y: hubPos.y,
+              primary: { str: 0, int: 0, vit: 0, agi: 0, luck: 0 },
+              bonus: { hp: 4, mp: 4 },
+              desc: `${classDef.label}の運命が広がる起点。`,
+            });
+            classHubIds[classDef.key] = hubId;
+            addEdge(coreId, hubId);
+          });
+
+          const buildBranch = (classDef, branchDef) => {
+            const branchAngle = classDef.angle + branchDef.angleOffset;
+            const createdIds = [];
+            let prevId = classHubIds[classDef.key];
+            branchDef.nodes.forEach((nodeDef, index) => {
+              const radius = branchStartRadius + branchSpacing * index;
+              const pos = polar(radius, branchAngle);
+              const id = `${classDef.key}-${branchDef.key}-${index + 1}`;
+              const type = nodeDef.type || "minor";
+              addNode({
+                id,
+                label: nodeDef.label,
+                type,
+                classKey: classDef.key,
+                x: pos.x,
+                y: pos.y,
+                primary: nodeDef.primary,
+                bonus: nodeDef.bonus,
+                desc: nodeDef.desc,
+              });
+              addEdge(prevId, id);
+              prevId = id;
+              createdIds.push(id);
+            });
+
+            (classDef.sideBranches || [])
+              .filter((side) => side.fromBranch === branchDef.key)
+              .forEach((sideBranch) => {
+                const fromId = createdIds[sideBranch.fromIndex];
+                if (!fromId) return;
+                let sidePrev = fromId;
+                sideBranch.nodes.forEach((nodeDef, sideIndex) => {
+                  const radius =
+                    branchStartRadius +
+                    branchSpacing * sideBranch.fromIndex +
+                    sideSpacing * (sideIndex + 1);
+                  const pos = polar(
+                    radius,
+                    branchAngle + sideBranch.angleOffset,
+                  );
+                  const id = `${classDef.key}-${branchDef.key}-side-${sideIndex + 1}`;
+                  const type = nodeDef.type || "minor";
+                  addNode({
+                    id,
+                    label: nodeDef.label,
+                    type,
+                    classKey: classDef.key,
+                    x: pos.x,
+                    y: pos.y,
+                    primary: nodeDef.primary,
+                    bonus: nodeDef.bonus,
+                    desc: nodeDef.desc,
+                  });
+                  addEdge(sidePrev, id);
+                  sidePrev = id;
+                });
+              });
+          };
+
+          classDefs.forEach((classDef) => {
+            classDef.branches.forEach((branch) => buildBranch(classDef, branch));
+          });
+
+          const crossroads = [
+            {
+              id: "cross-sword-mage",
+              label: "剣魔交差",
+              between: ["sword", "mage"],
+              angle: 0,
+              bonus: { critRate: 1.2, physAtk: 3, magAtk: 3 },
+              desc: "物理と魔法の混成路。",
+            },
+            {
+              id: "cross-mage-cleric",
+              label: "秘聖交差",
+              between: ["mage", "cleric"],
+              angle: 60,
+              bonus: { magDef: 4, barrier: 8 },
+              desc: "秘術と祝福を繋ぐ。",
+            },
+            {
+              id: "cross-cleric-shadow",
+              label: "浄影交差",
+              between: ["cleric", "shadow"],
+              angle: 120,
+              bonus: { debuffResist: 3, critRate: 1.4 },
+              desc: "浄化と奇襲の間道。",
+            },
+            {
+              id: "cross-shadow-hunter",
+              label: "影狩交差",
+              between: ["shadow", "hunter"],
+              angle: 180,
+              bonus: { evade: 2, accuracy: 2 },
+              desc: "影と狩りの寄り道。",
+            },
+            {
+              id: "cross-hunter-guardian",
+              label: "狩護交差",
+              between: ["hunter", "guardian"],
+              angle: 240,
+              bonus: { hp: 10, dropRate: 2 },
+              desc: "守りと探索の接続路。",
+            },
+            {
+              id: "cross-guardian-sword",
+              label: "護剣交差",
+              between: ["guardian", "sword"],
+              angle: 300,
+              bonus: { physDef: 4, physAtk: 3 },
+              desc: "守護と剣技の中間点。",
+            },
+          ];
+
+          crossroads.forEach((cross) => {
+            const pos = polar(220, cross.angle);
+            addNode({
+              id: cross.id,
+              label: cross.label,
+              type: "major",
+              classKey: "cross",
+              x: pos.x,
+              y: pos.y,
+              bonus: cross.bonus,
+              desc: cross.desc,
+            });
+            cross.between.forEach((classKey) => {
+              const hubId = classHubIds[classKey];
+              if (hubId) addEdge(cross.id, hubId);
+            });
+          });
+
+          return { size, nodes, edges, coreId, classDefs };
+        }
+
+        function ensureStatusTreeState() {
+          if (!player.statusTree || typeof player.statusTree !== "object") {
+            player.statusTree = { unlocked: {}, spent: 0 };
+          }
+          if (!player.statusTree.unlocked) {
+            player.statusTree.unlocked = {};
+          }
+          STATUS_TREE_START_NODES.forEach((id) => {
+            if (!player.statusTree.unlocked[id]) {
+              player.statusTree.unlocked[id] = true;
+            }
+          });
+          player.statusTree.spent = getStatusTreeSpentPoints();
+        }
+
+        function getStatusTreeSpentPoints() {
+          const unlocked = player.statusTree?.unlocked || {};
+          const unlockedIds = Object.keys(unlocked).filter((id) => unlocked[id]);
+          return unlockedIds.filter(
+            (id) => !STATUS_TREE_START_NODES.includes(id),
+          ).length;
+        }
+
+        function calculateStatusTreeBonuses() {
+          ensureStatusTreeState();
+          const primary = createEmptyPrimaryBonus();
+          const secondary = createEmptyBonus();
+          const unlocked = player.statusTree?.unlocked || {};
+          STATUS_TREE_CONFIG.nodes.forEach((node) => {
+            if (!unlocked[node.id]) return;
+            Object.entries(node.primary || {}).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              primary[key] += value;
+            });
+            Object.entries(node.bonus || {}).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              secondary[key] += value;
+            });
+          });
+          return { primary, secondary };
+        }
+
+        function getStatusTreeNodeState(nodeId) {
+          const unlocked = player.statusTree?.unlocked || {};
+          if (unlocked[nodeId]) return "unlocked";
+          const neighbors = STATUS_TREE_CONNECTIONS.get(nodeId) || new Set();
+          const isAvailable = [...neighbors].some((neighbor) => unlocked[neighbor]);
+          return isAvailable ? "available" : "locked";
+        }
+
+        function canUnlockStatusNode(nodeId) {
+          const state = getStatusTreeNodeState(nodeId);
+          return state === "available" && player.statPoints > 0;
+        }
+
+        function unlockStatusTreeNode(nodeId) {
+          ensureStatusTreeState();
+          if (!canUnlockStatusNode(nodeId)) {
+            if (player.statPoints <= 0) {
+              log("能力Pが足りません", "warning");
+            } else {
+              log("隣接ノードが必要です", "warning");
+            }
+            return;
+          }
+          player.statusTree.unlocked[nodeId] = true;
+          player.statPoints -= 1;
+          player.statusTree.spent = getStatusTreeSpentPoints();
+          const node = STATUS_TREE_NODE_MAP.get(nodeId);
+          log(`🌟 ${node?.label || "ノード"} を解放`, "good");
+          recalcDerivedStats();
+          updateUI();
+          maybeAutoSave("ステータスツリー解放");
+        }
+
+        function resetStatusTree() {
+          const spent = getStatusTreeSpentPoints();
+          if (spent <= 0) return false;
+          player.statusTree.unlocked = {};
+          STATUS_TREE_START_NODES.forEach((id) => {
+            player.statusTree.unlocked[id] = true;
+          });
+          player.statPoints += spent;
+          player.statusTree.spent = 0;
+          recalcDerivedStats();
+          updateUI();
+          log("ステータスツリーをリセットしました", "info");
+          maybeAutoSave("ステータスツリー振り直し");
+          return true;
+        }
+
+        function formatStatusTreeBonus(node) {
+          const rows = [];
+          const primaryLabels = {
+            str: "力",
+            int: "知識",
+            vit: "体力",
+            agi: "敏捷",
+            luck: "運",
+          };
+          const secondaryLabels = {
+            hp: "最大HP",
+            mp: "最大MP",
+            physAtk: "物理攻撃",
+            magAtk: "魔法攻撃",
+            physDef: "物理防御",
+            magDef: "魔法防御",
+            speed: "行動速度",
+            critRate: "クリ率",
+            critDamage: "クリダメ",
+            accuracy: "命中率",
+            evade: "回避率",
+            physPen: "物理貫通",
+            magPen: "魔法貫通",
+            damageReduction: "被ダメ軽減",
+            block: "ブロック",
+            controlResist: "行動阻害耐性",
+            dotResist: "DoT耐性",
+            debuffResist: "弱体耐性",
+            cooldown: "CT短縮",
+            hpRegen: "HP再生",
+            lifeSteal: "HP吸収",
+            barrier: "バリア",
+            dropRate: "ドロップ率",
+            rarity: "レア率",
+            goldChance: "ゴールド率",
+            titleChance: "称号率",
+            namedRate: "ネームド率",
+          };
+          const percentKeys = [
+            "critRate",
+            "critDamage",
+            "accuracy",
+            "evade",
+            "physPen",
+            "magPen",
+            "damageReduction",
+            "block",
+            "controlResist",
+            "dotResist",
+            "debuffResist",
+            "cooldown",
+            "lifeSteal",
+            "dropRate",
+            "rarity",
+            "goldChance",
+            "titleChance",
+            "namedRate",
+          ];
+
+          Object.entries(node.primary || {}).forEach(([key, value]) => {
+            if (!value) return;
+            rows.push({
+              label: primaryLabels[key] || key,
+              value: `+${value}`,
+            });
+          });
+          Object.entries(node.bonus || {}).forEach(([key, value]) => {
+            if (!value) return;
+            const unit = percentKeys.includes(key) ? "%" : "";
+            rows.push({
+              label: secondaryLabels[key] || key,
+              value: `+${displayNumber(value, { isPercent: unit === "%" })}${unit}`,
+            });
+          });
+          return rows;
+        }
+
+        function renderStatusTreeLegend() {
+          const legend = document.getElementById("status-tree-legend");
+          if (!legend) return;
+          legend.innerHTML = "";
+          STATUS_TREE_CONFIG.classDefs.forEach((classDef) => {
+            const item = document.createElement("div");
+            item.className = "legend-item";
+            const dot = document.createElement("span");
+            dot.className = "legend-dot";
+            dot.style.setProperty("--legend-color", classDef.color);
+            const label = document.createElement("span");
+            label.textContent = classDef.label;
+            item.appendChild(dot);
+            item.appendChild(label);
+            legend.appendChild(item);
+          });
+        }
+
+        function renderStatusTreeSummary() {
+          const summary = document.getElementById("status-tree-primary-summary");
+          if (!summary) return;
+          summary.innerHTML = "";
           primaryOrder.forEach((key) => {
             const stat = player.primary[key];
-            const row = document.createElement("div");
-            row.className = "stat-row primary-row";
+            const total = stat.base + stat.bonus;
+            const chip = document.createElement("div");
+            chip.className = "summary-chip";
+            chip.innerHTML = `${stat.label} <strong>${total}</strong>`;
+            summary.appendChild(chip);
+          });
+          const spentChip = document.createElement("div");
+          spentChip.className = "summary-chip";
+          spentChip.innerHTML = `ツリー解放 <strong>${getStatusTreeSpentPoints()}</strong>`;
+          summary.appendChild(spentChip);
+        }
 
-            const info = document.createElement("div");
-            info.className = "primary-info";
+        function updateStatusTreeDetail(nodeId) {
+          const title = document.getElementById("status-tree-detail-title");
+          const meta = document.getElementById("status-tree-detail-meta");
+          const bonus = document.getElementById("status-tree-detail-bonus");
+          const node = STATUS_TREE_NODE_MAP.get(nodeId);
+          if (!title || !meta || !bonus || !node) return;
+          const state = getStatusTreeNodeState(nodeId);
+          title.textContent = node.label;
+          meta.textContent = `${node.desc || "ステータスを強化するノード。"} / 状態: ${state === "unlocked" ? "解放済み" : state === "available" ? "解放可能" : "未接続"}`;
+          bonus.innerHTML = "";
+          const rows = formatStatusTreeBonus(node);
+          if (!rows.length) {
+            bonus.textContent = "効果なし";
+            return;
+          }
+          rows.forEach((row) => {
+            const line = document.createElement("div");
+            line.className = "bonus-row";
+            const label = document.createElement("span");
+            label.textContent = row.label;
+            const value = document.createElement("strong");
+            value.textContent = row.value;
+            line.appendChild(label);
+            line.appendChild(value);
+            bonus.appendChild(line);
+          });
+        }
 
-            const label = document.createElement("div");
-            label.className = "stat-label inline";
-            label.textContent = stat.label;
+        function renderStatusTree() {
+          const canvas = document.getElementById("status-tree-canvas");
+          const edgesLayer = document.getElementById("status-tree-edges");
+          const svg = document.getElementById("status-tree-svg");
+          if (!canvas || !edgesLayer || !svg) return;
+          if (!STATUS_TREE_NODE_MAP.has(activeStatusTreeNodeId)) {
+            activeStatusTreeNodeId = STATUS_TREE_CONFIG.coreId;
+          }
+          canvas.querySelectorAll(".status-tree-node").forEach((node) =>
+            node.remove(),
+          );
+          edgesLayer.innerHTML = "";
 
-            const value = document.createElement("div");
-            value.className = "stat-value";
-            value.innerHTML = formatPrimaryValue(stat);
+          STATUS_TREE_CONFIG.edges.forEach(([from, to]) => {
+            const fromNode = STATUS_TREE_NODE_MAP.get(from);
+            const toNode = STATUS_TREE_NODE_MAP.get(to);
+            if (!fromNode || !toNode) return;
+            const stateFrom = getStatusTreeNodeState(from);
+            const stateTo = getStatusTreeNodeState(to);
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line",
+            );
+            line.setAttribute("x1", fromNode.x);
+            line.setAttribute("y1", fromNode.y);
+            line.setAttribute("x2", toNode.x);
+            line.setAttribute("y2", toNode.y);
+            line.classList.add("status-tree-edge");
+            if (stateFrom === "unlocked" && stateTo === "unlocked") {
+              line.classList.add("unlocked");
+            } else if (stateFrom === "unlocked" || stateTo === "unlocked") {
+              line.classList.add("available");
+            }
+            edgesLayer.appendChild(line);
+          });
 
-            info.appendChild(label);
-            info.appendChild(value);
-
-            const actions = document.createElement("div");
-            actions.className = "primary-actions";
-
-            const inc = document.createElement("button");
-            inc.textContent = `+${step}`;
-            inc.classList.add("mini-btn");
-            inc.disabled = player.statPoints <= 0;
-            inc.title = `${step}ポイント増加`;
-            inc.onclick = () => adjustPrimary(key, step);
-
-            const dec = document.createElement("button");
-            dec.textContent = `-${step}`;
-            dec.classList.add("mini-btn");
-            dec.disabled = player.allocations[key] <= 0;
-            dec.title = `${step}ポイント減少`;
-            dec.onclick = () => adjustPrimary(key, -step);
-
-            actions.appendChild(inc);
-            actions.appendChild(dec);
-
-            row.appendChild(info);
-            row.appendChild(actions);
-            container.appendChild(row);
+          STATUS_TREE_CONFIG.nodes.forEach((node) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = `status-tree-node ${node.type || "minor"} ${getStatusTreeNodeState(node.id)}`;
+            if (node.id === activeStatusTreeNodeId) {
+              button.classList.add("selected");
+            }
+            button.style.left = `${node.x}px`;
+            button.style.top = `${node.y}px`;
+            const classDef = STATUS_TREE_CONFIG.classDefs.find(
+              (def) => def.key === node.classKey,
+            );
+            if (classDef) {
+              button.style.setProperty("--node-color", classDef.color);
+            } else if (node.classKey === "cross") {
+              button.style.setProperty("--node-color", "#94a3b8");
+            } else if (node.classKey === "core") {
+              button.style.setProperty("--node-color", "#facc15");
+            }
+            button.dataset.nodeId = node.id;
+            button.setAttribute("aria-label", node.label);
+            const core = document.createElement("span");
+            core.className = "node-core";
+            button.appendChild(core);
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              activeStatusTreeNodeId = node.id;
+              updateStatusTreeDetail(node.id);
+              if (getStatusTreeNodeState(node.id) === "available") {
+                unlockStatusTreeNode(node.id);
+              } else {
+                renderStatusTree();
+              }
+            });
+            button.addEventListener("mouseenter", () => {
+              activeStatusTreeNodeId = node.id;
+              updateStatusTreeDetail(node.id);
+              renderStatusTree();
+            });
+            canvas.appendChild(button);
           });
         }
 
@@ -18536,7 +19926,6 @@ function showDamagePopup(
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
         const resetButton = document.getElementById("reset-stats");
-        const statStepButton = document.getElementById("stat-step");
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
@@ -21298,18 +22687,19 @@ function showDamagePopup(
 
         function resetAllocations() {
           const spent = pendingResetSpent;
-          Object.entries(player.allocations).forEach(([key, amount]) => {
-            if (amount > 0) {
-              player.primary[key].base -= amount;
-              player.allocations[key] = 0;
-            }
+          if (spent <= 0) return;
+          ensureStatusTreeState();
+          player.statusTree.unlocked = {};
+          STATUS_TREE_START_NODES.forEach((id) => {
+            player.statusTree.unlocked[id] = true;
           });
+          player.statusTree.spent = 0;
           player.statPoints += spent;
           recalcDerivedStats();
           updateUI();
-          log("ステータスをリセットしました", "info");
+          log("ステータスツリーをリセットしました", "info");
           pendingResetSpent = 0;
-          maybeAutoSave("ステータス振り直し");
+          maybeAutoSave("ステータスツリー振り直し");
         }
 
         function retryBossFloor() {
@@ -21525,12 +22915,6 @@ function showDamagePopup(
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton.addEventListener("click", () => {
-          currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
-          updateStepButton();
-          renderPrimaryStats();
-        });
-
         skillStepButton?.addEventListener("click", () => {
           currentSkillStepIndex =
             (currentSkillStepIndex + 1) % skillStepOptions.length;
@@ -21555,10 +22939,7 @@ function showDamagePopup(
         });
 
         resetButton.addEventListener("click", () => {
-          pendingResetSpent = Object.values(player.allocations).reduce(
-            (a, b) => a + b,
-            0,
-          );
+          pendingResetSpent = getStatusTreeSpentPoints();
           if (pendingResetSpent === 0) {
             log("リセットするポイントがありません", "info");
             return;
