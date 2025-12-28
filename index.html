@@ -1690,6 +1690,7 @@
       .status-tree-body {
         display: grid;
         grid-template-columns: 1fr;
+        grid-template-rows: minmax(120px, 180px) 1fr;
         gap: 10px;
         min-height: 0;
       }
@@ -1719,7 +1720,7 @@
           ),
           rgba(8, 12, 20, 0.95);
         overflow: hidden;
-        min-height: 0;
+        min-height: 420px;
       }
 
       .status-tree-controls {
@@ -12852,6 +12853,35 @@
           baseRadius: 180,
           step: 190,
         };
+        const STATUS_TREE_JUNCTIONS = [
+          {
+            id: "junctionNorth",
+            label: "交差路",
+            desc: "敏捷+1 / 行動速度+1",
+            cost: 1,
+            position: { x: 1000, y: 620 },
+            links: ["ranger2", "mage2"],
+            effects: { primary: { agi: 1 }, secondary: { speed: 1 } },
+          },
+          {
+            id: "junctionWest",
+            label: "交差路",
+            desc: "力+1 / 体力+1",
+            cost: 1,
+            position: { x: 680, y: 980 },
+            links: ["warrior2", "cleric2"],
+            effects: { primary: { str: 1, vit: 1 } },
+          },
+          {
+            id: "junctionEast",
+            label: "交差路",
+            desc: "知識+1 / 運+1",
+            cost: 1,
+            position: { x: 1320, y: 980 },
+            links: ["mage2", "luck2"],
+            effects: { primary: { int: 1, luck: 1 } },
+          },
+        ];
         const STATUS_TREE_BRANCHES = [
           {
             key: "warrior",
@@ -12883,9 +12913,9 @@
               {
                 id: "warrior4",
                 label: "覇気",
-                desc: "クリ率+3%",
-                cost: 2,
-                effects: { secondary: { critRate: 3 } },
+                desc: "攻撃回数+1 (特性)",
+                cost: 3,
+                effects: { special: { attackCountBonus: 1 } },
               },
             ],
           },
@@ -12923,6 +12953,13 @@
                 cost: 2,
                 effects: { secondary: { critRate: 2, accuracy: 4 } },
               },
+              {
+                id: "ranger5",
+                label: "連携射",
+                desc: "同時攻撃対象+1 (特性)",
+                cost: 3,
+                effects: { special: { attackTargetsBonus: 1 } },
+              },
             ],
           },
           {
@@ -12958,6 +12995,13 @@
                 desc: "バリア+28",
                 cost: 2,
                 effects: { secondary: { barrier: 28 } },
+              },
+              {
+                id: "cleric5",
+                label: "再生祈願",
+                desc: "HP再生+4 (特性)",
+                cost: 3,
+                effects: { secondary: { hpRegen: 4 } },
               },
             ],
           },
@@ -12995,6 +13039,13 @@
                 cost: 2,
                 effects: { secondary: { magPen: 6 } },
               },
+              {
+                id: "mage5",
+                label: "魔導連鎖",
+                desc: "スキルCT短縮+6% (特性)",
+                cost: 3,
+                effects: { secondary: { cooldown: 6 } },
+              },
             ],
           },
           {
@@ -13030,6 +13081,13 @@
                 desc: "クリダメ+8%",
                 cost: 2,
                 effects: { secondary: { critDamage: 8 } },
+              },
+              {
+                id: "luck5",
+                label: "幸運連鎖",
+                desc: "ドロップ率+12% (特性)",
+                cost: 3,
+                effects: { secondary: { dropRate: 12 } },
               },
             ],
           },
@@ -13069,6 +13127,15 @@
               const prev = nodes.find((item) => item.id === prevId);
               if (prev) prev.links.push(node.id);
               prevId = node.id;
+            });
+          });
+          STATUS_TREE_JUNCTIONS.forEach((junction) => {
+            nodes.push({ ...junction, links: [...(junction.links || [])] });
+            (junction.links || []).forEach((linkId) => {
+              const target = nodes.find((item) => item.id === linkId);
+              if (target && !target.links.includes(junction.id)) {
+                target.links.push(junction.id);
+              }
             });
           });
           return nodes;
@@ -13910,9 +13977,13 @@
           player.equipmentPrimaryBonus = equipmentBonuses.primary;
           player.equipmentPrimaryPerLevel = equipmentBonuses.primaryPerLevel;
           player.equipmentPrimaryFixed = equipmentBonuses.primaryFixed;
-          player.attackCountBonus = equipmentBonuses.attackCountBonus || 0;
+          const statusTreeSpecial = statusTreeBonuses.special || {};
+          player.attackCountBonus =
+            (equipmentBonuses.attackCountBonus || 0) +
+            (statusTreeSpecial.attackCountBonus || 0);
           player.attackTargetsBonus =
-            equipmentBonuses.attackTargetsBonus || 0;
+            (equipmentBonuses.attackTargetsBonus || 0) +
+            (statusTreeSpecial.attackTargetsBonus || 0);
           player.legendaryUniqueOptions = equipmentBonuses.uniqueOptions || [];
           player.statusTreePrimaryBonus = statusTreeBonuses.primary;
           player.statusTreeSecondaryBonus = statusTreeBonuses.secondary;
@@ -17443,12 +17514,14 @@ function showDamagePopup(
         function calculateStatusTreeBonuses() {
           const primary = createEmptyPrimaryBonus();
           const secondary = createEmptyBonus();
+          const special = { attackCountBonus: 0, attackTargetsBonus: 0 };
           const unlockedSet = getStatusTreeUnlockedSet();
           unlockedSet.forEach((id) => {
             const node = STATUS_TREE_NODE_MAP.get(id);
             if (!node) return;
             const primaryEffects = node.effects?.primary || {};
             const secondaryEffects = node.effects?.secondary || {};
+            const specialEffects = node.effects?.special || {};
             Object.entries(primaryEffects).forEach(([key, value]) => {
               if (typeof value !== "number") return;
               primary[key] = (primary[key] ?? 0) + value;
@@ -17457,8 +17530,12 @@ function showDamagePopup(
               if (typeof value !== "number") return;
               secondary[key] = (secondary[key] ?? 0) + value;
             });
+            Object.entries(specialEffects).forEach(([key, value]) => {
+              if (typeof value !== "number") return;
+              special[key] = (special[key] ?? 0) + value;
+            });
           });
-          return { primary, secondary };
+          return { primary, secondary, special };
         }
 
         function unlockStatusNode(node) {
@@ -17495,6 +17572,7 @@ function showDamagePopup(
           const list = [];
           const primaryEffects = node.effects?.primary || {};
           const secondaryEffects = node.effects?.secondary || {};
+          const specialEffects = node.effects?.special || {};
           Object.entries(primaryEffects).forEach(([key, value]) => {
             if (typeof value !== "number") return;
             const label = player.primary?.[key]?.label || key.toUpperCase();
@@ -17508,6 +17586,16 @@ function showDamagePopup(
             const isPercent = unit === "%";
             const formatted = displayNumber(value, { isPercent });
             list.push(`${label}+${formatted}${unit}`);
+          });
+          Object.entries(specialEffects).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            if (key === "attackCountBonus") {
+              list.push(`攻撃回数+${value}`);
+            } else if (key === "attackTargetsBonus") {
+              list.push(`同時攻撃対象+${value}`);
+            } else {
+              list.push(`${key}+${value}`);
+            }
           });
           return list;
         }
@@ -17600,15 +17688,25 @@ function showDamagePopup(
           statusTreeViewport.style.transform = `translate(${statusTreeTransform.x}px, ${statusTreeTransform.y}px) scale(${statusTreeTransform.scale})`;
         }
 
+        function getStatusTreeMinScale() {
+          if (!statusTreeCanvas) return 0.3;
+          const rect = statusTreeCanvas.getBoundingClientRect();
+          const padding = 40;
+          const minScaleX = (rect.width - padding) / STATUS_TREE_LAYOUT.size;
+          const minScaleY = (rect.height - padding) / STATUS_TREE_LAYOUT.size;
+          return Math.max(0.2, Math.min(minScaleX, minScaleY, 0.85));
+        }
+
         function clampStatusTreeScale(value) {
-          return Math.min(1.8, Math.max(0.5, value));
+          const minScale = getStatusTreeMinScale();
+          return Math.min(1.8, Math.max(minScale, value));
         }
 
         function centerStatusTree() {
           if (!statusTreeCanvas) return;
           const rect = statusTreeCanvas.getBoundingClientRect();
           const { center } = STATUS_TREE_LAYOUT;
-          statusTreeTransform.scale = 0.85;
+          statusTreeTransform.scale = clampStatusTreeScale(0.85);
           statusTreeTransform.x =
             rect.width / 2 - center.x * statusTreeTransform.scale;
           statusTreeTransform.y =
