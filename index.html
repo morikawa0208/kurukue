@@ -13001,6 +13001,29 @@
                       },
                     ],
                   },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -16,
+                    nodes: [
+                      { label: "疾風の余韻", secondary: { speed: 1 } },
+                      { label: "刃風の連鎖", secondary: { critRate: 1 } },
+                      { label: "疾走の鼓動", primary: { agi: 1 }, secondary: { evade: 1 } },
+                      {
+                        label: "風斬の結節",
+                        secondary: { speed: 2, critRate: 1 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "hit",
+                            type: "extraDamage",
+                            percent: 18,
+                            label: "風斬追撃",
+                            text: "通常攻撃追撃(追加18%)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
               {
@@ -13102,6 +13125,194 @@
                       },
                     ],
                   },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: 16,
+                    nodes: [
+                      { label: "崩撃の余勢", secondary: { physAtk: 2 } },
+                      { label: "重心の極意", secondary: { physDef: 2 } },
+                      { label: "剛撃の矜持", primary: { str: 1 }, secondary: { critDamage: 1 } },
+                      {
+                        label: "剛撃の結節",
+                        secondary: { physAtk: 3, critDamage: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "crit",
+                            type: "extraDamage",
+                            percent: 25,
+                            label: "剛撃追撃",
+                            text: "クリティカル時に追撃(追加25%)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: 16,
+                    nodes: [
+                      { label: "元素余熱", secondary: { magAtk: 2 } },
+                      { label: "魔核収束", secondary: { magPen: 1 } },
+                      { label: "詠唱の熱", primary: { int: 1 }, secondary: { critDamage: 1 } },
+                      {
+                        label: "元素砲の結節",
+                        secondary: { magAtk: 3, critDamage: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "skill",
+                            type: "status",
+                            key: "burn",
+                            chance: 30,
+                            duration: 2,
+                            label: "元素灼熱",
+                            text: "スキル命中時、火傷(30%/2T)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -14,
+                    nodes: [
+                      { label: "結界の余韻", secondary: { barrier: 15 } },
+                      { label: "防護結晶", secondary: { magDef: 2 } },
+                      { label: "静護の術", primary: { int: 1 }, secondary: { controlResist: 1 } },
+                      {
+                        label: "結界の結節",
+                        secondary: { barrier: 20, magDef: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "kill",
+                            type: "cooldown",
+                            amount: 1,
+                            label: "結界再起",
+                            text: "撃破時、CT-1",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -16,
+                    nodes: [
+                      { label: "守護の余韻", secondary: { barrier: 15 } },
+                      { label: "加護の刻印", secondary: { damageReduction: 1 } },
+                      { label: "祈りの護り", primary: { vit: 1 }, secondary: { hpRegen: 1 } },
+                      {
+                        label: "守護支援の結節",
+                        secondary: { barrier: 20, hpRegen: 1 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "kill",
+                            type: "heal",
+                            percent: 6,
+                            label: "守護の癒し",
+                            text: "撃破時、HP6%回復",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: 16,
+                    nodes: [
+                      { label: "聖裁の余韻", secondary: { magAtk: 2 } },
+                      { label: "神罰の準備", secondary: { critDamage: 1 } },
+                      { label: "裁きの集中", primary: { int: 1 }, secondary: { critRate: 1 } },
+                      {
+                        label: "聖裁の結節",
+                        secondary: { magAtk: 3, critDamage: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "skill",
+                            type: "status",
+                            key: "burn",
+                            chance: 25,
+                            duration: 2,
+                            label: "裁きの火",
+                            text: "スキル命中時、火傷(25%/2T)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -14,
+                    nodes: [
+                      { label: "天恵の余韻", secondary: { cooldown: 1 } },
+                      { label: "慈愛の調律", secondary: { hpRegen: 1 } },
+                      { label: "聖なる歩み", primary: { vit: 1 }, secondary: { speed: 1 } },
+                      {
+                        label: "天恵の結節",
+                        secondary: { cooldown: 1, hpRegen: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "kill",
+                            type: "mp",
+                            percent: 6,
+                            label: "天恵の還流",
+                            text: "撃破時、MP6%回復",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: 16,
+                    nodes: [
+                      { label: "闇撃の余勢", secondary: { physAtk: 2 } },
+                      { label: "血の衝動", secondary: { critRate: 1 } },
+                      { label: "深闇の準備", primary: { str: 1 }, secondary: { critDamage: 1 } },
+                      {
+                        label: "闇撃の結節",
+                        secondary: { physAtk: 3, critDamage: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "crit",
+                            type: "extraDamage",
+                            percent: 24,
+                            label: "闇撃追撃",
+                            text: "クリティカル時に追撃(追加24%)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -14,
+                    nodes: [
+                      { label: "血壁の余韻", secondary: { barrier: 15 } },
+                      { label: "再生の循環", secondary: { hpRegen: 1 } },
+                      { label: "血の備え", primary: { vit: 1 }, secondary: { damageReduction: 1 } },
+                      {
+                        label: "血壁の結節",
+                        secondary: { barrier: 20, damageReduction: 1 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "kill",
+                            type: "heal",
+                            percent: 6,
+                            label: "血壁回復",
+                            text: "撃破時、HP6%回復",
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 ],
               },
               {
@@ -13197,6 +13408,77 @@
                             percent: 6,
                             label: "護衛の回復",
                             text: "撃破時、MP6%回復",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -14,
+                    nodes: [
+                      { label: "護壁の余波", secondary: { barrier: 15 } },
+                      { label: "守勢の構え", secondary: { block: 1 } },
+                      { label: "堅守の心得", primary: { vit: 1 }, secondary: { damageReduction: 1 } },
+                      {
+                        label: "護壁の結節",
+                        secondary: { block: 2, barrier: 20 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "kill",
+                            type: "cooldown",
+                            amount: 1,
+                            label: "護壁の循環",
+                            text: "撃破時、CT-1",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -16,
+                    nodes: [
+                      { label: "連詠唱の残響", secondary: { cooldown: 1 } },
+                      { label: "魔導同期", secondary: { magAtk: 2 } },
+                      { label: "詠唱の継続", primary: { int: 1 }, secondary: { mp: 15 } },
+                      {
+                        label: "連詠唱の結節",
+                        secondary: { cooldown: 2, magAtk: 2 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "skill",
+                            type: "extraDamage",
+                            percent: 18,
+                            label: "連詠唱追撃",
+                            text: "スキル追撃(追加18%)",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    anchorIndex: 4,
+                    angleOffset: -16,
+                    nodes: [
+                      { label: "夜宴の余韻", secondary: { lifeSteal: 1 } },
+                      { label: "舞踏の熟練", secondary: { speed: 1 } },
+                      { label: "影の準備", primary: { agi: 1 }, secondary: { evade: 1 } },
+                      {
+                        label: "夜宴の結節",
+                        secondary: { lifeSteal: 2, speed: 1 },
+                        major: true,
+                        specials: [
+                          {
+                            trigger: "hit",
+                            type: "status",
+                            key: "bleed",
+                            chance: 22,
+                            duration: 2,
+                            label: "夜宴裂傷",
+                            text: "通常攻撃で出血(22%/2T)",
                           },
                         ],
                       },
@@ -14475,6 +14757,170 @@
               if (anchor) connect(cross.id, anchor);
             });
           });
+
+          const addSpecialCluster = ({
+            key,
+            label,
+            x,
+            y,
+            nodes: clusterNodes,
+            anchors = [],
+          }) => {
+            const createdIds = [];
+            let previousId = null;
+            clusterNodes.forEach((node, index) => {
+              const id = `${key}-${index + 1}`;
+              addNode({
+                id,
+                label: node.label,
+                x: x + (node.offsetX || 0),
+                y: y + (node.offsetY || 0),
+                type: node.major ? "major" : "branch",
+                primary: node.primary || {},
+                secondary: node.secondary || {},
+                specials: node.specials || [],
+              });
+              if (previousId) connect(previousId, id);
+              previousId = id;
+              createdIds.push(id);
+            });
+            anchors.forEach((anchorId) => {
+              if (nodeIndex[anchorId]) {
+                connect(createdIds[0], anchorId);
+              }
+            });
+            return createdIds;
+          };
+
+          const specialClusters = [
+            {
+              key: "cluster-wanderer",
+              label: "旅人の心得",
+              x: -120,
+              y: -40,
+              anchors: ["sword-root", "cross-sword-mage", "cross-vampire-sword"],
+              nodes: [
+                { label: "歩みの記憶", secondary: { speed: 1 } },
+                { label: "荒野の勘", secondary: { evade: 1 } },
+                { label: "旅装の工夫", secondary: { hp: 18 } },
+                {
+                  label: "旅人の核心",
+                  secondary: { speed: 2, hp: 25 },
+                  major: true,
+                  specials: [
+                    {
+                      trigger: "kill",
+                      type: "heal",
+                      percent: 5,
+                      label: "旅人の息継ぎ",
+                      text: "撃破時、HP5%回復",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "cluster-sage",
+              label: "賢者の円環",
+              x: 80,
+              y: -100,
+              anchors: ["mage-root", "cross-sword-mage", "cross-mage-cleric"],
+              nodes: [
+                { label: "知恵の端緒", primary: { int: 1 } },
+                { label: "思考の整序", secondary: { mp: 20 } },
+                { label: "魔導の解析", secondary: { magAtk: 2 } },
+                {
+                  label: "賢者の核心",
+                  secondary: { magAtk: 3, cooldown: 1 },
+                  major: true,
+                  specials: [
+                    {
+                      trigger: "skill",
+                      type: "cooldown",
+                      amount: 1,
+                      label: "賢者の詠唱",
+                      text: "スキル命中時、CT-1",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "cluster-sanctuary",
+              label: "聖域の誓い",
+              x: -80,
+              y: 120,
+              anchors: ["cleric-root", "cross-mage-cleric", "cross-cleric-vampire"],
+              nodes: [
+                { label: "祈りの序章", secondary: { barrier: 15 } },
+                { label: "聖域の守り", secondary: { magDef: 2 } },
+                { label: "清廉の心", secondary: { debuffResist: 1 } },
+                {
+                  label: "聖域の核心",
+                  secondary: { barrier: 20, damageReduction: 1 },
+                  major: true,
+                  specials: [
+                    {
+                      trigger: "hit",
+                      type: "status",
+                      key: "sleep",
+                      chance: 15,
+                      duration: 1,
+                      label: "安息の誓い",
+                      text: "通常攻撃で睡眠(15%/1T)",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              key: "cluster-pact",
+              label: "深影の盟約",
+              x: 90,
+              y: 150,
+              anchors: ["vampire-root", "cross-cleric-vampire", "cross-vampire-sword"],
+              nodes: [
+                { label: "夜の契り", secondary: { lifeSteal: 1 } },
+                { label: "闇の感覚", secondary: { critRate: 1 } },
+                { label: "血の加護", secondary: { hp: 18 } },
+                {
+                  label: "盟約の核心",
+                  secondary: { lifeSteal: 2, critRate: 1 },
+                  major: true,
+                  specials: [
+                    {
+                      trigger: "hit",
+                      type: "status",
+                      key: "poison",
+                      chance: 20,
+                      duration: 2,
+                      label: "盟約の毒",
+                      text: "通常攻撃で毒(20%/2T)",
+                    },
+                  ],
+                },
+              ],
+            },
+          ];
+
+          const clusterIds = specialClusters.map((cluster) =>
+            addSpecialCluster(cluster),
+          );
+          const [wandererIds, sageIds, sanctuaryIds, pactIds] = clusterIds;
+          if (wandererIds && sageIds) {
+            connect(wandererIds[1], sageIds[0]);
+            connect(wandererIds[2], sageIds[1]);
+          }
+          if (sageIds && sanctuaryIds) {
+            connect(sageIds[2], sanctuaryIds[0]);
+          }
+          if (sanctuaryIds && pactIds) {
+            connect(sanctuaryIds[1], pactIds[0]);
+            connect(sanctuaryIds[2], pactIds[1]);
+          }
+          if (wandererIds && pactIds) {
+            connect(wandererIds[0], pactIds[0]);
+          }
 
           return { nodes, links };
         }
