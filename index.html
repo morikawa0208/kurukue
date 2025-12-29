@@ -1655,6 +1655,91 @@
         align-items: start;
       }
 
+      .passive-tree-summary {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .passive-tree {
+        display: grid;
+        gap: 10px;
+      }
+
+      .passive-tree-svg {
+        width: 100%;
+        min-height: 420px;
+        background: radial-gradient(
+            circle at center,
+            rgba(52, 211, 153, 0.08),
+            transparent 40%
+          ),
+          rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .passive-tree-svg.dragging {
+        cursor: grabbing;
+      }
+
+      .passive-link {
+        stroke: rgba(148, 163, 184, 0.35);
+        stroke-width: 2;
+      }
+
+      .passive-link.available {
+        stroke: rgba(52, 211, 153, 0.45);
+      }
+
+      .passive-link.acquired {
+        stroke: rgba(96, 165, 250, 0.6);
+      }
+
+      .passive-node-circle {
+        fill: rgba(30, 41, 59, 0.9);
+        stroke: rgba(148, 163, 184, 0.4);
+        stroke-width: 2;
+      }
+
+      .passive-node-circle.available {
+        stroke: rgba(52, 211, 153, 0.85);
+        fill: rgba(16, 185, 129, 0.2);
+      }
+
+      .passive-node-circle.acquired {
+        stroke: rgba(96, 165, 250, 0.95);
+        fill: rgba(37, 99, 235, 0.25);
+      }
+
+      .passive-node-circle.keystone {
+        stroke-width: 3.5;
+      }
+
+      .passive-node-label {
+        font-size: 12px;
+        fill: #e5e7eb;
+        text-anchor: middle;
+        pointer-events: none;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      }
+
+      .passive-node-label.small {
+        font-size: 10px;
+        fill: #cbd5f5;
+      }
+
+      .passive-cluster-label {
+        font-size: 13px;
+        font-weight: 800;
+        fill: #f8fafc;
+        text-anchor: middle;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+      }
+
       .stat-row {
         display: flex;
         justify-content: space-between;
@@ -3185,7 +3270,7 @@
 
       <nav class="menu">
         <button id="btn-player-modal">プレイヤー詳細</button>
-        <button id="btn-skill-tree">スキル</button>
+        <button id="btn-skill-tree">パッシブ/スキル</button>
         <button id="btn-inventory">アイテム</button>
         <button id="btn-codex">図鑑</button>
         <button id="btn-warp">ワープ</button>
@@ -3203,7 +3288,7 @@
         <div class="guidance-body">
           <div class="guidance-title">Lv2到達おめでとう！</div>
           <div class="guidance-text">
-            レベルが上がるとステータスポイント5ポイント、スキルポイント1ポイント付与される。リセットも出来るので色々試してみてください。
+            レベルが上がるとパッシブポイント1ポイント、スキルポイント1ポイント付与される。パッシブツリーでビルドを組んでみよう。
           </div>
           <div class="guidance-actions">
             <button id="level-up-guidance-close" type="button">OK</button>
@@ -3415,24 +3500,9 @@
               <div class="section-title" style="margin: 2px 0 4px">
                 一次ステータス
               </div>
-              <div style="display: flex; align-items: center; gap: 6px">
-                <div class="inline-buttons">
-                  <div class="pill">能力P: <span id="stat-points"></span></div>
-                </div>
-                <button
-                  id="stat-step"
-                  class="step-button"
-                  aria-label="増減幅を切り替え"
-                >
-                  ±1
-                </button>
-                <button
-                  id="reset-stats"
-                  class="help-icon"
-                  aria-label="ステータスをリセット"
-                >
-                  ↺
-                </button>
+              <div style="display: flex; align-items: center; gap: 8px">
+                <div class="pill">パッシブP: <span id="stat-points"></span></div>
+                <span class="subtle">パッシブツリーで獲得</span>
               </div>
             </div>
             <div id="primary-stats" class="primary-grid"></div>
@@ -3471,44 +3541,43 @@
         <div class="modal-body-title">攻撃・防御</div>
         <div class="help-panel">
           <ul>
-            <li>最大HP = 基礎HP + 体力 × 16 (+装備補正)</li>
-            <li>最大MP = 基礎MP + 知識 × 6 (+装備補正)</li>
-            <li>物理攻撃力 = 武器 + 力 × 2.4</li>
-            <li>魔法攻撃力 = 魔器 + 知識 × 2.6</li>
-            <li>物理防御力 = 体力×1.2 + 力×0.4</li>
-            <li>魔法防御力 = 体力×1.0 + 知識×0.6</li>
-            <li>物理貫通 = 力による軽減無視 (上限60%)</li>
-            <li>魔法貫通 = 知識による軽減無視 (上限60%)</li>
-            <li>被ダメージ軽減 = 体力由来の軽減 (上限80%)</li>
-            <li>ブロック率 = 体力ベース (上限50%)</li>
+            <li>最大HP = 基礎HP + 活力×14 + 筋力×2.5 (+装備補正)</li>
+            <li>最大MP = 基礎MP + 知恵×9 + 幸運×1.5 (+装備補正)</li>
+            <li>物理攻撃力 = 武器 + 筋力×3.4 + 技量×0.6</li>
+            <li>魔法攻撃力 = 魔器 + 知恵×3.4 + 幸運×0.4</li>
+            <li>物理防御力 = 活力×1.5 + 筋力×0.6</li>
+            <li>魔法防御力 = 活力×1.3 + 知恵×0.8</li>
+            <li>物理貫通 = 筋力×0.6 + 技量×0.2 (上限70%)</li>
+            <li>魔法貫通 = 知恵×0.6 + 幸運×0.2 (上限70%)</li>
+            <li>被ダメージ軽減 = 装備/パッシブ由来 (上限80%)</li>
+            <li>ブロック率 = 装備/パッシブ由来 (上限50%)</li>
           </ul>
         </div>
         <div class="modal-body-title">行動・会心</div>
         <div class="help-panel">
           <ul>
-            <li>行動速度 = 基礎速度 + 敏捷×2</li>
-            <li>命中率 = 140% + 敏捷×0.2% (上限200%)</li>
-            <li>クリティカル率 / 回避率 = (敏捷+運) 減衰式 (上限あり)</li>
-            <li>クリティカルダメージ = 150% + クリダメ% (上限100%)</li>
-            <li>クールタイム短縮 = 敏捷/知識由来 (上限40%)</li>
+            <li>行動速度 = 基礎速度 + 技量×2.1 + 幸運×0.4</li>
+            <li>命中率 = 120% + 技量×0.45% + 知恵×0.2% (上限210%)</li>
+            <li>クリ率 = 技量×1.1 + 幸運×1.3 (上限160%)</li>
+            <li>回避率 = 技量×0.9 + 幸運×0.6 (上限130%)</li>
+            <li>クリダメ = 幸運×1.6 + ボーナス (上限100%)</li>
+            <li>クールタイム短縮 = (技量+知恵)×0.32 (上限45%)</li>
           </ul>
         </div>
         <div class="modal-body-title">抵抗・補助・ハクスラ</div>
         <div class="help-panel">
           <ul>
-            <li>
-              行動阻害抵抗 / DoT抵抗 / 弱体化抵抗 = 体力＋各種ステ由来 (上限120%)
-            </li>
-            <li>HP再生 = 体力 × 0.4 / ターン</li>
-            <li>HP吸収 = 与ダメ × 吸収% (力と運の高い方×0.2%、上限20%)</li>
-            <li>バリア = 体力×4 + 知識×2</li>
+            <li>行動阻害抵抗 = 活力×0.6 + 幸運×0.5 (上限120%)</li>
+            <li>DoT抵抗 = 活力×0.8 + 幸運×0.3 (上限120%)</li>
+            <li>弱体化抵抗 = 活力×0.5 + 知恵×0.6 + 幸運×0.2 (上限120%)</li>
+            <li>HP再生 / HP吸収 / バリア = 装備/パッシブ由来</li>
             <li>
               ドロップ率UP / レアリティUP = 運による減衰式
-              (ドロップ50%、レアリティ30%上限)
+              (上限は効果側で解釈)
             </li>
             <li>称号付与率UP = 運による減衰式 (上限80%)</li>
             <li>ネームド遭遇率 = 運による減衰式 (上限90%)</li>
-            <li>ゴールド確率 = 基礎100% + ボーナス (0%未満にならない)</li>
+            <li>ゴールド確率 = 基礎180% + ボーナス (0%未満にならない)</li>
           </ul>
         </div>
       </div>
@@ -3518,14 +3587,14 @@
       <div class="modal-content">
         <div class="modal-header">
           <div class="section-title" style="margin: 0">
-            ステータスをリセット
+            パッシブツリーをリセット
           </div>
           <button id="reset-close" class="modal-close" aria-label="閉じる">
             ×
           </button>
         </div>
         <div>
-          振り分けたポイント(<span id="reset-spent"></span
+          取得したノード(<span id="reset-spent"></span
           >P)を戻します。よろしいですか？
         </div>
         <div class="modal-actions">
@@ -3567,8 +3636,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <div>
-            <div class="section-title" style="margin: 0">スキル / パーク</div>
-            <div style="font-weight: 700">スキルポイントを消費して強化</div>
+            <div class="section-title" style="margin: 0">
+              パッシブツリー / スキル
+            </div>
+            <div style="font-weight: 700">
+              パッシブPでノード取得 / スキルPで強化
+            </div>
           </div>
           <button id="skills-close" class="modal-close" aria-label="閉じる">
             ×
@@ -3578,6 +3651,9 @@
           class="inline-buttons"
           style="margin-bottom: 6px; align-items: center"
         >
+          <div class="pill">
+            パッシブP: <span id="passive-points-skill"></span>
+          </div>
           <div class="pill">スキルP: <span id="skill-points-skill"></span></div>
           <button
             id="skill-step"
@@ -3596,6 +3672,31 @@
         </div>
         <div
           class="inline-buttons"
+          id="skill-view-tabs"
+          style="margin-bottom: 6px; align-items: center"
+        >
+          <button id="skill-view-passive" class="mini-btn" aria-pressed="true">
+            パッシブツリー
+          </button>
+          <button id="skill-view-skills" class="mini-btn" aria-pressed="false">
+            スキル一覧
+          </button>
+          <button
+            id="reset-passive"
+            class="mini-btn"
+            aria-label="パッシブツリーをリセット"
+          >
+            パッシブをリセット
+          </button>
+        </div>
+        <div id="passive-tree-view">
+          <div id="passive-tree-summary" class="help-panel passive-tree-summary"></div>
+          <div id="passive-tree" class="passive-tree" style="margin-top: 6px">
+            <svg id="passive-tree-svg" class="passive-tree-svg" role="img"></svg>
+          </div>
+        </div>
+        <div
+          class="inline-buttons skill-only"
           style="margin-bottom: 6px; align-items: center"
         >
           <button
@@ -3607,16 +3708,16 @@
           </button>
         </div>
         <div
-          class="inline-buttons"
+          class="inline-buttons skill-only"
           id="skill-category-tabs"
           style="margin-bottom: 4px"
         ></div>
         <div
-          class="inline-buttons"
+          class="inline-buttons skill-only"
           id="skill-type-tabs"
           style="margin-bottom: 6px"
         ></div>
-        <div id="skill-detail-view">
+        <div id="skill-detail-view" class="skill-only">
           <div
             id="active-skill-loadout"
             class="help-panel"
@@ -3638,7 +3739,7 @@
           <div>
             <div class="section-title" style="margin: 0">全職業スキル一覧</div>
             <div style="font-weight: 700">
-              取得レベルと習得状況をまとめて確認
+              解放ノードと習得状況をまとめて確認
             </div>
           </div>
           <button
@@ -10348,14 +10449,1168 @@
         const SKILL_MAX_LEVEL = globalThis.SKILL_MAX_LEVEL;
         const ACTIVE_SKILL_SLOT_LIMIT = globalThis.ACTIVE_SKILL_SLOT_LIMIT;
 
-        const ACTIVE_UNLOCK_SCHEDULE = [1, 10, 20, 30, 40];
-        const PASSIVE_UNLOCK_SCHEDULE = [
-          10, 10, 20, 20, 30, 30, 40, 40, 50, 50,
-        ];
+        const PASSIVE_POINT_PER_LEVEL = 1;
+        const PASSIVE_TREE_START_NODE_ID = "start-core";
         const THRESHOLD_MULTIPLIERS = { 10: 4.2, 30: 6.4, 50: 8.8 };
         const THRESHOLD_FALLBACK_MULTIPLIER = 5.2;
         const SKILL_GROWTH_BASE = 2.36;
         const SKILL_GROWTH_CURVE = 2.1;
+
+        const PASSIVE_TREE_CLUSTERS_RAW = [
+          {
+            key: "START",
+            name: "旅立ちの起点",
+            description: "基礎能力と生存力を整えるスタートクラスタ。",
+            core: "start-core",
+            position: { x: 0, y: 0 },
+            nodes: [
+              "start-core",
+              "start-str",
+              "start-int",
+              "start-vit",
+              "start-agi",
+              "start-luck",
+            ],
+          },
+          {
+            key: "BLADE_CORE",
+            name: "剣士の基盤",
+            description: "剣技の基礎と防御のバランスを整える。",
+            core: "blade-core",
+            position: { x: -220, y: -60 },
+            nodes: [
+              "blade-core",
+              "blade-str",
+              "blade-agi",
+              "blade-vit",
+              "blade-guard",
+              "blade-unlock",
+            ],
+          },
+          {
+            key: "ARCANE_CORE",
+            name: "魔導回廊",
+            description: "魔力操作を軸に魔法系統を解放する。",
+            core: "arcane-core",
+            position: { x: 220, y: -60 },
+            nodes: [
+              "arcane-core",
+              "arcane-int",
+              "arcane-agi",
+              "arcane-vit",
+              "arcane-focus",
+              "arcane-unlock",
+            ],
+          },
+          {
+            key: "HOLY_CORE",
+            name: "聖務の灯火",
+            description: "回復と支援を両立し、聖職を解放する。",
+            core: "holy-core",
+            position: { x: 0, y: 180 },
+            nodes: [
+              "holy-core",
+              "holy-vit",
+              "holy-int",
+              "holy-luck",
+              "holy-barrier",
+              "holy-unlock",
+            ],
+          },
+          {
+            key: "BLOOD_CORE",
+            name: "血脈の狩人",
+            description: "吸血の流れを整え、攻防バランスを得る。",
+            core: "blood-core",
+            position: { x: -220, y: 120 },
+            nodes: [
+              "blood-core",
+              "blood-str",
+              "blood-agi",
+              "blood-vit",
+              "blood-hunt",
+              "blood-unlock",
+            ],
+          },
+          {
+            key: "BLADE_EDGE",
+            name: "剣士の奥義",
+            description: "剣士の個別奥義を解放する。",
+            core: "blade-edge-core",
+            position: { x: -360, y: -200 },
+            nodes: [
+              "blade-edge-core",
+              "blade-edge-str",
+              "blade-edge-agi",
+              "blade-edge-vit",
+              "blade-edge-unlock",
+            ],
+          },
+          {
+            key: "ARCANE_EDGE",
+            name: "秘奥の術式",
+            description: "魔法の個別スキルを解放する。",
+            core: "arcane-edge-core",
+            position: { x: 360, y: -200 },
+            nodes: [
+              "arcane-edge-core",
+              "arcane-edge-int",
+              "arcane-edge-agi",
+              "arcane-edge-luck",
+              "arcane-edge-unlock",
+            ],
+          },
+          {
+            key: "BLADE_ASCEND",
+            name: "剣聖の極致",
+            description: "剣技の火力と鋭さを極限まで引き上げる。",
+            core: "blade-ascend-core",
+            position: { x: -520, y: -360 },
+            nodes: [
+              "blade-ascend-core",
+              "blade-ascend-str",
+              "blade-ascend-agi",
+              "blade-ascend-crit",
+              "blade-ascend-unlock",
+            ],
+          },
+          {
+            key: "ARCANE_ASCEND",
+            name: "星詠みの深淵",
+            description: "星霊の力で魔力循環を爆発的に伸ばす。",
+            core: "arcane-ascend-core",
+            position: { x: 520, y: -360 },
+            nodes: [
+              "arcane-ascend-core",
+              "arcane-ascend-int",
+              "arcane-ascend-luck",
+              "arcane-ascend-mastery",
+              "arcane-ascend-unlock",
+            ],
+          },
+          {
+            key: "HOLY_ASCEND",
+            name: "神域の聖柱",
+            description: "守護と再生の力を高密度で纏う。",
+            core: "holy-ascend-core",
+            position: { x: 0, y: 420 },
+            nodes: [
+              "holy-ascend-core",
+              "holy-ascend-vit",
+              "holy-ascend-int",
+              "holy-ascend-bless",
+              "holy-ascend-keystone",
+            ],
+          },
+          {
+            key: "BLOOD_ASCEND",
+            name: "紅月の覇道",
+            description: "吸血と暴力性を桁違いに増幅する。",
+            core: "blood-ascend-core",
+            position: { x: -520, y: 300 },
+            nodes: [
+              "blood-ascend-core",
+              "blood-ascend-str",
+              "blood-ascend-agi",
+              "blood-ascend-vamp",
+              "blood-ascend-keystone",
+            ],
+          },
+          {
+            key: "FATE",
+            name: "運命の奔流",
+            description: "攻撃回数に干渉するキーストーン。",
+            core: "fate-core",
+            position: { x: -420, y: 40 },
+            nodes: [
+              "fate-core",
+              "fate-agi",
+              "fate-luck",
+              "fate-str",
+              "fate-keystone",
+            ],
+          },
+          {
+            key: "SHADOW",
+            name: "影の契約",
+            description: "リソース挙動に干渉するキーストーン。",
+            core: "shadow-core",
+            position: { x: 420, y: 40 },
+            nodes: [
+              "shadow-core",
+              "shadow-int",
+              "shadow-vit",
+              "shadow-luck",
+              "shadow-keystone",
+            ],
+          },
+          {
+            key: "STORM",
+            name: "嵐牙の楽園",
+            description: "圧倒的な速度と連撃に特化したキーストーン。",
+            core: "storm-core",
+            position: { x: -700, y: -120 },
+            nodes: [
+              "storm-core",
+              "storm-str",
+              "storm-agi",
+              "storm-speed",
+              "storm-keystone",
+            ],
+          },
+          {
+            key: "ASTRAL",
+            name: "星界の王座",
+            description: "魔力を爆発的に増幅するキーストーン。",
+            core: "astral-core",
+            position: { x: 700, y: -120 },
+            nodes: [
+              "astral-core",
+              "astral-int",
+              "astral-luck",
+              "astral-focus",
+              "astral-keystone",
+            ],
+          },
+          {
+            key: "ABYSS",
+            name: "奈落の心臓",
+            description: "極端な代償で莫大な破壊力を得るキーストーン。",
+            core: "abyss-core",
+            position: { x: 0, y: 620 },
+            nodes: [
+              "abyss-core",
+              "abyss-vit",
+              "abyss-luck",
+              "abyss-resolve",
+              "abyss-keystone",
+            ],
+          },
+        ];
+
+        const PASSIVE_TREE_NODES_RAW = [
+          {
+            id: "start-core",
+            name: "旅立ちの構え",
+            type: "passive",
+            cluster: "START",
+            position: { x: 0, y: 0 },
+            description: "生命力と魔力を整える。",
+            effects: { bonus: { hp: 20, mp: 10 } },
+          },
+          {
+            id: "start-str",
+            name: "基礎筋力",
+            type: "status",
+            cluster: "START",
+            position: { x: -70, y: -40 },
+            description: "筋力+2",
+            effects: { primary: { str: 2 } },
+          },
+          {
+            id: "start-int",
+            name: "基礎知恵",
+            type: "status",
+            cluster: "START",
+            position: { x: 70, y: -40 },
+            description: "知恵+2",
+            effects: { primary: { int: 2 } },
+          },
+          {
+            id: "start-vit",
+            name: "基礎活力",
+            type: "status",
+            cluster: "START",
+            position: { x: -70, y: 40 },
+            description: "活力+2",
+            effects: { primary: { vit: 2 } },
+          },
+          {
+            id: "start-agi",
+            name: "基礎技量",
+            type: "status",
+            cluster: "START",
+            position: { x: 70, y: 40 },
+            description: "技量+2",
+            effects: { primary: { agi: 2 } },
+          },
+          {
+            id: "start-luck",
+            name: "基礎幸運",
+            type: "status",
+            cluster: "START",
+            position: { x: 0, y: 90 },
+            description: "幸運+1",
+            effects: { primary: { luck: 1 } },
+          },
+          {
+            id: "blade-core",
+            name: "剣気循環",
+            type: "passive",
+            cluster: "BLADE_CORE",
+            position: { x: -220, y: -60 },
+            description: "物理攻撃と会心を底上げする。",
+            effects: { bonus: { physAtk: 6, critRate: 1 } },
+          },
+          {
+            id: "blade-str",
+            name: "剣士の筋力",
+            type: "status",
+            cluster: "BLADE_CORE",
+            position: { x: -290, y: -100 },
+            description: "筋力+2",
+            effects: { primary: { str: 2 } },
+          },
+          {
+            id: "blade-agi",
+            name: "剣士の技量",
+            type: "status",
+            cluster: "BLADE_CORE",
+            position: { x: -150, y: -100 },
+            description: "技量+1",
+            effects: { primary: { agi: 1 } },
+          },
+          {
+            id: "blade-vit",
+            name: "剣士の活力",
+            type: "status",
+            cluster: "BLADE_CORE",
+            position: { x: -300, y: -20 },
+            description: "活力+1",
+            effects: { primary: { vit: 1 } },
+          },
+          {
+            id: "blade-guard",
+            name: "前線防御",
+            type: "passive",
+            cluster: "BLADE_CORE",
+            position: { x: -150, y: -20 },
+            description: "物理防御と被ダメ軽減を強化。",
+            effects: { bonus: { physDef: 4, damageReduction: 1 } },
+          },
+          {
+            id: "blade-unlock",
+            name: "剣士系統解放",
+            type: "skillUnlock",
+            cluster: "BLADE_CORE",
+            position: { x: -220, y: 20 },
+            description: "剣士スキルが使用可能になる。",
+            unlocks: { categories: ["剣士"] },
+          },
+          {
+            id: "arcane-core",
+            name: "魔力循環核",
+            type: "passive",
+            cluster: "ARCANE_CORE",
+            position: { x: 220, y: -60 },
+            description: "魔法攻撃とMPの循環を強化。",
+            effects: { bonus: { magAtk: 6, mp: 12 } },
+          },
+          {
+            id: "arcane-int",
+            name: "魔導知恵",
+            type: "status",
+            cluster: "ARCANE_CORE",
+            position: { x: 290, y: -100 },
+            description: "知恵+2",
+            effects: { primary: { int: 2 } },
+          },
+          {
+            id: "arcane-agi",
+            name: "魔導技量",
+            type: "status",
+            cluster: "ARCANE_CORE",
+            position: { x: 150, y: -100 },
+            description: "技量+1",
+            effects: { primary: { agi: 1 } },
+          },
+          {
+            id: "arcane-vit",
+            name: "魔導活力",
+            type: "status",
+            cluster: "ARCANE_CORE",
+            position: { x: 300, y: -20 },
+            description: "活力+1",
+            effects: { primary: { vit: 1 } },
+          },
+          {
+            id: "arcane-focus",
+            name: "集中詠唱",
+            type: "passive",
+            cluster: "ARCANE_CORE",
+            position: { x: 150, y: -20 },
+            description: "CT短縮と魔法貫通を得る。",
+            effects: { bonus: { cooldown: 2, magPen: 2 } },
+          },
+          {
+            id: "arcane-unlock",
+            name: "魔法系統解放",
+            type: "skillUnlock",
+            cluster: "ARCANE_CORE",
+            position: { x: 220, y: 20 },
+            description: "魔法スキルが使用可能になる。",
+            unlocks: { categories: ["魔法"] },
+          },
+          {
+            id: "holy-core",
+            name: "聖光の律動",
+            type: "passive",
+            cluster: "HOLY_CORE",
+            position: { x: 0, y: 180 },
+            description: "回復支援向けの基盤を強化。",
+            effects: { bonus: { magAtk: 4, hpRegen: 0.4 } },
+          },
+          {
+            id: "holy-vit",
+            name: "聖務活力",
+            type: "status",
+            cluster: "HOLY_CORE",
+            position: { x: -60, y: 230 },
+            description: "活力+2",
+            effects: { primary: { vit: 2 } },
+          },
+          {
+            id: "holy-int",
+            name: "聖務知恵",
+            type: "status",
+            cluster: "HOLY_CORE",
+            position: { x: 60, y: 230 },
+            description: "知恵+1",
+            effects: { primary: { int: 1 } },
+          },
+          {
+            id: "holy-luck",
+            name: "祝福の幸運",
+            type: "status",
+            cluster: "HOLY_CORE",
+            position: { x: 0, y: 260 },
+            description: "幸運+1",
+            effects: { primary: { luck: 1 } },
+          },
+          {
+            id: "holy-barrier",
+            name: "聖域展開",
+            type: "passive",
+            cluster: "HOLY_CORE",
+            position: { x: -80, y: 160 },
+            description: "バリアと魔法防御を付与。",
+            effects: { bonus: { barrier: 10, magDef: 4 } },
+          },
+          {
+            id: "holy-unlock",
+            name: "聖職系統解放",
+            type: "skillUnlock",
+            cluster: "HOLY_CORE",
+            position: { x: 80, y: 160 },
+            description: "聖職スキルが使用可能になる。",
+            unlocks: { categories: ["聖職"] },
+          },
+          {
+            id: "blood-core",
+            name: "血気の輪",
+            type: "passive",
+            cluster: "BLOOD_CORE",
+            position: { x: -220, y: 120 },
+            description: "吸血と攻撃力を底上げする。",
+            effects: { bonus: { physAtk: 4, lifeSteal: 1 } },
+          },
+          {
+            id: "blood-str",
+            name: "血統筋力",
+            type: "status",
+            cluster: "BLOOD_CORE",
+            position: { x: -300, y: 80 },
+            description: "筋力+1",
+            effects: { primary: { str: 1 } },
+          },
+          {
+            id: "blood-agi",
+            name: "血統技量",
+            type: "status",
+            cluster: "BLOOD_CORE",
+            position: { x: -140, y: 80 },
+            description: "技量+2",
+            effects: { primary: { agi: 2 } },
+          },
+          {
+            id: "blood-vit",
+            name: "血統活力",
+            type: "status",
+            cluster: "BLOOD_CORE",
+            position: { x: -300, y: 150 },
+            description: "活力+1",
+            effects: { primary: { vit: 1 } },
+          },
+          {
+            id: "blood-hunt",
+            name: "夜狩の嗅覚",
+            type: "passive",
+            cluster: "BLOOD_CORE",
+            position: { x: -140, y: 150 },
+            description: "会心と速度を引き上げる。",
+            effects: { bonus: { critRate: 1.5, speed: 0.8 } },
+          },
+          {
+            id: "blood-unlock",
+            name: "吸血系統解放",
+            type: "skillUnlock",
+            cluster: "BLOOD_CORE",
+            position: { x: -220, y: 180 },
+            description: "吸血スキルが使用可能になる。",
+            unlocks: { categories: ["吸血"] },
+          },
+          {
+            id: "blade-edge-core",
+            name: "剣技奥義の芯",
+            type: "passive",
+            cluster: "BLADE_EDGE",
+            position: { x: -360, y: -200 },
+            description: "高火力の剣技を支える。",
+            effects: { bonus: { physAtk: 8, critDamage: 4 } },
+          },
+          {
+            id: "blade-edge-str",
+            name: "剣士奥義筋力",
+            type: "status",
+            cluster: "BLADE_EDGE",
+            position: { x: -420, y: -240 },
+            description: "筋力+2",
+            effects: { primary: { str: 2 } },
+          },
+          {
+            id: "blade-edge-agi",
+            name: "剣士奥義技量",
+            type: "status",
+            cluster: "BLADE_EDGE",
+            position: { x: -300, y: -240 },
+            description: "技量+2",
+            effects: { primary: { agi: 2 } },
+          },
+          {
+            id: "blade-edge-vit",
+            name: "剣士奥義活力",
+            type: "status",
+            cluster: "BLADE_EDGE",
+            position: { x: -420, y: -170 },
+            description: "活力+1",
+            effects: { primary: { vit: 1 } },
+          },
+          {
+            id: "blade-edge-unlock",
+            name: "個別解放: 刃風乱舞",
+            type: "skillUnlock",
+            cluster: "BLADE_EDGE",
+            position: { x: -300, y: -170 },
+            description: "刃風乱舞が使用可能になる。",
+            unlocks: { skills: ["galeDance"] },
+          },
+          {
+            id: "arcane-edge-core",
+            name: "秘奥の核",
+            type: "passive",
+            cluster: "ARCANE_EDGE",
+            position: { x: 360, y: -200 },
+            description: "秘奥スキルの精度を高める。",
+            effects: { bonus: { magAtk: 8, cooldown: 1.5 } },
+          },
+          {
+            id: "arcane-edge-int",
+            name: "秘奥知恵",
+            type: "status",
+            cluster: "ARCANE_EDGE",
+            position: { x: 420, y: -240 },
+            description: "知恵+2",
+            effects: { primary: { int: 2 } },
+          },
+          {
+            id: "arcane-edge-agi",
+            name: "秘奥技量",
+            type: "status",
+            cluster: "ARCANE_EDGE",
+            position: { x: 300, y: -240 },
+            description: "技量+1",
+            effects: { primary: { agi: 1 } },
+          },
+          {
+            id: "arcane-edge-luck",
+            name: "秘奥幸運",
+            type: "status",
+            cluster: "ARCANE_EDGE",
+            position: { x: 420, y: -170 },
+            description: "幸運+1",
+            effects: { primary: { luck: 1 } },
+          },
+          {
+            id: "arcane-edge-unlock",
+            name: "個別解放: クロノブースト",
+            type: "skillUnlock",
+            cluster: "ARCANE_EDGE",
+            position: { x: 300, y: -170 },
+            description: "クロノブーストが使用可能になる。",
+            unlocks: { skills: ["chronoBoost"] },
+          },
+          {
+            id: "blade-ascend-core",
+            name: "剣聖の血脈",
+            type: "passive",
+            cluster: "BLADE_ASCEND",
+            position: { x: -520, y: -360 },
+            description: "剣技の威力と斬撃の勢いを大幅に強化。",
+            effects: { bonus: { physAtk: 14, critDamage: 10, speed: 1.6 } },
+          },
+          {
+            id: "blade-ascend-str",
+            name: "剣聖筋力",
+            type: "status",
+            cluster: "BLADE_ASCEND",
+            position: { x: -600, y: -400 },
+            description: "筋力+4",
+            effects: { primary: { str: 4 } },
+          },
+          {
+            id: "blade-ascend-agi",
+            name: "剣聖技量",
+            type: "status",
+            cluster: "BLADE_ASCEND",
+            position: { x: -440, y: -400 },
+            description: "技量+3",
+            effects: { primary: { agi: 3 } },
+          },
+          {
+            id: "blade-ascend-crit",
+            name: "裂空の鋭撃",
+            type: "passive",
+            cluster: "BLADE_ASCEND",
+            position: { x: -620, y: -320 },
+            description: "会心率と会心ダメージを大きく強化。",
+            effects: { bonus: { critRate: 3.5, critDamage: 8 } },
+          },
+          {
+            id: "blade-ascend-unlock",
+            name: "剣技の深層",
+            type: "passive",
+            cluster: "BLADE_ASCEND",
+            position: { x: -440, y: -320 },
+            description: "物理攻撃と防御を更に引き上げる。",
+            effects: { bonus: { physAtk: 10, physDef: 6 } },
+          },
+          {
+            id: "arcane-ascend-core",
+            name: "星詠みの中核",
+            type: "passive",
+            cluster: "ARCANE_ASCEND",
+            position: { x: 520, y: -360 },
+            description: "魔力とMP循環を爆発的に増幅する。",
+            effects: { bonus: { magAtk: 14, mp: 28, cooldown: 4 } },
+          },
+          {
+            id: "arcane-ascend-int",
+            name: "星詠知恵",
+            type: "status",
+            cluster: "ARCANE_ASCEND",
+            position: { x: 600, y: -400 },
+            description: "知恵+4",
+            effects: { primary: { int: 4 } },
+          },
+          {
+            id: "arcane-ascend-luck",
+            name: "星詠幸運",
+            type: "status",
+            cluster: "ARCANE_ASCEND",
+            position: { x: 440, y: -400 },
+            description: "幸運+3",
+            effects: { primary: { luck: 3 } },
+          },
+          {
+            id: "arcane-ascend-mastery",
+            name: "星界掌握",
+            type: "passive",
+            cluster: "ARCANE_ASCEND",
+            position: { x: 620, y: -320 },
+            description: "魔法貫通と魔法攻撃を大幅に強化。",
+            effects: { bonus: { magPen: 6, magAtk: 10 } },
+          },
+          {
+            id: "arcane-ascend-unlock",
+            name: "星霊の奔流",
+            type: "passive",
+            cluster: "ARCANE_ASCEND",
+            position: { x: 440, y: -320 },
+            description: "魔法防御とMPをさらに伸ばす。",
+            effects: { bonus: { magDef: 8, mp: 20 } },
+          },
+          {
+            id: "holy-ascend-core",
+            name: "神域の律動",
+            type: "passive",
+            cluster: "HOLY_ASCEND",
+            position: { x: 0, y: 420 },
+            description: "HP回復とバリア効率を極限まで高める。",
+            effects: { bonus: { hp: 60, hpRegen: 1.4, barrier: 30 } },
+          },
+          {
+            id: "holy-ascend-vit",
+            name: "神域活力",
+            type: "status",
+            cluster: "HOLY_ASCEND",
+            position: { x: -80, y: 470 },
+            description: "活力+4",
+            effects: { primary: { vit: 4 } },
+          },
+          {
+            id: "holy-ascend-int",
+            name: "神域知恵",
+            type: "status",
+            cluster: "HOLY_ASCEND",
+            position: { x: 80, y: 470 },
+            description: "知恵+3",
+            effects: { primary: { int: 3 } },
+          },
+          {
+            id: "holy-ascend-bless",
+            name: "神域祝福",
+            type: "passive",
+            cluster: "HOLY_ASCEND",
+            position: { x: -120, y: 380 },
+            description: "防御と再生力を大きく強化。",
+            effects: { bonus: { magDef: 10, physDef: 8, hpRegen: 1.2 } },
+          },
+          {
+            id: "holy-ascend-keystone",
+            name: "キーストーン: 聖柱",
+            type: "keystone",
+            cluster: "HOLY_ASCEND",
+            position: { x: 120, y: 380 },
+            description: "被ダメ-25% / 与ダメ-20%",
+            keystone: {
+              effects: { damageTakenMultiplier: 0.75, damageMultiplier: 0.8 },
+              pros: ["被ダメージ-25%"],
+              cons: ["与ダメージ-20%"],
+            },
+          },
+          {
+            id: "blood-ascend-core",
+            name: "紅月の主脈",
+            type: "passive",
+            cluster: "BLOOD_ASCEND",
+            position: { x: -520, y: 300 },
+            description: "吸血と攻撃力を大幅に強化。",
+            effects: { bonus: { physAtk: 12, lifeSteal: 3, speed: 1.8 } },
+          },
+          {
+            id: "blood-ascend-str",
+            name: "紅月筋力",
+            type: "status",
+            cluster: "BLOOD_ASCEND",
+            position: { x: -600, y: 260 },
+            description: "筋力+4",
+            effects: { primary: { str: 4 } },
+          },
+          {
+            id: "blood-ascend-agi",
+            name: "紅月技量",
+            type: "status",
+            cluster: "BLOOD_ASCEND",
+            position: { x: -440, y: 260 },
+            description: "技量+4",
+            effects: { primary: { agi: 4 } },
+          },
+          {
+            id: "blood-ascend-vamp",
+            name: "血渇の宴",
+            type: "passive",
+            cluster: "BLOOD_ASCEND",
+            position: { x: -620, y: 340 },
+            description: "吸血量と会心率を大きく高める。",
+            effects: { bonus: { lifeSteal: 4, critRate: 3 } },
+          },
+          {
+            id: "blood-ascend-keystone",
+            name: "キーストーン: 血月",
+            type: "keystone",
+            cluster: "BLOOD_ASCEND",
+            position: { x: -440, y: 340 },
+            description: "与ダメ+25% / 被ダメ+25%",
+            keystone: {
+              effects: { damageMultiplier: 1.25, damageTakenMultiplier: 1.25 },
+              pros: ["与ダメージ+25%"],
+              cons: ["被ダメージ+25%"],
+            },
+          },
+          {
+            id: "fate-core",
+            name: "運命の律動",
+            type: "passive",
+            cluster: "FATE",
+            position: { x: -420, y: 40 },
+            description: "速度と会心の基盤を高める。",
+            effects: { bonus: { speed: 1.2, critRate: 1 } },
+          },
+          {
+            id: "fate-agi",
+            name: "運命技量",
+            type: "status",
+            cluster: "FATE",
+            position: { x: -480, y: 0 },
+            description: "技量+2",
+            effects: { primary: { agi: 2 } },
+          },
+          {
+            id: "fate-luck",
+            name: "運命幸運",
+            type: "status",
+            cluster: "FATE",
+            position: { x: -480, y: 80 },
+            description: "幸運+2",
+            effects: { primary: { luck: 2 } },
+          },
+          {
+            id: "fate-str",
+            name: "運命筋力",
+            type: "status",
+            cluster: "FATE",
+            position: { x: -360, y: 80 },
+            description: "筋力+1",
+            effects: { primary: { str: 1 } },
+          },
+          {
+            id: "fate-keystone",
+            name: "キーストーン: 奔流",
+            type: "keystone",
+            cluster: "FATE",
+            position: { x: -520, y: 40 },
+            description: "攻撃回数+1 / 与ダメ-15%",
+            keystone: {
+              effects: { attackCountBonus: 1, damageMultiplier: 0.85 },
+              pros: ["攻撃回数+1"],
+              cons: ["与ダメージ-15%"],
+            },
+          },
+          {
+            id: "shadow-core",
+            name: "影の循環",
+            type: "passive",
+            cluster: "SHADOW",
+            position: { x: 420, y: 40 },
+            description: "闇の知識で魔力を底上げする。",
+            effects: { bonus: { magAtk: 6, hp: 12 } },
+          },
+          {
+            id: "shadow-int",
+            name: "影の知恵",
+            type: "status",
+            cluster: "SHADOW",
+            position: { x: 480, y: 0 },
+            description: "知恵+2",
+            effects: { primary: { int: 2 } },
+          },
+          {
+            id: "shadow-vit",
+            name: "影の活力",
+            type: "status",
+            cluster: "SHADOW",
+            position: { x: 480, y: 80 },
+            description: "活力+1",
+            effects: { primary: { vit: 1 } },
+          },
+          {
+            id: "shadow-luck",
+            name: "影の幸運",
+            type: "status",
+            cluster: "SHADOW",
+            position: { x: 360, y: 80 },
+            description: "幸運+1",
+            effects: { primary: { luck: 1 } },
+          },
+          {
+            id: "shadow-keystone",
+            name: "キーストーン: 契約",
+            type: "keystone",
+            cluster: "SHADOW",
+            position: { x: 520, y: 40 },
+            description: "スキル消費-25% / 被ダメ+15%",
+            keystone: {
+              effects: { mpCostMultiplier: 0.75, damageTakenMultiplier: 1.15 },
+              pros: ["スキルMP消費-25%"],
+              cons: ["被ダメージ+15%"],
+            },
+          },
+          {
+            id: "storm-core",
+            name: "嵐牙の循環",
+            type: "passive",
+            cluster: "STORM",
+            position: { x: -700, y: -120 },
+            description: "速度と物理攻撃を大幅に引き上げる。",
+            effects: { bonus: { speed: 2.4, physAtk: 10, critRate: 2 } },
+          },
+          {
+            id: "storm-str",
+            name: "嵐牙筋力",
+            type: "status",
+            cluster: "STORM",
+            position: { x: -780, y: -160 },
+            description: "筋力+5",
+            effects: { primary: { str: 5 } },
+          },
+          {
+            id: "storm-agi",
+            name: "嵐牙技量",
+            type: "status",
+            cluster: "STORM",
+            position: { x: -620, y: -160 },
+            description: "技量+5",
+            effects: { primary: { agi: 5 } },
+          },
+          {
+            id: "storm-speed",
+            name: "迅雷の疾走",
+            type: "passive",
+            cluster: "STORM",
+            position: { x: -780, y: -80 },
+            description: "速度と会心をさらに強化する。",
+            effects: { bonus: { speed: 3.2, critRate: 4 } },
+          },
+          {
+            id: "storm-keystone",
+            name: "キーストーン: 嵐牙",
+            type: "keystone",
+            cluster: "STORM",
+            position: { x: -620, y: -80 },
+            description: "攻撃回数+2 / 与ダメ-25%",
+            keystone: {
+              effects: { attackCountBonus: 2, damageMultiplier: 0.75 },
+              pros: ["攻撃回数+2"],
+              cons: ["与ダメージ-25%"],
+            },
+          },
+          {
+            id: "astral-core",
+            name: "星界の循環",
+            type: "passive",
+            cluster: "ASTRAL",
+            position: { x: 700, y: -120 },
+            description: "魔法攻撃とMPを爆発的に高める。",
+            effects: { bonus: { magAtk: 12, mp: 32, magPen: 6 } },
+          },
+          {
+            id: "astral-int",
+            name: "星界知恵",
+            type: "status",
+            cluster: "ASTRAL",
+            position: { x: 780, y: -160 },
+            description: "知恵+5",
+            effects: { primary: { int: 5 } },
+          },
+          {
+            id: "astral-luck",
+            name: "星界幸運",
+            type: "status",
+            cluster: "ASTRAL",
+            position: { x: 620, y: -160 },
+            description: "幸運+5",
+            effects: { primary: { luck: 5 } },
+          },
+          {
+            id: "astral-focus",
+            name: "星界集中",
+            type: "passive",
+            cluster: "ASTRAL",
+            position: { x: 780, y: -80 },
+            description: "CT短縮と魔法攻撃を大幅に強化。",
+            effects: { bonus: { cooldown: 5, magAtk: 12 } },
+          },
+          {
+            id: "astral-keystone",
+            name: "キーストーン: 星界",
+            type: "keystone",
+            cluster: "ASTRAL",
+            position: { x: 620, y: -80 },
+            description: "スキル消費-40% / 被ダメ+30% / CT短縮+15%",
+            keystone: {
+              effects: {
+                mpCostMultiplier: 0.6,
+                damageTakenMultiplier: 1.3,
+                cooldownMultiplier: 0.85,
+              },
+              pros: ["スキルMP消費-40%", "CT短縮+15%"],
+              cons: ["被ダメージ+30%"],
+            },
+          },
+          {
+            id: "abyss-core",
+            name: "奈落の循環",
+            type: "passive",
+            cluster: "ABYSS",
+            position: { x: 0, y: 620 },
+            description: "HPと防御を極限まで高める。",
+            effects: { bonus: { hp: 80, physDef: 16, magDef: 16 } },
+          },
+          {
+            id: "abyss-vit",
+            name: "奈落活力",
+            type: "status",
+            cluster: "ABYSS",
+            position: { x: -80, y: 670 },
+            description: "活力+5",
+            effects: { primary: { vit: 5 } },
+          },
+          {
+            id: "abyss-luck",
+            name: "奈落幸運",
+            type: "status",
+            cluster: "ABYSS",
+            position: { x: 80, y: 670 },
+            description: "幸運+4",
+            effects: { primary: { luck: 4 } },
+          },
+          {
+            id: "abyss-resolve",
+            name: "深淵の護り",
+            type: "passive",
+            cluster: "ABYSS",
+            position: { x: -120, y: 580 },
+            description: "バリアと被ダメ軽減を大きく強化。",
+            effects: { bonus: { barrier: 50, damageReduction: 4 } },
+          },
+          {
+            id: "abyss-keystone",
+            name: "キーストーン: 奈落",
+            type: "keystone",
+            cluster: "ABYSS",
+            position: { x: 120, y: 580 },
+            description: "与ダメ+35% / 被ダメ+40% / MP消費+20%",
+            keystone: {
+              effects: {
+                damageMultiplier: 1.35,
+                damageTakenMultiplier: 1.4,
+                mpCostMultiplier: 1.2,
+              },
+              pros: ["与ダメージ+35%"],
+              cons: ["被ダメージ+40%", "MP消費+20%"],
+            },
+          },
+        ];
+
+        function sanitizePassiveTreeData(clusters, nodes) {
+          const nodeIdSet = new Set();
+          const cleanedNodes = [];
+          nodes.forEach((node) => {
+            if (!node?.id) {
+              console.warn("passive node missing id:", node);
+              return;
+            }
+            if (nodeIdSet.has(node.id)) {
+              console.warn(`passive node duplicate id ignored: ${node.id}`);
+              return;
+            }
+            nodeIdSet.add(node.id);
+            cleanedNodes.push(node);
+          });
+
+          const cleanedClusters = (clusters || [])
+            .map((cluster) => {
+              if (!cluster) return null;
+              const seen = new Set();
+              const nodesInCluster = [];
+              (cluster.nodes || []).forEach((nodeId) => {
+                if (!nodeIdSet.has(nodeId)) {
+                  console.warn(
+                    `passive cluster ${cluster.key} missing node: ${nodeId}`,
+                  );
+                  return;
+                }
+                if (seen.has(nodeId)) {
+                  console.warn(
+                    `passive cluster ${cluster.key} duplicate node ignored: ${nodeId}`,
+                  );
+                  return;
+                }
+                seen.add(nodeId);
+                nodesInCluster.push(nodeId);
+              });
+
+              if (cluster.core && nodeIdSet.has(cluster.core)) {
+                if (!seen.has(cluster.core)) {
+                  nodesInCluster.unshift(cluster.core);
+                }
+              } else if (cluster.core) {
+                console.warn(
+                  `passive cluster ${cluster.key} missing core: ${cluster.core}`,
+                );
+              }
+              return { ...cluster, nodes: nodesInCluster };
+            })
+            .filter(Boolean);
+
+          return { clusters: cleanedClusters, nodes: cleanedNodes };
+        }
+
+        const { clusters: PASSIVE_TREE_CLUSTERS, nodes: PASSIVE_TREE_NODES } =
+          sanitizePassiveTreeData(
+            PASSIVE_TREE_CLUSTERS_RAW,
+            PASSIVE_TREE_NODES_RAW,
+          );
+
+        const PASSIVE_TREE_CLUSTER_LINKS = [
+          ["start-core", "blade-core"],
+          ["start-core", "arcane-core"],
+          ["blade-core", "holy-core"],
+          ["blade-core", "blood-core"],
+          ["arcane-core", "holy-core"],
+          ["arcane-core", "blood-core"],
+          ["blade-core", "blade-edge-core"],
+          ["arcane-core", "arcane-edge-core"],
+          ["blade-edge-core", "blade-ascend-core"],
+          ["arcane-edge-core", "arcane-ascend-core"],
+          ["blade-core", "fate-core"],
+          ["arcane-core", "shadow-core"],
+          ["shadow-core", "blood-core"],
+          ["holy-core", "holy-ascend-core"],
+          ["blood-core", "blood-ascend-core"],
+          ["blade-ascend-core", "storm-core"],
+          ["arcane-ascend-core", "astral-core"],
+          ["holy-ascend-core", "abyss-core"],
+        ].filter(
+          ([from, to]) => PASSIVE_TREE_NODES.some((node) => node.id === from) &&
+            PASSIVE_TREE_NODES.some((node) => node.id === to),
+        );
+
+        const PASSIVE_NODE_MAP = PASSIVE_TREE_NODES.reduce((acc, node) => {
+          acc[node.id] = node;
+          return acc;
+        }, {});
+
+        function buildPassiveTreeConnections() {
+          const edges = [];
+          const addEdge = (from, to) => {
+            if (!from || !to) return;
+            edges.push([from, to]);
+          };
+          PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
+            (cluster.nodes || []).forEach((nodeId) => {
+              if (nodeId !== cluster.core) addEdge(cluster.core, nodeId);
+            });
+          });
+          PASSIVE_TREE_CLUSTER_LINKS.forEach(([from, to]) => addEdge(from, to));
+          return edges;
+        }
+
+        function buildAdjacencyMap(edges) {
+          const map = {};
+          edges.forEach(([from, to]) => {
+            if (!map[from]) map[from] = new Set();
+            if (!map[to]) map[to] = new Set();
+            map[from].add(to);
+            map[to].add(from);
+          });
+          return map;
+        }
+
+        const PASSIVE_TREE_CONNECTIONS = buildPassiveTreeConnections();
+        const PASSIVE_NODE_ADJACENCY = buildAdjacencyMap(
+          PASSIVE_TREE_CONNECTIONS,
+        );
 
         function getSkillGrowthMultiplier(level) {
           if (!level || level <= 0) return 0;
@@ -10367,28 +11622,6 @@
           return Number((exponential * curveBoost).toFixed(4));
         }
 
-        function applyUnlockPattern(definitions) {
-          const tracker = {};
-          definitions.forEach((skill) => {
-            const state = tracker[skill.category] || { active: 0, passive: 0 };
-            tracker[skill.category] = state;
-            if (skill.type === "active") {
-              const level =
-                ACTIVE_UNLOCK_SCHEDULE[
-                  Math.min(state.active, ACTIVE_UNLOCK_SCHEDULE.length - 1)
-                ];
-              skill.unlockLevel = level;
-              state.active += 1;
-            } else {
-              const level =
-                PASSIVE_UNLOCK_SCHEDULE[
-                  Math.min(state.passive, PASSIVE_UNLOCK_SCHEDULE.length - 1)
-                ];
-              skill.unlockLevel = level;
-              state.passive += 1;
-            }
-          });
-        }
 
         function amplifyThresholdBonuses(thresholds = []) {
           return thresholds.map((threshold) => {
@@ -10433,20 +11666,20 @@
           attackTargetsBonus: 0,
           attacksRemaining: 1,
           base: {
-            hp: 200,
-            mp: 100,
-            physAtk: 40,
-            magAtk: 32,
-            physDef: 16,
-            magDef: 16,
-            speed: 12,
+            hp: 180,
+            mp: 110,
+            physAtk: 36,
+            magAtk: 36,
+            physDef: 14,
+            magDef: 14,
+            speed: 10,
           },
           primary: {
-            str: { label: "力", base: 2, bonus: 0 },
-            int: { label: "知識", base: 2, bonus: 0 },
-            vit: { label: "体力", base: 2, bonus: 0 },
-            agi: { label: "敏捷", base: 2, bonus: 0 },
-            luck: { label: "運", base: 2, bonus: 0 },
+            str: { label: "筋力", base: 3, bonus: 0 },
+            int: { label: "知恵", base: 3, bonus: 0 },
+            vit: { label: "活力", base: 3, bonus: 0 },
+            agi: { label: "技量", base: 3, bonus: 0 },
+            luck: { label: "幸運", base: 3, bonus: 0 },
           },
           allocations: {
             str: 0,
@@ -10455,10 +11688,17 @@
             agi: 0,
             luck: 0,
           },
+          passivePoints: 0,
+          passiveNodes: [PASSIVE_TREE_START_NODE_ID],
           bonus: createEmptyBonus(),
           baseBonus: createEmptyBonus(),
+          passiveBonus: createEmptyBonus(),
+          skillBonus: createEmptyBonus(),
+          unlockedSkillState: { categories: [], skills: [] },
           equipmentBonus: createEmptyBonus(),
           equipmentPrimaryBonus: createEmptyPrimaryBonus(),
+          passivePrimaryBonus: createEmptyPrimaryBonus(),
+          keystoneState: {},
           legendaryState: {},
           equipment: {
             head: null,
@@ -10471,7 +11711,6 @@
             accessory2: null,
           },
           gold: 0,
-          statPoints: 0,
           skillPoints: 0,
           buffs: { guard: 0, haste: 0, focus: 0 },
           resist: { control: 0, dot: 0, debuff: 0 },
@@ -12044,9 +13283,20 @@
           },
         ];
 
-        applyUnlockPattern(SKILL_DEFINITIONS);
+        const INDIVIDUAL_SKILL_UNLOCK_NODES = {
+          galeDance: "blade-edge-unlock",
+          chronoBoost: "arcane-edge-unlock",
+        };
+
         SKILL_DEFINITIONS.forEach((skill) => {
           skill.thresholds = amplifyThresholdBonuses(skill.thresholds);
+          const unlockNode = INDIVIDUAL_SKILL_UNLOCK_NODES[skill.key];
+          if (unlockNode) {
+            skill.unlockNode = unlockNode;
+            skill.unlockCategory = null;
+          } else {
+            skill.unlockCategory = skill.category;
+          }
         });
 
         const SKILL_DEFINITION_MAP = SKILL_DEFINITIONS.reduce((acc, skill) => {
@@ -12123,6 +13373,87 @@
           });
         }
 
+        function addPrimaryBonus(target, bonus = {}, multiplier = 1) {
+          if (!target || !bonus) return;
+          Object.entries(bonus).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            target[key] = (target[key] ?? 0) + value * multiplier;
+          });
+        }
+
+        function createEmptyKeystoneState() {
+          return {
+            damageMultiplier: 1,
+            damageTakenMultiplier: 1,
+            mpCostMultiplier: 1,
+            cooldownMultiplier: 1,
+            attackCountBonus: 0,
+          };
+        }
+
+        function syncBaseBonuses() {
+          player.baseBonus = mergeBonuses(player.skillBonus, player.passiveBonus);
+          return player.baseBonus;
+        }
+
+        function calculatePassiveBonuses() {
+          const bonus = createEmptyBonus();
+          const primaryBonus = createEmptyPrimaryBonus();
+          const keystoneState = createEmptyKeystoneState();
+          const unlockedCategories = new Set();
+          const unlockedSkills = new Set();
+          if (!Array.isArray(player.passiveNodes)) {
+            player.passiveNodes = [PASSIVE_TREE_START_NODE_ID];
+          }
+          if (!player.passiveNodes.includes(PASSIVE_TREE_START_NODE_ID)) {
+            player.passiveNodes.unshift(PASSIVE_TREE_START_NODE_ID);
+          }
+          const ownedNodes = new Set(player.passiveNodes || []);
+
+          ownedNodes.forEach((nodeId) => {
+            const node = PASSIVE_NODE_MAP[nodeId];
+            if (!node) return;
+            if (node.effects?.bonus) addBonus(bonus, node.effects.bonus);
+            if (node.effects?.primary)
+              addPrimaryBonus(primaryBonus, node.effects.primary);
+            (node.unlocks?.categories || []).forEach((cat) =>
+              unlockedCategories.add(cat),
+            );
+            (node.unlocks?.skills || []).forEach((skillKey) =>
+              unlockedSkills.add(skillKey),
+            );
+            if (node.keystone?.effects) {
+              const effects = node.keystone.effects;
+              if (typeof effects.damageMultiplier === "number") {
+                keystoneState.damageMultiplier *= effects.damageMultiplier;
+              }
+              if (typeof effects.damageTakenMultiplier === "number") {
+                keystoneState.damageTakenMultiplier *=
+                  effects.damageTakenMultiplier;
+              }
+              if (typeof effects.mpCostMultiplier === "number") {
+                keystoneState.mpCostMultiplier *= effects.mpCostMultiplier;
+              }
+              if (typeof effects.cooldownMultiplier === "number") {
+                keystoneState.cooldownMultiplier *= effects.cooldownMultiplier;
+              }
+              if (typeof effects.attackCountBonus === "number") {
+                keystoneState.attackCountBonus += effects.attackCountBonus;
+              }
+            }
+          });
+
+          player.passiveBonus = bonus;
+          player.passivePrimaryBonus = primaryBonus;
+          player.keystoneState = keystoneState;
+          player.unlockedSkillState = {
+            categories: Array.from(unlockedCategories),
+            skills: Array.from(unlockedSkills),
+          };
+          syncBaseBonuses();
+          return bonus;
+        }
+
         function calculateSkillBonuses() {
           const aggregated = createEmptyBonus();
           Object.values(skills).forEach((skill) => {
@@ -12149,7 +13480,8 @@
             }
             skill.reachedThresholds = reached;
           });
-          player.baseBonus = aggregated;
+          player.skillBonus = aggregated;
+          syncBaseBonuses();
           return aggregated;
         }
 
@@ -12619,12 +13951,11 @@
         );
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
-        const stepOptions = [1, 10, 50];
-        let currentStepIndex = 0;
         const skillStepOptions = [1, 10, 50];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
         let selectedSkillType = "active";
+        let skillViewMode = "passive";
         let skillSummaryVisible = false;
         let pendingResetSpent = 0;
         let playerModalPage = "status";
@@ -12685,23 +14016,28 @@
           // ---- 基本ステータス系 ----
           const baseGrowth = playerGrowthMultiplier(player.level);
 
-          const maxHpBase = (player.base.hp + vit * 17.2) * baseGrowth;
-          const maxMpBase = (player.base.mp + int * 6.4) * baseGrowth;
-          const physAtkBase = (player.base.physAtk + str * 3.1) * baseGrowth;
-          const magAtkBase = (player.base.magAtk + int * 3.2) * baseGrowth;
+          const maxHpBase =
+            (player.base.hp + vit * 14 + str * 2.5) * baseGrowth;
+          const maxMpBase =
+            (player.base.mp + int * 9 + luck * 1.5) * baseGrowth;
+          const physAtkBase =
+            (player.base.physAtk + str * 3.4 + agi * 0.6) * baseGrowth;
+          const magAtkBase =
+            (player.base.magAtk + int * 3.4 + luck * 0.4) * baseGrowth;
           const physDefBase =
-            (player.base.physDef + vit * 1.36 + str * 0.52) * baseGrowth;
+            (player.base.physDef + vit * 1.5 + str * 0.6) * baseGrowth;
           const magDefBase =
-            (player.base.magDef + vit * 1.16 + int * 0.72) * baseGrowth;
-          const speedBase = (player.base.speed + agi * 2.36) * baseGrowth;
+            (player.base.magDef + vit * 1.3 + int * 0.8) * baseGrowth;
+          const speedBase =
+            (player.base.speed + agi * 2.1 + luck * 0.4) * baseGrowth;
 
           // 会心・命中・貫通など
-          const critBase = Math.min(156, (agi + luck) * 1.4);
-          const evadeBase = Math.min(120, (agi + luck) * 0.84);
-          const accuracyBase = Math.min(200, 140 + agi * 0.28);
-          const physPenBase = Math.min(68, str * 0.52);
-          const magPenBase = Math.min(68, int * 0.52);
-          const critDmgBase = Math.min(116, luck * 1.4);
+          const critBase = Math.min(160, agi * 1.1 + luck * 1.3);
+          const evadeBase = Math.min(130, agi * 0.9 + luck * 0.6);
+          const accuracyBase = Math.min(210, 120 + agi * 0.45 + int * 0.2);
+          const physPenBase = Math.min(70, str * 0.6 + agi * 0.2);
+          const magPenBase = Math.min(70, int * 0.6 + luck * 0.2);
+          const critDmgBase = Math.min(120, luck * 1.6);
 
           // ---- 防御まわり（方針：体力は関与せず、装備・スキル由来のみ） ----
           // ・被ダメ軽減：装備・スキルでのみ積む。ここでは0固定。
@@ -12711,14 +14047,14 @@
           const blockBase = 0;
 
           // 抵抗は体力/知識/運ベースのまま維持
-          const controlResistBase = Math.min(120, (vit + luck) * 0.7);
-          const dotResistBase = Math.min(120, vit * 0.9 + luck * 0.2);
+          const controlResistBase = Math.min(120, vit * 0.6 + luck * 0.5);
+          const dotResistBase = Math.min(120, vit * 0.8 + luck * 0.3);
           const debuffResistBase = Math.min(
             120,
-            (vit + int) * 0.7 + luck * 0.2,
+            vit * 0.5 + int * 0.6 + luck * 0.2,
           );
 
-          const cooldownBase = Math.min(40, (agi + int) * 0.3);
+          const cooldownBase = Math.min(45, (agi + int) * 0.32);
 
           // 体力には依存しないよう、ここはすべて 0 をベースとする
           const hpRegenBase = 0;
@@ -12736,21 +14072,21 @@
           // （数字は「LUK100での目安」がだいたい以前のバランスに近くなるように調整）
 
           // ドロップ数寄り（LUK30から本格的に効き始めるイメージ）
-          const dropBaseline = 20; // 軽くベースを底上げして全体のドロップ体験を滑らかに
-          const dropExtraSlope = 0.64;
-          const dropThreshold = 60;
+          const dropBaseline = 18; // 軽くベースを底上げして全体のドロップ体験を滑らかに
+          const dropExtraSlope = 0.6;
+          const dropThreshold = 55;
 
           // レアリティUP（LUK40からじわじわ）
-          const rarityExtraSlope = 0.14;
-          const rarityThreshold = 80;
+          const rarityExtraSlope = 0.16;
+          const rarityThreshold = 75;
 
           // 称号付与率（LUK40からそこそこ伸びる）
-          const titleExtraSlope = 0.34;
-          const titleThreshold = 80;
+          const titleExtraSlope = 0.32;
+          const titleThreshold = 75;
 
           // ネームド遭遇（他より少し効きやすい）
-          const namedExtraSlope = 0.9;
-          const namedThreshold = 40;
+          const namedExtraSlope = 0.8;
+          const namedThreshold = 35;
 
           // 実際の計算
           const dropRateBase =
@@ -12771,7 +14107,7 @@
             Math.max(0, luck - namedThreshold) * namedExtraSlope;
 
           // ゴールド率は「基礎100%」のまま
-          const goldChanceBase = 200;
+          const goldChanceBase = 180;
 
           return {
             // ---- 基礎系 ----
@@ -12815,23 +14151,23 @@
             critRate: {
               base: critBase,
               bonus: player.bonus.critRate,
-              total: Math.min(140, critBase + player.bonus.critRate),
+              total: Math.min(160, critBase + player.bonus.critRate),
             },
             evade: {
               base: evadeBase,
               bonus: player.bonus.evade,
-              total: Math.min(120, evadeBase + player.bonus.evade),
+              total: Math.min(130, evadeBase + player.bonus.evade),
             },
             accuracy: { base: accuracyBase, bonus: 0, total: accuracyBase },
             physPen: {
               base: physPenBase,
               bonus: player.bonus.physPen,
-              total: Math.min(60, physPenBase + player.bonus.physPen),
+              total: Math.min(70, physPenBase + player.bonus.physPen),
             },
             magPen: {
               base: magPenBase,
               bonus: player.bonus.magPen,
-              total: Math.min(60, magPenBase + player.bonus.magPen),
+              total: Math.min(70, magPenBase + player.bonus.magPen),
             },
             critDamage: {
               base: critDmgBase,
@@ -12875,7 +14211,7 @@
             cooldown: {
               base: cooldownBase,
               bonus: player.bonus.cooldown,
-              total: Math.min(40, cooldownBase + player.bonus.cooldown),
+              total: Math.min(45, cooldownBase + player.bonus.cooldown),
             },
 
             // HP再生・吸収・バリアは 0 ＋ 装備／スキル由来のみ
@@ -13437,12 +14773,15 @@
         }
 
         function recalcDerivedStats() {
+          calculatePassiveBonuses();
           const equipmentBonuses = collectEquipmentBonuses();
           player.equipmentBonus = equipmentBonuses.secondary;
           player.equipmentPrimaryBonus = equipmentBonuses.primary;
           player.equipmentPrimaryPerLevel = equipmentBonuses.primaryPerLevel;
           player.equipmentPrimaryFixed = equipmentBonuses.primaryFixed;
-          player.attackCountBonus = equipmentBonuses.attackCountBonus || 0;
+          player.attackCountBonus =
+            (equipmentBonuses.attackCountBonus || 0) +
+            (player.keystoneState?.attackCountBonus || 0);
           player.attackTargetsBonus =
             equipmentBonuses.attackTargetsBonus || 0;
           player.legendaryUniqueOptions = equipmentBonuses.uniqueOptions || [];
@@ -13451,12 +14790,15 @@
             equipmentBonuses.primaryPerLevel,
             player.level,
           );
+          const passivePrimaryBonus =
+            player.passivePrimaryBonus || createEmptyPrimaryBonus();
 
           Object.keys(player.primary).forEach((key) => {
             const baseValue = player.primary[key].base;
             const additive =
               (equipmentBonuses.primary[key] ?? 0) +
-              (perLevelPrimaryBonus[key] ?? 0);
+              (perLevelPrimaryBonus[key] ?? 0) +
+              (passivePrimaryBonus[key] ?? 0);
             const fixedValue =
               typeof equipmentBonuses.primaryFixed?.[key] === "number"
                 ? equipmentBonuses.primaryFixed[key]
@@ -14931,7 +16273,6 @@ function showDamagePopup(
         function updateUI(derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           lastDerivedStats = derived;
-          updateStepButton();
           document.getElementById("floor-inline").textContent = game.floor;
           const displayHp = roundBattleValue(player.hp);
           const displayBarrier = Math.max(
@@ -14957,7 +16298,13 @@ function showDamagePopup(
           document.getElementById("level").textContent = player.level;
           document.getElementById("gold").textContent = formatGold(player.gold);
           document.getElementById("stat-points").textContent =
-            player.statPoints;
+            player.passivePoints;
+          const passiveSkillPointLabel = document.getElementById(
+            "passive-points-skill",
+          );
+          if (passiveSkillPointLabel) {
+            passiveSkillPointLabel.textContent = player.passivePoints;
+          }
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
@@ -15547,13 +16894,16 @@ function showDamagePopup(
           player.level = nextLevel;
           player.exp = 0;
           player.expToLevel = calcExpToNextLevel(nextLevel);
-          player.statPoints = Math.max(0, player.statPoints + delta * 5);
+          player.passivePoints = Math.max(
+            0,
+            player.passivePoints + delta * PASSIVE_POINT_PER_LEVEL,
+          );
           player.skillPoints = Math.max(0, player.skillPoints + delta);
 
           const derived = recalcDerivedStats();
           updateUI(derived);
           log(
-            `🔧 Lv${nextLevel} に変更 (能力P${delta >= 0 ? "+" : ""}${delta * 5} / スキルP${delta >= 0 ? "+" : ""}${delta})`,
+            `🔧 Lv${nextLevel} に変更 (パッシブP${delta >= 0 ? "+" : ""}${delta * PASSIVE_POINT_PER_LEVEL} / スキルP${delta >= 0 ? "+" : ""}${delta})`,
             "info",
           );
           maybeAutoSave("デバッグ:レベル変更");
@@ -15620,7 +16970,7 @@ function showDamagePopup(
           }
         }
 
-        const CURRENT_SAVE_VERSION = 1;
+        const CURRENT_SAVE_VERSION = 2;
         const SAVE_SLOTS = [
           { id: "slot1", label: "スロット1" },
           { id: "slot2", label: "スロット2" },
@@ -15702,8 +17052,53 @@ function showDamagePopup(
           payload.version = 1;
         }
 
+        function migrateFromV1ToV2(payload) {
+          if (!payload.state || typeof payload.state !== "object") {
+            payload.state = {};
+          }
+          if (!payload.state.player || typeof payload.state.player !== "object") {
+            payload.state.player = {};
+          }
+          const playerState = payload.state.player;
+          const allocations = playerState.allocations || {};
+          const spent = Object.values(allocations).reduce(
+            (sum, value) => sum + (Number(value) || 0),
+            0,
+          );
+          const statPoints = Number(playerState.statPoints) || 0;
+          playerState.passivePoints =
+            (Number(playerState.passivePoints) || 0) + statPoints + spent;
+          playerState.passiveNodes = [PASSIVE_TREE_START_NODE_ID];
+          playerState.base = {
+            hp: 180,
+            mp: 110,
+            physAtk: 36,
+            magAtk: 36,
+            physDef: 14,
+            magDef: 14,
+            speed: 10,
+          };
+          playerState.primary = {
+            str: { label: "筋力", base: 3, bonus: 0 },
+            int: { label: "知恵", base: 3, bonus: 0 },
+            vit: { label: "活力", base: 3, bonus: 0 },
+            agi: { label: "技量", base: 3, bonus: 0 },
+            luck: { label: "幸運", base: 3, bonus: 0 },
+          };
+          playerState.allocations = {
+            str: 0,
+            int: 0,
+            vit: 0,
+            agi: 0,
+            luck: 0,
+          };
+          delete playerState.statPoints;
+          payload.version = 2;
+        }
+
         const SAVE_MIGRATIONS = {
           0: migrateFromV0ToV1,
+          1: migrateFromV1ToV2,
         };
 
         function migrateSavePayload(rawPayload) {
@@ -15757,6 +17152,12 @@ function showDamagePopup(
             mergedPlayer.activeSkillSlots = cloneState(
               INITIAL_SAVE_STATE.player.activeSkillSlots,
             );
+          if (!Array.isArray(mergedPlayer.passiveNodes) || !mergedPlayer.passiveNodes.length) {
+            mergedPlayer.passiveNodes = [PASSIVE_TREE_START_NODE_ID];
+          }
+          if (!Number.isFinite(mergedPlayer.passivePoints)) {
+            mergedPlayer.passivePoints = 0;
+          }
 
           return {
             ...migrated,
@@ -15952,6 +17353,7 @@ function showDamagePopup(
             debugCodexUnlockCheckbox.checked = false;
           restoreUiState(payload.ui);
           mergeSkillsFromSave(payload.skills || {});
+          calculatePassiveBonuses();
           normalizeOwnedEquipment();
           hydrateCodexFromOwned();
           calculateSkillBonuses();
@@ -16927,42 +18329,6 @@ function showDamagePopup(
           });
         }
 
-        function adjustPrimary(key, delta) {
-          if (delta === 0) return;
-          if (delta > 0) {
-            const use = Math.min(delta, player.statPoints);
-            if (use <= 0) return;
-            player.statPoints -= use;
-            player.primary[key].base += use;
-            player.allocations[key] += use;
-            log(`能力Pを使用: ${player.primary[key].label} +${use}`, "good");
-          } else {
-            const refundable = player.allocations[key];
-            const giveBack = Math.min(refundable, Math.abs(delta));
-            if (giveBack <= 0) return;
-            player.primary[key].base -= giveBack;
-            player.allocations[key] -= giveBack;
-            player.statPoints += giveBack;
-            log(
-              `能力Pを返却: ${player.primary[key].label} -${giveBack}`,
-              "info",
-            );
-          }
-          updateUI();
-          maybeAutoSave("ステータス調整");
-        }
-
-        function getAdjustStep() {
-          return stepOptions[currentStepIndex];
-        }
-
-        function updateStepButton() {
-          if (!statStepButton) return;
-          const step = getAdjustStep();
-          statStepButton.textContent = `±${step}`;
-          statStepButton.title = `増減幅 ${step}`;
-        }
-
         function getSkillAdjustStep() {
           return skillStepOptions[currentSkillStepIndex];
         }
@@ -16977,7 +18343,6 @@ function showDamagePopup(
         function renderPrimaryStats() {
           const container = document.getElementById("primary-stats");
           container.innerHTML = "";
-          const step = getAdjustStep();
 
           primaryOrder.forEach((key) => {
             const stat = player.primary[key];
@@ -16998,28 +18363,7 @@ function showDamagePopup(
             info.appendChild(label);
             info.appendChild(value);
 
-            const actions = document.createElement("div");
-            actions.className = "primary-actions";
-
-            const inc = document.createElement("button");
-            inc.textContent = `+${step}`;
-            inc.classList.add("mini-btn");
-            inc.disabled = player.statPoints <= 0;
-            inc.title = `${step}ポイント増加`;
-            inc.onclick = () => adjustPrimary(key, step);
-
-            const dec = document.createElement("button");
-            dec.textContent = `-${step}`;
-            dec.classList.add("mini-btn");
-            dec.disabled = player.allocations[key] <= 0;
-            dec.title = `${step}ポイント減少`;
-            dec.onclick = () => adjustPrimary(key, -step);
-
-            actions.appendChild(inc);
-            actions.appendChild(dec);
-
             row.appendChild(info);
-            row.appendChild(actions);
             container.appendChild(row);
           });
         }
@@ -17227,13 +18571,34 @@ function showDamagePopup(
 
         function isSkillUnlocked(skill) {
           if (!skill) return false;
-          const required = skill.unlockLevel || 1;
-          return player.level >= required;
+          if (!player.unlockedSkillState) {
+            calculatePassiveBonuses();
+          }
+          const unlockedCategories = new Set(
+            player.unlockedSkillState?.categories || [],
+          );
+          const unlockedSkills = new Set(
+            player.unlockedSkillState?.skills || [],
+          );
+          if (skill.unlockNode) {
+            return (player.passiveNodes || []).includes(skill.unlockNode);
+          }
+          if (skill.unlockCategory) {
+            return unlockedCategories.has(skill.unlockCategory);
+          }
+          if (skill.unlockSkill) {
+            return unlockedSkills.has(skill.unlockSkill);
+          }
+          return true;
         }
 
         function toggleActiveSkillSlot(skillKey) {
           const skill = skills[skillKey];
           if (!skill || skill.type !== "active") return;
+          if (!isSkillUnlocked(skill)) {
+            log("スキルが解放されていません", "warning");
+            return;
+          }
           if (skill.level <= 0) {
             log("スキルを習得してからセットしてください", "warning");
             return;
@@ -17276,8 +18641,25 @@ function showDamagePopup(
           const baseCooldown = Math.max(0, skill?.activation?.cooldown ?? 0);
           if (baseCooldown <= 0) return 0;
           const reduction = Math.max(0, derived?.cooldown?.total ?? 0);
-          const scaled = Math.round(baseCooldown * (1 - reduction / 100));
+          const keystoneMultiplier =
+            player.keystoneState?.cooldownMultiplier ?? 1;
+          const scaled = Math.round(
+            baseCooldown * (1 - reduction / 100) * keystoneMultiplier,
+          );
           return Math.max(1, scaled);
+        }
+
+        function getEffectiveMpCostValue(baseCost) {
+          const multiplier = player.keystoneState?.mpCostMultiplier ?? 1;
+          return Math.max(0, Math.round((baseCost || 0) * multiplier));
+        }
+
+        function getEffectiveSkillMpCost(skill) {
+          const baseCost = skill?.activation?.mpCost ?? 0;
+          return {
+            base: baseCost,
+            effective: getEffectiveMpCostValue(baseCost),
+          };
         }
 
         function renderSkillThresholds(skill, { locked = false } = {}) {
@@ -17320,12 +18702,32 @@ function showDamagePopup(
           return text ? `毎Lv: ${text}${boostText}` : "毎Lv効果なし";
         }
 
+        function describeSkillUnlock(skill) {
+          if (!skill) return "解放条件: なし";
+          if (skill.unlockNode) {
+            const node = PASSIVE_NODE_MAP[skill.unlockNode];
+            const label = node?.name || "個別解放ノード";
+            return `解放条件: ${label}`;
+          }
+          if (skill.unlockCategory) {
+            return `解放条件: ${skill.unlockCategory}系統解放`;
+          }
+          return "解放条件: なし";
+        }
+
+        function getSkillUnlockPriority(skill) {
+          if (!skill) return 99;
+          if (skill.unlockNode) return 2;
+          if (skill.unlockCategory) return 1;
+          return 0;
+        }
+
         function adjustSkillLevel(key, delta) {
           const skill = skills[key];
           if (!skill || delta === 0) return;
           if (delta > 0) {
             if (!isSkillUnlocked(skill)) {
-              log(`Lv${skill.unlockLevel}で解放されます`, "warning");
+              log(`${describeSkillUnlock(skill)} です`, "warning");
               return;
             }
             const spendable = Math.min(
@@ -17367,12 +18769,19 @@ function showDamagePopup(
           container.appendChild(title);
 
           player.activeSkillSlots.forEach((slot, index) => {
-            const skill = slot.skillKey ? skills[slot.skillKey] : null;
+            let skill = slot.skillKey ? skills[slot.skillKey] : null;
+            if (skill && !isSkillUnlocked(skill)) {
+              slot.skillKey = null;
+              slot.cooldownRemaining = 0;
+              skill = null;
+            }
             const row = document.createElement("div");
             row.className = "option-value";
-            const cooldownText = skill?.activation?.cooldown
-              ? ` / CT: ${skill.activation.cooldown}T`
-              : "";
+            const baseCooldown = skill?.activation?.cooldown ?? 0;
+            const cooldownText =
+              baseCooldown > 0
+                ? ` / CT: ${getEffectiveSkillCooldown(skill)}T`
+                : "";
             const remaining = slot.cooldownRemaining
               ? ` / 残り: ${slot.cooldownRemaining}T`
               : "";
@@ -17450,7 +18859,12 @@ function showDamagePopup(
                 skill.category === selectedSkillCategory &&
                 skill.type === selectedSkillType,
             )
-            .sort((a, b) => (a[1].unlockLevel || 0) - (b[1].unlockLevel || 0));
+            .sort((a, b) => {
+              const priority =
+                getSkillUnlockPriority(a[1]) - getSkillUnlockPriority(b[1]);
+              if (priority !== 0) return priority;
+              return (a[1].name || "").localeCompare(b[1].name || "", "ja");
+            });
 
           filteredSkills.forEach(([key, skill]) => {
             const locked = !isSkillUnlocked(skill);
@@ -17468,8 +18882,8 @@ function showDamagePopup(
 
             const meta = document.createElement("div");
             meta.className = "pill";
-            const unlock = skill.unlockLevel ? `Lv${skill.unlockLevel}` : "Lv1";
-            meta.textContent = `${skill.category} / ${skill.type === "active" ? "アクティブ" : "パッシブ"} / 取得${unlock}`;
+            const unlock = describeSkillUnlock(skill).replace("解放条件: ", "");
+            meta.textContent = `${skill.category} / ${skill.type === "active" ? "アクティブ" : "パッシブ"} / ${unlock}`;
 
             headerRow.appendChild(name);
             headerRow.appendChild(meta);
@@ -17479,6 +18893,11 @@ function showDamagePopup(
             desc.className = "subtle";
             desc.textContent = locked ? "？？？" : skill.desc;
             row.appendChild(desc);
+
+            const unlockLine = document.createElement("div");
+            unlockLine.className = "subtle";
+            unlockLine.textContent = describeSkillUnlock(skill);
+            row.appendChild(unlockLine);
 
             const scaling = document.createElement("div");
             scaling.className = "subtle";
@@ -17502,12 +18921,18 @@ function showDamagePopup(
             if (skill.type === "active") {
               const activation = document.createElement("div");
               activation.className = "subtle";
-              const cooldownText = skill.activation?.cooldown
-                ? `${skill.activation.cooldown}T`
+              const baseCooldown = skill.activation?.cooldown ?? 0;
+              const effectiveCooldown = baseCooldown
+                ? getEffectiveSkillCooldown(skill)
+                : 0;
+              const cooldownText = baseCooldown
+                ? `基礎${baseCooldown}T / 実効${effectiveCooldown}T`
                 : "--";
+              const { base: baseCost, effective: effectiveCost } =
+                getEffectiveSkillMpCost(skill);
               const mpCostText =
-                skill.activation?.mpCost != null
-                  ? `MP${skill.activation.mpCost}`
+                baseCost != null
+                  ? `MP${baseCost}${effectiveCost !== baseCost ? ` (実効${effectiveCost})` : ""}`
                   : "MP--";
               const activationDetail = locked
                 ? "発動: ？？？"
@@ -17587,16 +19012,22 @@ function showDamagePopup(
 
             const categorySkills = Object.values(skills)
               .filter((skill) => skill.category === category)
-              .sort((a, b) => (a.unlockLevel || 0) - (b.unlockLevel || 0));
+              .sort((a, b) => {
+                const priority =
+                  getSkillUnlockPriority(a) - getSkillUnlockPriority(b);
+                if (priority !== 0) return priority;
+                return (a.name || "").localeCompare(b.name || "", "ja");
+              });
 
             categorySkills.forEach((skill) => {
               const locked = !isSkillUnlocked(skill);
               const row = document.createElement("div");
               row.className = "option-value";
               const typeLabel = skill.type === "active" ? "Act" : "Pas";
-              const unlock = skill.unlockLevel
-                ? `取得Lv${skill.unlockLevel}`
-                : "取得Lv1";
+              const unlock = describeSkillUnlock(skill).replace(
+                "解放条件: ",
+                "",
+              );
               const status = locked
                 ? "未解放"
                 : `現在${skill.level}/${skill.max}`;
@@ -17607,6 +19038,409 @@ function showDamagePopup(
 
             card.appendChild(list);
             container.appendChild(card);
+          });
+        }
+
+        const PASSIVE_NODE_TYPE_LABELS = {
+          status: "ステータス",
+          passive: "パッシブ",
+          skillUnlock: "解放",
+          keystone: "キーストーン",
+        };
+
+        const PASSIVE_NODE_TYPE_COLORS = {
+          status: "#94a3b8",
+          passive: "#60a5fa",
+          skillUnlock: "#34d399",
+          keystone: "#f59e0b",
+        };
+
+        function formatPrimaryBonusText(bonus = {}) {
+          const parts = [];
+          Object.entries(bonus).forEach(([key, value]) => {
+            if (typeof value !== "number" || !value) return;
+            const label = player.primary?.[key]?.label || key;
+            const sign = value > 0 ? "+" : "";
+            parts.push(`${label}${sign}${value}`);
+          });
+          return parts.join(" / ");
+        }
+
+        function describePassiveNodeEffects(node) {
+          if (!node) return "効果不明";
+          const parts = [];
+          const primaryText = formatPrimaryBonusText(node.effects?.primary);
+          if (primaryText) parts.push(primaryText);
+          const bonusText = formatSkillBonusText(node.effects?.bonus || {});
+          if (bonusText) parts.push(bonusText);
+          if (node.unlocks?.categories?.length) {
+            parts.push(`系統解放: ${node.unlocks.categories.join(" / ")}`);
+          }
+          if (node.unlocks?.skills?.length) {
+            const skillNames = node.unlocks.skills.map(
+              (key) => SKILL_DEFINITION_MAP[key]?.name || key,
+            );
+            parts.push(`個別解放: ${skillNames.join(" / ")}`);
+          }
+          if (node.keystone) {
+            const pros = (node.keystone.pros || []).join(" / ");
+            const cons = (node.keystone.cons || []).join(" / ");
+            if (pros) parts.push(`メリット: ${pros}`);
+            if (cons) parts.push(`デメリット: ${cons}`);
+          }
+          if (parts.length) return parts.join(" / ");
+          return node.description || "効果未設定";
+        }
+
+        function updatePassiveTreeViewBox(svg) {
+          if (!svg || !passiveTreeViewState.baseViewBox) return;
+          const { x, y, width, height } = passiveTreeViewState.baseViewBox;
+          const scale = passiveTreeViewState.scale;
+          const nextWidth = width * scale;
+          const nextHeight = height * scale;
+          const nextX = x + passiveTreeViewState.offsetX;
+          const nextY = y + passiveTreeViewState.offsetY;
+          svg.setAttribute(
+            "viewBox",
+            `${nextX} ${nextY} ${nextWidth} ${nextHeight}`,
+          );
+        }
+
+        function resetPassiveTreeView() {
+          passiveTreeViewState.scale = 1;
+          passiveTreeViewState.offsetX = 0;
+          passiveTreeViewState.offsetY = 0;
+          updatePassiveTreeViewBox(
+            document.getElementById("passive-tree-svg"),
+          );
+        }
+
+        function adjustPassiveTreeZoom(factor, { centerX, centerY } = {}) {
+          const svg = document.getElementById("passive-tree-svg");
+          if (!svg || !passiveTreeViewState.baseViewBox) return;
+          const rect = svg.getBoundingClientRect();
+          const base = passiveTreeViewState.baseViewBox;
+          const prevScale = passiveTreeViewState.scale;
+          const nextScale = Math.min(3.4, Math.max(0.35, prevScale * factor));
+          if (nextScale === prevScale) return;
+          const cx = centerX ?? rect.width / 2;
+          const cy = centerY ?? rect.height / 2;
+          const ratioX = rect.width ? cx / rect.width : 0.5;
+          const ratioY = rect.height ? cy / rect.height : 0.5;
+          const currentX =
+            base.x +
+            passiveTreeViewState.offsetX +
+            ratioX * base.width * prevScale;
+          const currentY =
+            base.y +
+            passiveTreeViewState.offsetY +
+            ratioY * base.height * prevScale;
+          passiveTreeViewState.scale = nextScale;
+          passiveTreeViewState.offsetX =
+            currentX - base.x - ratioX * base.width * nextScale;
+          passiveTreeViewState.offsetY =
+            currentY - base.y - ratioY * base.height * nextScale;
+          updatePassiveTreeViewBox(svg);
+        }
+
+        function initializePassiveTreeInteractions() {
+          if (passiveTreeViewState.initialized) return;
+          const svg = document.getElementById("passive-tree-svg");
+          if (!svg) return;
+          passiveTreeViewState.initialized = true;
+          let dragging = false;
+          let startX = 0;
+          let startY = 0;
+          let originOffsetX = 0;
+          let originOffsetY = 0;
+
+          const endDrag = () => {
+            dragging = false;
+            svg.classList.remove("dragging");
+          };
+
+          svg.addEventListener("pointerdown", (event) => {
+            dragging = true;
+            startX = event.clientX;
+            startY = event.clientY;
+            originOffsetX = passiveTreeViewState.offsetX;
+            originOffsetY = passiveTreeViewState.offsetY;
+            svg.setPointerCapture(event.pointerId);
+            svg.classList.add("dragging");
+          });
+
+          svg.addEventListener("pointermove", (event) => {
+            if (!dragging || !passiveTreeViewState.baseViewBox) return;
+            const rect = svg.getBoundingClientRect();
+            const base = passiveTreeViewState.baseViewBox;
+            const scale = passiveTreeViewState.scale;
+            const dx = event.clientX - startX;
+            const dy = event.clientY - startY;
+            const moveX =
+              rect.width === 0 ? 0 : (dx / rect.width) * base.width * scale;
+            const moveY =
+              rect.height === 0 ? 0 : (dy / rect.height) * base.height * scale;
+            passiveTreeViewState.offsetX = originOffsetX - moveX;
+            passiveTreeViewState.offsetY = originOffsetY - moveY;
+            updatePassiveTreeViewBox(svg);
+          });
+
+          svg.addEventListener("pointerup", endDrag);
+          svg.addEventListener("pointercancel", endDrag);
+          svg.addEventListener("pointerleave", endDrag);
+
+          svg.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            const factor = event.deltaY > 0 ? 1.08 : 0.92;
+            adjustPassiveTreeZoom(factor, {
+              centerX: event.clientX - svg.getBoundingClientRect().left,
+              centerY: event.clientY - svg.getBoundingClientRect().top,
+            });
+          });
+        }
+
+        function isPassiveNodeUnlocked(nodeId) {
+          return (player.passiveNodes || []).includes(nodeId);
+        }
+
+        function isPassiveNodeAvailable(nodeId) {
+          if (!nodeId || isPassiveNodeUnlocked(nodeId)) return false;
+          if ((player.passivePoints || 0) <= 0) return false;
+          const neighbors = PASSIVE_NODE_ADJACENCY?.[nodeId];
+          if (!neighbors || !neighbors.size) return false;
+          return Array.from(neighbors).some((id) => isPassiveNodeUnlocked(id));
+        }
+
+        function unlockPassiveNode(nodeId) {
+          const node = PASSIVE_NODE_MAP[nodeId];
+          if (!node) return;
+          if (!isPassiveNodeAvailable(nodeId)) {
+            log("隣接ノードが必要です", "warning");
+            return;
+          }
+          player.passivePoints = Math.max(0, player.passivePoints - 1);
+          player.passiveNodes = Array.from(
+            new Set([...(player.passiveNodes || []), nodeId]),
+          );
+          calculatePassiveBonuses();
+          const derived = recalcDerivedStats();
+          updateUI(derived);
+          log(`🧭 パッシブ取得: ${node.name}`, "good");
+          maybeAutoSave("パッシブ取得");
+        }
+
+        let selectedPassiveNodeId = PASSIVE_TREE_START_NODE_ID;
+        const passiveTreeViewState = {
+          baseViewBox: null,
+          scale: 1,
+          offsetX: 0,
+          offsetY: 0,
+          initialized: false,
+        };
+
+        function renderPassiveTreeSummary() {
+          const summary = document.getElementById("passive-tree-summary");
+          if (!summary) return;
+          summary.innerHTML = "";
+          const totalNodes = PASSIVE_TREE_NODES.length;
+          const unlockedNodes = (player.passiveNodes || []).length;
+          const unlockedCategories = Array.from(
+            player.unlockedSkillState?.categories || [],
+          );
+          const unlockedSkills = Array.from(
+            player.unlockedSkillState?.skills || [],
+          ).map((key) => SKILL_DEFINITION_MAP[key]?.name || key);
+          const keystones = (player.passiveNodes || [])
+            .map((id) => PASSIVE_NODE_MAP[id])
+            .filter((node) => node?.type === "keystone")
+            .map((node) => node?.name)
+            .filter(Boolean);
+
+          const lines = [
+            `取得ノード: ${unlockedNodes}/${totalNodes}`,
+            `残りパッシブP: ${player.passivePoints ?? 0}`,
+            `系統解放: ${unlockedCategories.length ? unlockedCategories.join(" / ") : "なし"}`,
+            `個別解放: ${unlockedSkills.length ? unlockedSkills.join(" / ") : "なし"}`,
+            `キーストーン: ${keystones.length ? keystones.join(" / ") : "なし"}`,
+          ];
+          lines.forEach((text) => {
+            const row = document.createElement("div");
+            row.textContent = text;
+            summary.appendChild(row);
+          });
+
+          const controls = document.createElement("div");
+          controls.className = "inline-buttons";
+          controls.style.marginTop = "6px";
+
+          const zoomOut = document.createElement("button");
+          zoomOut.className = "mini-btn";
+          zoomOut.type = "button";
+          zoomOut.textContent = "縮小";
+          zoomOut.onclick = () => adjustPassiveTreeZoom(1.15);
+
+          const zoomIn = document.createElement("button");
+          zoomIn.className = "mini-btn";
+          zoomIn.type = "button";
+          zoomIn.textContent = "拡大";
+          zoomIn.onclick = () => adjustPassiveTreeZoom(0.85);
+
+          const reset = document.createElement("button");
+          reset.className = "mini-btn";
+          reset.type = "button";
+          reset.textContent = "表示リセット";
+          reset.onclick = resetPassiveTreeView;
+
+          controls.appendChild(zoomOut);
+          controls.appendChild(zoomIn);
+          controls.appendChild(reset);
+          summary.appendChild(controls);
+
+          const detail = PASSIVE_NODE_MAP[selectedPassiveNodeId];
+          if (detail) {
+            const spacer = document.createElement("div");
+            spacer.style.marginTop = "6px";
+            summary.appendChild(spacer);
+
+            const detailTitle = document.createElement("div");
+            detailTitle.className = "option-label";
+            detailTitle.textContent = `選択ノード: ${detail.name}`;
+            summary.appendChild(detailTitle);
+
+            const detailBody = document.createElement("div");
+            detailBody.className = "option-value";
+            detailBody.textContent = describePassiveNodeEffects(detail);
+            summary.appendChild(detailBody);
+          }
+        }
+
+        function renderPassiveTree() {
+          const container = document.getElementById("passive-tree");
+          if (!container) return;
+          calculatePassiveBonuses();
+          const svg = document.getElementById("passive-tree-svg");
+          if (!svg) return;
+          svg.innerHTML = "";
+          renderPassiveTreeSummary();
+
+          const nodes = PASSIVE_TREE_NODES.filter((node) => node?.position);
+          const positions = nodes.map((node) => node.position);
+          const padding = 120;
+          const minX = Math.min(...positions.map((p) => p.x)) - padding;
+          const maxX = Math.max(...positions.map((p) => p.x)) + padding;
+          const minY = Math.min(...positions.map((p) => p.y)) - padding;
+          const maxY = Math.max(...positions.map((p) => p.y)) + padding;
+          const width = maxX - minX;
+          const height = maxY - minY;
+          passiveTreeViewState.baseViewBox = {
+            x: minX,
+            y: minY,
+            width,
+            height,
+          };
+          updatePassiveTreeViewBox(svg);
+          initializePassiveTreeInteractions();
+
+          PASSIVE_TREE_CONNECTIONS.forEach(([from, to]) => {
+            const fromNode = PASSIVE_NODE_MAP[from];
+            const toNode = PASSIVE_NODE_MAP[to];
+            if (!fromNode?.position || !toNode?.position) return;
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line",
+            );
+            line.setAttribute("x1", fromNode.position.x);
+            line.setAttribute("y1", fromNode.position.y);
+            line.setAttribute("x2", toNode.position.x);
+            line.setAttribute("y2", toNode.position.y);
+            const acquired =
+              isPassiveNodeUnlocked(from) && isPassiveNodeUnlocked(to);
+            const available =
+              isPassiveNodeUnlocked(from) || isPassiveNodeUnlocked(to);
+            line.classList.add("passive-link");
+            if (acquired) line.classList.add("acquired");
+            else if (available) line.classList.add("available");
+            svg.appendChild(line);
+          });
+
+          PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
+            if (!cluster.position) return;
+            const label = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text",
+            );
+            label.setAttribute("x", cluster.position.x);
+            label.setAttribute("y", cluster.position.y - 46);
+            label.classList.add("passive-cluster-label");
+            label.textContent = cluster.name;
+            svg.appendChild(label);
+          });
+
+          nodes.forEach((node) => {
+            const group = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "g",
+            );
+            group.setAttribute(
+              "transform",
+              `translate(${node.position.x}, ${node.position.y})`,
+            );
+            group.style.cursor = isPassiveNodeAvailable(node.id)
+              ? "pointer"
+              : "default";
+
+            const circle = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle",
+            );
+            const radius = node.type === "keystone" ? 18 : 12;
+            circle.setAttribute("r", radius);
+            circle.classList.add("passive-node-circle");
+            if (node.type === "keystone") circle.classList.add("keystone");
+            const acquired = isPassiveNodeUnlocked(node.id);
+            const available = isPassiveNodeAvailable(node.id);
+            if (acquired) circle.classList.add("acquired");
+            else if (available) circle.classList.add("available");
+            circle.setAttribute(
+              "stroke",
+              PASSIVE_NODE_TYPE_COLORS[node.type] || "#94a3b8",
+            );
+            circle.setAttribute(
+              "fill",
+              node.type === "keystone"
+                ? "rgba(245, 158, 11, 0.2)"
+                : circle.getAttribute("fill") || "rgba(30, 41, 59, 0.9)",
+            );
+
+            const title = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "title",
+            );
+            title.textContent = `${node.name}\n${describePassiveNodeEffects(node)}`;
+            circle.appendChild(title);
+
+            group.appendChild(circle);
+
+            const label = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text",
+            );
+            label.setAttribute("y", node.type === "keystone" ? 32 : 26);
+            label.classList.add("passive-node-label");
+            if (node.name.length > 7) label.classList.add("small");
+            label.textContent = node.name;
+            group.appendChild(label);
+
+            group.addEventListener("click", () => {
+              selectedPassiveNodeId = node.id;
+              if (isPassiveNodeAvailable(node.id)) {
+                unlockPassiveNode(node.id);
+              } else {
+                renderPassiveTreeSummary();
+              }
+            });
+
+            svg.appendChild(group);
           });
         }
 
@@ -17625,12 +19459,54 @@ function showDamagePopup(
           }
         }
 
+        function setSkillViewMode(mode) {
+          skillViewMode = mode === "skills" ? "skills" : "passive";
+          updateSkillViewVisibility();
+          renderSkills();
+        }
+
+        function updateSkillViewVisibility() {
+          const passiveView = document.getElementById("passive-tree-view");
+          const skillViewPassiveButton = document.getElementById(
+            "skill-view-passive",
+          );
+          const skillViewSkillsButton = document.getElementById(
+            "skill-view-skills",
+          );
+          const skillOnlyElements = document.querySelectorAll(".skill-only");
+          const isSkillView = skillViewMode === "skills";
+          passiveView?.classList.toggle("hidden", isSkillView);
+          skillOnlyElements.forEach((el) =>
+            el.classList.toggle("hidden", !isSkillView),
+          );
+          if (skillStepButton) {
+            skillStepButton.classList.toggle("hidden", !isSkillView);
+          }
+          if (resetSkillsButton) {
+            resetSkillsButton.classList.toggle("hidden", !isSkillView);
+          }
+          skillViewPassiveButton?.setAttribute(
+            "aria-pressed",
+            !isSkillView ? "true" : "false",
+          );
+          skillViewSkillsButton?.setAttribute(
+            "aria-pressed",
+            isSkillView ? "true" : "false",
+          );
+          skillViewPassiveButton?.classList.toggle("active", !isSkillView);
+          skillViewSkillsButton?.classList.toggle("active", isSkillView);
+        }
+
         function renderSkills() {
           updateSkillStepButton();
-          renderSkillCategoryTabs();
-          renderSkillTypeTabs();
-          renderActiveSkillLoadout();
-          renderSkillDetailList();
+          updateSkillViewVisibility();
+          renderPassiveTree();
+          if (skillViewMode === "skills") {
+            renderSkillCategoryTabs();
+            renderSkillTypeTabs();
+            renderActiveSkillLoadout();
+            renderSkillDetailList();
+          }
           renderSkillSummary();
           updateSkillSummaryVisibility();
         }
@@ -18535,8 +20411,7 @@ function showDamagePopup(
         const resetCancelButton = document.getElementById("reset-cancel");
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
-        const resetButton = document.getElementById("reset-stats");
-        const statStepButton = document.getElementById("stat-step");
+        const resetPassiveButton = document.getElementById("reset-passive");
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
@@ -18548,6 +20423,12 @@ function showDamagePopup(
           "skill-summary-toggle",
         );
         const skillDetailView = document.getElementById("skill-detail-view");
+        const skillViewPassiveButton = document.getElementById(
+          "skill-view-passive",
+        );
+        const skillViewSkillsButton = document.getElementById(
+          "skill-view-skills",
+        );
         const skillSummaryModal = document.getElementById(
           "skill-summary-modal",
         );
@@ -19792,8 +21673,12 @@ function showDamagePopup(
           const cooldownText = baseCooldown
             ? `基礎 ${baseCooldown}T / 実効 ${effectiveCooldown}T`
             : "CTなし";
-          const mpCost = skill.activation?.mpCost ?? 0;
-          const mpCostText = mpCost > 0 ? `MP${mpCost}` : "MP消費なし";
+          const { base: mpCost, effective: effectiveMpCost } =
+            getEffectiveSkillMpCost(skill);
+          const mpCostText =
+            mpCost > 0
+              ? `MP${mpCost}${effectiveMpCost !== mpCost ? ` (実効${effectiveMpCost})` : ""}`
+              : "MP消費なし";
           const locked = !isSkillUnlocked(skill);
           skillInfoName.textContent = skill.name;
           skillInfoType.textContent = `${skill.type === "active" ? "アクティブ" : "パッシブ"} (${skill.category || "分類不明"})`;
@@ -19801,6 +21686,7 @@ function showDamagePopup(
           skillInfoLevel.textContent = `${skill.level || 0} / ${skill.max ?? "--"}`;
           skillInfoEffect.textContent =
             skill.activation?.effect || skill.desc || "効果未設定";
+          const unlockText = describeSkillUnlock(skill);
           const perLevelText = skill.scaling?.perLevel
             ? `毎Lv: ${formatSkillBonusText(skill.scaling.perLevel)}`
             : "毎Lv効果なし";
@@ -19809,7 +21695,7 @@ function showDamagePopup(
             label: "現在合計",
           });
           const nextText = describeSkillNextBonus(skill, { locked });
-          skillInfoNote.innerHTML = `<div>${perLevelText}</div><div>${currentText}</div><div>${nextText}</div>`;
+          skillInfoNote.innerHTML = `<div>${unlockText}</div><div>${perLevelText}</div><div>${currentText}</div><div>${nextText}</div>`;
           skillInfoModal?.classList.remove("hidden");
         }
 
@@ -20468,6 +22354,7 @@ function showDamagePopup(
           let raw = Math.max(1, attackPower * variance - defense);
           if (attacker === player) {
             raw *= getPlayerLegendaryDamageMultiplier(defender);
+            raw *= player.keystoneState?.damageMultiplier ?? 1;
           }
           return Math.max(1, Math.round(raw));
         }
@@ -20493,6 +22380,12 @@ function showDamagePopup(
     const legendaryMitigation = getPlayerLegendaryDamageTakenMultiplier();
     if (legendaryMitigation !== 1) {
       final = Math.round(final * legendaryMitigation);
+    }
+  }
+  if (target === player) {
+    const keystoneMultiplier = player.keystoneState?.damageTakenMultiplier ?? 1;
+    if (keystoneMultiplier !== 1) {
+      final = Math.round(final * keystoneMultiplier);
     }
   }
 
@@ -20837,6 +22730,11 @@ function showDamagePopup(
               log("この枠にはスキルがセットされていません", "warning");
             return { canUse: false, reason: "unset" };
           }
+          if (!isSkillUnlocked(skill)) {
+            if (!suppressWarnings)
+              log("スキルが解放されていません", "warning");
+            return { canUse: false, reason: "locked" };
+          }
           if (skill.level <= 0) {
             if (!suppressWarnings)
               log("スキルを習得してから使用してください", "warning");
@@ -20854,7 +22752,7 @@ function showDamagePopup(
           const target = chooseTargetForPlayer();
           if (!target) return { canUse: false, reason: "no-target" };
 
-          const mpCost = skill.activation?.mpCost ?? 0;
+          const { effective: mpCost } = getEffectiveSkillMpCost(skill);
           if (player.mp < mpCost) {
             if (!suppressWarnings)
               log(`MPが足りない！ (必要MP: ${mpCost})`, "warning");
@@ -20929,11 +22827,12 @@ function showDamagePopup(
             log("沈黙中でスキルが使えない！", "warning");
             return;
           }
-          if (player.mp < 5) {
+          const cost = getEffectiveMpCostValue(5);
+          if (player.mp < cost) {
             log("MPが足りない！", "warning");
             return;
           }
-          consumeMp(5);
+          consumeMp(cost);
           const target = chooseTargetForPlayer();
           if (!target) return;
           showSkillPopup(getPlayerHpBarContainer(), "パワーストライク", "player");
@@ -20977,11 +22876,12 @@ function showDamagePopup(
             log("沈黙中でスキルが使えない！", "warning");
             return;
           }
-          if (player.mp < 4) {
+          const cost = getEffectiveMpCostValue(4);
+          if (player.mp < cost) {
             log("MPが足りない！", "warning");
             return;
           }
-          consumeMp(4);
+          consumeMp(cost);
           showSkillPopup(getPlayerHpBarContainer(), "ヒール", "player");
           const healAmount = Math.max(
             6,
@@ -20999,11 +22899,12 @@ function showDamagePopup(
             log("沈黙中でスキルが使えない！", "warning");
             return;
           }
-          if (player.mp < 2) {
+          const cost = getEffectiveMpCostValue(2);
+          if (player.mp < cost) {
             log("MPが足りない！", "warning");
             return;
           }
-          consumeMp(2);
+          consumeMp(cost);
           showSkillPopup(getPlayerHpBarContainer(), "ガード", "player");
           player.buffs.guard = 2;
           log("🛡️ 守りを固めた！ 次の2ターン被ダメ軽減", "good");
@@ -21017,11 +22918,12 @@ function showDamagePopup(
             log("沈黙中でスキルが使えない！", "warning");
             return;
           }
-          if (player.mp < 2) {
+          const cost = getEffectiveMpCostValue(2);
+          if (player.mp < cost) {
             log("MPが足りない！", "warning");
             return;
           }
-          consumeMp(2);
+          consumeMp(cost);
           showSkillPopup(getPlayerHpBarContainer(), "ブースト", "player");
           player.buffs.haste = 2;
           log("💨 ブースト！ 次の2ターン行動速度アップ", "good");
@@ -21035,11 +22937,12 @@ function showDamagePopup(
             log("沈黙中でスキルが使えない！", "warning");
             return;
           }
-          if (player.mp < 3) {
+          const cost = getEffectiveMpCostValue(3);
+          if (player.mp < cost) {
             log("MPが足りない！", "warning");
             return;
           }
-          consumeMp(3);
+          consumeMp(cost);
           showSkillPopup(getPlayerHpBarContainer(), "フォーカス", "player");
           player.buffs.focus = 2;
           log("🎯 フォーカス！ クリティカル率アップ", "good");
@@ -21283,10 +23186,10 @@ function showDamagePopup(
           recalcDerivedStats();
           player.hp = player.maxHp;
           player.mp = player.maxMp;
-          player.statPoints += 5;
+          player.passivePoints += PASSIVE_POINT_PER_LEVEL;
           player.skillPoints += 1;
           log(
-            `⬆️ レベルアップ！ Lv${player.level} 能力P+5 / スキルP+1`,
+            `⬆️ レベルアップ！ Lv${player.level} パッシブP+${PASSIVE_POINT_PER_LEVEL} / スキルP+1`,
             "good",
           );
           triggerLevelUpEffect(player.level);
@@ -21296,20 +23199,21 @@ function showDamagePopup(
           maybeAutoSave("レベルアップ");
         }
 
-        function resetAllocations() {
+        function getPassivePointsSpent() {
+          const nodes = player.passiveNodes || [];
+          return nodes.filter((id) => id !== PASSIVE_TREE_START_NODE_ID).length;
+        }
+
+        function resetPassiveTree() {
           const spent = pendingResetSpent;
-          Object.entries(player.allocations).forEach(([key, amount]) => {
-            if (amount > 0) {
-              player.primary[key].base -= amount;
-              player.allocations[key] = 0;
-            }
-          });
-          player.statPoints += spent;
+          player.passiveNodes = [PASSIVE_TREE_START_NODE_ID];
+          player.passivePoints += spent;
+          calculatePassiveBonuses();
           recalcDerivedStats();
           updateUI();
-          log("ステータスをリセットしました", "info");
+          log("パッシブツリーをリセットしました", "info");
           pendingResetSpent = 0;
-          maybeAutoSave("ステータス振り直し");
+          maybeAutoSave("パッシブツリー振り直し");
         }
 
         function retryBossFloor() {
@@ -21525,18 +23429,19 @@ function showDamagePopup(
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton.addEventListener("click", () => {
-          currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
-          updateStepButton();
-          renderPrimaryStats();
-        });
-
         skillStepButton?.addEventListener("click", () => {
           currentSkillStepIndex =
             (currentSkillStepIndex + 1) % skillStepOptions.length;
           updateSkillStepButton();
           renderSkills();
         });
+
+        skillViewPassiveButton?.addEventListener("click", () =>
+          setSkillViewMode("passive"),
+        );
+        skillViewSkillsButton?.addEventListener("click", () =>
+          setSkillViewMode("skills"),
+        );
 
         skillSummaryToggleButton?.addEventListener("click", () => {
           renderSkillSummary();
@@ -21554,13 +23459,10 @@ function showDamagePopup(
           }
         });
 
-        resetButton.addEventListener("click", () => {
-          pendingResetSpent = Object.values(player.allocations).reduce(
-            (a, b) => a + b,
-            0,
-          );
+        resetPassiveButton?.addEventListener("click", () => {
+          pendingResetSpent = getPassivePointsSpent();
           if (pendingResetSpent === 0) {
-            log("リセットするポイントがありません", "info");
+            log("リセットするノードがありません", "info");
             return;
           }
           resetSpentLabel.textContent = pendingResetSpent;
@@ -21574,7 +23476,7 @@ function showDamagePopup(
         );
         resetConfirmButton.addEventListener("click", () => {
           resetModal.classList.add("hidden");
-          resetAllocations();
+          resetPassiveTree();
         });
         resetModal.addEventListener("click", (e) => {
           if (e.target === resetModal) resetModal.classList.add("hidden");
