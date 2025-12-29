@@ -1667,87 +1667,71 @@
         gap: 10px;
       }
 
-      .passive-cluster-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 12px;
-        padding: 10px;
-        display: grid;
-        gap: 8px;
-      }
-
-      .passive-cluster-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
-        font-weight: 800;
-      }
-
-      .passive-node-list {
-        display: grid;
-        gap: 6px;
-      }
-
-      .passive-node {
-        display: grid;
-        gap: 4px;
-        padding: 8px;
-        border-radius: 10px;
-        background: rgba(15, 23, 42, 0.6);
+      .passive-tree-svg {
+        width: 100%;
+        min-height: 420px;
+        background: radial-gradient(
+            circle at center,
+            rgba(52, 211, 153, 0.08),
+            transparent 40%
+          ),
+          rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
       }
 
-      .passive-node.available {
-        border-color: rgba(52, 211, 153, 0.6);
-        box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.25);
+      .passive-link {
+        stroke: rgba(148, 163, 184, 0.35);
+        stroke-width: 2;
       }
 
-      .passive-node.acquired {
-        border-color: rgba(96, 165, 250, 0.55);
-        background: rgba(30, 41, 59, 0.9);
+      .passive-link.available {
+        stroke: rgba(52, 211, 153, 0.45);
       }
 
-      .passive-node.locked {
-        opacity: 0.6;
+      .passive-link.acquired {
+        stroke: rgba(96, 165, 250, 0.6);
       }
 
-      .passive-node-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
+      .passive-node-circle {
+        fill: rgba(30, 41, 59, 0.9);
+        stroke: rgba(148, 163, 184, 0.4);
+        stroke-width: 2;
       }
 
-      .passive-node-name {
-        font-weight: 800;
-        font-size: 13px;
+      .passive-node-circle.available {
+        stroke: rgba(52, 211, 153, 0.85);
+        fill: rgba(16, 185, 129, 0.2);
       }
 
-      .passive-node-tags {
-        display: inline-flex;
-        gap: 4px;
-        flex-wrap: wrap;
+      .passive-node-circle.acquired {
+        stroke: rgba(96, 165, 250, 0.95);
+        fill: rgba(37, 99, 235, 0.25);
       }
 
-      .passive-node-pill {
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        letter-spacing: 0.04em;
+      .passive-node-circle.keystone {
+        stroke-width: 3.5;
       }
 
-      .passive-node-desc {
+      .passive-node-label {
         font-size: 12px;
-        color: var(--muted);
-        line-height: 1.4;
+        fill: #e5e7eb;
+        text-anchor: middle;
+        pointer-events: none;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
       }
 
-      .passive-node-actions {
-        display: flex;
-        justify-content: flex-end;
+      .passive-node-label.small {
+        font-size: 10px;
+        fill: #cbd5f5;
+      }
+
+      .passive-cluster-label {
+        font-size: 13px;
+        font-weight: 800;
+        fill: #f8fafc;
+        text-anchor: middle;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
       }
 
       .stat-row {
@@ -3701,7 +3685,9 @@
         </div>
         <div id="passive-tree-view">
           <div id="passive-tree-summary" class="help-panel passive-tree-summary"></div>
-          <div id="passive-tree" class="passive-tree" style="margin-top: 6px"></div>
+          <div id="passive-tree" class="passive-tree" style="margin-top: 6px">
+            <svg id="passive-tree-svg" class="passive-tree-svg" role="img"></svg>
+          </div>
         </div>
         <div
           class="inline-buttons skill-only"
@@ -10470,6 +10456,7 @@
             name: "旅立ちの起点",
             description: "基礎能力と生存力を整えるスタートクラスタ。",
             core: "start-core",
+            position: { x: 0, y: 0 },
             nodes: [
               "start-core",
               "start-str",
@@ -10484,6 +10471,7 @@
             name: "剣士の基盤",
             description: "剣技の基礎と防御のバランスを整える。",
             core: "blade-core",
+            position: { x: -220, y: -60 },
             nodes: [
               "blade-core",
               "blade-str",
@@ -10498,6 +10486,7 @@
             name: "魔導回廊",
             description: "魔力操作を軸に魔法系統を解放する。",
             core: "arcane-core",
+            position: { x: 220, y: -60 },
             nodes: [
               "arcane-core",
               "arcane-int",
@@ -10512,6 +10501,7 @@
             name: "聖務の灯火",
             description: "回復と支援を両立し、聖職を解放する。",
             core: "holy-core",
+            position: { x: 0, y: 180 },
             nodes: [
               "holy-core",
               "holy-vit",
@@ -10526,6 +10516,7 @@
             name: "血脈の狩人",
             description: "吸血の流れを整え、攻防バランスを得る。",
             core: "blood-core",
+            position: { x: -220, y: 120 },
             nodes: [
               "blood-core",
               "blood-str",
@@ -10540,6 +10531,7 @@
             name: "剣士の奥義",
             description: "剣士の個別奥義を解放する。",
             core: "blade-edge-core",
+            position: { x: -360, y: -200 },
             nodes: [
               "blade-edge-core",
               "blade-edge-str",
@@ -10553,6 +10545,7 @@
             name: "秘奥の術式",
             description: "魔法の個別スキルを解放する。",
             core: "arcane-edge-core",
+            position: { x: 360, y: -200 },
             nodes: [
               "arcane-edge-core",
               "arcane-edge-int",
@@ -10566,6 +10559,7 @@
             name: "運命の奔流",
             description: "攻撃回数に干渉するキーストーン。",
             core: "fate-core",
+            position: { x: -420, y: 40 },
             nodes: [
               "fate-core",
               "fate-agi",
@@ -10579,6 +10573,7 @@
             name: "影の契約",
             description: "リソース挙動に干渉するキーストーン。",
             core: "shadow-core",
+            position: { x: 420, y: 40 },
             nodes: [
               "shadow-core",
               "shadow-int",
@@ -10595,6 +10590,7 @@
             name: "旅立ちの構え",
             type: "passive",
             cluster: "START",
+            position: { x: 0, y: 0 },
             description: "生命力と魔力を整える。",
             effects: { bonus: { hp: 20, mp: 10 } },
           },
@@ -10603,6 +10599,7 @@
             name: "基礎筋力",
             type: "status",
             cluster: "START",
+            position: { x: -70, y: -40 },
             description: "筋力+2",
             effects: { primary: { str: 2 } },
           },
@@ -10611,6 +10608,7 @@
             name: "基礎知恵",
             type: "status",
             cluster: "START",
+            position: { x: 70, y: -40 },
             description: "知恵+2",
             effects: { primary: { int: 2 } },
           },
@@ -10619,6 +10617,7 @@
             name: "基礎活力",
             type: "status",
             cluster: "START",
+            position: { x: -70, y: 40 },
             description: "活力+2",
             effects: { primary: { vit: 2 } },
           },
@@ -10627,6 +10626,7 @@
             name: "基礎技量",
             type: "status",
             cluster: "START",
+            position: { x: 70, y: 40 },
             description: "技量+2",
             effects: { primary: { agi: 2 } },
           },
@@ -10635,6 +10635,7 @@
             name: "基礎幸運",
             type: "status",
             cluster: "START",
+            position: { x: 0, y: 90 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
           },
@@ -10643,6 +10644,7 @@
             name: "剣気循環",
             type: "passive",
             cluster: "BLADE_CORE",
+            position: { x: -220, y: -60 },
             description: "物理攻撃と会心を底上げする。",
             effects: { bonus: { physAtk: 6, critRate: 1 } },
           },
@@ -10651,6 +10653,7 @@
             name: "剣士の筋力",
             type: "status",
             cluster: "BLADE_CORE",
+            position: { x: -290, y: -100 },
             description: "筋力+2",
             effects: { primary: { str: 2 } },
           },
@@ -10659,6 +10662,7 @@
             name: "剣士の技量",
             type: "status",
             cluster: "BLADE_CORE",
+            position: { x: -150, y: -100 },
             description: "技量+1",
             effects: { primary: { agi: 1 } },
           },
@@ -10667,6 +10671,7 @@
             name: "剣士の活力",
             type: "status",
             cluster: "BLADE_CORE",
+            position: { x: -300, y: -20 },
             description: "活力+1",
             effects: { primary: { vit: 1 } },
           },
@@ -10675,6 +10680,7 @@
             name: "前線防御",
             type: "passive",
             cluster: "BLADE_CORE",
+            position: { x: -150, y: -20 },
             description: "物理防御と被ダメ軽減を強化。",
             effects: { bonus: { physDef: 4, damageReduction: 1 } },
           },
@@ -10683,6 +10689,7 @@
             name: "剣士系統解放",
             type: "skillUnlock",
             cluster: "BLADE_CORE",
+            position: { x: -220, y: 20 },
             description: "剣士スキルが使用可能になる。",
             unlocks: { categories: ["剣士"] },
           },
@@ -10691,6 +10698,7 @@
             name: "魔力循環核",
             type: "passive",
             cluster: "ARCANE_CORE",
+            position: { x: 220, y: -60 },
             description: "魔法攻撃とMPの循環を強化。",
             effects: { bonus: { magAtk: 6, mp: 12 } },
           },
@@ -10699,6 +10707,7 @@
             name: "魔導知恵",
             type: "status",
             cluster: "ARCANE_CORE",
+            position: { x: 290, y: -100 },
             description: "知恵+2",
             effects: { primary: { int: 2 } },
           },
@@ -10707,6 +10716,7 @@
             name: "魔導技量",
             type: "status",
             cluster: "ARCANE_CORE",
+            position: { x: 150, y: -100 },
             description: "技量+1",
             effects: { primary: { agi: 1 } },
           },
@@ -10715,6 +10725,7 @@
             name: "魔導活力",
             type: "status",
             cluster: "ARCANE_CORE",
+            position: { x: 300, y: -20 },
             description: "活力+1",
             effects: { primary: { vit: 1 } },
           },
@@ -10723,6 +10734,7 @@
             name: "集中詠唱",
             type: "passive",
             cluster: "ARCANE_CORE",
+            position: { x: 150, y: -20 },
             description: "CT短縮と魔法貫通を得る。",
             effects: { bonus: { cooldown: 2, magPen: 2 } },
           },
@@ -10731,6 +10743,7 @@
             name: "魔法系統解放",
             type: "skillUnlock",
             cluster: "ARCANE_CORE",
+            position: { x: 220, y: 20 },
             description: "魔法スキルが使用可能になる。",
             unlocks: { categories: ["魔法"] },
           },
@@ -10739,6 +10752,7 @@
             name: "聖光の律動",
             type: "passive",
             cluster: "HOLY_CORE",
+            position: { x: 0, y: 180 },
             description: "回復支援向けの基盤を強化。",
             effects: { bonus: { magAtk: 4, hpRegen: 0.4 } },
           },
@@ -10747,6 +10761,7 @@
             name: "聖務活力",
             type: "status",
             cluster: "HOLY_CORE",
+            position: { x: -60, y: 230 },
             description: "活力+2",
             effects: { primary: { vit: 2 } },
           },
@@ -10755,6 +10770,7 @@
             name: "聖務知恵",
             type: "status",
             cluster: "HOLY_CORE",
+            position: { x: 60, y: 230 },
             description: "知恵+1",
             effects: { primary: { int: 1 } },
           },
@@ -10763,6 +10779,7 @@
             name: "祝福の幸運",
             type: "status",
             cluster: "HOLY_CORE",
+            position: { x: 0, y: 260 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
           },
@@ -10771,6 +10788,7 @@
             name: "聖域展開",
             type: "passive",
             cluster: "HOLY_CORE",
+            position: { x: -80, y: 160 },
             description: "バリアと魔法防御を付与。",
             effects: { bonus: { barrier: 10, magDef: 4 } },
           },
@@ -10779,6 +10797,7 @@
             name: "聖職系統解放",
             type: "skillUnlock",
             cluster: "HOLY_CORE",
+　            position: { x: 80, y: 160 },
             description: "聖職スキルが使用可能になる。",
             unlocks: { categories: ["聖職"] },
           },
@@ -10787,6 +10806,7 @@
             name: "血気の輪",
             type: "passive",
             cluster: "BLOOD_CORE",
+            position: { x: -220, y: 120 },
             description: "吸血と攻撃力を底上げする。",
             effects: { bonus: { physAtk: 4, lifeSteal: 1 } },
           },
@@ -10795,6 +10815,7 @@
             name: "血統筋力",
             type: "status",
             cluster: "BLOOD_CORE",
+            position: { x: -300, y: 80 },
             description: "筋力+1",
             effects: { primary: { str: 1 } },
           },
@@ -10803,6 +10824,7 @@
             name: "血統技量",
             type: "status",
             cluster: "BLOOD_CORE",
+            position: { x: -140, y: 80 },
             description: "技量+2",
             effects: { primary: { agi: 2 } },
           },
@@ -10811,6 +10833,7 @@
             name: "血統活力",
             type: "status",
             cluster: "BLOOD_CORE",
+            position: { x: -300, y: 150 },
             description: "活力+1",
             effects: { primary: { vit: 1 } },
           },
@@ -10819,6 +10842,7 @@
             name: "夜狩の嗅覚",
             type: "passive",
             cluster: "BLOOD_CORE",
+            position: { x: -140, y: 150 },
             description: "会心と速度を引き上げる。",
             effects: { bonus: { critRate: 1.5, speed: 0.8 } },
           },
@@ -10827,6 +10851,7 @@
             name: "吸血系統解放",
             type: "skillUnlock",
             cluster: "BLOOD_CORE",
+            position: { x: -220, y: 180 },
             description: "吸血スキルが使用可能になる。",
             unlocks: { categories: ["吸血"] },
           },
@@ -10835,6 +10860,7 @@
             name: "剣技奥義の芯",
             type: "passive",
             cluster: "BLADE_EDGE",
+            position: { x: -360, y: -200 },
             description: "高火力の剣技を支える。",
             effects: { bonus: { physAtk: 8, critDamage: 4 } },
           },
@@ -10843,6 +10869,7 @@
             name: "剣士奥義筋力",
             type: "status",
             cluster: "BLADE_EDGE",
+            position: { x: -420, y: -240 },
             description: "筋力+2",
             effects: { primary: { str: 2 } },
           },
@@ -10851,6 +10878,7 @@
             name: "剣士奥義技量",
             type: "status",
             cluster: "BLADE_EDGE",
+            position: { x: -300, y: -240 },
             description: "技量+2",
             effects: { primary: { agi: 2 } },
           },
@@ -10859,6 +10887,7 @@
             name: "剣士奥義活力",
             type: "status",
             cluster: "BLADE_EDGE",
+            position: { x: -420, y: -170 },
             description: "活力+1",
             effects: { primary: { vit: 1 } },
           },
@@ -10867,6 +10896,7 @@
             name: "個別解放: 刃風乱舞",
             type: "skillUnlock",
             cluster: "BLADE_EDGE",
+            position: { x: -300, y: -170 },
             description: "刃風乱舞が使用可能になる。",
             unlocks: { skills: ["galeDance"] },
           },
@@ -10875,6 +10905,7 @@
             name: "秘奥の核",
             type: "passive",
             cluster: "ARCANE_EDGE",
+            position: { x: 360, y: -200 },
             description: "秘奥スキルの精度を高める。",
             effects: { bonus: { magAtk: 8, cooldown: 1.5 } },
           },
@@ -10883,6 +10914,7 @@
             name: "秘奥知恵",
             type: "status",
             cluster: "ARCANE_EDGE",
+            position: { x: 420, y: -240 },
             description: "知恵+2",
             effects: { primary: { int: 2 } },
           },
@@ -10891,6 +10923,7 @@
             name: "秘奥技量",
             type: "status",
             cluster: "ARCANE_EDGE",
+            position: { x: 300, y: -240 },
             description: "技量+1",
             effects: { primary: { agi: 1 } },
           },
@@ -10899,6 +10932,7 @@
             name: "秘奥幸運",
             type: "status",
             cluster: "ARCANE_EDGE",
+            position: { x: 420, y: -170 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
           },
@@ -10907,6 +10941,7 @@
             name: "個別解放: クロノブースト",
             type: "skillUnlock",
             cluster: "ARCANE_EDGE",
+            position: { x: 300, y: -170 },
             description: "クロノブーストが使用可能になる。",
             unlocks: { skills: ["chronoBoost"] },
           },
@@ -10915,6 +10950,7 @@
             name: "運命の律動",
             type: "passive",
             cluster: "FATE",
+            position: { x: -420, y: 40 },
             description: "速度と会心の基盤を高める。",
             effects: { bonus: { speed: 1.2, critRate: 1 } },
           },
@@ -10923,6 +10959,7 @@
             name: "運命技量",
             type: "status",
             cluster: "FATE",
+            position: { x: -480, y: 0 },
             description: "技量+2",
             effects: { primary: { agi: 2 } },
           },
@@ -10931,6 +10968,7 @@
             name: "運命幸運",
             type: "status",
             cluster: "FATE",
+            position: { x: -480, y: 80 },
             description: "幸運+2",
             effects: { primary: { luck: 2 } },
           },
@@ -10939,6 +10977,7 @@
             name: "運命筋力",
             type: "status",
             cluster: "FATE",
+            position: { x: -360, y: 80 },
             description: "筋力+1",
             effects: { primary: { str: 1 } },
           },
@@ -10947,6 +10986,7 @@
             name: "キーストーン: 奔流",
             type: "keystone",
             cluster: "FATE",
+            position: { x: -520, y: 40 },
             description: "攻撃回数+1 / 与ダメ-15%",
             keystone: {
               effects: { attackCountBonus: 1, damageMultiplier: 0.85 },
@@ -10959,6 +10999,7 @@
             name: "影の循環",
             type: "passive",
             cluster: "SHADOW",
+            position: { x: 420, y: 40 },
             description: "闇の知識で魔力を底上げする。",
             effects: { bonus: { magAtk: 6, hp: 12 } },
           },
@@ -10967,6 +11008,7 @@
             name: "影の知恵",
             type: "status",
             cluster: "SHADOW",
+            position: { x: 480, y: 0 },
             description: "知恵+2",
             effects: { primary: { int: 2 } },
           },
@@ -10975,6 +11017,7 @@
             name: "影の活力",
             type: "status",
             cluster: "SHADOW",
+            position: { x: 480, y: 80 },
             description: "活力+1",
             effects: { primary: { vit: 1 } },
           },
@@ -10983,6 +11026,7 @@
             name: "影の幸運",
             type: "status",
             cluster: "SHADOW",
+            position: { x: 360, y: 80 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
           },
@@ -10991,6 +11035,7 @@
             name: "キーストーン: 契約",
             type: "keystone",
             cluster: "SHADOW",
+            position: { x: 520, y: 40 },
             description: "スキル消費-25% / 被ダメ+15%",
             keystone: {
               effects: { mpCostMultiplier: 0.75, damageTakenMultiplier: 1.15 },
@@ -18486,6 +18531,13 @@ function showDamagePopup(
           keystone: "キーストーン",
         };
 
+        const PASSIVE_NODE_TYPE_COLORS = {
+          status: "#94a3b8",
+          passive: "#60a5fa",
+          skillUnlock: "#34d399",
+          keystone: "#f59e0b",
+        };
+
         function formatPrimaryBonusText(bonus = {}) {
           const parts = [];
           Object.entries(bonus).forEach(([key, value]) => {
@@ -18553,6 +18605,8 @@ function showDamagePopup(
           maybeAutoSave("パッシブ取得");
         }
 
+        let selectedPassiveNodeId = PASSIVE_TREE_START_NODE_ID;
+
         function renderPassiveTreeSummary() {
           const summary = document.getElementById("passive-tree-summary");
           if (!summary) return;
@@ -18583,90 +18637,145 @@ function showDamagePopup(
             row.textContent = text;
             summary.appendChild(row);
           });
+
+          const detail = PASSIVE_NODE_MAP[selectedPassiveNodeId];
+          if (detail) {
+            const spacer = document.createElement("div");
+            spacer.style.marginTop = "6px";
+            summary.appendChild(spacer);
+
+            const detailTitle = document.createElement("div");
+            detailTitle.className = "option-label";
+            detailTitle.textContent = `選択ノード: ${detail.name}`;
+            summary.appendChild(detailTitle);
+
+            const detailBody = document.createElement("div");
+            detailBody.className = "option-value";
+            detailBody.textContent = describePassiveNodeEffects(detail);
+            summary.appendChild(detailBody);
+          }
         }
 
         function renderPassiveTree() {
           const container = document.getElementById("passive-tree");
           if (!container) return;
           calculatePassiveBonuses();
-          container.innerHTML = "";
+          const svg = document.getElementById("passive-tree-svg");
+          if (!svg) return;
+          svg.innerHTML = "";
           renderPassiveTreeSummary();
 
+          const nodes = PASSIVE_TREE_NODES.filter((node) => node?.position);
+          const positions = nodes.map((node) => node.position);
+          const padding = 120;
+          const minX = Math.min(...positions.map((p) => p.x)) - padding;
+          const maxX = Math.max(...positions.map((p) => p.x)) + padding;
+          const minY = Math.min(...positions.map((p) => p.y)) - padding;
+          const maxY = Math.max(...positions.map((p) => p.y)) + padding;
+          const width = maxX - minX;
+          const height = maxY - minY;
+          svg.setAttribute("viewBox", `${minX} ${minY} ${width} ${height}`);
+
+          PASSIVE_TREE_CONNECTIONS.forEach(([from, to]) => {
+            const fromNode = PASSIVE_NODE_MAP[from];
+            const toNode = PASSIVE_NODE_MAP[to];
+            if (!fromNode?.position || !toNode?.position) return;
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line",
+            );
+            line.setAttribute("x1", fromNode.position.x);
+            line.setAttribute("y1", fromNode.position.y);
+            line.setAttribute("x2", toNode.position.x);
+            line.setAttribute("y2", toNode.position.y);
+            const acquired =
+              isPassiveNodeUnlocked(from) && isPassiveNodeUnlocked(to);
+            const available =
+              isPassiveNodeUnlocked(from) || isPassiveNodeUnlocked(to);
+            line.classList.add("passive-link");
+            if (acquired) line.classList.add("acquired");
+            else if (available) line.classList.add("available");
+            svg.appendChild(line);
+          });
+
           PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
-            const card = document.createElement("div");
-            card.className = "passive-cluster-card";
+            if (!cluster.position) return;
+            const label = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text",
+            );
+            label.setAttribute("x", cluster.position.x);
+            label.setAttribute("y", cluster.position.y - 46);
+            label.classList.add("passive-cluster-label");
+            label.textContent = cluster.name;
+            svg.appendChild(label);
+          });
 
-            const header = document.createElement("div");
-            header.className = "passive-cluster-header";
-            header.textContent = cluster.name;
-            card.appendChild(header);
+          nodes.forEach((node) => {
+            const group = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "g",
+            );
+            group.setAttribute(
+              "transform",
+              `translate(${node.position.x}, ${node.position.y})`,
+            );
+            group.style.cursor = isPassiveNodeAvailable(node.id)
+              ? "pointer"
+              : "default";
 
-            const desc = document.createElement("div");
-            desc.className = "subtle";
-            desc.textContent = cluster.description;
-            card.appendChild(desc);
+            const circle = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle",
+            );
+            const radius = node.type === "keystone" ? 18 : 12;
+            circle.setAttribute("r", radius);
+            circle.classList.add("passive-node-circle");
+            if (node.type === "keystone") circle.classList.add("keystone");
+            const acquired = isPassiveNodeUnlocked(node.id);
+            const available = isPassiveNodeAvailable(node.id);
+            if (acquired) circle.classList.add("acquired");
+            else if (available) circle.classList.add("available");
+            circle.setAttribute(
+              "stroke",
+              PASSIVE_NODE_TYPE_COLORS[node.type] || "#94a3b8",
+            );
+            circle.setAttribute(
+              "fill",
+              node.type === "keystone"
+                ? "rgba(245, 158, 11, 0.2)"
+                : circle.getAttribute("fill") || "rgba(30, 41, 59, 0.9)",
+            );
 
-            const list = document.createElement("div");
-            list.className = "passive-node-list";
+            const title = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "title",
+            );
+            title.textContent = `${node.name}\n${describePassiveNodeEffects(node)}`;
+            circle.appendChild(title);
 
-            (cluster.nodes || []).forEach((nodeId) => {
-              const node = PASSIVE_NODE_MAP[nodeId];
-              if (!node) return;
-              const nodeEl = document.createElement("div");
-              nodeEl.className = "passive-node";
+            group.appendChild(circle);
 
-              const acquired = isPassiveNodeUnlocked(nodeId);
-              const available = isPassiveNodeAvailable(nodeId);
-              if (acquired) nodeEl.classList.add("acquired");
-              else if (available) nodeEl.classList.add("available");
-              else nodeEl.classList.add("locked");
+            const label = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text",
+            );
+            label.setAttribute("y", node.type === "keystone" ? 32 : 26);
+            label.classList.add("passive-node-label");
+            if (node.name.length > 7) label.classList.add("small");
+            label.textContent = node.name;
+            group.appendChild(label);
 
-              const top = document.createElement("div");
-              top.className = "passive-node-top";
-              const name = document.createElement("div");
-              name.className = "passive-node-name";
-              name.textContent = node.name;
-              top.appendChild(name);
-
-              const tags = document.createElement("div");
-              tags.className = "passive-node-tags";
-              const typeLabel =
-                PASSIVE_NODE_TYPE_LABELS[node.type] || node.type;
-              const tag = document.createElement("span");
-              tag.className = "passive-node-pill";
-              tag.textContent = typeLabel;
-              tags.appendChild(tag);
-              top.appendChild(tags);
-              nodeEl.appendChild(top);
-
-              const descText = document.createElement("div");
-              descText.className = "passive-node-desc";
-              descText.textContent = describePassiveNodeEffects(node);
-              nodeEl.appendChild(descText);
-
-              const actions = document.createElement("div");
-              actions.className = "passive-node-actions";
-              const button = document.createElement("button");
-              button.className = "mini-btn";
-              if (acquired) {
-                button.textContent = "取得済み";
-                button.disabled = true;
-              } else if (available) {
-                button.textContent = "取得";
-                button.onclick = () => unlockPassiveNode(nodeId);
+            group.addEventListener("click", () => {
+              selectedPassiveNodeId = node.id;
+              if (isPassiveNodeAvailable(node.id)) {
+                unlockPassiveNode(node.id);
               } else {
-                button.textContent =
-                  (player.passivePoints || 0) <= 0 ? "ポイント不足" : "未接続";
-                button.disabled = true;
+                renderPassiveTreeSummary();
               }
-              actions.appendChild(button);
-              nodeEl.appendChild(actions);
-
-              list.appendChild(nodeEl);
             });
 
-            card.appendChild(list);
-            container.appendChild(card);
+            svg.appendChild(group);
           });
         }
 
