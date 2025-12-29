@@ -14796,17 +14796,18 @@
             {
               key: "cluster-wanderer",
               label: "旅人の心得",
-              x: -120,
-              y: -40,
-              anchors: ["sword-root", "cross-sword-mage", "cross-vampire-sword"],
+              x: -210,
+              y: -80,
+              anchors: ["sword-root", "cross-sword-mage"],
               nodes: [
-                { label: "歩みの記憶", secondary: { speed: 1 } },
-                { label: "荒野の勘", secondary: { evade: 1 } },
-                { label: "旅装の工夫", secondary: { hp: 18 } },
+                { label: "歩みの記憶", secondary: { speed: 1 }, offsetY: -6 },
+                { label: "荒野の勘", secondary: { evade: 1 }, offsetY: 6 },
+                { label: "旅装の工夫", secondary: { hp: 18 }, offsetY: 16 },
                 {
                   label: "旅人の核心",
                   secondary: { speed: 2, hp: 25 },
                   major: true,
+                  offsetY: 28,
                   specials: [
                     {
                       trigger: "kill",
@@ -14822,17 +14823,18 @@
             {
               key: "cluster-sage",
               label: "賢者の円環",
-              x: 80,
-              y: -100,
-              anchors: ["mage-root", "cross-sword-mage", "cross-mage-cleric"],
+              x: 180,
+              y: -160,
+              anchors: ["mage-root", "cross-mage-cleric"],
               nodes: [
-                { label: "知恵の端緒", primary: { int: 1 } },
-                { label: "思考の整序", secondary: { mp: 20 } },
-                { label: "魔導の解析", secondary: { magAtk: 2 } },
+                { label: "知恵の端緒", primary: { int: 1 }, offsetY: -8 },
+                { label: "思考の整序", secondary: { mp: 20 }, offsetY: 2 },
+                { label: "魔導の解析", secondary: { magAtk: 2 }, offsetY: 12 },
                 {
                   label: "賢者の核心",
                   secondary: { magAtk: 3, cooldown: 1 },
                   major: true,
+                  offsetY: 24,
                   specials: [
                     {
                       trigger: "skill",
@@ -14848,17 +14850,18 @@
             {
               key: "cluster-sanctuary",
               label: "聖域の誓い",
-              x: -80,
-              y: 120,
-              anchors: ["cleric-root", "cross-mage-cleric", "cross-cleric-vampire"],
+              x: -190,
+              y: 200,
+              anchors: ["cleric-root", "cross-cleric-vampire"],
               nodes: [
-                { label: "祈りの序章", secondary: { barrier: 15 } },
-                { label: "聖域の守り", secondary: { magDef: 2 } },
-                { label: "清廉の心", secondary: { debuffResist: 1 } },
+                { label: "祈りの序章", secondary: { barrier: 15 }, offsetY: -6 },
+                { label: "聖域の守り", secondary: { magDef: 2 }, offsetY: 6 },
+                { label: "清廉の心", secondary: { debuffResist: 1 }, offsetY: 16 },
                 {
                   label: "聖域の核心",
                   secondary: { barrier: 20, damageReduction: 1 },
                   major: true,
+                  offsetY: 28,
                   specials: [
                     {
                       trigger: "hit",
@@ -14876,17 +14879,18 @@
             {
               key: "cluster-pact",
               label: "深影の盟約",
-              x: 90,
-              y: 150,
-              anchors: ["vampire-root", "cross-cleric-vampire", "cross-vampire-sword"],
+              x: 200,
+              y: 230,
+              anchors: ["vampire-root", "cross-vampire-sword"],
               nodes: [
-                { label: "夜の契り", secondary: { lifeSteal: 1 } },
-                { label: "闇の感覚", secondary: { critRate: 1 } },
-                { label: "血の加護", secondary: { hp: 18 } },
+                { label: "夜の契り", secondary: { lifeSteal: 1 }, offsetY: -6 },
+                { label: "闇の感覚", secondary: { critRate: 1 }, offsetY: 4 },
+                { label: "血の加護", secondary: { hp: 18 }, offsetY: 14 },
                 {
                   label: "盟約の核心",
                   secondary: { lifeSteal: 2, critRate: 1 },
                   major: true,
+                  offsetY: 26,
                   specials: [
                     {
                       trigger: "hit",
@@ -14909,17 +14913,12 @@
           const [wandererIds, sageIds, sanctuaryIds, pactIds] = clusterIds;
           if (wandererIds && sageIds) {
             connect(wandererIds[1], sageIds[0]);
-            connect(wandererIds[2], sageIds[1]);
           }
           if (sageIds && sanctuaryIds) {
             connect(sageIds[2], sanctuaryIds[0]);
           }
           if (sanctuaryIds && pactIds) {
-            connect(sanctuaryIds[1], pactIds[0]);
             connect(sanctuaryIds[2], pactIds[1]);
-          }
-          if (wandererIds && pactIds) {
-            connect(wandererIds[0], pactIds[0]);
           }
 
           return { nodes, links };
