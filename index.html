@@ -12816,10 +12816,10 @@
           luck: 2,
         };
         const STATUS_TREE_RADII = {
-          root: 140,
-          trunkStep: 70,
-          branchStep: 70,
-          subBranchStep: 46,
+          root: 190,
+          trunkStep: 110,
+          branchStep: 110,
+          subBranchStep: 78,
         };
         const STATUS_TREE_START_NODES = ["core"];
         const STATUS_TREE_PRIMARY_LABELS = {
@@ -14705,36 +14705,36 @@
               id: "cross-sword-mage",
               label: "剣魔連環",
               angle: -45,
-              radius: 230,
-              primary: { str: 1, int: 1 },
-              secondary: { cooldown: 1 },
+              radius: 320,
+              primary: { str: 2, int: 2 },
+              secondary: { cooldown: 2 },
               connect: ["sword", "mage"],
             },
             {
               id: "cross-mage-cleric",
               label: "祈魔の共鳴",
               angle: 45,
-              radius: 230,
-              primary: { int: 1 },
-              secondary: { barrier: 15, cooldown: 1 },
+              radius: 320,
+              primary: { int: 2 },
+              secondary: { barrier: 30, cooldown: 2 },
               connect: ["mage", "cleric"],
             },
             {
               id: "cross-cleric-vampire",
               label: "血祈の契約",
               angle: 135,
-              radius: 230,
-              primary: { vit: 1, luck: 1 },
-              secondary: { lifeSteal: 1, hp: 15 },
+              radius: 320,
+              primary: { vit: 2, luck: 2 },
+              secondary: { lifeSteal: 2, hp: 30 },
               connect: ["cleric", "vampire"],
             },
             {
               id: "cross-vampire-sword",
               label: "影剣の契り",
               angle: -135,
-              radius: 230,
-              primary: { agi: 1 },
-              secondary: { critRate: 1, physAtk: 2 },
+              radius: 320,
+              primary: { agi: 2 },
+              secondary: { critRate: 2, physAtk: 4 },
               connect: ["vampire", "sword"],
             },
           ];
@@ -14796,18 +14796,18 @@
             {
               key: "cluster-wanderer",
               label: "旅人の心得",
-              x: -210,
-              y: -80,
+              x: -310,
+              y: -130,
               anchors: ["sword-root", "cross-sword-mage"],
               nodes: [
-                { label: "歩みの記憶", secondary: { speed: 1 }, offsetY: -6 },
-                { label: "荒野の勘", secondary: { evade: 1 }, offsetY: 6 },
-                { label: "旅装の工夫", secondary: { hp: 18 }, offsetY: 16 },
+                { label: "歩みの記憶", secondary: { speed: 2 }, offsetY: -10 },
+                { label: "荒野の勘", secondary: { evade: 2 }, offsetY: 10 },
+                { label: "旅装の工夫", secondary: { hp: 40 }, offsetY: 24 },
                 {
                   label: "旅人の核心",
-                  secondary: { speed: 2, hp: 25 },
+                  secondary: { speed: 4, hp: 60 },
                   major: true,
-                  offsetY: 28,
+                  offsetY: 40,
                   specials: [
                     {
                       trigger: "kill",
@@ -14823,18 +14823,18 @@
             {
               key: "cluster-sage",
               label: "賢者の円環",
-              x: 180,
-              y: -160,
+              x: 300,
+              y: -230,
               anchors: ["mage-root", "cross-mage-cleric"],
               nodes: [
-                { label: "知恵の端緒", primary: { int: 1 }, offsetY: -8 },
-                { label: "思考の整序", secondary: { mp: 20 }, offsetY: 2 },
-                { label: "魔導の解析", secondary: { magAtk: 2 }, offsetY: 12 },
+                { label: "知恵の端緒", primary: { int: 2 }, offsetY: -12 },
+                { label: "思考の整序", secondary: { mp: 45 }, offsetY: 6 },
+                { label: "魔導の解析", secondary: { magAtk: 4 }, offsetY: 18 },
                 {
                   label: "賢者の核心",
-                  secondary: { magAtk: 3, cooldown: 1 },
+                  secondary: { magAtk: 6, cooldown: 2 },
                   major: true,
-                  offsetY: 24,
+                  offsetY: 36,
                   specials: [
                     {
                       trigger: "skill",
@@ -14850,18 +14850,18 @@
             {
               key: "cluster-sanctuary",
               label: "聖域の誓い",
-              x: -190,
-              y: 200,
+              x: -300,
+              y: 300,
               anchors: ["cleric-root", "cross-cleric-vampire"],
               nodes: [
-                { label: "祈りの序章", secondary: { barrier: 15 }, offsetY: -6 },
-                { label: "聖域の守り", secondary: { magDef: 2 }, offsetY: 6 },
-                { label: "清廉の心", secondary: { debuffResist: 1 }, offsetY: 16 },
+                { label: "祈りの序章", secondary: { barrier: 30 }, offsetY: -10 },
+                { label: "聖域の守り", secondary: { magDef: 4 }, offsetY: 10 },
+                { label: "清廉の心", secondary: { debuffResist: 2 }, offsetY: 24 },
                 {
                   label: "聖域の核心",
-                  secondary: { barrier: 20, damageReduction: 1 },
+                  secondary: { barrier: 50, damageReduction: 2 },
                   major: true,
-                  offsetY: 28,
+                  offsetY: 40,
                   specials: [
                     {
                       trigger: "hit",
@@ -14879,18 +14879,18 @@
             {
               key: "cluster-pact",
               label: "深影の盟約",
-              x: 200,
-              y: 230,
+              x: 320,
+              y: 320,
               anchors: ["vampire-root", "cross-vampire-sword"],
               nodes: [
-                { label: "夜の契り", secondary: { lifeSteal: 1 }, offsetY: -6 },
-                { label: "闇の感覚", secondary: { critRate: 1 }, offsetY: 4 },
-                { label: "血の加護", secondary: { hp: 18 }, offsetY: 14 },
+                { label: "夜の契り", secondary: { lifeSteal: 2 }, offsetY: -10 },
+                { label: "闇の感覚", secondary: { critRate: 2 }, offsetY: 8 },
+                { label: "血の加護", secondary: { hp: 45 }, offsetY: 20 },
                 {
                   label: "盟約の核心",
-                  secondary: { lifeSteal: 2, critRate: 1 },
+                  secondary: { lifeSteal: 4, critRate: 2 },
                   major: true,
-                  offsetY: 26,
+                  offsetY: 36,
                   specials: [
                     {
                       trigger: "hit",
