@@ -19791,7 +19791,7 @@ function showDamagePopup(
           const rect = svg.getBoundingClientRect();
           const base = passiveTreeViewState.baseViewBox;
           const prevScale = passiveTreeViewState.scale;
-          const nextScale = Math.min(3.4, Math.max(0.35, prevScale * factor));
+          const nextScale = Math.min(6.8, Math.max(0.35, prevScale * factor));
           if (nextScale === prevScale) return;
           const cx = centerX ?? rect.width / 2;
           const cy = centerY ?? rect.height / 2;
@@ -20000,7 +20000,17 @@ function showDamagePopup(
               Number.isFinite(node.position.y),
           );
           if (!nodes.length) return;
-          const positions = nodes.map((node) => node.position);
+          const spacingScale = 1.2;
+          const scaledPositions = new Map(
+            nodes.map((node) => [
+              node.id,
+              {
+                x: node.position.x * spacingScale,
+                y: node.position.y * spacingScale,
+              },
+            ]),
+          );
+          const positions = Array.from(scaledPositions.values());
           const padding = 120;
           const minX = Math.min(...positions.map((p) => p.x)) - padding;
           const maxX = Math.max(...positions.map((p) => p.x)) + padding;
@@ -20018,17 +20028,17 @@ function showDamagePopup(
           initializePassiveTreeInteractions();
 
           PASSIVE_TREE_CONNECTIONS.forEach(([from, to]) => {
-            const fromNode = PASSIVE_NODE_MAP[from];
-            const toNode = PASSIVE_NODE_MAP[to];
-            if (!fromNode?.position || !toNode?.position) return;
+            const fromPos = scaledPositions.get(from);
+            const toPos = scaledPositions.get(to);
+            if (!fromPos || !toPos) return;
             const line = document.createElementNS(
               "http://www.w3.org/2000/svg",
               "line",
             );
-            line.setAttribute("x1", fromNode.position.x);
-            line.setAttribute("y1", fromNode.position.y);
-            line.setAttribute("x2", toNode.position.x);
-            line.setAttribute("y2", toNode.position.y);
+            line.setAttribute("x1", fromPos.x);
+            line.setAttribute("y1", fromPos.y);
+            line.setAttribute("x2", toPos.x);
+            line.setAttribute("y2", toPos.y);
             const acquired =
               isPassiveNodeUnlocked(from) && isPassiveNodeUnlocked(to);
             const available =
@@ -20041,12 +20051,16 @@ function showDamagePopup(
 
           PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
             if (!cluster.position) return;
+            const clusterPos = {
+              x: cluster.position.x * spacingScale,
+              y: cluster.position.y * spacingScale,
+            };
             const label = document.createElementNS(
               "http://www.w3.org/2000/svg",
               "text",
             );
-            label.setAttribute("x", cluster.position.x);
-            label.setAttribute("y", cluster.position.y - 46);
+            label.setAttribute("x", clusterPos.x);
+            label.setAttribute("y", clusterPos.y - 46);
             label.classList.add("passive-cluster-label");
             label.textContent = cluster.name;
             svg.appendChild(label);
@@ -20057,9 +20071,11 @@ function showDamagePopup(
               "http://www.w3.org/2000/svg",
               "g",
             );
+            const position = scaledPositions.get(node.id);
+            if (!position) return;
             group.setAttribute(
               "transform",
-              `translate(${node.position.x}, ${node.position.y})`,
+              `translate(${position.x}, ${position.y})`,
             );
             group.style.cursor = isPassiveNodeAvailable(node.id)
               ? "pointer"
