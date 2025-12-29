@@ -13228,7 +13228,7 @@
               },
             ],
             branches: [
-              ^_^らら
+              {
                 name: "魔法の序盤分岐・詠唱補助",
                 angleOffset: -12,
                 anchorIndex: 1,
@@ -14357,15 +14357,18 @@
             classAnchors[def.key] = { rootId, trunkIds, angle };
 
             def.branches.forEach((branch, branchIndex) => {
+              const baseAnchorIndex = Number.isInteger(branch.anchorIndex)
+                ? branch.anchorIndex
+                : 0;
               const anchorId =
-                trunkIds[Math.max(0, branch.anchorIndex ?? 0)] || rootId;
+                trunkIds[Math.max(0, baseAnchorIndex)] || rootId;
               const branchAngle = angle + toRad(branch.angleOffset || 0);
               let previous = anchorId;
               const branchNodeIds = [];
               branch.nodes.forEach((node, index) => {
                 const radius =
                   rootRadius +
-                  STATUS_TREE_RADII.trunkStep * (branch.anchorIndex + 1) +
+                  STATUS_TREE_RADII.trunkStep * (baseAnchorIndex + 1) +
                   STATUS_TREE_RADII.branchStep * (index + 1);
                 const id = `${def.key}-branch-${branchIndex + 1}-${index + 1}`;
                 addNode({
@@ -14384,9 +14387,11 @@
                 branchNodeIds.push(id);
               });
               (branch.subBranches || []).forEach((subBranch, subIndex) => {
+                const subAnchorIndex = Number.isInteger(subBranch.anchorIndex)
+                  ? subBranch.anchorIndex
+                  : 0;
                 const anchorNodeId =
-                  branchNodeIds[Math.max(0, subBranch.anchorIndex ?? 0)] ||
-                  anchorId;
+                  branchNodeIds[Math.max(0, subAnchorIndex)] || anchorId;
                 const anchorNode = nodeIndex[anchorNodeId];
                 if (!anchorNode) return;
                 const subAngle =
