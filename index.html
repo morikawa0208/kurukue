@@ -11978,9 +11978,13 @@
                   {
                     key: "BLADE_UP_SWIFT_1",
                     name: "疾風の起動",
-                    position: { x: -300, y: -160 },
+                    position: { x: -240, y: -140 },
                     status: { key: "agi", label: "技量", value: 3 },
                     coreBonus: { speed: 1.6, critRate: 1.2 },
+                    special: {
+                      name: "連刃の特化",
+                      bonus: { speed: 1.2, critRate: 1 },
+                    },
                     skillUnlock: {
                       key: "swiftDiscipline",
                       type: "passive",
@@ -11996,9 +12000,13 @@
                   {
                     key: "BLADE_UP_SWIFT_2",
                     name: "疾風の加速",
-                    position: { x: -420, y: -340 },
+                    position: { x: -320, y: -260 },
                     status: { key: "agi", label: "技量", value: 3 },
                     coreBonus: { speed: 2.1, critRate: 1.6 },
+                    special: {
+                      name: "加速の特化",
+                      bonus: { cooldown: 1.2, speed: 1 },
+                    },
                     skillUnlock: {
                       key: "swiftMomentum",
                       type: "passive",
@@ -12014,9 +12022,13 @@
                   {
                     key: "BLADE_UP_SWIFT_3",
                     name: "疾風の奔刃",
-                    position: { x: -540, y: -520 },
+                    position: { x: -420, y: -380 },
                     status: { key: "agi", label: "技量", value: 4 },
                     coreBonus: { speed: 2.6, critRate: 2 },
+                    special: {
+                      name: "奔刃の特化",
+                      bonus: { attackCountBonus: 1, critRate: 1.2 },
+                    },
                     skillUnlock: {
                       key: "swiftTempest",
                       type: "active",
@@ -12038,9 +12050,13 @@
                   {
                     key: "BLADE_UP_DANCE_1",
                     name: "連舞の刻",
-                    position: { x: 0, y: -180 },
+                    position: { x: 0, y: -160 },
                     status: { key: "agi", label: "技量", value: 3 },
                     coreBonus: { speed: 1.4, critRate: 1.4 },
+                    special: {
+                      name: "連舞の特化",
+                      bonus: { critRate: 1.4, speed: 0.8 },
+                    },
                     skillUnlock: {
                       key: "danceDiscipline",
                       type: "passive",
@@ -12056,9 +12072,13 @@
                   {
                     key: "BLADE_UP_DANCE_2",
                     name: "連舞の精度",
-                    position: { x: 0, y: -360 },
+                    position: { x: 0, y: -300 },
                     status: { key: "agi", label: "技量", value: 4 },
                     coreBonus: { speed: 1.8, critRate: 2 },
+                    special: {
+                      name: "精度の特化",
+                      bonus: { critDamage: 2, critRate: 1 },
+                    },
                     skillUnlock: {
                       key: "comboSense",
                       type: "passive",
@@ -12074,9 +12094,13 @@
                   {
                     key: "BLADE_UP_DANCE_3",
                     name: "連舞の解放",
-                    position: { x: 0, y: -540 },
+                    position: { x: 0, y: -440 },
                     status: { key: "agi", label: "技量", value: 4 },
                     coreBonus: { speed: 2.2, critRate: 2.4 },
+                    special: {
+                      name: "解放の特化",
+                      bonus: { attackCountBonus: 1, critDamage: 2 },
+                    },
                     skillUnlock: {
                       key: "danceFlurry",
                       type: "active",
@@ -12098,9 +12122,13 @@
                   {
                     key: "BLADE_UP_RHYTHM_1",
                     name: "律動の足運び",
-                    position: { x: 300, y: -160 },
+                    position: { x: 240, y: -140 },
                     status: { key: "agi", label: "技量", value: 3 },
                     coreBonus: { speed: 1.5, evade: 1.2 },
+                    special: {
+                      name: "律動の特化",
+                      bonus: { evade: 1.2, speed: 0.9 },
+                    },
                     skillUnlock: {
                       key: "rhythmDiscipline",
                       type: "passive",
@@ -12116,9 +12144,13 @@
                   {
                     key: "BLADE_UP_RHYTHM_2",
                     name: "律動の循環",
-                    position: { x: 420, y: -340 },
+                    position: { x: 320, y: -260 },
                     status: { key: "agi", label: "技量", value: 3 },
                     coreBonus: { speed: 1.9, evade: 1.6 },
+                    special: {
+                      name: "循環の特化",
+                      bonus: { cooldown: 1.1, evade: 1 },
+                    },
                     skillUnlock: {
                       key: "flowRhythm",
                       type: "passive",
@@ -12134,9 +12166,13 @@
                   {
                     key: "BLADE_UP_RHYTHM_3",
                     name: "律動の放射",
-                    position: { x: 540, y: -520 },
+                    position: { x: 420, y: -380 },
                     status: { key: "agi", label: "技量", value: 4 },
                     coreBonus: { speed: 2.4, evade: 2 },
+                    special: {
+                      name: "放射の特化",
+                      bonus: { evade: 1.4, speed: 1 },
+                    },
                     skillUnlock: {
                       key: "shadowBurst",
                       type: "active",
@@ -12164,9 +12200,13 @@
                   {
                     key: "BLADE_DOWN_POWER_1",
                     name: "剛撃の芯",
-                    position: { x: -300, y: 160 },
+                    position: { x: -240, y: 140 },
                     status: { key: "str", label: "筋力", value: 3 },
                     coreBonus: { physAtk: 10, critDamage: 2 },
+                    special: {
+                      name: "剛撃の特化",
+                      bonus: { physAtk: 6, critDamage: 1 },
+                    },
                     skillUnlock: {
                       key: "powerDiscipline",
                       type: "passive",
@@ -12182,9 +12222,13 @@
                   {
                     key: "BLADE_DOWN_POWER_2",
                     name: "剛撃の震動",
-                    position: { x: -420, y: 340 },
+                    position: { x: -320, y: 260 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 12, physPen: 4 },
+                    special: {
+                      name: "震動の特化",
+                      bonus: { physPen: 2, physAtk: 4 },
+                    },
                     skillUnlock: {
                       key: "impactDrive",
                       type: "passive",
@@ -12200,9 +12244,13 @@
                   {
                     key: "BLADE_DOWN_POWER_3",
                     name: "剛撃の解放",
-                    position: { x: -540, y: 520 },
+                    position: { x: -420, y: 380 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 14, critDamage: 4 },
+                    special: {
+                      name: "解放の特化",
+                      bonus: { critDamage: 3, physAtk: 4 },
+                    },
                     skillUnlock: {
                       key: "earthSplitter",
                       type: "active",
@@ -12224,9 +12272,13 @@
                   {
                     key: "BLADE_DOWN_DRAW_1",
                     name: "居合の静",
-                    position: { x: 0, y: 180 },
+                    position: { x: 0, y: 160 },
                     status: { key: "str", label: "筋力", value: 3 },
                     coreBonus: { physAtk: 9, critRate: 1.2 },
+                    special: {
+                      name: "居合の特化",
+                      bonus: { critRate: 1.2, physAtk: 4 },
+                    },
                     skillUnlock: {
                       key: "drawDiscipline",
                       type: "passive",
@@ -12242,9 +12294,13 @@
                   {
                     key: "BLADE_DOWN_DRAW_2",
                     name: "居合の極",
-                    position: { x: 0, y: 360 },
+                    position: { x: 0, y: 300 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 11, critDamage: 4 },
+                    special: {
+                      name: "極の特化",
+                      bonus: { critDamage: 3, physAtk: 3 },
+                    },
                     skillUnlock: {
                       key: "singleFocus",
                       type: "passive",
@@ -12260,9 +12316,13 @@
                   {
                     key: "BLADE_DOWN_DRAW_3",
                     name: "居合の閃光",
-                    position: { x: 0, y: 540 },
+                    position: { x: 0, y: 440 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 13, critDamage: 5 },
+                    special: {
+                      name: "閃光の特化",
+                      bonus: { critDamage: 4, physAtk: 3 },
+                    },
                     skillUnlock: {
                       key: "drawFlash",
                       type: "active",
@@ -12284,9 +12344,13 @@
                   {
                     key: "BLADE_DOWN_BREAK_1",
                     name: "破断の前兆",
-                    position: { x: 300, y: 160 },
+                    position: { x: 240, y: 140 },
                     status: { key: "str", label: "筋力", value: 3 },
                     coreBonus: { physAtk: 9, physPen: 4 },
+                    special: {
+                      name: "破断の特化",
+                      bonus: { physPen: 2, physAtk: 3 },
+                    },
                     skillUnlock: {
                       key: "breakDiscipline",
                       type: "passive",
@@ -12302,9 +12366,13 @@
                   {
                     key: "BLADE_DOWN_BREAK_2",
                     name: "破断の圧力",
-                    position: { x: 420, y: 340 },
+                    position: { x: 320, y: 260 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 11, physPen: 5 },
+                    special: {
+                      name: "圧力の特化",
+                      bonus: { physPen: 3, physAtk: 3 },
+                    },
                     skillUnlock: {
                       key: "armorBreak",
                       type: "passive",
@@ -12320,9 +12388,13 @@
                   {
                     key: "BLADE_DOWN_BREAK_3",
                     name: "破断の極刃",
-                    position: { x: 540, y: 520 },
+                    position: { x: 420, y: 380 },
                     status: { key: "str", label: "筋力", value: 4 },
                     coreBonus: { physAtk: 12, physPen: 6 },
+                    special: {
+                      name: "極刃の特化",
+                      bonus: { physPen: 3, physAtk: 4 },
+                    },
                     skillUnlock: {
                       key: "breakerStrike",
                       type: "active",
@@ -12430,8 +12502,31 @@
           const slug = toClusterSlug(cluster.key);
           const coreId = `${slug}-core`;
           const statusId = `${slug}-status`;
+          const specialId = `${slug}-special`;
           const skillId = `${slug}-unlock`;
           const keystoneId = `${slug}-keystone`;
+
+          const distance = Math.hypot(cluster.position.x, cluster.position.y);
+          const dirX = distance ? cluster.position.x / distance : 0;
+          const dirY = distance ? cluster.position.y / distance : -1;
+          const perpX = -dirY;
+          const perpY = dirX;
+          const statusPos = {
+            x: cluster.position.x - dirX * 70 + perpX * 45,
+            y: cluster.position.y - dirY * 70 + perpY * 45,
+          };
+          const skillPos = {
+            x: cluster.position.x + dirX * 90 + perpX * 55,
+            y: cluster.position.y + dirY * 90 + perpY * 55,
+          };
+          const specialPos = {
+            x: cluster.position.x + dirX * 130 - perpX * 55,
+            y: cluster.position.y + dirY * 130 - perpY * 55,
+          };
+          const keystonePos = {
+            x: cluster.position.x + dirX * 200,
+            y: cluster.position.y + dirY * 200,
+          };
 
           PASSIVE_TREE_CLUSTERS_RAW.push({
             key: cluster.key,
@@ -12439,7 +12534,7 @@
             description: cluster.name,
             core: coreId,
             position: cluster.position,
-            nodes: [coreId, statusId, skillId, keystoneId],
+            nodes: [coreId, statusId, specialId, skillId, keystoneId],
           });
 
           PASSIVE_TREE_NODES_RAW.push(
@@ -12457,22 +12552,25 @@
               name: `${cluster.name}${cluster.status.label}`,
               type: "status",
               cluster: cluster.key,
-              position: {
-                x: cluster.position.x - 90,
-                y: cluster.position.y - 60,
-              },
+              position: statusPos,
               description: `${cluster.status.label}+${cluster.status.value}`,
               effects: { primary: { [cluster.status.key]: cluster.status.value } },
+            },
+            {
+              id: specialId,
+              name: `${cluster.special.name}`,
+              type: "passive",
+              cluster: cluster.key,
+              position: specialPos,
+              description: "特化ノード",
+              effects: { bonus: cluster.special.bonus },
             },
             {
               id: skillId,
               name: `${cluster.skillUnlock.label}解放`,
               type: "skillUnlock",
               cluster: cluster.key,
-              position: {
-                x: cluster.position.x + 90,
-                y: cluster.position.y - 60,
-              },
+              position: skillPos,
               description:
                 cluster.skillUnlock.type === "active"
                   ? "専用アクティブが使用可能になる。"
@@ -12487,10 +12585,7 @@
               name: `キーストーン: ${cluster.keystone.name}`,
               type: "keystone",
               cluster: cluster.key,
-              position: {
-                x: cluster.position.x,
-                y: cluster.position.y + 110,
-              },
+              position: keystonePos,
               description: `${cluster.keystone.pros.join(" / ")} / ${cluster.keystone.cons.join(" / ")}`,
               keystone: cluster.keystone,
             },
