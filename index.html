@@ -12651,7 +12651,13 @@
 
         PASSIVE_TREE_NODES_RAW.push(...PASSIVE_TREE_EXTRA_NODES);
 
-        const JOB_PAGE_TEMPLATES = [
+        const SWORDMAN_PAGE_CORE = {
+          key: "BLADE_PAGE_CORE",
+          name: "剣士の基盤",
+          position: { x: 0, y: 0 },
+        };
+
+        const SWORDMAN_ROUTE_GROUPS = [
           {
             category: "魔法",
             core: {
