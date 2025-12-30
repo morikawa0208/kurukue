@@ -3353,8 +3353,7 @@
       </section>
 
       <nav class="menu">
-        <button id="btn-player-modal">プレイヤー詳細</button>
-        <button id="btn-skill-tree">スキル</button>
+        <button id="btn-player-modal">プレイヤー/スキル</button>
         <button id="btn-inventory">アイテム</button>
         <button id="btn-codex">図鑑</button>
         <button id="btn-warp">ワープ</button>
@@ -3607,6 +3606,100 @@
             <div id="primary-stats" class="primary-grid"></div>
           </div>
         </div>
+        <div id="player-skill-view" class="player-modal-page hidden">
+          <div class="secondary-scroll">
+            <div class="section-title" style="margin: 8px 0 4px">
+              スキル / パッシブツリー
+            </div>
+            <div class="subtle" style="justify-content: flex-start">
+              スキルポイントを消費して強化
+            </div>
+            <div
+              class="inline-buttons"
+              style="margin: 6px 0; align-items: center"
+            >
+              <div class="pill">
+                スキルP: <span id="skill-points-skill"></span>
+              </div>
+              <button
+                id="skill-step"
+                class="step-button"
+                aria-label="スキル増減幅を切り替え"
+              >
+                ±1
+              </button>
+              <button
+                id="reset-skills"
+                class="help-icon"
+                aria-label="スキルをリセット"
+              >
+                ↺
+              </button>
+            </div>
+            <div
+              class="inline-buttons"
+              style="margin-bottom: 6px; align-items: center"
+            >
+              <button
+                id="skill-summary-toggle"
+                class="mini-btn"
+                aria-pressed="false"
+              >
+                全職業一覧を表示
+              </button>
+            </div>
+            <div
+              class="inline-buttons"
+              id="skill-category-tabs"
+              style="margin-bottom: 4px"
+            ></div>
+            <div
+              class="inline-buttons"
+              id="skill-type-tabs"
+              style="margin-bottom: 6px"
+            ></div>
+            <div id="skill-detail-view">
+              <div
+                id="active-skill-loadout"
+                class="help-panel"
+                style="margin-bottom: 6px"
+              ></div>
+              <div id="passive-tree-view" class="passive-tree-panel hidden">
+                <div class="passive-tree-toolbar">
+                  <div class="section-title" style="margin: 0">
+                    職業別パッシブツリー
+                  </div>
+                  <div class="passive-tree-legend">
+                    <div class="legend-item">
+                      <span class="legend-dot status"></span>
+                      ステータス
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot passive"></span>
+                      パッシブ
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot skill"></span>
+                      スキル解放
+                    </div>
+                    <div class="legend-item">
+                      <span class="legend-dot keystone"></span>
+                      キーストーン
+                    </div>
+                  </div>
+                </div>
+                <div id="passive-tree-canvas" class="passive-tree-canvas"></div>
+                <div id="passive-tree-info" class="passive-tree-info">
+                  <div class="info-title">ノード情報</div>
+                  <div class="info-name">ノードを選択してください</div>
+                  <div class="info-type">タイプ: --</div>
+                  <div class="info-effect subtle">効果: --</div>
+                </div>
+              </div>
+              <div id="skills" style="margin-top: 6px"></div>
+            </div>
+          </div>
+        </div>
         <div id="player-equipment-view" class="player-modal-page hidden">
           <div class="secondary-scroll">
             <div class="section-title" style="margin: 8px 0 4px">装備一覧</div>
@@ -3624,6 +3717,7 @@
           <button id="player-modal-status-btn" class="active">
             ステータス
           </button>
+          <button id="player-modal-skill-btn">スキル</button>
           <button id="player-modal-equipment-btn">装備</button>
         </div>
       </div>
@@ -3728,102 +3822,6 @@
         <div class="modal-actions">
           <button id="skill-reset-cancel">キャンセル</button>
           <button id="skill-reset-confirm">リセットする</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="skills-modal" class="modal hidden" role="dialog" aria-modal="true">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>
-            <div class="section-title" style="margin: 0">スキル / パーク</div>
-            <div style="font-weight: 700">スキルポイントを消費して強化</div>
-          </div>
-          <button id="skills-close" class="modal-close" aria-label="閉じる">
-            ×
-          </button>
-        </div>
-        <div
-          class="inline-buttons"
-          style="margin-bottom: 6px; align-items: center"
-        >
-          <div class="pill">スキルP: <span id="skill-points-skill"></span></div>
-          <button
-            id="skill-step"
-            class="step-button"
-            aria-label="スキル増減幅を切り替え"
-          >
-            ±1
-          </button>
-          <button
-            id="reset-skills"
-            class="help-icon"
-            aria-label="スキルをリセット"
-          >
-            ↺
-          </button>
-        </div>
-        <div
-          class="inline-buttons"
-          style="margin-bottom: 6px; align-items: center"
-        >
-          <button
-            id="skill-summary-toggle"
-            class="mini-btn"
-            aria-pressed="false"
-          >
-            全職業一覧を表示
-          </button>
-        </div>
-        <div
-          class="inline-buttons"
-          id="skill-category-tabs"
-          style="margin-bottom: 4px"
-        ></div>
-        <div
-          class="inline-buttons"
-          id="skill-type-tabs"
-          style="margin-bottom: 6px"
-        ></div>
-        <div id="skill-detail-view">
-          <div
-            id="active-skill-loadout"
-            class="help-panel"
-            style="margin-bottom: 6px"
-          ></div>
-          <div id="passive-tree-view" class="passive-tree-panel hidden">
-            <div class="passive-tree-toolbar">
-              <div class="section-title" style="margin: 0">
-                職業別パッシブツリー
-              </div>
-              <div class="passive-tree-legend">
-                <div class="legend-item">
-                  <span class="legend-dot status"></span>
-                  ステータス
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot passive"></span>
-                  パッシブ
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot skill"></span>
-                  スキル解放
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot keystone"></span>
-                  キーストーン
-                </div>
-              </div>
-            </div>
-            <div id="passive-tree-canvas" class="passive-tree-canvas"></div>
-            <div id="passive-tree-info" class="passive-tree-info">
-              <div class="info-title">ノード情報</div>
-              <div class="info-name">ノードを選択してください</div>
-              <div class="info-type">タイプ: --</div>
-              <div class="info-effect subtle">効果: --</div>
-            </div>
-          </div>
-          <div id="skills" style="margin-top: 6px"></div>
         </div>
       </div>
     </div>
@@ -12256,7 +12254,7 @@
         }, {});
 
         const PASSIVE_TREE_TEMPLATE = {
-          viewBox: { minX: -340, minY: -340, width: 680, height: 680 },
+          viewBox: { minX: -360, minY: -360, width: 720, height: 720 },
           clusters: [
             { id: "core", x: 0, y: 0, radius: 110 },
             { id: "up-mid", x: 0, y: -150, radius: 90 },
@@ -12866,7 +12864,15 @@
             ["left-outer", "left-outer-4"],
             ["left-outer", "left-outer-5"],
             ["up-entry", "right-entry"],
+            ["right-entry", "down-entry"],
+            ["down-entry", "left-entry"],
+            ["up-mid-1", "right-mid-1"],
             ["right-mid-2", "down-mid-1"],
+            ["down-mid-2", "left-mid-2"],
+            ["left-mid-1", "up-mid-2"],
+            ["up-outer-2", "right-outer-1"],
+            ["right-outer-2", "down-outer-1"],
+            ["down-outer-2", "left-outer-1"],
             ["left-outer-2", "up-outer-1"],
           ],
         };
@@ -13481,7 +13487,6 @@
         const levelUpGuidanceClose = document.getElementById(
           "level-up-guidance-close",
         );
-        const menuSkillButton = document.getElementById("btn-skill-tree");
         const menuStatusButton = document.getElementById("btn-player-modal");
         const enemyGuidance = document.getElementById("enemy-guidance");
         const enemyGuidanceClose = document.getElementById("enemy-guidance-close");
@@ -13553,10 +13558,11 @@
         }
 
         function setMenuHighlight(enabled) {
-          [menuSkillButton, menuStatusButton].forEach((btn) => {
-            if (!btn) return;
-            btn.classList.toggle("menu-button-highlight", Boolean(enabled));
-          });
+          if (!menuStatusButton) return;
+          menuStatusButton.classList.toggle(
+            "menu-button-highlight",
+            Boolean(enabled),
+          );
         }
 
         function hideLevelUpGuidance() {
@@ -18346,14 +18352,27 @@ function showDamagePopup(
         }
 
         function setPlayerModalPage(page) {
-          playerModalPage = page === "equipment" ? "equipment" : "status";
-          const isEquipment = playerModalPage === "equipment";
-          playerStatusView?.classList.toggle("hidden", isEquipment);
+          const nextPage =
+            page === "equipment"
+              ? "equipment"
+              : page === "skills"
+                ? "skills"
+                : "status";
+          playerModalPage = nextPage;
+          const isStatus = nextPage === "status";
+          const isSkills = nextPage === "skills";
+          const isEquipment = nextPage === "equipment";
+          playerStatusView?.classList.toggle("hidden", !isStatus);
+          playerSkillView?.classList.toggle("hidden", !isSkills);
           playerEquipmentView?.classList.toggle("hidden", !isEquipment);
-          playerModalStatusButton?.classList.toggle("active", !isEquipment);
+          playerModalStatusButton?.classList.toggle("active", isStatus);
+          playerModalSkillButton?.classList.toggle("active", isSkills);
           playerModalEquipmentButton?.classList.toggle("active", isEquipment);
           if (isEquipment) {
             renderEquipmentOverview();
+          }
+          if (isSkills) {
+            renderSkills();
           }
         }
 
@@ -19731,6 +19750,7 @@ function showDamagePopup(
         const skillInfoModal = document.getElementById("skill-info-modal");
         const playerModal = document.getElementById("player-modal");
         const playerStatusView = document.getElementById("player-status-view");
+        const playerSkillView = document.getElementById("player-skill-view");
         const playerEquipmentView = document.getElementById(
           "player-equipment-view",
         );
@@ -19740,7 +19760,6 @@ function showDamagePopup(
         const equipmentBonusSummary = document.getElementById(
           "equipment-bonus-summary",
         );
-        const skillsModal = document.getElementById("skills-modal");
         const weaponEnhanceModal = document.getElementById(
           "weapon-enhance-modal",
         );
@@ -19771,7 +19790,6 @@ function showDamagePopup(
         const skillInfoCloseButton =
           document.getElementById("skill-info-close");
         const playerModalCloseButton = document.getElementById("player-close");
-        const skillsModalCloseButton = document.getElementById("skills-close");
         const weaponEnhanceCloseButton = document.getElementById(
           "weapon-enhance-close",
         );
@@ -19852,6 +19870,9 @@ function showDamagePopup(
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
+        );
+        const playerModalSkillButton = document.getElementById(
+          "player-modal-skill-btn",
         );
         const playerModalEquipmentButton = document.getElementById(
           "player-modal-equipment-btn",
@@ -21159,9 +21180,9 @@ function showDamagePopup(
           maybeAutoSave("スキルリセット");
         }
 
-        function openPlayerModal() {
+        function openPlayerModal(page = "status") {
           updateUI();
-          setPlayerModalPage("status");
+          setPlayerModalPage(page);
           playerModal.classList.remove("hidden");
         }
 
@@ -21170,12 +21191,10 @@ function showDamagePopup(
         }
 
         function openSkillsModal() {
-          updateUI();
-          skillsModal.classList.remove("hidden");
+          openPlayerModal("skills");
         }
 
         function closeSkillsModal() {
-          skillsModal.classList.add("hidden");
           skillSummaryVisible = false;
           updateSkillSummaryVisibility();
         }
@@ -22662,13 +22681,13 @@ function showDamagePopup(
         });
 
         document
-          .getElementById("btn-skill-tree")
-          .addEventListener("click", openSkillsModal);
-        document
           .getElementById("btn-player-modal")
           .addEventListener("click", openPlayerModal);
         playerModalStatusButton?.addEventListener("click", () =>
           setPlayerModalPage("status"),
+        );
+        playerModalSkillButton?.addEventListener("click", () =>
+          setPlayerModalPage("skills"),
         );
         playerModalEquipmentButton?.addEventListener("click", () =>
           setPlayerModalPage("equipment"),
@@ -22687,7 +22706,6 @@ function showDamagePopup(
         potionModalCloseButton.addEventListener("click", closePotionModal);
         skillInfoCloseButton?.addEventListener("click", closeSkillInfoModal);
         playerModalCloseButton.addEventListener("click", closePlayerModal);
-        skillsModalCloseButton.addEventListener("click", closeSkillsModal);
         weaponEnhanceCloseButton?.addEventListener(
           "click",
           closeWeaponEnhanceModal,
@@ -22928,9 +22946,6 @@ function showDamagePopup(
         });
         playerModal.addEventListener("click", (e) => {
           if (e.target === playerModal) closePlayerModal();
-        });
-        skillsModal.addEventListener("click", (e) => {
-          if (e.target === skillsModal) closeSkillsModal();
         });
         inventoryModal?.addEventListener("click", (e) => {
           if (e.target === inventoryModal) closeInventoryModal();
