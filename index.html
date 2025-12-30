@@ -12062,6 +12062,539 @@
 
         PASSIVE_TREE_NODES_RAW.push(...PASSIVE_TREE_EXTRA_NODES);
 
+        const JOB_PAGE_TEMPLATES = [
+          {
+            category: "剣士",
+            core: {
+              key: "BLADE_PAGE_CORE",
+              name: "剣士の基盤",
+              position: { x: 0, y: 0 },
+            },
+            branches: [
+              {
+                key: "BLADE_NORTH",
+                name: "疾風剣",
+                offset: { x: 0, y: -320 },
+                theme: "風の剣撃で機動力を伸ばす。",
+                status: { key: "agi", label: "技量" },
+                passive: {
+                  name: "疾風巡り",
+                  bonus: { speed: 2.8, critRate: 2 },
+                },
+                activeSkill: "windCleave",
+                passiveSkill: "windDiscipline",
+                keystone: {
+                  name: "疾風の極意",
+                  effects: { cooldownMultiplier: 0.8, damageMultiplier: 0.85 },
+                  pros: ["CT短縮+20%"],
+                  cons: ["与ダメージ-15%"],
+                },
+              },
+              {
+                key: "BLADE_EAST",
+                name: "轟撃剣",
+                offset: { x: 320, y: 0 },
+                theme: "重量級の一撃で押し切る。",
+                status: { key: "str", label: "筋力" },
+                passive: {
+                  name: "剛力の昂り",
+                  bonus: { physAtk: 12, critDamage: 6 },
+                },
+                activeSkill: "impactCleave",
+                passiveSkill: "impactDiscipline",
+                keystone: {
+                  name: "轟撃の誓い",
+                  effects: { damageMultiplier: 1.2, cooldownMultiplier: 1.2 },
+                  pros: ["与ダメージ+20%"],
+                  cons: ["CT増加+20%"],
+                },
+              },
+              {
+                key: "BLADE_SOUTH",
+                name: "剣気循環",
+                offset: { x: 0, y: 320 },
+                theme: "連携で味方を支える。",
+                status: { key: "vit", label: "活力" },
+                passive: {
+                  name: "連携の波動",
+                  bonus: { hp: 30, damageReduction: 2 },
+                },
+                activeSkill: "rallyBlade",
+                passiveSkill: "rallyDiscipline",
+                keystone: {
+                  name: "士気の盟約",
+                  effects: { attackCountBonus: 1, damageMultiplier: 0.85 },
+                  pros: ["攻撃回数+1"],
+                  cons: ["与ダメージ-15%"],
+                },
+              },
+              {
+                key: "BLADE_WEST",
+                name: "鉄壁剣",
+                offset: { x: -320, y: 0 },
+                theme: "耐久を高めて前線を維持する。",
+                status: { key: "vit", label: "活力" },
+                passive: {
+                  name: "不動の守勢",
+                  bonus: { physDef: 10, damageReduction: 3 },
+                },
+                activeSkill: "ironBulwark",
+                passiveSkill: "ironDiscipline",
+                keystone: {
+                  name: "鉄壁の誓約",
+                  effects: { damageTakenMultiplier: 0.8, mpCostMultiplier: 1.25 },
+                  pros: ["被ダメージ-20%"],
+                  cons: ["MP消費+25%"],
+                },
+              },
+            ],
+          },
+          {
+            category: "魔法",
+            core: {
+              key: "ARCANE_PAGE_CORE",
+              name: "魔術の基盤",
+              position: { x: 0, y: 0 },
+            },
+            branches: [
+              {
+                key: "ARCANE_NORTH",
+                name: "星霊術",
+                offset: { x: 0, y: -320 },
+                theme: "星力を集めて高火力化。",
+                status: { key: "int", label: "知恵" },
+                passive: {
+                  name: "星界収束",
+                  bonus: { magAtk: 14, magPen: 5 },
+                },
+                activeSkill: "stellarBurst",
+                passiveSkill: "stellarDiscipline",
+                keystone: {
+                  name: "星霊の誓約",
+                  effects: { damageMultiplier: 1.15, damageTakenMultiplier: 1.15 },
+                  pros: ["与ダメージ+15%"],
+                  cons: ["被ダメージ+15%"],
+                },
+              },
+              {
+                key: "ARCANE_EAST",
+                name: "時空術",
+                offset: { x: 320, y: 0 },
+                theme: "CT短縮と行動順制御。",
+                status: { key: "agi", label: "技量" },
+                passive: {
+                  name: "時空制御",
+                  bonus: { cooldown: 4, speed: 2 },
+                },
+                activeSkill: "chronoShift",
+                passiveSkill: "chronoDiscipline",
+                keystone: {
+                  name: "時空の契約",
+                  effects: { cooldownMultiplier: 0.75, mpCostMultiplier: 1.2 },
+                  pros: ["CT短縮+25%"],
+                  cons: ["MP消費+20%"],
+                },
+              },
+              {
+                key: "ARCANE_SOUTH",
+                name: "守護術",
+                offset: { x: 0, y: 320 },
+                theme: "バリアと回復で耐久支援。",
+                status: { key: "vit", label: "活力" },
+                passive: {
+                  name: "深層結界",
+                  bonus: { barrier: 30, magDef: 8 },
+                },
+                activeSkill: "arcaneWard",
+                passiveSkill: "wardDiscipline",
+                keystone: {
+                  name: "守護の誓い",
+                  effects: { damageTakenMultiplier: 0.8, damageMultiplier: 0.85 },
+                  pros: ["被ダメージ-20%"],
+                  cons: ["与ダメージ-15%"],
+                },
+              },
+              {
+                key: "ARCANE_WEST",
+                name: "霊媒術",
+                offset: { x: -320, y: 0 },
+                theme: "MP循環と詠唱支援。",
+                status: { key: "luck", label: "幸運" },
+                passive: {
+                  name: "霊媒循環",
+                  bonus: { mp: 30, hpRegen: 0.6 },
+                },
+                activeSkill: "manaSurge",
+                passiveSkill: "manaDiscipline",
+                keystone: {
+                  name: "霊媒の契り",
+                  effects: { mpCostMultiplier: 0.7, cooldownMultiplier: 1.1 },
+                  pros: ["MP消費-30%"],
+                  cons: ["CT増加+10%"],
+                },
+              },
+            ],
+          },
+          {
+            category: "聖職",
+            core: {
+              key: "HOLY_PAGE_CORE",
+              name: "聖職の基盤",
+              position: { x: 0, y: 0 },
+            },
+            branches: [
+              {
+                key: "HOLY_NORTH",
+                name: "癒しの祈祷",
+                offset: { x: 0, y: -320 },
+                theme: "回復と再生のビルド。",
+                status: { key: "int", label: "知恵" },
+                passive: {
+                  name: "癒しの律動",
+                  bonus: { hpRegen: 1.2, barrier: 18 },
+                },
+                activeSkill: "sacredBloom",
+                passiveSkill: "sacredDiscipline",
+                keystone: {
+                  name: "再生の誓い",
+                  effects: { damageTakenMultiplier: 0.85, damageMultiplier: 0.85 },
+                  pros: ["被ダメージ-15%"],
+                  cons: ["与ダメージ-15%"],
+                },
+              },
+              {
+                key: "HOLY_EAST",
+                name: "護符の守護",
+                offset: { x: 320, y: 0 },
+                theme: "守護と耐久支援。",
+                status: { key: "vit", label: "活力" },
+                passive: {
+                  name: "堅守の詠唱",
+                  bonus: { physDef: 8, magDef: 8 },
+                },
+                activeSkill: "guardianSeal",
+                passiveSkill: "guardianDiscipline",
+                keystone: {
+                  name: "守護の戒律",
+                  effects: { damageTakenMultiplier: 0.8, mpCostMultiplier: 1.2 },
+                  pros: ["被ダメージ-20%"],
+                  cons: ["MP消費+20%"],
+                },
+              },
+              {
+                key: "HOLY_SOUTH",
+                name: "聖裁",
+                offset: { x: 0, y: 320 },
+                theme: "光の攻勢で制圧する。",
+                status: { key: "str", label: "筋力" },
+                passive: {
+                  name: "聖裁の波動",
+                  bonus: { magAtk: 10, critRate: 2 },
+                },
+                activeSkill: "holyJudgment",
+                passiveSkill: "judgmentDiscipline",
+                keystone: {
+                  name: "光裁の誓約",
+                  effects: { damageMultiplier: 1.2, damageTakenMultiplier: 1.15 },
+                  pros: ["与ダメージ+20%"],
+                  cons: ["被ダメージ+15%"],
+                },
+              },
+              {
+                key: "HOLY_WEST",
+                name: "祝福支援",
+                offset: { x: -320, y: 0 },
+                theme: "支援と運気上昇。",
+                status: { key: "luck", label: "幸運" },
+                passive: {
+                  name: "祝福の旋律",
+                  bonus: { dropRate: 4, rarity: 3 },
+                },
+                activeSkill: "blessingChord",
+                passiveSkill: "blessingDiscipline",
+                keystone: {
+                  name: "祝福の契り",
+                  effects: { mpCostMultiplier: 0.75, damageMultiplier: 0.85 },
+                  pros: ["MP消費-25%"],
+                  cons: ["与ダメージ-15%"],
+                },
+              },
+            ],
+          },
+          {
+            category: "吸血",
+            core: {
+              key: "BLOOD_PAGE_CORE",
+              name: "吸血の基盤",
+              position: { x: 0, y: 0 },
+            },
+            branches: [
+              {
+                key: "BLOOD_NORTH",
+                name: "血魄強襲",
+                offset: { x: 0, y: -320 },
+                theme: "吸血と瞬間火力を伸ばす。",
+                status: { key: "str", label: "筋力" },
+                passive: {
+                  name: "血魄拡張",
+                  bonus: { lifeSteal: 3, physAtk: 10 },
+                },
+                activeSkill: "bloodRend",
+                passiveSkill: "bloodDiscipline",
+                keystone: {
+                  name: "血宴の誓約",
+                  effects: { damageMultiplier: 1.2, damageTakenMultiplier: 1.2 },
+                  pros: ["与ダメージ+20%"],
+                  cons: ["被ダメージ+20%"],
+                },
+              },
+              {
+                key: "BLOOD_EAST",
+                name: "影歩",
+                offset: { x: 320, y: 0 },
+                theme: "回避と奇襲に特化。",
+                status: { key: "agi", label: "技量" },
+                passive: {
+                  name: "影歩の心得",
+                  bonus: { speed: 2.4, evade: 3 },
+                },
+                activeSkill: "shadowPounce",
+                passiveSkill: "shadowDiscipline",
+                keystone: {
+                  name: "影契の誓い",
+                  effects: { mpCostMultiplier: 0.7, damageTakenMultiplier: 1.25 },
+                  pros: ["MP消費-30%"],
+                  cons: ["被ダメージ+25%"],
+                },
+              },
+              {
+                key: "BLOOD_SOUTH",
+                name: "血鎧",
+                offset: { x: 0, y: 320 },
+                theme: "耐久と吸収で持久戦。",
+                status: { key: "vit", label: "活力" },
+                passive: {
+                  name: "血鎧の循環",
+                  bonus: { hp: 40, damageReduction: 2 },
+                },
+                activeSkill: "crimsonGuard",
+                passiveSkill: "crimsonDiscipline",
+                keystone: {
+                  name: "血鎧の誓約",
+                  effects: { damageTakenMultiplier: 0.85, mpCostMultiplier: 1.2 },
+                  pros: ["被ダメージ-15%"],
+                  cons: ["MP消費+20%"],
+                },
+              },
+              {
+                key: "BLOOD_WEST",
+                name: "儀式術",
+                offset: { x: -320, y: 0 },
+                theme: "資源変換で戦闘を回す。",
+                status: { key: "int", label: "知恵" },
+                passive: {
+                  name: "血儀の心得",
+                  bonus: { mp: 24, cooldown: 2 },
+                },
+                activeSkill: "ritualDrain",
+                passiveSkill: "ritualDiscipline",
+                keystone: {
+                  name: "血儀の契り",
+                  effects: { cooldownMultiplier: 0.8, damageTakenMultiplier: 1.2 },
+                  pros: ["CT短縮+20%"],
+                  cons: ["被ダメージ+20%"],
+                },
+              },
+            ],
+          },
+        ];
+
+        const ACTIVE_PASSIVE_PAGE_CLUSTERS = {};
+        const JOB_PAGE_LINKS = [];
+
+        JOB_PAGE_TEMPLATES.forEach((job) => {
+          const coreKey = job.core.key;
+          const coreId = `${coreKey.toLowerCase()}-core`;
+          const corePosition = job.core.position;
+          const coreNodes = [
+            coreId,
+            `${coreKey.toLowerCase()}-str`,
+            `${coreKey.toLowerCase()}-agi`,
+            `${coreKey.toLowerCase()}-vit`,
+            `${coreKey.toLowerCase()}-passive`,
+          ];
+
+          PASSIVE_TREE_CLUSTERS_RAW.push({
+            key: coreKey,
+            name: job.core.name,
+            description: `${job.category}の基礎と共通ノード。`,
+            core: coreId,
+            position: corePosition,
+            nodes: coreNodes,
+          });
+
+          PASSIVE_TREE_NODES_RAW.push(
+            {
+              id: coreId,
+              name: `${job.category}の中核`,
+              type: "passive",
+              cluster: coreKey,
+              position: corePosition,
+              description: `${job.category}の基盤を整える。`,
+              effects: {
+                bonus: { hp: 24, mp: 12, physAtk: 4, magAtk: 4 },
+              },
+            },
+            {
+              id: `${coreKey.toLowerCase()}-str`,
+              name: `${job.category}筋力`,
+              type: "status",
+              cluster: coreKey,
+              position: { x: corePosition.x - 90, y: corePosition.y - 60 },
+              description: "筋力+2",
+              effects: { primary: { str: 2 } },
+            },
+            {
+              id: `${coreKey.toLowerCase()}-agi`,
+              name: `${job.category}技量`,
+              type: "status",
+              cluster: coreKey,
+              position: { x: corePosition.x + 90, y: corePosition.y - 60 },
+              description: "技量+2",
+              effects: { primary: { agi: 2 } },
+            },
+            {
+              id: `${coreKey.toLowerCase()}-vit`,
+              name: `${job.category}活力`,
+              type: "status",
+              cluster: coreKey,
+              position: { x: corePosition.x - 90, y: corePosition.y + 60 },
+              description: "活力+2",
+              effects: { primary: { vit: 2 } },
+            },
+            {
+              id: `${coreKey.toLowerCase()}-passive`,
+              name: `${job.category}基礎鍛錬`,
+              type: "passive",
+              cluster: coreKey,
+              position: { x: corePosition.x + 90, y: corePosition.y + 60 },
+              description: "基本能力を底上げする。",
+              effects: { bonus: { speed: 1, damageReduction: 1 } },
+            },
+          );
+
+          ACTIVE_PASSIVE_PAGE_CLUSTERS[job.category] = ["START", coreKey];
+          JOB_PAGE_LINKS.push([PASSIVE_TREE_START_NODE_ID, coreId]);
+
+          job.branches.forEach((branch) => {
+            const clusterKey = branch.key;
+            const coreNodeId = `${branch.key.toLowerCase()}-core`;
+            const branchPosition = {
+              x: corePosition.x + branch.offset.x,
+              y: corePosition.y + branch.offset.y,
+            };
+            const statusNodeId = `${branch.key.toLowerCase()}-status`;
+            const passiveNodeId = `${branch.key.toLowerCase()}-passive`;
+            const activeUnlockId = `${branch.key.toLowerCase()}-unlock-active`;
+            const passiveUnlockId = `${branch.key.toLowerCase()}-unlock-passive`;
+            const keystoneId = `${branch.key.toLowerCase()}-keystone`;
+
+            PASSIVE_TREE_CLUSTERS_RAW.push({
+              key: clusterKey,
+              name: branch.name,
+              description: branch.theme,
+              core: coreNodeId,
+              position: branchPosition,
+              nodes: [
+                coreNodeId,
+                statusNodeId,
+                passiveNodeId,
+                activeUnlockId,
+                passiveUnlockId,
+                keystoneId,
+              ],
+            });
+
+            PASSIVE_TREE_NODES_RAW.push(
+              {
+                id: coreNodeId,
+                name: `${branch.name}の核`,
+                type: "passive",
+                cluster: clusterKey,
+                position: branchPosition,
+                description: branch.theme,
+                effects: { bonus: { hp: 16, mp: 8 } },
+              },
+              {
+                id: statusNodeId,
+                name: `${branch.name}${branch.status.label}`,
+                type: "status",
+                cluster: clusterKey,
+                position: { x: branchPosition.x - 90, y: branchPosition.y - 60 },
+                description: `${branch.status.label}+3`,
+                effects: { primary: { [branch.status.key]: 3 } },
+              },
+              {
+                id: passiveNodeId,
+                name: branch.passive.name,
+                type: "passive",
+                cluster: clusterKey,
+                position: { x: branchPosition.x + 90, y: branchPosition.y - 60 },
+                description: branch.theme,
+                effects: { bonus: branch.passive.bonus },
+              },
+              {
+                id: activeUnlockId,
+                name: `${branch.name}解放(アクティブ)`,
+                type: "skillUnlock",
+                cluster: clusterKey,
+                position: { x: branchPosition.x - 90, y: branchPosition.y + 60 },
+                description: "専用アクティブが使用可能になる。",
+                unlocks: {
+                  skills: [branch.activeSkill],
+                  skillTypes: ["active"],
+                },
+              },
+              {
+                id: passiveUnlockId,
+                name: `${branch.name}解放(パッシブ)`,
+                type: "skillUnlock",
+                cluster: clusterKey,
+                position: { x: branchPosition.x + 90, y: branchPosition.y + 60 },
+                description: "専用パッシブが使用可能になる。",
+                unlocks: {
+                  skills: [branch.passiveSkill],
+                  skillTypes: ["passive"],
+                },
+              },
+              {
+                id: keystoneId,
+                name: `キーストーン: ${branch.keystone.name}`,
+                type: "keystone",
+                cluster: clusterKey,
+                position: { x: branchPosition.x, y: branchPosition.y + 130 },
+                description: `${branch.keystone.pros.join(" / ")} / ${branch.keystone.cons.join(" / ")}`,
+                keystone: branch.keystone,
+              },
+            );
+
+            ACTIVE_PASSIVE_PAGE_CLUSTERS[job.category].push(clusterKey);
+            JOB_PAGE_LINKS.push([coreId, coreNodeId]);
+          });
+        });
+
+        Object.values(ACTIVE_PASSIVE_PAGE_CLUSTERS).forEach((clusters) => {
+          clusters.forEach((key) => {
+            if (PASSIVE_CLUSTER_CATEGORY_MAP[key]) return;
+            const match = JOB_PAGE_TEMPLATES.find(
+              (job) => job.core.key === key || job.branches.some((b) => b.key === key),
+            );
+            if (match) {
+              PASSIVE_CLUSTER_CATEGORY_MAP[key] = match.category;
+            }
+          });
+        });
+
         function sanitizePassiveTreeData(clusters, nodes) {
           const nodeIdSet = new Set();
           const cleanedNodes = [];
@@ -12154,6 +12687,7 @@
         const PASSIVE_TREE_CLUSTER_LINKS = [
           ...PASSIVE_TREE_CLUSTER_LINKS_BASE,
           ...OUTER_CLUSTER_LINKS,
+          ...JOB_PAGE_LINKS,
         ].filter(
           ([from, to]) => PASSIVE_TREE_NODES.some((node) => node.id === from) &&
             PASSIVE_TREE_NODES.some((node) => node.id === to),
@@ -13866,6 +14400,420 @@
           },
         ];
 
+        const JOB_SKILL_TEMPLATES = [
+          {
+            key: "windCleave",
+            name: "風裂斬",
+            desc: "風刃で連撃を刻む。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { physAtk: 1.1, critRate: 0.2 },
+            activation: { cooldown: 4, mpCost: 6, effect: "風刃の連撃" },
+          },
+          {
+            key: "windDiscipline",
+            name: "風剣修練",
+            desc: "風の動きで手数を伸ばす。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 6,
+            scaling: { speed: 0.5, critRate: 0.15 },
+          },
+          {
+            key: "impactCleave",
+            name: "轟撃一閃",
+            desc: "重い一撃で突破する。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 10,
+            scaling: { physAtk: 1.4, critDamage: 0.4 },
+            activation: { cooldown: 6, mpCost: 8, effect: "重撃の一閃" },
+          },
+          {
+            key: "impactDiscipline",
+            name: "剛撃修練",
+            desc: "重量剣の扱いを極める。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { physAtk: 1.2, physPen: 0.4 },
+          },
+          {
+            key: "rallyBlade",
+            name: "士気号令",
+            desc: "戦線を鼓舞して戦う。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { hp: 0.9, damageReduction: 0.2 },
+            activation: {
+              cooldown: 5,
+              mpCost: 7,
+              effect: "味方の防御と行動を支援",
+            },
+          },
+          {
+            key: "rallyDiscipline",
+            name: "士気練成",
+            desc: "支援に必要な耐久を鍛える。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { hp: 1.2, damageReduction: 0.2 },
+          },
+          {
+            key: "ironBulwark",
+            name: "鉄壁の構え",
+            desc: "防御を固めて反撃に備える。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 14,
+            scaling: { physDef: 1.1, damageReduction: 0.3 },
+            activation: {
+              cooldown: 6,
+              mpCost: 8,
+              effect: "防御特化の構え",
+            },
+          },
+          {
+            key: "ironDiscipline",
+            name: "鉄壁修練",
+            desc: "守勢の姿勢を維持する。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { physDef: 1, block: 0.4 },
+          },
+          {
+            key: "stellarBurst",
+            name: "星霊爆裂",
+            desc: "星力で魔力を爆発させる。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { magAtk: 1.4, magPen: 0.4 },
+            activation: {
+              cooldown: 5,
+              mpCost: 9,
+              effect: "星霊の爆発魔法",
+            },
+          },
+          {
+            key: "stellarDiscipline",
+            name: "星霊修練",
+            desc: "星界の魔力制御を高める。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { magAtk: 1.1, magPen: 0.3 },
+          },
+          {
+            key: "chronoShift",
+            name: "クロノシフト",
+            desc: "時空を歪めて連携を取る。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 10,
+            scaling: { cooldown: 0.6, speed: 0.5 },
+            activation: {
+              cooldown: 4,
+              mpCost: 8,
+              effect: "CT短縮と行動加速",
+            },
+          },
+          {
+            key: "chronoDiscipline",
+            name: "時空修練",
+            desc: "時空操作を安定させる。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { cooldown: 0.5, mp: 0.8 },
+          },
+          {
+            key: "arcaneWard",
+            name: "結界展開",
+            desc: "魔力障壁を展開する。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { barrier: 0.6, magDef: 0.5 },
+            activation: {
+              cooldown: 6,
+              mpCost: 10,
+              effect: "強力な結界を付与",
+            },
+          },
+          {
+            key: "wardDiscipline",
+            name: "結界修練",
+            desc: "結界維持の技術を鍛える。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { barrier: 0.6, magDef: 0.4 },
+          },
+          {
+            key: "manaSurge",
+            name: "マナ奔流",
+            desc: "魔力循環を爆発的に加速。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 14,
+            scaling: { mp: 1, magAtk: 0.6 },
+            activation: {
+              cooldown: 5,
+              mpCost: 7,
+              effect: "MP回復と魔攻支援",
+            },
+          },
+          {
+            key: "manaDiscipline",
+            name: "マナ修練",
+            desc: "魔力循環を整える。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { mp: 1.1, cooldown: 0.2 },
+          },
+          {
+            key: "sacredBloom",
+            name: "聖花の祈り",
+            desc: "癒しの力を開花させる。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { hpRegen: 0.5, barrier: 0.4 },
+            activation: {
+              cooldown: 5,
+              mpCost: 8,
+              effect: "回復とバリア付与",
+            },
+          },
+          {
+            key: "sacredDiscipline",
+            name: "祈祷修練",
+            desc: "回復の効率を高める。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { hpRegen: 0.5, magDef: 0.3 },
+          },
+          {
+            key: "guardianSeal",
+            name: "護符の結界",
+            desc: "守護の符で味方を守る。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 10,
+            scaling: { physDef: 0.8, magDef: 0.8 },
+            activation: {
+              cooldown: 6,
+              mpCost: 9,
+              effect: "守護の結界を展開",
+            },
+          },
+          {
+            key: "guardianDiscipline",
+            name: "護符修練",
+            desc: "守護の符を扱う技術。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { physDef: 0.7, magDef: 0.7 },
+          },
+          {
+            key: "holyJudgment",
+            name: "聖裁の光",
+            desc: "光の裁きを下す。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { magAtk: 1.2, critRate: 0.2 },
+            activation: {
+              cooldown: 5,
+              mpCost: 9,
+              effect: "裁きの光ダメージ",
+            },
+          },
+          {
+            key: "judgmentDiscipline",
+            name: "聖裁修練",
+            desc: "裁きの力を安定させる。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { magAtk: 0.9, critRate: 0.1 },
+          },
+          {
+            key: "blessingChord",
+            name: "祝福の詠唱",
+            desc: "運気と支援を高める。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 14,
+            scaling: { dropRate: 0.6, rarity: 0.4 },
+            activation: {
+              cooldown: 6,
+              mpCost: 7,
+              effect: "運気と支援効果を付与",
+            },
+          },
+          {
+            key: "blessingDiscipline",
+            name: "祝福修練",
+            desc: "祝福の持続を高める。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { dropRate: 0.5, rarity: 0.4 },
+          },
+          {
+            key: "bloodRend",
+            name: "血刃裂き",
+            desc: "血刃で一気に抉る。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { physAtk: 1.1, lifeSteal: 0.2 },
+            activation: {
+              cooldown: 4,
+              mpCost: 6,
+              effect: "吸血効果付き攻撃",
+            },
+          },
+          {
+            key: "bloodDiscipline",
+            name: "血刃修練",
+            desc: "吸収効率を高める。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { lifeSteal: 0.4, physAtk: 0.6 },
+          },
+          {
+            key: "shadowPounce",
+            name: "影襲い",
+            desc: "影から奇襲する。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 10,
+            scaling: { speed: 0.8, critRate: 0.3 },
+            activation: {
+              cooldown: 4,
+              mpCost: 7,
+              effect: "高速奇襲",
+            },
+          },
+          {
+            key: "shadowDiscipline",
+            name: "影歩修練",
+            desc: "影の動きを極める。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { speed: 0.7, evade: 0.4 },
+          },
+          {
+            key: "crimsonGuard",
+            name: "紅鎧の護り",
+            desc: "血の鎧で身を守る。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { hp: 1, damageReduction: 0.3 },
+            activation: {
+              cooldown: 6,
+              mpCost: 8,
+              effect: "耐久を高める護り",
+            },
+          },
+          {
+            key: "crimsonDiscipline",
+            name: "紅鎧修練",
+            desc: "血鎧の維持を習得する。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { hp: 1.1, damageReduction: 0.2 },
+          },
+          {
+            key: "ritualDrain",
+            name: "儀式吸収",
+            desc: "儀式で資源を循環する。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 14,
+            scaling: { mp: 0.8, cooldown: 0.4 },
+            activation: {
+              cooldown: 5,
+              mpCost: 7,
+              effect: "MP循環を高める",
+            },
+          },
+          {
+            key: "ritualDiscipline",
+            name: "儀式修練",
+            desc: "儀式の効率を高める。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { mp: 1, cooldown: 0.3 },
+          },
+        ];
+
+        const createJobSkillDefinition = (template) => {
+          const base = {
+            key: template.key,
+            name: template.name,
+            desc: template.desc,
+            category: template.category,
+            type: template.type,
+            unlockLevel: template.unlockLevel,
+            scaling: { perLevel: template.scaling },
+            thresholds: [
+              {
+                level: 10,
+                bonus:
+                  template.type === "active"
+                    ? { critRate: 2 }
+                    : { damageReduction: 1 },
+                effect: "閾値10: 補助効果",
+              },
+              {
+                level: 30,
+                bonus:
+                  template.type === "active"
+                    ? { cooldown: 2 }
+                    : { hp: 12 },
+                effect: "閾値30: 補助効果",
+              },
+              {
+                level: 50,
+                bonus:
+                  template.type === "active"
+                    ? { critDamage: 5 }
+                    : { block: 2 },
+                effect: "閾値50: 補助効果",
+              },
+            ],
+          };
+          if (template.type === "active") {
+            base.activation = {
+              cooldown: template.activation.cooldown,
+              mpCost: template.activation.mpCost,
+              effect: template.activation.effect,
+              slotCost: 1,
+            };
+          }
+          return base;
+        };
+
+        SKILL_DEFINITIONS_BASE.push(
+          ...JOB_SKILL_TEMPLATES.map(createJobSkillDefinition),
+        );
+
         const SKILL_VARIANT_CONFIGS = [
           {
             keySuffix: "Ex",
@@ -13944,11 +14892,46 @@
           galeDanceAlt: "blade-edge-unlock",
           chronoBoostEx: "arcane-edge-unlock",
           chronoBoostAlt: "arcane-edge-unlock",
+          windCleave: "blade_north-unlock-active",
+          windDiscipline: "blade_north-unlock-passive",
+          impactCleave: "blade_east-unlock-active",
+          impactDiscipline: "blade_east-unlock-passive",
+          rallyBlade: "blade_south-unlock-active",
+          rallyDiscipline: "blade_south-unlock-passive",
+          ironBulwark: "blade_west-unlock-active",
+          ironDiscipline: "blade_west-unlock-passive",
+          stellarBurst: "arcane_north-unlock-active",
+          stellarDiscipline: "arcane_north-unlock-passive",
+          chronoShift: "arcane_east-unlock-active",
+          chronoDiscipline: "arcane_east-unlock-passive",
+          arcaneWard: "arcane_south-unlock-active",
+          wardDiscipline: "arcane_south-unlock-passive",
+          manaSurge: "arcane_west-unlock-active",
+          manaDiscipline: "arcane_west-unlock-passive",
+          sacredBloom: "holy_north-unlock-active",
+          sacredDiscipline: "holy_north-unlock-passive",
+          guardianSeal: "holy_east-unlock-active",
+          guardianDiscipline: "holy_east-unlock-passive",
+          holyJudgment: "holy_south-unlock-active",
+          judgmentDiscipline: "holy_south-unlock-passive",
+          blessingChord: "holy_west-unlock-active",
+          blessingDiscipline: "holy_west-unlock-passive",
+          bloodRend: "blood_north-unlock-active",
+          bloodDiscipline: "blood_north-unlock-passive",
+          shadowPounce: "blood_east-unlock-active",
+          shadowDiscipline: "blood_east-unlock-passive",
+          crimsonGuard: "blood_south-unlock-active",
+          crimsonDiscipline: "blood_south-unlock-passive",
+          ritualDrain: "blood_west-unlock-active",
+          ritualDiscipline: "blood_west-unlock-passive",
         };
 
         SKILL_DEFINITIONS.forEach((skill) => {
           skill.thresholds = amplifyThresholdBonuses(skill.thresholds);
-          const unlockNode = INDIVIDUAL_SKILL_UNLOCK_NODES[skill.key];
+          const baseKey = skill.key.replace(/(Ex|Alt)$/, "");
+          const unlockNode =
+            INDIVIDUAL_SKILL_UNLOCK_NODES[skill.key] ||
+            INDIVIDUAL_SKILL_UNLOCK_NODES[baseKey];
           if (unlockNode) {
             skill.unlockNode = unlockNode;
             skill.unlockCategory = null;
@@ -14024,6 +15007,14 @@
         }
 
         function addBonus(target, bonus = {}, multiplier = 1) {
+          if (!target || !bonus) return;
+          Object.entries(bonus).forEach(([key, value]) => {
+            if (typeof value !== "number") return;
+            target[key] = (target[key] ?? 0) + value * multiplier;
+          });
+        }
+
+        function addPrimaryBonus(target, bonus = {}, multiplier = 1) {
           if (!target || !bonus) return;
           Object.entries(bonus).forEach(([key, value]) => {
             if (typeof value !== "number") return;
@@ -19744,7 +20735,11 @@ function showDamagePopup(
         };
 
         function getPassiveCategories() {
-          return SKILL_CATEGORIES.slice();
+          return Object.keys(ACTIVE_PASSIVE_PAGE_CLUSTERS);
+        }
+
+        function getActivePassiveClusterKeys(category) {
+          return ACTIVE_PASSIVE_PAGE_CLUSTERS[category] || ["START"];
         }
 
         function formatPrimaryBonusText(bonus = {}) {
@@ -19930,6 +20925,22 @@ function showDamagePopup(
           initialized: false,
         };
 
+        function getVisiblePassiveNodes(category = selectedPassiveCategory) {
+          const allowedClusters = new Set(getActivePassiveClusterKeys(category));
+          return PASSIVE_TREE_NODES.filter((node) => {
+            if (
+              !node?.position ||
+              !Number.isFinite(node.position.x) ||
+              !Number.isFinite(node.position.y)
+            ) {
+              return false;
+            }
+            if (node.id === PASSIVE_TREE_START_NODE_ID) return true;
+            if (!node.cluster) return false;
+            return allowedClusters.has(node.cluster);
+          });
+        }
+
         function renderPassiveTreeSummary() {
           const summary = document.getElementById("passive-tree-summary");
           if (!summary) return;
@@ -19956,6 +20967,8 @@ function showDamagePopup(
             button.onclick = () => {
               if (selectedPassiveCategory === category) return;
               selectedPassiveCategory = category;
+              selectedSkillCategory = category;
+              resetPassiveTreeView();
               renderPassiveTree();
               maybeAutoSave("パッシブ職業切替");
             };
@@ -19965,8 +20978,12 @@ function showDamagePopup(
           categoryWrap.appendChild(categoryButtons);
           summary.appendChild(categoryWrap);
 
-          const totalNodes = PASSIVE_TREE_NODES.length;
-          const unlockedNodes = (player.passiveNodes || []).length;
+          const visibleNodes = getVisiblePassiveNodes();
+          const visibleNodeIds = new Set(visibleNodes.map((node) => node.id));
+          const totalNodes = visibleNodes.length;
+          const unlockedNodes = (player.passiveNodes || []).filter((id) =>
+            visibleNodeIds.has(id),
+          ).length;
           const unlockedCategories = Array.from(
             player.unlockedSkillState?.categories || [],
           );
@@ -20047,24 +21064,10 @@ function showDamagePopup(
           renderPassiveTreeSummary();
 
           const allowedCategory = selectedPassiveCategory;
-          const nodes = PASSIVE_TREE_NODES.filter((node) => {
-            if (
-              !node?.position ||
-              !Number.isFinite(node.position.x) ||
-              !Number.isFinite(node.position.y)
-            ) {
-              return false;
-            }
-            if (!allowedCategory) return true;
-            if (node.id === PASSIVE_TREE_START_NODE_ID) return true;
-            const cluster = node.cluster
-              ? PASSIVE_TREE_CLUSTERS.find((entry) => entry.key === node.cluster)
-              : null;
-            const category = cluster
-              ? PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key]
-              : null;
-            return !category || category === allowedCategory;
-          });
+          const allowedClusters = new Set(
+            getActivePassiveClusterKeys(allowedCategory),
+          );
+          const nodes = getVisiblePassiveNodes(allowedCategory);
           if (!nodes.length) return;
           const spacingScale = 1.2;
           const scaledPositions = new Map(
@@ -20100,26 +21103,14 @@ function showDamagePopup(
             const fromNode = PASSIVE_NODE_MAP[from];
             const toNode = PASSIVE_NODE_MAP[to];
             if (!fromNode || !toNode) return;
-            const fromCluster = fromNode.cluster
-              ? PASSIVE_TREE_CLUSTERS.find(
-                  (entry) => entry.key === fromNode.cluster,
-                )
-              : null;
-            const toCluster = toNode.cluster
-              ? PASSIVE_TREE_CLUSTERS.find(
-                  (entry) => entry.key === toNode.cluster,
-                )
-              : null;
-            const fromCategory = fromCluster
-              ? PASSIVE_CLUSTER_CATEGORY_MAP[fromCluster.key]
-              : null;
-            const toCategory = toCluster
-              ? PASSIVE_CLUSTER_CATEGORY_MAP[toCluster.key]
-              : null;
             if (
               allowedCategory &&
-              ((fromCategory && fromCategory !== allowedCategory) ||
-                (toCategory && toCategory !== allowedCategory))
+              ((fromNode.cluster &&
+                !allowedClusters.has(fromNode.cluster) &&
+                fromNode.id !== PASSIVE_TREE_START_NODE_ID) ||
+                (toNode.cluster &&
+                  !allowedClusters.has(toNode.cluster) &&
+                  toNode.id !== PASSIVE_TREE_START_NODE_ID))
             ) {
               return;
             }
@@ -20143,11 +21134,7 @@ function showDamagePopup(
 
           PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
             if (!cluster.position) return;
-            if (
-              allowedCategory &&
-              PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] &&
-              PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] !== allowedCategory
-            ) {
+            if (allowedCategory && !allowedClusters.has(cluster.key)) {
               return;
             }
             const clusterPos = {
