@@ -10512,6 +10512,9 @@
               "start-vit",
               "start-agi",
               "start-luck",
+              "common-core-1",
+              "common-core-2",
+              "common-core-3",
             ],
           },
           {
@@ -10519,7 +10522,7 @@
             name: "剣士の基盤",
             description: "剣技の基礎と防御のバランスを整える。",
             core: "blade-core",
-            position: { x: -340, y: -40 },
+            position: { x: -420, y: -80 },
             nodes: [
               "blade-core",
               "blade-str",
@@ -10535,7 +10538,7 @@
             name: "魔導回廊",
             description: "魔力操作を軸に魔法系統を解放する。",
             core: "arcane-core",
-            position: { x: 340, y: -40 },
+            position: { x: 420, y: -80 },
             nodes: [
               "arcane-core",
               "arcane-int",
@@ -10551,7 +10554,7 @@
             name: "聖務の灯火",
             description: "回復と支援を両立し、聖職を解放する。",
             core: "holy-core",
-            position: { x: 0, y: 260 },
+            position: { x: 0, y: 360 },
             nodes: [
               "holy-core",
               "holy-vit",
@@ -10567,7 +10570,7 @@
             name: "血脈の狩人",
             description: "吸血の流れを整え、攻防バランスを得る。",
             core: "blood-core",
-            position: { x: -320, y: 320 },
+            position: { x: -360, y: 360 },
             nodes: [
               "blood-core",
               "blood-str",
@@ -10583,7 +10586,7 @@
             name: "剣士の奥義",
             description: "剣士の個別奥義を解放する。",
             core: "blade-edge-core",
-            position: { x: -520, y: -220 },
+            position: { x: -640, y: -260 },
             nodes: [
               "blade-edge-core",
               "blade-edge-str",
@@ -10597,7 +10600,7 @@
             name: "秘奥の術式",
             description: "魔法の個別スキルを解放する。",
             core: "arcane-edge-core",
-            position: { x: 520, y: -220 },
+            position: { x: 640, y: -260 },
             nodes: [
               "arcane-edge-core",
               "arcane-edge-int",
@@ -10611,7 +10614,7 @@
             name: "剣聖の極致",
             description: "剣技の火力と鋭さを極限まで引き上げる。",
             core: "blade-ascend-core",
-            position: { x: -720, y: -380 },
+            position: { x: -860, y: -420 },
             nodes: [
               "blade-ascend-core",
               "blade-ascend-str",
@@ -10625,7 +10628,7 @@
             name: "星詠みの深淵",
             description: "星霊の力で魔力循環を爆発的に伸ばす。",
             core: "arcane-ascend-core",
-            position: { x: 720, y: -380 },
+            position: { x: 860, y: -420 },
             nodes: [
               "arcane-ascend-core",
               "arcane-ascend-int",
@@ -10639,7 +10642,7 @@
             name: "神域の聖柱",
             description: "守護と再生の力を高密度で纏う。",
             core: "holy-ascend-core",
-            position: { x: 0, y: 520 },
+            position: { x: 0, y: 680 },
             nodes: [
               "holy-ascend-core",
               "holy-ascend-vit",
@@ -10653,7 +10656,7 @@
             name: "紅月の覇道",
             description: "吸血と暴力性を桁違いに増幅する。",
             core: "blood-ascend-core",
-            position: { x: -520, y: 520 },
+            position: { x: -520, y: 660 },
             nodes: [
               "blood-ascend-core",
               "blood-ascend-str",
@@ -10667,7 +10670,7 @@
             name: "運命の奔流",
             description: "攻撃回数に干渉するキーストーン。",
             core: "fate-core",
-            position: { x: -460, y: 80 },
+            position: { x: -520, y: 140 },
             nodes: [
               "fate-core",
               "fate-agi",
@@ -10681,7 +10684,7 @@
             name: "影の契約",
             description: "リソース挙動に干渉するキーストーン。",
             core: "shadow-core",
-            position: { x: 460, y: 80 },
+            position: { x: 520, y: 140 },
             nodes: [
               "shadow-core",
               "shadow-int",
@@ -10695,7 +10698,7 @@
             name: "嵐牙の楽園",
             description: "圧倒的な速度と連撃に特化したキーストーン。",
             core: "storm-core",
-            position: { x: -900, y: -140 },
+            position: { x: -1040, y: -180 },
             nodes: [
               "storm-core",
               "storm-str",
@@ -10709,7 +10712,7 @@
             name: "星界の王座",
             description: "魔力を爆発的に増幅するキーストーン。",
             core: "astral-core",
-            position: { x: 900, y: -140 },
+            position: { x: 1040, y: -180 },
             nodes: [
               "astral-core",
               "astral-int",
@@ -10723,7 +10726,7 @@
             name: "奈落の心臓",
             description: "極端な代償で莫大な破壊力を得るキーストーン。",
             core: "abyss-core",
-            position: { x: 0, y: 720 },
+            position: { x: 0, y: 940 },
             nodes: [
               "abyss-core",
               "abyss-vit",
@@ -10788,6 +10791,33 @@
             position: { x: 0, y: 90 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
+          },
+          {
+            id: "common-core-1",
+            name: "共通基礎: 体幹調律",
+            type: "passive",
+            cluster: "START",
+            position: { x: -120, y: -120 },
+            description: "HPと防御のベースを整える。",
+            effects: { bonus: { hp: 18, physDef: 2, magDef: 2 } },
+          },
+          {
+            id: "common-core-2",
+            name: "共通基礎: 基礎鍛錬",
+            type: "passive",
+            cluster: "START",
+            position: { x: 120, y: -120 },
+            description: "攻撃と命中を底上げする。",
+            effects: { bonus: { physAtk: 3, magAtk: 3, accuracy: 2 } },
+          },
+          {
+            id: "common-core-3",
+            name: "共通基礎: 反応補正",
+            type: "passive",
+            cluster: "START",
+            position: { x: 0, y: -170 },
+            description: "速度と回避を強化する。",
+            effects: { bonus: { speed: 1.2, evade: 1.5 } },
           },
           {
             id: "blade-core",
@@ -11574,6 +11604,46 @@
           },
         ];
 
+        const PASSIVE_TREE_CLUSTER_ORIGIN_POSITIONS = {
+          BLADE_CORE: { x: -340, y: -40 },
+          ARCANE_CORE: { x: 340, y: -40 },
+          HOLY_CORE: { x: 0, y: 260 },
+          BLOOD_CORE: { x: -320, y: 320 },
+          BLADE_EDGE: { x: -520, y: -220 },
+          ARCANE_EDGE: { x: 520, y: -220 },
+          BLADE_ASCEND: { x: -720, y: -380 },
+          ARCANE_ASCEND: { x: 720, y: -380 },
+          HOLY_ASCEND: { x: 0, y: 520 },
+          BLOOD_ASCEND: { x: -520, y: 520 },
+          FATE: { x: -460, y: 80 },
+          SHADOW: { x: 460, y: 80 },
+          STORM: { x: -900, y: -140 },
+          ASTRAL: { x: 900, y: -140 },
+          ABYSS: { x: 0, y: 720 },
+        };
+
+        const PASSIVE_TREE_CLUSTER_OFFSETS = PASSIVE_TREE_CLUSTERS_RAW.reduce(
+          (acc, cluster) => {
+            const origin = PASSIVE_TREE_CLUSTER_ORIGIN_POSITIONS[cluster.key];
+            if (!origin || !cluster?.position) return acc;
+            acc[cluster.key] = {
+              x: cluster.position.x - origin.x,
+              y: cluster.position.y - origin.y,
+            };
+            return acc;
+          },
+          {},
+        );
+
+        PASSIVE_TREE_NODES_RAW.forEach((node) => {
+          const offset = PASSIVE_TREE_CLUSTER_OFFSETS[node.cluster];
+          if (!offset || !node?.position) return;
+          node.position = {
+            x: node.position.x + offset.x,
+            y: node.position.y + offset.y,
+          };
+        });
+
         const PASSIVE_CLUSTER_CATEGORY_MAP = {
           START: "剣士",
           BLADE_CORE: "剣士",
@@ -12181,6 +12251,10 @@
         const PASSIVE_TREE_CLUSTER_LINKS_BASE = [
           ["start-core", "blade-core"],
           ["start-core", "arcane-core"],
+          ["common-core-1", "blade-core"],
+          ["common-core-2", "arcane-core"],
+          ["common-core-3", "holy-core"],
+          ["common-core-1", "blood-core"],
           ["blade-core", "holy-core"],
           ["blade-core", "blood-core"],
           ["arcane-core", "holy-core"],
@@ -12197,6 +12271,9 @@
           ["blade-ascend-core", "storm-core"],
           ["arcane-ascend-core", "astral-core"],
           ["holy-ascend-core", "abyss-core"],
+          ["blood-core", "holy-core"],
+          ["blade-edge-core", "blood-core"],
+          ["arcane-edge-core", "holy-core"],
         ];
 
         const PASSIVE_TREE_CLUSTER_LINKS = [
@@ -20095,7 +20172,7 @@ function showDamagePopup(
               Number.isFinite(node.position.y),
           );
           if (!nodes.length) return;
-          const spacingScale = 1.2;
+          const spacingScale = 1.1;
           const scaledPositions = new Map(
             nodes.map((node) => [
               node.id,
@@ -20106,7 +20183,7 @@ function showDamagePopup(
             ]),
           );
           const positions = Array.from(scaledPositions.values());
-          const padding = 120;
+          const padding = 160;
           const minX = Math.min(...positions.map((p) => p.x)) - padding;
           const maxX = Math.max(...positions.map((p) => p.x)) + padding;
           const minY = Math.min(...positions.map((p) => p.y)) - padding;
