@@ -1727,8 +1727,20 @@
       }
 
       .passive-node-circle.keystone {
-        stroke-width: 3.5;
-        filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+        stroke-width: 4.5;
+        filter:
+          drop-shadow(0 0 10px rgba(245, 158, 11, 0.7))
+          drop-shadow(0 0 16px rgba(253, 224, 71, 0.35));
+      }
+
+      .passive-node-circle.keystone-glow {
+        fill: none;
+        stroke: rgba(245, 158, 11, 0.65);
+        stroke-width: 4.5;
+        opacity: 0.95;
+        filter:
+          drop-shadow(0 0 12px rgba(245, 158, 11, 0.85))
+          drop-shadow(0 0 22px rgba(251, 191, 36, 0.55));
       }
 
       .passive-node-circle.skill-unlock-active {
@@ -1742,8 +1754,11 @@
       }
 
       .passive-node-label.keystone {
-        fill: #fde68a;
-        font-weight: 700;
+        fill: #fef3c7;
+        font-weight: 800;
+        text-shadow:
+          0 0 6px rgba(245, 158, 11, 0.7),
+          0 1px 4px rgba(0, 0, 0, 0.7);
       }
 
       .passive-node-label {
@@ -20033,6 +20048,44 @@ function showDamagePopup(
           const svg = document.getElementById("passive-tree-svg");
           if (!svg) return;
           svg.innerHTML = "";
+          const defs = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "defs",
+          );
+          const keystoneGradient = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "radialGradient",
+          );
+          keystoneGradient.setAttribute("id", "keystone-gradient");
+          keystoneGradient.setAttribute("cx", "35%");
+          keystoneGradient.setAttribute("cy", "30%");
+          keystoneGradient.setAttribute("r", "70%");
+          const keystoneStopInner = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "stop",
+          );
+          keystoneStopInner.setAttribute("offset", "0%");
+          keystoneStopInner.setAttribute("stop-color", "#fef3c7");
+          keystoneStopInner.setAttribute("stop-opacity", "0.95");
+          const keystoneStopMid = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "stop",
+          );
+          keystoneStopMid.setAttribute("offset", "45%");
+          keystoneStopMid.setAttribute("stop-color", "#fbbf24");
+          keystoneStopMid.setAttribute("stop-opacity", "0.55");
+          const keystoneStopOuter = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "stop",
+          );
+          keystoneStopOuter.setAttribute("offset", "100%");
+          keystoneStopOuter.setAttribute("stop-color", "#b45309");
+          keystoneStopOuter.setAttribute("stop-opacity", "0.3");
+          keystoneGradient.appendChild(keystoneStopInner);
+          keystoneGradient.appendChild(keystoneStopMid);
+          keystoneGradient.appendChild(keystoneStopOuter);
+          defs.appendChild(keystoneGradient);
+          svg.appendChild(defs);
           renderPassiveTreeSummary();
 
           const nodes = PASSIVE_TREE_NODES.filter(
@@ -20174,6 +20227,19 @@ function showDamagePopup(
               "circle",
             );
             const radius = node.type === "keystone" ? 18 : 12;
+            if (node.type === "keystone") {
+              const glowCircle = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle",
+              );
+              glowCircle.setAttribute("r", radius + 7);
+              glowCircle.classList.add(
+                "passive-node-circle",
+                "keystone-glow",
+              );
+              glowCircle.setAttribute("stroke", "rgba(245, 158, 11, 0.7)");
+              group.appendChild(glowCircle);
+            }
             circle.setAttribute("r", radius);
             circle.classList.add("passive-node-circle");
             if (node.type === "keystone") circle.classList.add("keystone");
@@ -20217,7 +20283,7 @@ function showDamagePopup(
             circle.setAttribute(
               "fill",
               node.type === "keystone"
-                ? "rgba(245, 158, 11, 0.2)"
+                ? "url(#keystone-gradient)"
                 : fillColor,
             );
 
