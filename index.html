@@ -12548,6 +12548,13 @@
 
         PASSIVE_TREE_CLUSTERS_RAW.forEach((cluster) => {
           if (!cluster?.position) return;
+          if (
+            cluster.key === SWORDMAN_PAGE_CORE.key ||
+            cluster.key.startsWith("BLADE_UP_") ||
+            cluster.key.startsWith("BLADE_DOWN_")
+          ) {
+            return;
+          }
           const slug = toClusterSlug(cluster.key);
           const distance = Math.hypot(cluster.position.x, cluster.position.y);
           const scale = 1 + distance / 260;
@@ -12651,13 +12658,7 @@
 
         PASSIVE_TREE_NODES_RAW.push(...PASSIVE_TREE_EXTRA_NODES);
 
-        const SWORDMAN_PAGE_CORE = {
-          key: "BLADE_PAGE_CORE",
-          name: "剣士の基盤",
-          position: { x: 0, y: 0 },
-        };
-
-        const SWORDMAN_ROUTE_GROUPS = [
+        const JOB_PAGE_TEMPLATES = [
           {
             category: "魔法",
             core: {
