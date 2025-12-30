@@ -11957,8 +11957,699 @@
 
         const toClusterSlug = (key) => key.toLowerCase().replace(/_/g, "-");
 
+        const ACTIVE_PASSIVE_PAGE_CLUSTERS = {};
+        const JOB_PAGE_LINKS = [];
+
+        const SWORDMAN_PAGE_CORE = {
+          key: "BLADE_PAGE_CORE",
+          name: "剣士の基盤",
+          position: { x: 0, y: 0 },
+        };
+
+        const SWORDMAN_ROUTE_GROUPS = [
+          {
+            group: "upper",
+            theme: "手数重視の連撃ルート。",
+            routes: [
+              {
+                key: "BLADE_UP_SWIFT",
+                name: "疾風連刃",
+                clusters: [
+                  {
+                    key: "BLADE_UP_SWIFT_1",
+                    name: "疾風の起動",
+                    position: { x: -240, y: -140 },
+                    status: { key: "agi", label: "技量", value: 3 },
+                    coreBonus: { speed: 1.6, critRate: 1.2 },
+                    special: {
+                      name: "連刃の特化",
+                      bonus: { speed: 1.2, critRate: 1 },
+                    },
+                    skillUnlock: {
+                      key: "swiftDiscipline",
+                      type: "passive",
+                      label: "疾風鍛錬",
+                    },
+                    keystone: {
+                      name: "疾風の歯車",
+                      effects: { cooldownMultiplier: 0.9, damageMultiplier: 0.92 },
+                      pros: ["CT短縮+10%"],
+                      cons: ["与ダメージ-8%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_SWIFT_2",
+                    name: "疾風の加速",
+                    position: { x: -320, y: -260 },
+                    status: { key: "agi", label: "技量", value: 3 },
+                    coreBonus: { speed: 2.1, critRate: 1.6 },
+                    special: {
+                      name: "加速の特化",
+                      bonus: { cooldown: 1.2, speed: 1 },
+                    },
+                    skillUnlock: {
+                      key: "swiftMomentum",
+                      type: "passive",
+                      label: "迅刃律動",
+                    },
+                    keystone: {
+                      name: "迅刃の循環",
+                      effects: { attackCountBonus: 1, damageMultiplier: 0.9 },
+                      pros: ["攻撃回数+1"],
+                      cons: ["与ダメージ-10%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_SWIFT_3",
+                    name: "疾風の奔刃",
+                    position: { x: -420, y: -380 },
+                    status: { key: "agi", label: "技量", value: 4 },
+                    coreBonus: { speed: 2.6, critRate: 2 },
+                    special: {
+                      name: "奔刃の特化",
+                      bonus: { attackCountBonus: 1, critRate: 1.2 },
+                    },
+                    skillUnlock: {
+                      key: "swiftTempest",
+                      type: "active",
+                      label: "疾風乱刃",
+                    },
+                    keystone: {
+                      name: "連撃の拍動",
+                      effects: { attackCountBonus: 2, damageTakenMultiplier: 1.2 },
+                      pros: ["攻撃回数+2"],
+                      cons: ["被ダメージ+20%"],
+                    },
+                  },
+                ],
+              },
+              {
+                key: "BLADE_UP_DANCE",
+                name: "連舞剣",
+                clusters: [
+                  {
+                    key: "BLADE_UP_DANCE_1",
+                    name: "連舞の刻",
+                    position: { x: 0, y: -160 },
+                    status: { key: "agi", label: "技量", value: 3 },
+                    coreBonus: { speed: 1.4, critRate: 1.4 },
+                    special: {
+                      name: "連舞の特化",
+                      bonus: { critRate: 1.4, speed: 0.8 },
+                    },
+                    skillUnlock: {
+                      key: "danceDiscipline",
+                      type: "passive",
+                      label: "舞踏鍛錬",
+                    },
+                    keystone: {
+                      name: "舞踏の律",
+                      effects: { cooldownMultiplier: 0.88, mpCostMultiplier: 1.15 },
+                      pros: ["CT短縮+12%"],
+                      cons: ["MP消費+15%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_DANCE_2",
+                    name: "連舞の精度",
+                    position: { x: 0, y: -300 },
+                    status: { key: "agi", label: "技量", value: 4 },
+                    coreBonus: { speed: 1.8, critRate: 2 },
+                    special: {
+                      name: "精度の特化",
+                      bonus: { critDamage: 2, critRate: 1 },
+                    },
+                    skillUnlock: {
+                      key: "comboSense",
+                      type: "passive",
+                      label: "連撃精度",
+                    },
+                    keystone: {
+                      name: "連舞の代償",
+                      effects: { attackCountBonus: 1, damageTakenMultiplier: 1.15 },
+                      pros: ["攻撃回数+1"],
+                      cons: ["被ダメージ+15%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_DANCE_3",
+                    name: "連舞の解放",
+                    position: { x: 0, y: -440 },
+                    status: { key: "agi", label: "技量", value: 4 },
+                    coreBonus: { speed: 2.2, critRate: 2.4 },
+                    special: {
+                      name: "解放の特化",
+                      bonus: { attackCountBonus: 1, critDamage: 2 },
+                    },
+                    skillUnlock: {
+                      key: "danceFlurry",
+                      type: "active",
+                      label: "連舞斬",
+                    },
+                    keystone: {
+                      name: "乱舞の脈動",
+                      effects: { attackCountBonus: 1, mpCostMultiplier: 1.2 },
+                      pros: ["攻撃回数+1"],
+                      cons: ["MP消費+20%"],
+                    },
+                  },
+                ],
+              },
+              {
+                key: "BLADE_UP_RHYTHM",
+                name: "律動連刃",
+                clusters: [
+                  {
+                    key: "BLADE_UP_RHYTHM_1",
+                    name: "律動の足運び",
+                    position: { x: 240, y: -140 },
+                    status: { key: "agi", label: "技量", value: 3 },
+                    coreBonus: { speed: 1.5, evade: 1.2 },
+                    special: {
+                      name: "律動の特化",
+                      bonus: { evade: 1.2, speed: 0.9 },
+                    },
+                    skillUnlock: {
+                      key: "rhythmDiscipline",
+                      type: "passive",
+                      label: "律動鍛錬",
+                    },
+                    keystone: {
+                      name: "律動の呼吸",
+                      effects: { cooldownMultiplier: 0.9, damageTakenMultiplier: 1.1 },
+                      pros: ["CT短縮+10%"],
+                      cons: ["被ダメージ+10%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_RHYTHM_2",
+                    name: "律動の循環",
+                    position: { x: 320, y: -260 },
+                    status: { key: "agi", label: "技量", value: 3 },
+                    coreBonus: { speed: 1.9, evade: 1.6 },
+                    special: {
+                      name: "循環の特化",
+                      bonus: { cooldown: 1.1, evade: 1 },
+                    },
+                    skillUnlock: {
+                      key: "flowRhythm",
+                      type: "passive",
+                      label: "流転循環",
+                    },
+                    keystone: {
+                      name: "流転の盟約",
+                      effects: { mpCostMultiplier: 0.85, damageMultiplier: 0.9 },
+                      pros: ["MP消費-15%"],
+                      cons: ["与ダメージ-10%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_UP_RHYTHM_3",
+                    name: "律動の放射",
+                    position: { x: 420, y: -380 },
+                    status: { key: "agi", label: "技量", value: 4 },
+                    coreBonus: { speed: 2.4, evade: 2 },
+                    special: {
+                      name: "放射の特化",
+                      bonus: { evade: 1.4, speed: 1 },
+                    },
+                    skillUnlock: {
+                      key: "shadowBurst",
+                      type: "active",
+                      label: "影迅乱斬",
+                    },
+                    keystone: {
+                      name: "影迅の契り",
+                      effects: { attackCountBonus: 1, damageTakenMultiplier: 1.2 },
+                      pros: ["攻撃回数+1"],
+                      cons: ["被ダメージ+20%"],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            group: "lower",
+            theme: "一撃重視の重斬ルート。",
+            routes: [
+              {
+                key: "BLADE_DOWN_POWER",
+                name: "剛撃圧壊",
+                clusters: [
+                  {
+                    key: "BLADE_DOWN_POWER_1",
+                    name: "剛撃の芯",
+                    position: { x: -240, y: 140 },
+                    status: { key: "str", label: "筋力", value: 3 },
+                    coreBonus: { physAtk: 10, critDamage: 2 },
+                    special: {
+                      name: "剛撃の特化",
+                      bonus: { physAtk: 6, critDamage: 1 },
+                    },
+                    skillUnlock: {
+                      key: "powerDiscipline",
+                      type: "passive",
+                      label: "剛撃鍛錬",
+                    },
+                    keystone: {
+                      name: "剛力の誓約",
+                      effects: { damageMultiplier: 1.15, cooldownMultiplier: 1.1 },
+                      pros: ["与ダメージ+15%"],
+                      cons: ["CT増加+10%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_POWER_2",
+                    name: "剛撃の震動",
+                    position: { x: -320, y: 260 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 12, physPen: 4 },
+                    special: {
+                      name: "震動の特化",
+                      bonus: { physPen: 2, physAtk: 4 },
+                    },
+                    skillUnlock: {
+                      key: "impactDrive",
+                      type: "passive",
+                      label: "衝撃律動",
+                    },
+                    keystone: {
+                      name: "破砕の重圧",
+                      effects: { damageMultiplier: 1.2, mpCostMultiplier: 1.2 },
+                      pros: ["与ダメージ+20%"],
+                      cons: ["MP消費+20%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_POWER_3",
+                    name: "剛撃の解放",
+                    position: { x: -420, y: 380 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 14, critDamage: 4 },
+                    special: {
+                      name: "解放の特化",
+                      bonus: { critDamage: 3, physAtk: 4 },
+                    },
+                    skillUnlock: {
+                      key: "earthSplitter",
+                      type: "active",
+                      label: "大地割り",
+                    },
+                    keystone: {
+                      name: "圧壊の契り",
+                      effects: { damageMultiplier: 1.25, damageTakenMultiplier: 1.15 },
+                      pros: ["与ダメージ+25%"],
+                      cons: ["被ダメージ+15%"],
+                    },
+                  },
+                ],
+              },
+              {
+                key: "BLADE_DOWN_DRAW",
+                name: "居合一閃",
+                clusters: [
+                  {
+                    key: "BLADE_DOWN_DRAW_1",
+                    name: "居合の静",
+                    position: { x: 0, y: 160 },
+                    status: { key: "str", label: "筋力", value: 3 },
+                    coreBonus: { physAtk: 9, critRate: 1.2 },
+                    special: {
+                      name: "居合の特化",
+                      bonus: { critRate: 1.2, physAtk: 4 },
+                    },
+                    skillUnlock: {
+                      key: "drawDiscipline",
+                      type: "passive",
+                      label: "居合鍛錬",
+                    },
+                    keystone: {
+                      name: "静寂の誓い",
+                      effects: { damageMultiplier: 1.1, cooldownMultiplier: 1.15 },
+                      pros: ["与ダメージ+10%"],
+                      cons: ["CT増加+15%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_DRAW_2",
+                    name: "居合の極",
+                    position: { x: 0, y: 300 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 11, critDamage: 4 },
+                    special: {
+                      name: "極の特化",
+                      bonus: { critDamage: 3, physAtk: 3 },
+                    },
+                    skillUnlock: {
+                      key: "singleFocus",
+                      type: "passive",
+                      label: "一点集中",
+                    },
+                    keystone: {
+                      name: "抜刀の代償",
+                      effects: { damageMultiplier: 1.15, damageTakenMultiplier: 1.2 },
+                      pros: ["与ダメージ+15%"],
+                      cons: ["被ダメージ+20%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_DRAW_3",
+                    name: "居合の閃光",
+                    position: { x: 0, y: 440 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 13, critDamage: 5 },
+                    special: {
+                      name: "閃光の特化",
+                      bonus: { critDamage: 4, physAtk: 3 },
+                    },
+                    skillUnlock: {
+                      key: "drawFlash",
+                      type: "active",
+                      label: "天断一閃",
+                    },
+                    keystone: {
+                      name: "一閃の盟約",
+                      effects: { damageMultiplier: 1.3, mpCostMultiplier: 1.15 },
+                      pros: ["与ダメージ+30%"],
+                      cons: ["MP消費+15%"],
+                    },
+                  },
+                ],
+              },
+              {
+                key: "BLADE_DOWN_BREAK",
+                name: "断鋼破断",
+                clusters: [
+                  {
+                    key: "BLADE_DOWN_BREAK_1",
+                    name: "破断の前兆",
+                    position: { x: 240, y: 140 },
+                    status: { key: "str", label: "筋力", value: 3 },
+                    coreBonus: { physAtk: 9, physPen: 4 },
+                    special: {
+                      name: "破断の特化",
+                      bonus: { physPen: 2, physAtk: 3 },
+                    },
+                    skillUnlock: {
+                      key: "breakDiscipline",
+                      type: "passive",
+                      label: "破断鍛錬",
+                    },
+                    keystone: {
+                      name: "断鋼の誓約",
+                      effects: { damageMultiplier: 1.18, cooldownMultiplier: 1.1 },
+                      pros: ["与ダメージ+18%"],
+                      cons: ["CT増加+10%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_BREAK_2",
+                    name: "破断の圧力",
+                    position: { x: 320, y: 260 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 11, physPen: 5 },
+                    special: {
+                      name: "圧力の特化",
+                      bonus: { physPen: 3, physAtk: 3 },
+                    },
+                    skillUnlock: {
+                      key: "armorBreak",
+                      type: "passive",
+                      label: "破甲浸透",
+                    },
+                    keystone: {
+                      name: "破甲の盟約",
+                      effects: { damageMultiplier: 1.18, damageTakenMultiplier: 1.15 },
+                      pros: ["与ダメージ+18%"],
+                      cons: ["被ダメージ+15%"],
+                    },
+                  },
+                  {
+                    key: "BLADE_DOWN_BREAK_3",
+                    name: "破断の極刃",
+                    position: { x: 420, y: 380 },
+                    status: { key: "str", label: "筋力", value: 4 },
+                    coreBonus: { physAtk: 12, physPen: 6 },
+                    special: {
+                      name: "極刃の特化",
+                      bonus: { physPen: 3, physAtk: 4 },
+                    },
+                    skillUnlock: {
+                      key: "breakerStrike",
+                      type: "active",
+                      label: "破甲断",
+                    },
+                    keystone: {
+                      name: "断罪の契り",
+                      effects: { damageMultiplier: 1.22, damageTakenMultiplier: 1.12 },
+                      pros: ["与ダメージ+22%"],
+                      cons: ["被ダメージ+12%"],
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ];
+
+        const swordmanCoreId = `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-core`;
+
+        PASSIVE_TREE_CLUSTERS_RAW.push({
+          key: SWORDMAN_PAGE_CORE.key,
+          name: SWORDMAN_PAGE_CORE.name,
+          description: "剣士の基礎と上下一体の連携軸。",
+          core: swordmanCoreId,
+          position: SWORDMAN_PAGE_CORE.position,
+          nodes: [
+            swordmanCoreId,
+            `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-str`,
+            `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-agi`,
+            `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-vit`,
+            `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-passive`,
+          ],
+        });
+
+        PASSIVE_TREE_NODES_RAW.push(
+          {
+            id: swordmanCoreId,
+            name: "剣士の中核",
+            type: "passive",
+            cluster: SWORDMAN_PAGE_CORE.key,
+            position: SWORDMAN_PAGE_CORE.position,
+            description: "上下の剣筋を繋ぐ基盤。",
+            effects: {
+              bonus: { hp: 28, mp: 12, physAtk: 6, speed: 1 },
+            },
+          },
+          {
+            id: `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-str`,
+            name: "剣士筋力",
+            type: "status",
+            cluster: SWORDMAN_PAGE_CORE.key,
+            position: {
+              x: SWORDMAN_PAGE_CORE.position.x - 90,
+              y: SWORDMAN_PAGE_CORE.position.y - 60,
+            },
+            description: "筋力+2",
+            effects: { primary: { str: 2 } },
+          },
+          {
+            id: `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-agi`,
+            name: "剣士技量",
+            type: "status",
+            cluster: SWORDMAN_PAGE_CORE.key,
+            position: {
+              x: SWORDMAN_PAGE_CORE.position.x + 90,
+              y: SWORDMAN_PAGE_CORE.position.y - 60,
+            },
+            description: "技量+2",
+            effects: { primary: { agi: 2 } },
+          },
+          {
+            id: `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-vit`,
+            name: "剣士活力",
+            type: "status",
+            cluster: SWORDMAN_PAGE_CORE.key,
+            position: {
+              x: SWORDMAN_PAGE_CORE.position.x - 90,
+              y: SWORDMAN_PAGE_CORE.position.y + 60,
+            },
+            description: "活力+2",
+            effects: { primary: { vit: 2 } },
+          },
+          {
+            id: `${SWORDMAN_PAGE_CORE.key.toLowerCase()}-passive`,
+            name: "剣士基礎鍛錬",
+            type: "passive",
+            cluster: SWORDMAN_PAGE_CORE.key,
+            position: {
+              x: SWORDMAN_PAGE_CORE.position.x + 90,
+              y: SWORDMAN_PAGE_CORE.position.y + 60,
+            },
+            description: "剣士の基礎体力と速度を整える。",
+            effects: { bonus: { speed: 1.2, damageReduction: 1 } },
+          },
+        );
+
+        PASSIVE_CLUSTER_CATEGORY_MAP[SWORDMAN_PAGE_CORE.key] = "剣士";
+        ACTIVE_PASSIVE_PAGE_CLUSTERS["剣士"] = ["START", SWORDMAN_PAGE_CORE.key];
+        JOB_PAGE_LINKS.push([PASSIVE_TREE_START_NODE_ID, swordmanCoreId]);
+
+        const swordmanRouteFinals = { upper: [], lower: [] };
+
+        const addSwordmanCluster = (cluster) => {
+          const slug = toClusterSlug(cluster.key);
+          const coreId = `${slug}-core`;
+          const statusId = `${slug}-status`;
+          const specialId = `${slug}-special`;
+          const skillId = `${slug}-unlock`;
+          const keystoneId = `${slug}-keystone`;
+
+          const distance = Math.hypot(cluster.position.x, cluster.position.y);
+          const dirX = distance ? cluster.position.x / distance : 0;
+          const dirY = distance ? cluster.position.y / distance : -1;
+          const perpX = -dirY;
+          const perpY = dirX;
+          const statusPos = {
+            x: cluster.position.x - dirX * 70 + perpX * 45,
+            y: cluster.position.y - dirY * 70 + perpY * 45,
+          };
+          const skillPos = {
+            x: cluster.position.x + dirX * 90 + perpX * 55,
+            y: cluster.position.y + dirY * 90 + perpY * 55,
+          };
+          const specialPos = {
+            x: cluster.position.x + dirX * 130 - perpX * 55,
+            y: cluster.position.y + dirY * 130 - perpY * 55,
+          };
+          const keystonePos = {
+            x: cluster.position.x + dirX * 200,
+            y: cluster.position.y + dirY * 200,
+          };
+
+          PASSIVE_TREE_CLUSTERS_RAW.push({
+            key: cluster.key,
+            name: cluster.name,
+            description: cluster.name,
+            core: coreId,
+            position: cluster.position,
+            nodes: [coreId, statusId, specialId, skillId, keystoneId],
+          });
+
+          PASSIVE_TREE_NODES_RAW.push(
+            {
+              id: coreId,
+              name: `${cluster.name}の芯`,
+              type: "passive",
+              cluster: cluster.key,
+              position: cluster.position,
+              description: cluster.name,
+              effects: { bonus: cluster.coreBonus },
+            },
+            {
+              id: statusId,
+              name: `${cluster.name}${cluster.status.label}`,
+              type: "status",
+              cluster: cluster.key,
+              position: statusPos,
+              description: `${cluster.status.label}+${cluster.status.value}`,
+              effects: { primary: { [cluster.status.key]: cluster.status.value } },
+            },
+            {
+              id: specialId,
+              name: `${cluster.special.name}`,
+              type: "passive",
+              cluster: cluster.key,
+              position: specialPos,
+              description: "特化ノード",
+              effects: { bonus: cluster.special.bonus },
+            },
+            {
+              id: skillId,
+              name: `${cluster.skillUnlock.label}解放`,
+              type: "skillUnlock",
+              cluster: cluster.key,
+              position: skillPos,
+              description:
+                cluster.skillUnlock.type === "active"
+                  ? "専用アクティブが使用可能になる。"
+                  : "専用パッシブが使用可能になる。",
+              unlocks: {
+                skills: [cluster.skillUnlock.key],
+                skillTypes: [cluster.skillUnlock.type],
+              },
+            },
+            {
+              id: keystoneId,
+              name: `キーストーン: ${cluster.keystone.name}`,
+              type: "keystone",
+              cluster: cluster.key,
+              position: keystonePos,
+              description: `${cluster.keystone.pros.join(" / ")} / ${cluster.keystone.cons.join(" / ")}`,
+              keystone: cluster.keystone,
+            },
+          );
+
+          PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] = "剣士";
+          ACTIVE_PASSIVE_PAGE_CLUSTERS["剣士"].push(cluster.key);
+
+          return { coreId, skillId };
+        };
+
+        SWORDMAN_ROUTE_GROUPS.forEach((group) => {
+          group.routes.forEach((route) => {
+            const clusterIds = route.clusters.map((cluster) =>
+              addSwordmanCluster(cluster),
+            );
+            if (clusterIds.length) {
+              JOB_PAGE_LINKS.push([swordmanCoreId, clusterIds[0].coreId]);
+              for (let i = 0; i < clusterIds.length - 1; i += 1) {
+                JOB_PAGE_LINKS.push([
+                  clusterIds[i].coreId,
+                  clusterIds[i + 1].coreId,
+                ]);
+              }
+              const finalCoreId = clusterIds[clusterIds.length - 1].coreId;
+              swordmanRouteFinals[group.group].push(finalCoreId);
+            }
+          });
+        });
+
+        if (swordmanRouteFinals.upper.length >= 2) {
+          JOB_PAGE_LINKS.push([
+            swordmanRouteFinals.upper[0],
+            swordmanRouteFinals.upper[1],
+          ]);
+        }
+        if (swordmanRouteFinals.upper.length >= 3) {
+          JOB_PAGE_LINKS.push([
+            swordmanRouteFinals.upper[1],
+            swordmanRouteFinals.upper[2],
+          ]);
+        }
+        if (swordmanRouteFinals.lower.length >= 2) {
+          JOB_PAGE_LINKS.push([
+            swordmanRouteFinals.lower[0],
+            swordmanRouteFinals.lower[1],
+          ]);
+        }
+        if (swordmanRouteFinals.lower.length >= 3) {
+          JOB_PAGE_LINKS.push([
+            swordmanRouteFinals.lower[1],
+            swordmanRouteFinals.lower[2],
+          ]);
+        }
+
         PASSIVE_TREE_CLUSTERS_RAW.forEach((cluster) => {
           if (!cluster?.position) return;
+          if (
+            cluster.key === SWORDMAN_PAGE_CORE.key ||
+            cluster.key.startsWith("BLADE_UP_") ||
+            cluster.key.startsWith("BLADE_DOWN_")
+          ) {
+            return;
+          }
           const slug = toClusterSlug(cluster.key);
           const distance = Math.hypot(cluster.position.x, cluster.position.y);
           const scale = 1 + distance / 260;
@@ -12063,92 +12754,6 @@
         PASSIVE_TREE_NODES_RAW.push(...PASSIVE_TREE_EXTRA_NODES);
 
         const JOB_PAGE_TEMPLATES = [
-          {
-            category: "剣士",
-            core: {
-              key: "BLADE_PAGE_CORE",
-              name: "剣士の基盤",
-              position: { x: 0, y: 0 },
-            },
-            branches: [
-              {
-                key: "BLADE_NORTH",
-                name: "疾風剣",
-                offset: { x: 0, y: -320 },
-                theme: "風の剣撃で機動力を伸ばす。",
-                status: { key: "agi", label: "技量" },
-                passive: {
-                  name: "疾風巡り",
-                  bonus: { speed: 2.8, critRate: 2 },
-                },
-                activeSkill: "windCleave",
-                passiveSkill: "windDiscipline",
-                keystone: {
-                  name: "疾風の極意",
-                  effects: { cooldownMultiplier: 0.8, damageMultiplier: 0.85 },
-                  pros: ["CT短縮+20%"],
-                  cons: ["与ダメージ-15%"],
-                },
-              },
-              {
-                key: "BLADE_EAST",
-                name: "轟撃剣",
-                offset: { x: 320, y: 0 },
-                theme: "重量級の一撃で押し切る。",
-                status: { key: "str", label: "筋力" },
-                passive: {
-                  name: "剛力の昂り",
-                  bonus: { physAtk: 12, critDamage: 6 },
-                },
-                activeSkill: "impactCleave",
-                passiveSkill: "impactDiscipline",
-                keystone: {
-                  name: "轟撃の誓い",
-                  effects: { damageMultiplier: 1.2, cooldownMultiplier: 1.2 },
-                  pros: ["与ダメージ+20%"],
-                  cons: ["CT増加+20%"],
-                },
-              },
-              {
-                key: "BLADE_SOUTH",
-                name: "剣気循環",
-                offset: { x: 0, y: 320 },
-                theme: "連携で味方を支える。",
-                status: { key: "vit", label: "活力" },
-                passive: {
-                  name: "連携の波動",
-                  bonus: { hp: 30, damageReduction: 2 },
-                },
-                activeSkill: "rallyBlade",
-                passiveSkill: "rallyDiscipline",
-                keystone: {
-                  name: "士気の盟約",
-                  effects: { attackCountBonus: 1, damageMultiplier: 0.85 },
-                  pros: ["攻撃回数+1"],
-                  cons: ["与ダメージ-15%"],
-                },
-              },
-              {
-                key: "BLADE_WEST",
-                name: "鉄壁剣",
-                offset: { x: -320, y: 0 },
-                theme: "耐久を高めて前線を維持する。",
-                status: { key: "vit", label: "活力" },
-                passive: {
-                  name: "不動の守勢",
-                  bonus: { physDef: 10, damageReduction: 3 },
-                },
-                activeSkill: "ironBulwark",
-                passiveSkill: "ironDiscipline",
-                keystone: {
-                  name: "鉄壁の誓約",
-                  effects: { damageTakenMultiplier: 0.8, mpCostMultiplier: 1.25 },
-                  pros: ["被ダメージ-20%"],
-                  cons: ["MP消費+25%"],
-                },
-              },
-            ],
-          },
           {
             category: "魔法",
             core: {
@@ -12408,9 +13013,6 @@
             ],
           },
         ];
-
-        const ACTIVE_PASSIVE_PAGE_CLUSTERS = {};
-        const JOB_PAGE_LINKS = [];
 
         JOB_PAGE_TEMPLATES.forEach((job) => {
           const coreKey = job.core.key;
@@ -14402,88 +15004,172 @@
 
         const JOB_SKILL_TEMPLATES = [
           {
-            key: "windCleave",
-            name: "風裂斬",
-            desc: "風刃で連撃を刻む。",
+            key: "swiftTempest",
+            name: "疾風乱刃",
+            desc: "高速の連撃で切り刻む。",
             category: "剣士",
             type: "active",
             unlockLevel: 8,
-            scaling: { physAtk: 1.1, critRate: 0.2 },
-            activation: { cooldown: 4, mpCost: 6, effect: "風刃の連撃" },
+            scaling: { physAtk: 1.1, speed: 0.5, critRate: 0.2 },
+            activation: { cooldown: 4, mpCost: 6, effect: "高速の3連撃" },
           },
           {
-            key: "windDiscipline",
-            name: "風剣修練",
-            desc: "風の動きで手数を伸ばす。",
-            category: "剣士",
-            type: "passive",
-            unlockLevel: 6,
-            scaling: { speed: 0.5, critRate: 0.15 },
-          },
-          {
-            key: "impactCleave",
-            name: "轟撃一閃",
-            desc: "重い一撃で突破する。",
+            key: "danceFlurry",
+            name: "連舞斬",
+            desc: "舞うような剣筋で連撃を繋ぐ。",
             category: "剣士",
             type: "active",
             unlockLevel: 10,
-            scaling: { physAtk: 1.4, critDamage: 0.4 },
-            activation: { cooldown: 6, mpCost: 8, effect: "重撃の一閃" },
+            scaling: { physAtk: 1, critRate: 0.3, critDamage: 0.2 },
+            activation: { cooldown: 4, mpCost: 7, effect: "連舞の連撃" },
           },
           {
-            key: "impactDiscipline",
-            name: "剛撃修練",
-            desc: "重量剣の扱いを極める。",
-            category: "剣士",
-            type: "passive",
-            unlockLevel: 9,
-            scaling: { physAtk: 1.2, physPen: 0.4 },
-          },
-          {
-            key: "rallyBlade",
-            name: "士気号令",
-            desc: "戦線を鼓舞して戦う。",
+            key: "shadowBurst",
+            name: "影迅乱斬",
+            desc: "影を纏い連撃で斬り裂く。",
             category: "剣士",
             type: "active",
             unlockLevel: 12,
-            scaling: { hp: 0.9, damageReduction: 0.2 },
-            activation: {
-              cooldown: 5,
-              mpCost: 7,
-              effect: "味方の防御と行動を支援",
-            },
+            scaling: { physAtk: 1.05, speed: 0.6, evade: 0.3 },
+            activation: { cooldown: 5, mpCost: 7, effect: "残像を伴う連撃" },
           },
           {
-            key: "rallyDiscipline",
-            name: "士気練成",
-            desc: "支援に必要な耐久を鍛える。",
-            category: "剣士",
-            type: "passive",
-            unlockLevel: 11,
-            scaling: { hp: 1.2, damageReduction: 0.2 },
-          },
-          {
-            key: "ironBulwark",
-            name: "鉄壁の構え",
-            desc: "防御を固めて反撃に備える。",
+            key: "earthSplitter",
+            name: "大地割り",
+            desc: "重い一撃で地面を断ち割る。",
             category: "剣士",
             type: "active",
             unlockLevel: 14,
-            scaling: { physDef: 1.1, damageReduction: 0.3 },
-            activation: {
-              cooldown: 6,
-              mpCost: 8,
-              effect: "防御特化の構え",
-            },
+            scaling: { physAtk: 1.5, critDamage: 0.4 },
+            activation: { cooldown: 6, mpCost: 9, effect: "高倍率の一撃" },
           },
           {
-            key: "ironDiscipline",
-            name: "鉄壁修練",
-            desc: "守勢の姿勢を維持する。",
+            key: "drawFlash",
+            name: "天断一閃",
+            desc: "一閃に力を集めて断ち切る。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 16,
+            scaling: { physAtk: 1.6, critRate: 0.25, critDamage: 0.5 },
+            activation: { cooldown: 7, mpCost: 10, effect: "居合の大技" },
+          },
+          {
+            key: "breakerStrike",
+            name: "破甲断",
+            desc: "装甲を貫いて断ち切る重撃。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 18,
+            scaling: { physAtk: 1.3, physPen: 0.8 },
+            activation: { cooldown: 6, mpCost: 9, effect: "防御貫通の重撃" },
+          },
+          {
+            key: "swiftDiscipline",
+            name: "疾風鍛錬",
+            desc: "刃の速度と手数を磨く。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 6,
+            scaling: { speed: 0.6, critRate: 0.15 },
+          },
+          {
+            key: "swiftMomentum",
+            name: "迅刃律動",
+            desc: "連撃のリズムで加速する。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { speed: 0.5, cooldown: 0.25 },
+          },
+          {
+            key: "danceDiscipline",
+            name: "舞踏鍛錬",
+            desc: "連舞の姿勢で精度を高める。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 8,
+            scaling: { critRate: 0.2, speed: 0.3 },
+          },
+          {
+            key: "comboSense",
+            name: "連撃精度",
+            desc: "連撃の手応えを逃さない。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { physAtk: 0.6, critDamage: 0.25 },
+          },
+          {
+            key: "rhythmDiscipline",
+            name: "律動鍛錬",
+            desc: "足運びと回避の律動を整える。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 10,
+            scaling: { speed: 0.4, evade: 0.4 },
+          },
+          {
+            key: "flowRhythm",
+            name: "流転循環",
+            desc: "連続動作の間合いを整える。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { cooldown: 0.35, critRate: 0.12 },
+          },
+          {
+            key: "powerDiscipline",
+            name: "剛撃鍛錬",
+            desc: "重い一撃の威力を磨く。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 12,
+            scaling: { physAtk: 1.2, critDamage: 0.2 },
+          },
+          {
+            key: "impactDrive",
+            name: "衝撃律動",
+            desc: "衝撃の伝達を安定させる。",
             category: "剣士",
             type: "passive",
             unlockLevel: 13,
-            scaling: { physDef: 1, block: 0.4 },
+            scaling: { physAtk: 1, physPen: 0.4 },
+          },
+          {
+            key: "drawDiscipline",
+            name: "居合鍛錬",
+            desc: "抜刀の精度を高める。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 14,
+            scaling: { critRate: 0.18, physAtk: 0.7 },
+          },
+          {
+            key: "singleFocus",
+            name: "一点集中",
+            desc: "一撃に力を集約する。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 15,
+            scaling: { critDamage: 0.35, physPen: 0.3 },
+          },
+          {
+            key: "breakDiscipline",
+            name: "破断鍛錬",
+            desc: "装甲を断ち切る精度を磨く。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 16,
+            scaling: { physPen: 0.6, physAtk: 0.8 },
+          },
+          {
+            key: "armorBreak",
+            name: "破甲浸透",
+            desc: "防御の隙を見極める。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 17,
+            scaling: { physPen: 0.8, critRate: 0.12 },
           },
           {
             key: "stellarBurst",
@@ -14892,14 +15578,24 @@
           galeDanceAlt: "blade-edge-unlock",
           chronoBoostEx: "arcane-edge-unlock",
           chronoBoostAlt: "arcane-edge-unlock",
-          windCleave: "blade_north-unlock-active",
-          windDiscipline: "blade_north-unlock-passive",
-          impactCleave: "blade_east-unlock-active",
-          impactDiscipline: "blade_east-unlock-passive",
-          rallyBlade: "blade_south-unlock-active",
-          rallyDiscipline: "blade_south-unlock-passive",
-          ironBulwark: "blade_west-unlock-active",
-          ironDiscipline: "blade_west-unlock-passive",
+          swiftDiscipline: "blade-up-swift-1-unlock",
+          swiftMomentum: "blade-up-swift-2-unlock",
+          swiftTempest: "blade-up-swift-3-unlock",
+          danceDiscipline: "blade-up-dance-1-unlock",
+          comboSense: "blade-up-dance-2-unlock",
+          danceFlurry: "blade-up-dance-3-unlock",
+          rhythmDiscipline: "blade-up-rhythm-1-unlock",
+          flowRhythm: "blade-up-rhythm-2-unlock",
+          shadowBurst: "blade-up-rhythm-3-unlock",
+          powerDiscipline: "blade-down-power-1-unlock",
+          impactDrive: "blade-down-power-2-unlock",
+          earthSplitter: "blade-down-power-3-unlock",
+          drawDiscipline: "blade-down-draw-1-unlock",
+          singleFocus: "blade-down-draw-2-unlock",
+          drawFlash: "blade-down-draw-3-unlock",
+          breakDiscipline: "blade-down-break-1-unlock",
+          armorBreak: "blade-down-break-2-unlock",
+          breakerStrike: "blade-down-break-3-unlock",
           stellarBurst: "arcane_north-unlock-active",
           stellarDiscipline: "arcane_north-unlock-passive",
           chronoShift: "arcane_east-unlock-active",
