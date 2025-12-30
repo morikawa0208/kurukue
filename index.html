@@ -10732,7 +10732,7 @@
             name: "基礎筋力",
             type: "status",
             cluster: "START",
-            position: { x: -70, y: -40 },
+            position: { x: -90, y: 0 },
             description: "筋力+2",
             effects: { primary: { str: 2 } },
           },
@@ -10741,7 +10741,7 @@
             name: "基礎知恵",
             type: "status",
             cluster: "START",
-            position: { x: 70, y: -40 },
+            position: { x: 90, y: 0 },
             description: "知恵+2",
             effects: { primary: { int: 2 } },
           },
@@ -10750,7 +10750,7 @@
             name: "基礎活力",
             type: "status",
             cluster: "START",
-            position: { x: -70, y: 40 },
+            position: { x: -55, y: 75 },
             description: "活力+2",
             effects: { primary: { vit: 2 } },
           },
@@ -10759,7 +10759,7 @@
             name: "基礎技量",
             type: "status",
             cluster: "START",
-            position: { x: 70, y: 40 },
+            position: { x: 55, y: 75 },
             description: "技量+2",
             effects: { primary: { agi: 2 } },
           },
@@ -10768,7 +10768,7 @@
             name: "基礎幸運",
             type: "status",
             cluster: "START",
-            position: { x: 0, y: 90 },
+            position: { x: 0, y: -90 },
             description: "幸運+1",
             effects: { primary: { luck: 1 } },
           },
@@ -12504,6 +12504,9 @@
           const statusId = `${slug}-status`;
           const specialId = `${slug}-special`;
           const skillId = `${slug}-unlock`;
+          const pathOneId = `${slug}-path-1`;
+          const pathTwoId = `${slug}-path-2`;
+          const pathThreeId = `${slug}-path-3`;
           const keystoneId = `${slug}-keystone`;
 
           const distance = Math.hypot(cluster.position.x, cluster.position.y);
@@ -12512,20 +12515,32 @@
           const perpX = -dirY;
           const perpY = dirX;
           const statusPos = {
-            x: cluster.position.x - dirX * 70 + perpX * 45,
-            y: cluster.position.y - dirY * 70 + perpY * 45,
+            x: cluster.position.x - dirX * 60 + perpX * 45,
+            y: cluster.position.y - dirY * 60 + perpY * 45,
           };
           const skillPos = {
-            x: cluster.position.x + dirX * 90 + perpX * 55,
-            y: cluster.position.y + dirY * 90 + perpY * 55,
+            x: cluster.position.x + dirX * 60 + perpX * 55,
+            y: cluster.position.y + dirY * 60 + perpY * 55,
           };
           const specialPos = {
-            x: cluster.position.x + dirX * 130 - perpX * 55,
-            y: cluster.position.y + dirY * 130 - perpY * 55,
+            x: cluster.position.x + dirX * 90 - perpX * 55,
+            y: cluster.position.y + dirY * 90 - perpY * 55,
+          };
+          const pathOnePos = {
+            x: cluster.position.x + dirX * 80,
+            y: cluster.position.y + dirY * 80,
+          };
+          const pathTwoPos = {
+            x: cluster.position.x + dirX * 130,
+            y: cluster.position.y + dirY * 130,
+          };
+          const pathThreePos = {
+            x: cluster.position.x + dirX * 180,
+            y: cluster.position.y + dirY * 180,
           };
           const keystonePos = {
-            x: cluster.position.x + dirX * 200,
-            y: cluster.position.y + dirY * 200,
+            x: cluster.position.x + dirX * 240,
+            y: cluster.position.y + dirY * 240,
           };
 
           PASSIVE_TREE_CLUSTERS_RAW.push({
@@ -12534,7 +12549,16 @@
             description: cluster.name,
             core: coreId,
             position: cluster.position,
-            nodes: [coreId, statusId, specialId, skillId, keystoneId],
+            nodes: [
+              coreId,
+              statusId,
+              specialId,
+              skillId,
+              pathOneId,
+              pathTwoId,
+              pathThreeId,
+              keystoneId,
+            ],
           });
 
           PASSIVE_TREE_NODES_RAW.push(
@@ -12555,6 +12579,7 @@
               position: statusPos,
               description: `${cluster.status.label}+${cluster.status.value}`,
               effects: { primary: { [cluster.status.key]: cluster.status.value } },
+              linkFrom: coreId,
             },
             {
               id: specialId,
@@ -12564,6 +12589,7 @@
               position: specialPos,
               description: "特化ノード",
               effects: { bonus: cluster.special.bonus },
+              linkFrom: statusId,
             },
             {
               id: skillId,
@@ -12579,6 +12605,37 @@
                 skills: [cluster.skillUnlock.key],
                 skillTypes: [cluster.skillUnlock.type],
               },
+              linkFrom: specialId,
+            },
+            {
+              id: pathOneId,
+              name: "鍛錬の道・壱",
+              type: "passive",
+              cluster: cluster.key,
+              position: pathOnePos,
+              description: "キーストーンへの道",
+              effects: { bonus: { physAtk: 2 } },
+              linkFrom: coreId,
+            },
+            {
+              id: pathTwoId,
+              name: "鍛錬の道・弐",
+              type: "passive",
+              cluster: cluster.key,
+              position: pathTwoPos,
+              description: "キーストーンへの道",
+              effects: { bonus: { physAtk: 2 } },
+              linkFrom: pathOneId,
+            },
+            {
+              id: pathThreeId,
+              name: "鍛錬の道・参",
+              type: "passive",
+              cluster: cluster.key,
+              position: pathThreePos,
+              description: "キーストーンへの道",
+              effects: { bonus: { physAtk: 2 } },
+              linkFrom: pathTwoId,
             },
             {
               id: keystoneId,
@@ -12588,6 +12645,7 @@
               position: keystonePos,
               description: `${cluster.keystone.pros.join(" / ")} / ${cluster.keystone.cons.join(" / ")}`,
               keystone: cluster.keystone,
+              linkFrom: pathThreeId,
             },
           );
 
@@ -13268,6 +13326,13 @@
         const PASSIVE_TREE_CLUSTER_LINKS_BASE = [
           ["start-core", "blade-core"],
           ["start-core", "arcane-core"],
+          ["start-luck", "start-int"],
+          ["start-int", "start-agi"],
+          ["start-agi", "start-vit"],
+          ["start-vit", "start-str"],
+          ["start-str", "start-luck"],
+          ["start-int", "start-vit"],
+          ["start-str", "start-agi"],
           ["blade-core", "holy-core"],
           ["blade-core", "blood-core"],
           ["arcane-core", "holy-core"],
@@ -13306,9 +13371,16 @@
             if (!from || !to) return;
             edges.push([from, to]);
           };
+          const nodeLookup = PASSIVE_TREE_NODES.reduce((map, node) => {
+            map[node.id] = node;
+            return map;
+          }, {});
           PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
             (cluster.nodes || []).forEach((nodeId) => {
-              if (nodeId !== cluster.core) addEdge(cluster.core, nodeId);
+              if (nodeId === cluster.core) return;
+              const node = nodeLookup[nodeId];
+              const from = node?.linkFrom || cluster.core;
+              addEdge(from, nodeId);
             });
           });
           PASSIVE_TREE_CLUSTER_LINKS.forEach(([from, to]) => addEdge(from, to));
