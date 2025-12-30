@@ -1699,6 +1699,17 @@
         stroke: rgba(96, 165, 250, 0.6);
       }
 
+      .passive-zone-layer {
+        pointer-events: none;
+      }
+
+      .passive-zone {
+        fill: var(--zone-fill, rgba(148, 163, 184, 0.08));
+        stroke: var(--zone-stroke, rgba(148, 163, 184, 0.25));
+        stroke-width: 2;
+        stroke-dasharray: 8 8;
+      }
+
       .passive-node-circle {
         fill: rgba(30, 41, 59, 0.9);
         stroke: rgba(148, 163, 184, 0.4);
@@ -11567,6 +11578,21 @@
           ABYSS: "聖職",
         };
 
+        const PASSIVE_ZONE_COLORS_BY_CATEGORY = {
+          剣士: { fill: "rgba(52, 211, 153, 0.08)", stroke: "rgba(52, 211, 153, 0.3)" },
+          魔法: { fill: "rgba(96, 165, 250, 0.08)", stroke: "rgba(96, 165, 250, 0.3)" },
+          聖職: { fill: "rgba(251, 191, 36, 0.08)", stroke: "rgba(251, 191, 36, 0.3)" },
+          吸血: { fill: "rgba(248, 113, 113, 0.08)", stroke: "rgba(248, 113, 113, 0.3)" },
+        };
+        const DEFAULT_PASSIVE_ZONE_COLOR = {
+          fill: "rgba(148, 163, 184, 0.08)",
+          stroke: "rgba(148, 163, 184, 0.25)",
+        };
+
+        const getPassiveZoneColors = (category) =>
+          PASSIVE_ZONE_COLORS_BY_CATEGORY[category] ||
+          DEFAULT_PASSIVE_ZONE_COLOR;
+
         const OUTER_KEYSTONE_TEMPLATES = [
           {
             key: "PHOENIX",
@@ -11760,6 +11786,8 @@
             name: template.name,
             description: template.description,
             core: coreId,
+            category: template.category,
+            zoneColor: getPassiveZoneColors(template.category),
             position,
             nodes: [
               coreId,
@@ -11878,6 +11906,18 @@
           ]);
         });
 
+        PASSIVE_TREE_CLUSTERS_RAW.forEach((cluster) => {
+          if (!cluster) return;
+          const category =
+            cluster.category ||
+            PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] ||
+            "剣士";
+          cluster.category = category;
+          if (!cluster.zoneColor) {
+            cluster.zoneColor = getPassiveZoneColors(category);
+          }
+        });
+
         const EXTRA_NODE_OFFSETS = [
           { x: -120, y: -60 },
           { x: 120, y: -60 },
@@ -11956,7 +11996,9 @@
           const statusValue = Math.max(2, Math.round(2 + scale * 1.6));
           const hpBonus = Math.round(18 * scale);
           const category =
-            PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] || "剣士";
+            cluster.category ||
+            PASSIVE_CLUSTER_CATEGORY_MAP[cluster.key] ||
+            "剣士";
 
           if (!PASSIVE_TREE_EXTRA_NODE_MAP[cluster.key]) {
             PASSIVE_TREE_EXTRA_NODE_MAP[cluster.key] = [];
@@ -20026,6 +20068,52 @@ function showDamagePopup(
           };
           updatePassiveTreeViewBox(svg);
           initializePassiveTreeInteractions();
+
+          const zoneLayer = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g",
+          );
+          zoneLayer.classList.add("passive-zone-layer");
+          svg.appendChild(zoneLayer);
+
+          const zonePadding = 70;
+          PASSIVE_TREE_CLUSTERS.forEach((cluster) => {
+            const clusterNodes = (cluster.nodes || [])
+              .map((nodeId) => scaledPositions.get(nodeId))
+              .filter(Boolean);
+            if (!clusterNodes.length) return;
+            const zoneMinX = Math.min(...clusterNodes.map((pos) => pos.x));
+            const zoneMaxX = Math.max(...clusterNodes.map((pos) => pos.x));
+            const zoneMinY = Math.min(...clusterNodes.map((pos) => pos.y));
+            const zoneMaxY = Math.max(...clusterNodes.map((pos) => pos.y));
+            const rect = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "rect",
+            );
+            rect.setAttribute("x", zoneMinX - zonePadding);
+            rect.setAttribute("y", zoneMinY - zonePadding);
+            rect.setAttribute(
+              "width",
+              zoneMaxX - zoneMinX + zonePadding * 2,
+            );
+            rect.setAttribute(
+              "height",
+              zoneMaxY - zoneMinY + zonePadding * 2,
+            );
+            rect.setAttribute("rx", 70);
+            rect.setAttribute("ry", 70);
+            rect.classList.add("passive-zone");
+            const zoneColors = cluster.zoneColor || DEFAULT_PASSIVE_ZONE_COLOR;
+            rect.style.setProperty(
+              "--zone-fill",
+              zoneColors.fill || DEFAULT_PASSIVE_ZONE_COLOR.fill,
+            );
+            rect.style.setProperty(
+              "--zone-stroke",
+              zoneColors.stroke || DEFAULT_PASSIVE_ZONE_COLOR.stroke,
+            );
+            zoneLayer.appendChild(rect);
+          });
 
           PASSIVE_TREE_CONNECTIONS.forEach(([from, to]) => {
             const fromPos = scaledPositions.get(from);
