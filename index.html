@@ -3102,6 +3102,175 @@
         color: var(--muted);
         font-size: 12px;
       }
+
+      .passive-tree-panel {
+        display: grid;
+        gap: 10px;
+      }
+
+      .passive-tree-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .passive-tree-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .passive-tree-legend .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 999px;
+        padding: 4px 8px;
+      }
+
+      .passive-tree-legend .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent-2);
+        box-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
+      }
+
+      .passive-tree-legend .legend-dot.status {
+        background: #a3e635;
+        box-shadow: 0 0 8px rgba(163, 230, 53, 0.6);
+      }
+
+      .passive-tree-legend .legend-dot.passive {
+        background: #fbbf24;
+        box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+      }
+
+      .passive-tree-legend .legend-dot.skill {
+        background: #38bdf8;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+      }
+
+      .passive-tree-legend .legend-dot.keystone {
+        background: #f472b6;
+        box-shadow: 0 0 10px rgba(244, 114, 182, 0.7);
+      }
+
+      .passive-tree-canvas {
+        background: radial-gradient(
+            circle at 50% 50%,
+            rgba(52, 211, 153, 0.08),
+            transparent 55%
+          ),
+          rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 14px;
+        padding: 10px;
+        display: grid;
+        place-items: center;
+        min-height: 360px;
+        overflow: hidden;
+      }
+
+      .passive-tree-svg {
+        width: 100%;
+        height: auto;
+        max-height: 380px;
+      }
+
+      .passive-tree-svg .cluster-ring {
+        fill: rgba(15, 23, 42, 0.4);
+        stroke: rgba(148, 163, 184, 0.16);
+        stroke-width: 1.2;
+      }
+
+      .passive-tree-svg .edge {
+        stroke: rgba(148, 163, 184, 0.45);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+      }
+
+      .passive-tree-node {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .passive-tree-node:hover {
+        transform: scale(1.08);
+      }
+
+      .passive-tree-node circle {
+        stroke: rgba(15, 23, 42, 0.9);
+        stroke-width: 2;
+      }
+
+      .passive-tree-node.start circle {
+        fill: #34d399;
+        filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.7));
+      }
+
+      .passive-tree-node.status circle {
+        fill: #a3e635;
+      }
+
+      .passive-tree-node.passive circle {
+        fill: #fbbf24;
+      }
+
+      .passive-tree-node.skill circle {
+        fill: #38bdf8;
+      }
+
+      .passive-tree-node.keystone circle {
+        fill: #f472b6;
+        filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.7));
+      }
+
+      .passive-tree-node.selected circle {
+        stroke: #fef08a;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.9));
+      }
+
+      .passive-tree-label {
+        font-size: 11px;
+        fill: #e5e7eb;
+        text-anchor: middle;
+        pointer-events: none;
+      }
+
+      .passive-tree-info {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 12px;
+        padding: 10px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .passive-tree-info .info-title {
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        font-size: 12px;
+        color: #a5f3fc;
+      }
+
+      .passive-tree-info .info-name {
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .passive-tree-info .info-type {
+        font-size: 12px;
+        color: var(--muted);
+      }
     </style>
   </head>
   <body>
@@ -3622,6 +3791,38 @@
             class="help-panel"
             style="margin-bottom: 6px"
           ></div>
+          <div id="passive-tree-view" class="passive-tree-panel hidden">
+            <div class="passive-tree-toolbar">
+              <div class="section-title" style="margin: 0">
+                職業別パッシブツリー
+              </div>
+              <div class="passive-tree-legend">
+                <div class="legend-item">
+                  <span class="legend-dot status"></span>
+                  ステータス
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot passive"></span>
+                  パッシブ
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot skill"></span>
+                  スキル解放
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot keystone"></span>
+                  キーストーン
+                </div>
+              </div>
+            </div>
+            <div id="passive-tree-canvas" class="passive-tree-canvas"></div>
+            <div id="passive-tree-info" class="passive-tree-info">
+              <div class="info-title">ノード情報</div>
+              <div class="info-name">ノードを選択してください</div>
+              <div class="info-type">タイプ: --</div>
+              <div class="info-effect subtle">効果: --</div>
+            </div>
+          </div>
           <div id="skills" style="margin-top: 6px"></div>
         </div>
       </div>
@@ -12054,6 +12255,943 @@
           return acc;
         }, {});
 
+        const PASSIVE_TREE_TEMPLATE = {
+          viewBox: { minX: -340, minY: -340, width: 680, height: 680 },
+          clusters: [
+            { id: "core", x: 0, y: 0, radius: 110 },
+            { id: "up-mid", x: 0, y: -150, radius: 90 },
+            { id: "up-outer", x: 0, y: -260, radius: 90 },
+            { id: "right-mid", x: 150, y: 0, radius: 90 },
+            { id: "right-outer", x: 260, y: 0, radius: 90 },
+            { id: "down-mid", x: 0, y: 150, radius: 90 },
+            { id: "down-outer", x: 0, y: 260, radius: 90 },
+            { id: "left-mid", x: -150, y: 0, radius: 90 },
+            { id: "left-outer", x: -260, y: 0, radius: 90 },
+          ],
+          nodes: [
+            {
+              id: "start",
+              x: 0,
+              y: 0,
+              type: "start",
+              cluster: "core",
+              role: "start",
+            },
+            {
+              id: "core-1",
+              x: 0,
+              y: -60,
+              type: "status",
+              cluster: "core",
+              role: "core",
+              index: 0,
+            },
+            {
+              id: "core-2",
+              x: 60,
+              y: 0,
+              type: "status",
+              cluster: "core",
+              role: "core",
+              index: 1,
+            },
+            {
+              id: "core-3",
+              x: 0,
+              y: 60,
+              type: "status",
+              cluster: "core",
+              role: "core",
+              index: 2,
+            },
+            {
+              id: "core-4",
+              x: -60,
+              y: 0,
+              type: "status",
+              cluster: "core",
+              role: "core",
+              index: 3,
+            },
+            {
+              id: "core-5",
+              x: 42,
+              y: -42,
+              type: "passive",
+              cluster: "core",
+              role: "core",
+              index: 4,
+            },
+            {
+              id: "core-6",
+              x: -42,
+              y: 42,
+              type: "passive",
+              cluster: "core",
+              role: "core",
+              index: 5,
+            },
+            {
+              id: "up-entry",
+              x: 0,
+              y: -100,
+              type: "status",
+              cluster: "core",
+              role: "entry",
+              direction: "up",
+            },
+            {
+              id: "up-mid",
+              x: 0,
+              y: -150,
+              type: "skill",
+              cluster: "up-mid",
+              role: "skill",
+              direction: "up",
+            },
+            {
+              id: "up-mid-1",
+              x: -40,
+              y: -150,
+              type: "status",
+              cluster: "up-mid",
+              direction: "up",
+              index: 0,
+            },
+            {
+              id: "up-mid-2",
+              x: 40,
+              y: -150,
+              type: "status",
+              cluster: "up-mid",
+              direction: "up",
+              index: 1,
+            },
+            {
+              id: "up-mid-3",
+              x: 0,
+              y: -190,
+              type: "passive",
+              cluster: "up-mid",
+              direction: "up",
+              index: 2,
+            },
+            {
+              id: "up-mid-4",
+              x: -25,
+              y: -190,
+              type: "passive",
+              cluster: "up-mid",
+              direction: "up",
+              index: 3,
+            },
+            {
+              id: "up-mid-5",
+              x: 25,
+              y: -190,
+              type: "status",
+              cluster: "up-mid",
+              direction: "up",
+              index: 4,
+            },
+            {
+              id: "up-outer",
+              x: 0,
+              y: -260,
+              type: "keystone",
+              cluster: "up-outer",
+              role: "keystone",
+              direction: "up",
+            },
+            {
+              id: "up-outer-1",
+              x: -40,
+              y: -260,
+              type: "passive",
+              cluster: "up-outer",
+              direction: "up",
+              index: 5,
+            },
+            {
+              id: "up-outer-2",
+              x: 40,
+              y: -260,
+              type: "passive",
+              cluster: "up-outer",
+              direction: "up",
+              index: 6,
+            },
+            {
+              id: "up-outer-3",
+              x: 0,
+              y: -300,
+              type: "status",
+              cluster: "up-outer",
+              direction: "up",
+              index: 7,
+            },
+            {
+              id: "up-outer-4",
+              x: -25,
+              y: -300,
+              type: "passive",
+              cluster: "up-outer",
+              direction: "up",
+              index: 8,
+            },
+            {
+              id: "up-outer-5",
+              x: 25,
+              y: -300,
+              type: "status",
+              cluster: "up-outer",
+              direction: "up",
+              index: 9,
+            },
+            {
+              id: "right-entry",
+              x: 100,
+              y: 0,
+              type: "status",
+              cluster: "core",
+              role: "entry",
+              direction: "right",
+            },
+            {
+              id: "right-mid",
+              x: 150,
+              y: 0,
+              type: "skill",
+              cluster: "right-mid",
+              role: "skill",
+              direction: "right",
+            },
+            {
+              id: "right-mid-1",
+              x: 150,
+              y: -40,
+              type: "status",
+              cluster: "right-mid",
+              direction: "right",
+              index: 0,
+            },
+            {
+              id: "right-mid-2",
+              x: 150,
+              y: 40,
+              type: "status",
+              cluster: "right-mid",
+              direction: "right",
+              index: 1,
+            },
+            {
+              id: "right-mid-3",
+              x: 190,
+              y: 0,
+              type: "passive",
+              cluster: "right-mid",
+              direction: "right",
+              index: 2,
+            },
+            {
+              id: "right-mid-4",
+              x: 190,
+              y: -25,
+              type: "passive",
+              cluster: "right-mid",
+              direction: "right",
+              index: 3,
+            },
+            {
+              id: "right-mid-5",
+              x: 190,
+              y: 25,
+              type: "status",
+              cluster: "right-mid",
+              direction: "right",
+              index: 4,
+            },
+            {
+              id: "right-outer",
+              x: 260,
+              y: 0,
+              type: "keystone",
+              cluster: "right-outer",
+              role: "keystone",
+              direction: "right",
+            },
+            {
+              id: "right-outer-1",
+              x: 260,
+              y: -40,
+              type: "passive",
+              cluster: "right-outer",
+              direction: "right",
+              index: 5,
+            },
+            {
+              id: "right-outer-2",
+              x: 260,
+              y: 40,
+              type: "passive",
+              cluster: "right-outer",
+              direction: "right",
+              index: 6,
+            },
+            {
+              id: "right-outer-3",
+              x: 300,
+              y: 0,
+              type: "status",
+              cluster: "right-outer",
+              direction: "right",
+              index: 7,
+            },
+            {
+              id: "right-outer-4",
+              x: 300,
+              y: -25,
+              type: "passive",
+              cluster: "right-outer",
+              direction: "right",
+              index: 8,
+            },
+            {
+              id: "right-outer-5",
+              x: 300,
+              y: 25,
+              type: "status",
+              cluster: "right-outer",
+              direction: "right",
+              index: 9,
+            },
+            {
+              id: "down-entry",
+              x: 0,
+              y: 100,
+              type: "status",
+              cluster: "core",
+              role: "entry",
+              direction: "down",
+            },
+            {
+              id: "down-mid",
+              x: 0,
+              y: 150,
+              type: "skill",
+              cluster: "down-mid",
+              role: "skill",
+              direction: "down",
+            },
+            {
+              id: "down-mid-1",
+              x: -40,
+              y: 150,
+              type: "status",
+              cluster: "down-mid",
+              direction: "down",
+              index: 0,
+            },
+            {
+              id: "down-mid-2",
+              x: 40,
+              y: 150,
+              type: "status",
+              cluster: "down-mid",
+              direction: "down",
+              index: 1,
+            },
+            {
+              id: "down-mid-3",
+              x: 0,
+              y: 190,
+              type: "passive",
+              cluster: "down-mid",
+              direction: "down",
+              index: 2,
+            },
+            {
+              id: "down-mid-4",
+              x: -25,
+              y: 190,
+              type: "passive",
+              cluster: "down-mid",
+              direction: "down",
+              index: 3,
+            },
+            {
+              id: "down-mid-5",
+              x: 25,
+              y: 190,
+              type: "status",
+              cluster: "down-mid",
+              direction: "down",
+              index: 4,
+            },
+            {
+              id: "down-outer",
+              x: 0,
+              y: 260,
+              type: "keystone",
+              cluster: "down-outer",
+              role: "keystone",
+              direction: "down",
+            },
+            {
+              id: "down-outer-1",
+              x: -40,
+              y: 260,
+              type: "passive",
+              cluster: "down-outer",
+              direction: "down",
+              index: 5,
+            },
+            {
+              id: "down-outer-2",
+              x: 40,
+              y: 260,
+              type: "passive",
+              cluster: "down-outer",
+              direction: "down",
+              index: 6,
+            },
+            {
+              id: "down-outer-3",
+              x: 0,
+              y: 300,
+              type: "status",
+              cluster: "down-outer",
+              direction: "down",
+              index: 7,
+            },
+            {
+              id: "down-outer-4",
+              x: -25,
+              y: 300,
+              type: "passive",
+              cluster: "down-outer",
+              direction: "down",
+              index: 8,
+            },
+            {
+              id: "down-outer-5",
+              x: 25,
+              y: 300,
+              type: "status",
+              cluster: "down-outer",
+              direction: "down",
+              index: 9,
+            },
+            {
+              id: "left-entry",
+              x: -100,
+              y: 0,
+              type: "status",
+              cluster: "core",
+              role: "entry",
+              direction: "left",
+            },
+            {
+              id: "left-mid",
+              x: -150,
+              y: 0,
+              type: "skill",
+              cluster: "left-mid",
+              role: "skill",
+              direction: "left",
+            },
+            {
+              id: "left-mid-1",
+              x: -150,
+              y: -40,
+              type: "status",
+              cluster: "left-mid",
+              direction: "left",
+              index: 0,
+            },
+            {
+              id: "left-mid-2",
+              x: -150,
+              y: 40,
+              type: "status",
+              cluster: "left-mid",
+              direction: "left",
+              index: 1,
+            },
+            {
+              id: "left-mid-3",
+              x: -190,
+              y: 0,
+              type: "passive",
+              cluster: "left-mid",
+              direction: "left",
+              index: 2,
+            },
+            {
+              id: "left-mid-4",
+              x: -190,
+              y: -25,
+              type: "passive",
+              cluster: "left-mid",
+              direction: "left",
+              index: 3,
+            },
+            {
+              id: "left-mid-5",
+              x: -190,
+              y: 25,
+              type: "status",
+              cluster: "left-mid",
+              direction: "left",
+              index: 4,
+            },
+            {
+              id: "left-outer",
+              x: -260,
+              y: 0,
+              type: "keystone",
+              cluster: "left-outer",
+              role: "keystone",
+              direction: "left",
+            },
+            {
+              id: "left-outer-1",
+              x: -260,
+              y: -40,
+              type: "passive",
+              cluster: "left-outer",
+              direction: "left",
+              index: 5,
+            },
+            {
+              id: "left-outer-2",
+              x: -260,
+              y: 40,
+              type: "passive",
+              cluster: "left-outer",
+              direction: "left",
+              index: 6,
+            },
+            {
+              id: "left-outer-3",
+              x: -300,
+              y: 0,
+              type: "status",
+              cluster: "left-outer",
+              direction: "left",
+              index: 7,
+            },
+            {
+              id: "left-outer-4",
+              x: -300,
+              y: -25,
+              type: "passive",
+              cluster: "left-outer",
+              direction: "left",
+              index: 8,
+            },
+            {
+              id: "left-outer-5",
+              x: -300,
+              y: 25,
+              type: "status",
+              cluster: "left-outer",
+              direction: "left",
+              index: 9,
+            },
+          ],
+          edges: [
+            ["start", "core-1"],
+            ["start", "core-2"],
+            ["start", "core-3"],
+            ["start", "core-4"],
+            ["start", "core-5"],
+            ["start", "core-6"],
+            ["core-1", "core-2"],
+            ["core-2", "core-3"],
+            ["core-3", "core-4"],
+            ["core-4", "core-1"],
+            ["core-5", "core-2"],
+            ["core-6", "core-4"],
+            ["core-1", "up-entry"],
+            ["core-2", "right-entry"],
+            ["core-3", "down-entry"],
+            ["core-4", "left-entry"],
+            ["up-entry", "up-mid"],
+            ["up-mid", "up-mid-1"],
+            ["up-mid", "up-mid-2"],
+            ["up-mid", "up-mid-3"],
+            ["up-mid", "up-mid-4"],
+            ["up-mid", "up-mid-5"],
+            ["up-mid", "up-outer"],
+            ["up-outer", "up-outer-1"],
+            ["up-outer", "up-outer-2"],
+            ["up-outer", "up-outer-3"],
+            ["up-outer", "up-outer-4"],
+            ["up-outer", "up-outer-5"],
+            ["right-entry", "right-mid"],
+            ["right-mid", "right-mid-1"],
+            ["right-mid", "right-mid-2"],
+            ["right-mid", "right-mid-3"],
+            ["right-mid", "right-mid-4"],
+            ["right-mid", "right-mid-5"],
+            ["right-mid", "right-outer"],
+            ["right-outer", "right-outer-1"],
+            ["right-outer", "right-outer-2"],
+            ["right-outer", "right-outer-3"],
+            ["right-outer", "right-outer-4"],
+            ["right-outer", "right-outer-5"],
+            ["down-entry", "down-mid"],
+            ["down-mid", "down-mid-1"],
+            ["down-mid", "down-mid-2"],
+            ["down-mid", "down-mid-3"],
+            ["down-mid", "down-mid-4"],
+            ["down-mid", "down-mid-5"],
+            ["down-mid", "down-outer"],
+            ["down-outer", "down-outer-1"],
+            ["down-outer", "down-outer-2"],
+            ["down-outer", "down-outer-3"],
+            ["down-outer", "down-outer-4"],
+            ["down-outer", "down-outer-5"],
+            ["left-entry", "left-mid"],
+            ["left-mid", "left-mid-1"],
+            ["left-mid", "left-mid-2"],
+            ["left-mid", "left-mid-3"],
+            ["left-mid", "left-mid-4"],
+            ["left-mid", "left-mid-5"],
+            ["left-mid", "left-outer"],
+            ["left-outer", "left-outer-1"],
+            ["left-outer", "left-outer-2"],
+            ["left-outer", "left-outer-3"],
+            ["left-outer", "left-outer-4"],
+            ["left-outer", "left-outer-5"],
+            ["up-entry", "right-entry"],
+            ["right-mid-2", "down-mid-1"],
+            ["left-outer-2", "up-outer-1"],
+          ],
+        };
+
+        const PASSIVE_TREE_THEMES = {
+          剣士: {
+            start: { name: "剣士の起点", effect: "剣技の基礎を開く" },
+            core: [
+              { name: "基礎腕力", effect: "物理攻撃+ / 命中+ " },
+              { name: "体捌き", effect: "行動速度+ / 回避補助" },
+              { name: "守備姿勢", effect: "被ダメ軽減+ / ブロック" },
+              { name: "戦意", effect: "クリ率+ / 物理貫通+" },
+              { name: "熟練刀身", effect: "物理攻撃+ / CT短縮" },
+              { name: "戦線維持", effect: "HP+ / HP再生" },
+            ],
+            directions: {
+              up: {
+                entryName: "連撃準備",
+                entryEffect: "CT短縮 / 行動速度+",
+                statusName: "迅剣鍛錬",
+                statusEffect: "手数+ / 速度+",
+                passiveName: "回転術式",
+                passiveEffect: "連撃威力+ / 追撃率+",
+                skill: {
+                  name: "解放: 疾風連斬",
+                  effect: "高速連撃スキルを装備可能",
+                },
+                keystone: {
+                  name: "輪舞の極意",
+                  effect: "連撃数+ / 一撃威力- / 連携時強化",
+                },
+              },
+              right: {
+                entryName: "剣技解析",
+                entryEffect: "条件達成で強化付与",
+                statusName: "戦術調整",
+                statusEffect: "条件付き与ダメ+",
+                passiveName: "連動式",
+                passiveEffect: "状態連動で効果上昇",
+                skill: {
+                  name: "解放: 破綻剣",
+                  effect: "条件成立で追加効果を得る剣技",
+                },
+                keystone: {
+                  name: "精密連環",
+                  effect: "条件強化+ / 条件未達時は威力-",
+                },
+              },
+              down: {
+                entryName: "守勢構え",
+                entryEffect: "被ダメ軽減 / 回復補助",
+                statusName: "堅牢鍛錬",
+                statusEffect: "最大HP+ / 防御+",
+                passiveName: "護りの型",
+                passiveEffect: "ブロック+ / 回復補助",
+                skill: {
+                  name: "解放: 鉄壁の護り",
+                  effect: "守備重視のアクティブを装備可能",
+                },
+                keystone: {
+                  name: "不落の旗",
+                  effect: "被ダメ軽減+ / 行動速度-",
+                },
+              },
+              left: {
+                entryName: "背水の覚悟",
+                entryEffect: "代償と引き換えに強化",
+                statusName: "狂戦鍛錬",
+                statusEffect: "与ダメ+ / 防御-",
+                passiveName: "暴走式",
+                passiveEffect: "HP減少時に大幅強化",
+                skill: {
+                  name: "解放: 血盟破刃",
+                  effect: "代償付きの高威力剣技",
+                },
+                keystone: {
+                  name: "血戦の誓い",
+                  effect: "与ダメ大幅+ / 回復量-",
+                },
+              },
+            },
+          },
+          魔法: {
+            start: { name: "魔法の起点", effect: "魔導循環を開く" },
+            core: [
+              { name: "魔力基礎", effect: "魔法攻撃+ / 最大MP+" },
+              { name: "集中", effect: "クリ率+ / CT短縮" },
+              { name: "魔導障壁", effect: "被ダメ軽減+ / バリア" },
+              { name: "詠唱調整", effect: "行動速度+ / 魔法貫通+" },
+              { name: "魔力渦", effect: "魔法攻撃+ / MP再生" },
+              { name: "精神統一", effect: "MP+ / 弱体耐性" },
+            ],
+            directions: {
+              up: {
+                entryName: "詠唱加速",
+                entryEffect: "CT短縮 / 手数強化",
+                statusName: "連呪調整",
+                statusEffect: "行動速度+ / CT短縮",
+                passiveName: "連鎖陣",
+                passiveEffect: "ループ効率+ / 連動強化",
+                skill: {
+                  name: "解放: 瞬唱連弾",
+                  effect: "高速詠唱系の魔法を装備可能",
+                },
+                keystone: {
+                  name: "連唱の星位",
+                  effect: "連唱強化+ / 一発威力-",
+                },
+              },
+              right: {
+                entryName: "条件魔導",
+                entryEffect: "状態連動の魔法強化",
+                statusName: "術式解析",
+                statusEffect: "条件付き魔法威力+",
+                passiveName: "結界干渉",
+                passiveEffect: "状態変化との相互作用+",
+                skill: {
+                  name: "解放: 相克ルーン",
+                  effect: "条件成立で効果が変化する魔法",
+                },
+                keystone: {
+                  name: "精密干渉",
+                  effect: "条件強化+ / 条件未達時効果減",
+                },
+              },
+              down: {
+                entryName: "安定詠唱",
+                entryEffect: "防御支援 / 回復補助",
+                statusName: "護符強化",
+                statusEffect: "最大HP+ / バリア+",
+                passiveName: "安定術式",
+                passiveEffect: "被ダメ軽減+ / MP再生",
+                skill: {
+                  name: "解放: 守護結界",
+                  effect: "耐久支援系魔法を装備可能",
+                },
+                keystone: {
+                  name: "不滅結界",
+                  effect: "被ダメ軽減+ / 攻撃力-",
+                },
+              },
+              left: {
+                entryName: "禁呪の代償",
+                entryEffect: "代償付きの高火力",
+                statusName: "禁呪制御",
+                statusEffect: "魔法威力+ / 防御-",
+                passiveName: "反動増幅",
+                passiveEffect: "代償が大きいほど強化",
+                skill: {
+                  name: "解放: 破滅咆哮",
+                  effect: "代償付きの超火力魔法",
+                },
+                keystone: {
+                  name: "虚無の契約",
+                  effect: "魔法威力大幅+ / HP消費増",
+                },
+              },
+            },
+          },
+          聖職: {
+            start: { name: "聖職の起点", effect: "加護の回路を開く" },
+            core: [
+              { name: "信仰基礎", effect: "最大HP+ / 回復補助" },
+              { name: "加護連携", effect: "行動速度+ / CT短縮" },
+              { name: "聖盾", effect: "被ダメ軽減+ / 防御+" },
+              { name: "祈りの焦点", effect: "クリ率+ / 弱体耐性" },
+              { name: "慈愛", effect: "HP再生+ / バリア" },
+              { name: "祝福維持", effect: "MP+ / 状態耐性" },
+            ],
+            directions: {
+              up: {
+                entryName: "高速祈祷",
+                entryEffect: "CT短縮 / 回転強化",
+                statusName: "迅癒調整",
+                statusEffect: "回復量+ / 手数+",
+                passiveName: "連祷",
+                passiveEffect: "連続回復で強化",
+                skill: {
+                  name: "解放: 祝詞連唱",
+                  effect: "高速回復・支援スキルを装備可能",
+                },
+                keystone: {
+                  name: "輪光の祝福",
+                  effect: "回復量+ / 攻撃力-",
+                },
+              },
+              right: {
+                entryName: "条件祝福",
+                entryEffect: "条件達成で支援強化",
+                statusName: "儀式調整",
+                statusEffect: "条件付き支援効果+",
+                passiveName: "連動祝詞",
+                passiveEffect: "状態変化と連動",
+                skill: {
+                  name: "解放: 盟約の光",
+                  effect: "条件成立で強化される支援",
+                },
+                keystone: {
+                  name: "共鳴儀式",
+                  effect: "条件強化+ / 条件未達時効果減",
+                },
+              },
+              down: {
+                entryName: "守護祈祷",
+                entryEffect: "防御 / 長期戦補助",
+                statusName: "守護鍛錬",
+                statusEffect: "最大HP+ / 被ダメ軽減+",
+                passiveName: "堅守の祈り",
+                passiveEffect: "回復補助+ / 防御+",
+                skill: {
+                  name: "解放: 守護聖域",
+                  effect: "耐久支援スキルを装備可能",
+                },
+                keystone: {
+                  name: "不落の聖域",
+                  effect: "被ダメ軽減大幅+ / 行動速度-",
+                },
+              },
+              left: {
+                entryName: "背徳の誓い",
+                entryEffect: "代償付きの強化",
+                statusName: "背徳鍛錬",
+                statusEffect: "与ダメ+ / 回復量-",
+                passiveName: "禁断の祈り",
+                passiveEffect: "HP減少時に支援強化",
+                skill: {
+                  name: "解放: 贖罪の炎",
+                  effect: "代償付きの高威力聖術",
+                },
+                keystone: {
+                  name: "罪禍の盟約",
+                  effect: "与ダメ大幅+ / 回復量-",
+                },
+              },
+            },
+          },
+          吸血: {
+            start: { name: "吸血の起点", effect: "血の循環を開く" },
+            core: [
+              { name: "血気強化", effect: "最大HP+ / HP吸収" },
+              { name: "血潮操作", effect: "行動速度+ / クリ率+" },
+              { name: "血殻防御", effect: "被ダメ軽減+ / 防御+" },
+              { name: "夜視", effect: "物理貫通+ / 回避補助" },
+              { name: "凝血循環", effect: "HP再生+ / HP吸収+" },
+              { name: "血のしるし", effect: "ドロップ率+ / レア率+" },
+            ],
+            directions: {
+              up: {
+                entryName: "血流加速",
+                entryEffect: "CT短縮 / 手数強化",
+                statusName: "迅血鍛錬",
+                statusEffect: "行動速度+ / 追撃率+",
+                passiveName: "血閃術式",
+                passiveEffect: "連撃強化 / 吸収効率+",
+                skill: {
+                  name: "解放: 血刃の舞",
+                  effect: "高速連撃系の吸血技を装備可能",
+                },
+                keystone: {
+                  name: "紅月輪舞",
+                  effect: "連撃数+ / 吸収量-",
+                },
+              },
+              right: {
+                entryName: "狩猟条件",
+                entryEffect: "条件達成で強化",
+                statusName: "捕食調整",
+                statusEffect: "条件付き与ダメ+",
+                passiveName: "連動牙",
+                passiveEffect: "状態変化で吸収強化",
+                skill: {
+                  name: "解放: 奪心の牙",
+                  effect: "条件成立で強化される吸血技",
+                },
+                keystone: {
+                  name: "渇望連鎖",
+                  effect: "条件強化+ / 条件未達時効果減",
+                },
+              },
+              down: {
+                entryName: "血肉維持",
+                entryEffect: "耐久 / 回復補助",
+                statusName: "不死鍛錬",
+                statusEffect: "最大HP+ / 被ダメ軽減+",
+                passiveName: "血鎧",
+                passiveEffect: "HP再生+ / 防御+",
+                skill: {
+                  name: "解放: 深紅の庇護",
+                  effect: "耐久支援の吸血スキルを装備可能",
+                },
+                keystone: {
+                  name: "不滅の血鎧",
+                  effect: "被ダメ軽減+ / 行動速度-",
+                },
+              },
+              left: {
+                entryName: "背徳吸収",
+                entryEffect: "代償付きで強化",
+                statusName: "狂血鍛錬",
+                statusEffect: "与ダメ+ / 防御-",
+                passiveName: "血宴術式",
+                passiveEffect: "HP減少時に吸収強化",
+                skill: {
+                  name: "解放: 血宴の爪",
+                  effect: "代償付きの高威力吸血技",
+                },
+                keystone: {
+                  name: "紅冥の契約",
+                  effect: "与ダメ大幅+ / 回復量-",
+                },
+              },
+            },
+          },
+        };
+
+        const PASSIVE_NODE_TYPE_LABELS = {
+          start: "スタート",
+          status: "ステータス",
+          passive: "パッシブ",
+          skill: "スキル解放",
+          keystone: "キーストーン",
+        };
+
+        const passiveTreeSelectionByCategory = {};
+
         const skills = SKILL_DEFINITIONS.reduce((acc, skill) => {
           acc[skill.key] = { ...skill, level: 0, max: SKILL_MAX_LEVEL };
           return acc;
@@ -17387,6 +18525,165 @@ function showDamagePopup(
           });
         }
 
+        function getPassiveThemeForCategory(category) {
+          return PASSIVE_TREE_THEMES[category] || PASSIVE_TREE_THEMES.剣士;
+        }
+
+        function getPassiveNodeMeta(category, node) {
+          const theme = getPassiveThemeForCategory(category);
+          if (!node) return { name: "不明", effect: "情報がありません" };
+          if (node.role === "start") return theme.start;
+          if (node.cluster === "core") {
+            return theme.core[node.index] || {
+              name: "基礎ノード",
+              effect: "共通の基礎強化",
+            };
+          }
+          const dirTheme = theme.directions?.[node.direction];
+          if (!dirTheme) {
+            return { name: "不明", effect: "方向データがありません" };
+          }
+          if (node.role === "entry") {
+            return { name: dirTheme.entryName, effect: dirTheme.entryEffect };
+          }
+          if (node.role === "skill") return dirTheme.skill;
+          if (node.role === "keystone") return dirTheme.keystone;
+          if (node.type === "status") {
+            return {
+              name: `${dirTheme.statusName} ${node.index + 1}`,
+              effect: dirTheme.statusEffect,
+            };
+          }
+          return {
+            name: `${dirTheme.passiveName} ${node.index + 1}`,
+            effect: dirTheme.passiveEffect,
+          };
+        }
+
+        function updatePassiveTreeInfo(category, node) {
+          const info = document.getElementById("passive-tree-info");
+          if (!info || !node) return;
+          const nameEl = info.querySelector(".info-name");
+          const typeEl = info.querySelector(".info-type");
+          const effectEl = info.querySelector(".info-effect");
+          const meta = getPassiveNodeMeta(category, node);
+          if (nameEl) nameEl.textContent = meta.name;
+          if (typeEl)
+            typeEl.textContent = `タイプ: ${
+              PASSIVE_NODE_TYPE_LABELS[node.type] || "不明"
+            }`;
+          if (effectEl) effectEl.textContent = `効果: ${meta.effect}`;
+        }
+
+        function renderPassiveTree() {
+          const container = document.getElementById("passive-tree-canvas");
+          if (!container) return;
+          container.innerHTML = "";
+          const category = selectedSkillCategory;
+          const selectionKey = category || "default";
+          const selectedId =
+            passiveTreeSelectionByCategory[selectionKey] || "start";
+
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          svg.setAttribute(
+            "viewBox",
+            `${PASSIVE_TREE_TEMPLATE.viewBox.minX} ${PASSIVE_TREE_TEMPLATE.viewBox.minY} ${PASSIVE_TREE_TEMPLATE.viewBox.width} ${PASSIVE_TREE_TEMPLATE.viewBox.height}`,
+          );
+          svg.setAttribute("class", "passive-tree-svg");
+
+          PASSIVE_TREE_TEMPLATE.clusters.forEach((cluster) => {
+            const ring = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle",
+            );
+            ring.setAttribute("class", "cluster-ring");
+            ring.setAttribute("cx", cluster.x);
+            ring.setAttribute("cy", cluster.y);
+            ring.setAttribute("r", cluster.radius);
+            svg.appendChild(ring);
+          });
+
+          const nodeMap = new Map(
+            PASSIVE_TREE_TEMPLATE.nodes.map((node) => [node.id, node]),
+          );
+
+          PASSIVE_TREE_TEMPLATE.edges.forEach(([from, to]) => {
+            const fromNode = nodeMap.get(from);
+            const toNode = nodeMap.get(to);
+            if (!fromNode || !toNode) return;
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line",
+            );
+            line.setAttribute("class", "edge");
+            line.setAttribute("x1", fromNode.x);
+            line.setAttribute("y1", fromNode.y);
+            line.setAttribute("x2", toNode.x);
+            line.setAttribute("y2", toNode.y);
+            svg.appendChild(line);
+          });
+
+          PASSIVE_TREE_TEMPLATE.nodes.forEach((node) => {
+            const group = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "g",
+            );
+            group.setAttribute(
+              "class",
+              `passive-tree-node ${node.type} ${
+                node.id === selectedId ? "selected" : ""
+              }`,
+            );
+            group.dataset.nodeId = node.id;
+            const circle = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle",
+            );
+            const radius =
+              node.type === "keystone" ? 13 : node.type === "skill" ? 11 : 9;
+            circle.setAttribute("cx", node.x);
+            circle.setAttribute("cy", node.y);
+            circle.setAttribute("r", radius);
+            group.appendChild(circle);
+
+            if (["start", "skill", "keystone"].includes(node.type)) {
+              const label = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text",
+              );
+              label.setAttribute("class", "passive-tree-label");
+              label.setAttribute("x", node.x);
+              label.setAttribute("y", node.y - radius - 6);
+              const meta = getPassiveNodeMeta(category, node);
+              label.textContent = meta.name;
+              svg.appendChild(label);
+            }
+
+            group.addEventListener("click", () => {
+              passiveTreeSelectionByCategory[selectionKey] = node.id;
+              renderPassiveTree();
+              updatePassiveTreeInfo(category, node);
+            });
+
+            const title = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "title",
+            );
+            const meta = getPassiveNodeMeta(category, node);
+            title.textContent = `${meta.name} / ${meta.effect}`;
+            group.appendChild(title);
+
+            svg.appendChild(group);
+          });
+
+          container.appendChild(svg);
+          const selectedNode = nodeMap.get(selectedId) || nodeMap.get("start");
+          if (selectedNode) updatePassiveTreeInfo(category, selectedNode);
+        }
+
         function renderSkillCategoryTabs() {
           const container = document.getElementById("skill-category-tabs");
           if (!container) return;
@@ -17434,6 +18731,7 @@ function showDamagePopup(
           const container = document.getElementById("skills");
           if (!container) return;
           container.innerHTML = "";
+          if (selectedSkillType === "passive") return;
           const step = getSkillAdjustStep();
 
           const section = document.createElement("div");
@@ -17625,11 +18923,25 @@ function showDamagePopup(
           }
         }
 
+        function updateSkillViewVisibility() {
+          const passiveView = document.getElementById("passive-tree-view");
+          const detailList = document.getElementById("skills");
+          const loadout = document.getElementById("active-skill-loadout");
+          const isPassive = selectedSkillType === "passive";
+          if (passiveView) passiveView.classList.toggle("hidden", !isPassive);
+          if (detailList) detailList.style.display = isPassive ? "none" : "";
+          if (loadout) loadout.style.display = isPassive ? "none" : "";
+        }
+
         function renderSkills() {
           updateSkillStepButton();
           renderSkillCategoryTabs();
           renderSkillTypeTabs();
           renderActiveSkillLoadout();
+          updateSkillViewVisibility();
+          if (selectedSkillType === "passive") {
+            renderPassiveTree();
+          }
           renderSkillDetailList();
           renderSkillSummary();
           updateSkillSummaryVisibility();
