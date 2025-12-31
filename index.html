@@ -525,142 +525,6 @@
         display: none;
       }
 
-      .passive-tree-panel {
-        display: grid;
-        gap: 6px;
-        margin-bottom: 8px;
-      }
-
-      .passive-tree-canvas {
-        --bg-color: #01040a;
-        --accent-blue: #3b82f6;
-        --keystone-gold: #fbbf24;
-        --active-red: #f43f5e;
-        --line-inactive: rgba(255, 255, 255, 0.05);
-        width: 100%;
-        height: 320px;
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: var(--bg-color);
-      }
-
-      .passive-tree-canvas svg {
-        cursor: grab;
-        touch-action: none;
-      }
-
-      .passive-tree-canvas svg.dragging {
-        cursor: grabbing;
-      }
-
-      .passive-tree-surface {
-        width: 100%;
-        height: 100%;
-        background:
-          radial-gradient(circle at center, #0a1b35 0%, #01040a 100%),
-          linear-gradient(var(--line-inactive) 1px, transparent 1px),
-          linear-gradient(90deg, var(--line-inactive) 1px, transparent 1px);
-        background-size: 100% 100%, 100px 100px, 100px 100px;
-      }
-
-      #passive-tree-canvas .node {
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-      }
-
-      #passive-tree-canvas .node:hover {
-        filter: brightness(1.6) scale(1.1);
-      }
-
-      #passive-tree-canvas .active-path {
-        stroke: var(--accent-blue);
-        stroke-width: 4.5;
-        filter: drop-shadow(0 0 12px var(--accent-blue));
-        stroke-dasharray: 12;
-        animation: dashflow 1.5s linear infinite;
-      }
-
-      @keyframes dashflow {
-        from {
-          stroke-dashoffset: 24;
-        }
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
-
-      .passive-tree-routes {
-        display: grid;
-        gap: 8px;
-      }
-
-      .passive-route-card {
-        background: rgba(15, 23, 42, 0.65);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 10px;
-        padding: 8px;
-        display: grid;
-        gap: 6px;
-      }
-
-      .passive-route-title {
-        font-weight: 700;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .passive-node-list {
-        display: grid;
-        gap: 4px;
-      }
-
-      .passive-node-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: var(--text);
-        background: rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        border-radius: 8px;
-        padding: 6px 8px;
-      }
-
-      .passive-node-row.locked {
-        opacity: 0.6;
-      }
-
-      .passive-node-row.unlocked {
-        border-color: rgba(52, 211, 153, 0.45);
-        box-shadow: inset 0 0 12px rgba(52, 211, 153, 0.15);
-      }
-
-      .passive-node-info {
-        display: grid;
-        gap: 6px;
-        padding: 8px;
-        border-radius: 10px;
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        background: rgba(15, 23, 42, 0.55);
-      }
-
-      .passive-node-info .info-title {
-        font-weight: 700;
-      }
-
-      .passive-node-info .info-status {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      .passive-node-info .info-actions {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-
       @keyframes dropToastEntrance {
         0% {
           opacity: 0;
@@ -3538,10 +3402,6 @@
               </button>
             </div>
             <div id="secondary-stats" class="stat-grid"></div>
-            <div class="section-title" style="margin: 10px 0 4px">
-              パッシブツリー補正
-            </div>
-            <div id="tree-bonus-summary" class="help-panel"></div>
           </div>
           <div class="primary-fixed">
             <div
@@ -3734,26 +3594,6 @@
             ↺
           </button>
         </div>
-        <div class="card passive-tree-panel">
-          <div class="section-title" style="margin-bottom: 4px">
-            パッシブツリー
-          </div>
-          <div class="subtle" style="margin-bottom: 8px">
-            <span>パッシブP: <span id="passive-points"></span></span>
-            <span>ルートを選択して解放</span>
-          </div>
-          <div id="passive-tree-canvas" class="passive-tree-canvas">
-            <div id="canvas-container" class="passive-tree-surface">
-              <svg id="svg-root" width="100%" height="100%">
-                <g id="viewport">
-                  <g id="links-group"></g>
-                  <g id="nodes-group"></g>
-                </g>
-              </svg>
-            </div>
-          </div>
-          <div id="passive-tree-routes" class="passive-tree-routes"></div>
-        </div>
         <div
           class="inline-buttons"
           style="margin-bottom: 6px; align-items: center"
@@ -3798,7 +3638,7 @@
           <div>
             <div class="section-title" style="margin: 0">全職業スキル一覧</div>
             <div style="font-weight: 700">
-              解放状況と習得状況をまとめて確認
+              取得レベルと習得状況をまとめて確認
             </div>
           </div>
           <button
@@ -10508,6 +10348,10 @@
         const SKILL_MAX_LEVEL = globalThis.SKILL_MAX_LEVEL;
         const ACTIVE_SKILL_SLOT_LIMIT = globalThis.ACTIVE_SKILL_SLOT_LIMIT;
 
+        const ACTIVE_UNLOCK_SCHEDULE = [1, 10, 20, 30, 40];
+        const PASSIVE_UNLOCK_SCHEDULE = [
+          10, 10, 20, 20, 30, 30, 40, 40, 50, 50,
+        ];
         const THRESHOLD_MULTIPLIERS = { 10: 4.2, 30: 6.4, 50: 8.8 };
         const THRESHOLD_FALLBACK_MULTIPLIER = 5.2;
         const SKILL_GROWTH_BASE = 2.36;
@@ -10523,17 +10367,26 @@
           return Number((exponential * curveBoost).toFixed(4));
         }
 
-        function assignSkillUnlockLabels(definitions) {
+        function applyUnlockPattern(definitions) {
+          const tracker = {};
           definitions.forEach((skill) => {
-            if (!skill.unlockNodeId) {
-              skill.unlockLabel = "初期解放";
-              return;
+            const state = tracker[skill.category] || { active: 0, passive: 0 };
+            tracker[skill.category] = state;
+            if (skill.type === "active") {
+              const level =
+                ACTIVE_UNLOCK_SCHEDULE[
+                  Math.min(state.active, ACTIVE_UNLOCK_SCHEDULE.length - 1)
+                ];
+              skill.unlockLevel = level;
+              state.active += 1;
+            } else {
+              const level =
+                PASSIVE_UNLOCK_SCHEDULE[
+                  Math.min(state.passive, PASSIVE_UNLOCK_SCHEDULE.length - 1)
+                ];
+              skill.unlockLevel = level;
+              state.passive += 1;
             }
-            const node = PASSIVE_NODE_MAP?.[skill.unlockNodeId];
-            const label = node
-              ? `${node.label} (${node.category}・${node.section === "upper" ? "上" : "下"})`
-              : "解放ノード";
-            skill.unlockLabel = label;
           });
         }
 
@@ -10604,10 +10457,8 @@
           },
           bonus: createEmptyBonus(),
           baseBonus: createEmptyBonus(),
-          treeBonus: createEmptyBonus(),
           equipmentBonus: createEmptyBonus(),
           equipmentPrimaryBonus: createEmptyPrimaryBonus(),
-          treePrimaryBonus: createEmptyPrimaryBonus(),
           legendaryState: {},
           equipment: {
             head: null,
@@ -10622,8 +10473,6 @@
           gold: 0,
           statPoints: 0,
           skillPoints: 0,
-          passivePoints: 3,
-          passiveNodes: [],
           buffs: { guard: 0, haste: 0, focus: 0 },
           resist: { control: 0, dot: 0, debuff: 0 },
           statuses: [],
@@ -10684,351 +10533,1522 @@
 
         const SKILL_CATEGORIES = ["剣士", "魔法", "聖職", "吸血"];
 
-        const PASSIVE_TREE_CONFIG = {
-          "剣士": {
-            key: "swordsman",
-            upper: {
-              title: "手数重視",
-              focus: "rapid",
-              routes: ["疾風連舞", "連撃協奏", "剣舞乱拍"],
-            },
-            lower: {
-              title: "一撃重視",
-              focus: "heavy",
-              routes: ["居合極意", "断罪粉砕", "渾身断ち"],
-            },
-          },
-          "魔法": {
-            key: "mage",
-            upper: {
-              title: "範囲魔法",
-              focus: "area",
-              routes: ["星爆魔陣", "氷雷環境", "暴風陣式"],
-            },
-            lower: {
-              title: "自己補助 / 連鎖",
-              focus: "chain",
-              routes: ["詠唱強化", "連鎖魔導", "魔力循環"],
-            },
-          },
-          "聖職": {
-            key: "cleric",
-            upper: {
-              title: "防御 / 敵デバフ",
-              focus: "bulwark",
-              routes: ["聖盾誓約", "沈黙鎖", "裁き結界"],
-            },
-            lower: {
-              title: "回復 / 光属性",
-              focus: "radiance",
-              routes: ["聖癒祈祷", "光輝賛歌", "浄化光路"],
-            },
-          },
-          "吸血": {
-            key: "vampire",
-            upper: {
-              title: "HP吸収",
-              focus: "leech",
-              routes: ["血華吸啜", "夜宴渇望", "赤影採血"],
-            },
-            lower: {
-              title: "HPコスト",
-              focus: "blood",
-              routes: ["代価紋章", "狂血解放", "血契暴走"],
-            },
-          },
-        };
-
-        const PASSIVE_FOCUS_PROFILES = {
-          rapid: {
-            activeScaling: { perLevel: { physAtk: 1.05, speed: 0.35, critRate: 0.08 } },
-            passiveScaling: [
-              { perLevel: { speed: 0.28, critRate: 0.12 } },
-              { perLevel: { cooldown: 0.24, critDamage: 0.1 } },
+        const SKILL_DEFINITIONS = [
+          // 剣士（アクティブ）
+          {
+            key: "flurryBlade",
+            name: "連撃斬",
+            desc: "疾風のごとき連撃を叩き込み、手数で圧倒する。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 1,
+            scaling: { perLevel: { physAtk: 1.2, critRate: 0.1 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critRate: 2 },
+                effect: "閾値10: クリ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { speed: 1.5 },
+                effect: "閾値30: 行動速度+1.5",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 10 },
+                effect: "閾値50: クリダメ+10%",
+              },
             ],
-            statNode: { primary: { agi: 1, str: 1 } },
-            passiveNode: { secondary: { speed: 1.6, critRate: 0.9 } },
-            keystone: {
-              bonus: { speed: 6, cooldown: 6, critRate: 3 },
-              penalty: { physAtk: -4, damageReduction: -3 },
+            activation: {
+              cooldown: 4,
+              mpCost: 5,
+              effect: "2連撃を行い、与ダメに吸収を付与",
+              slotCost: 1,
             },
-            activation: { cooldown: 3, mpCost: 4, effect: "連撃で敵を削り続ける" },
           },
-          heavy: {
-            activeScaling: { perLevel: { physAtk: 1.4, critDamage: 0.5, physPen: 0.2 } },
-            passiveScaling: [
-              { perLevel: { physAtk: 1.1, critDamage: 0.25 } },
-              { perLevel: { physPen: 0.35, damageReduction: 0.12 } },
+          {
+            key: "guardStance",
+            name: "守勢構え",
+            desc: "盾と剣を高く掲げ、仲間ごと守る防壁となる。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 3,
+            scaling: { perLevel: { physDef: 0.9, damageReduction: 0.3 } },
+            thresholds: [
+              { level: 10, bonus: { block: 3 }, effect: "閾値10: ブロック+3%" },
+              {
+                level: 30,
+                bonus: { barrier: 12 },
+                effect: "閾値30: バリア+12",
+              },
+              {
+                level: 50,
+                bonus: { damageReduction: 4 },
+                effect: "閾値50: 被ダメ-4%",
+              },
             ],
-            statNode: { primary: { str: 2, vit: 1 } },
-            passiveNode: { secondary: { physAtk: 2.4, critDamage: 1.2 } },
-            keystone: {
-              bonus: { physAtk: 9, critDamage: 10, physPen: 4 },
-              penalty: { speed: -5, cooldown: -4 },
+            activation: {
+              cooldown: 5,
+              mpCost: 6,
+              effect: "次の受けるダメージを大幅軽減し、反撃を準備",
+              slotCost: 1,
             },
-            activation: { cooldown: 5, mpCost: 6, effect: "一撃で防御を割る" },
           },
-          area: {
-            activeScaling: { perLevel: { magAtk: 1.25, mp: 0.6, magPen: 0.2 } },
-            passiveScaling: [
-              { perLevel: { magAtk: 1.0, mp: 0.45 } },
-              { perLevel: { magPen: 0.3, cooldown: 0.2 } },
+          {
+            key: "skyBreaker",
+            name: "裂空突き",
+            desc: "空間を断ち切る勢いで突進し、装甲を切り裂く。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 6,
+            scaling: { perLevel: { physAtk: 1, physPen: 0.5 } },
+            thresholds: [
+              { level: 10, bonus: { speed: 1 }, effect: "閾値10: 行動速度+1" },
+              {
+                level: 30,
+                bonus: { physPen: 6 },
+                effect: "閾値30: 物理貫通+6%",
+              },
+              {
+                level: 50,
+                bonus: { critRate: 3 },
+                effect: "閾値50: クリ率+3%",
+              },
             ],
-            statNode: { primary: { int: 2, agi: 1 } },
-            passiveNode: { secondary: { magAtk: 2.6, mp: 8 } },
-            keystone: {
-              bonus: { magAtk: 10, mp: 30, magPen: 5 },
-              penalty: { cooldown: -6, damageReduction: -4 },
+            activation: {
+              cooldown: 3,
+              mpCost: 4,
+              effect: "突進して防御を無視した一撃",
+              slotCost: 1,
             },
-            activation: { cooldown: 4, mpCost: 7, effect: "広域魔法で敵群を制圧" },
           },
-          chain: {
-            activeScaling: { perLevel: { magAtk: 1.05, cooldown: 0.35, critRate: 0.08 } },
-            passiveScaling: [
-              { perLevel: { cooldown: 0.35, mp: 0.4 } },
-              { perLevel: { magAtk: 0.8, critDamage: 0.18 } },
+          {
+            key: "drawTechnique",
+            name: "居合の極み",
+            desc: "鞘から抜く瞬間に全力を込め、一刀で決める。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 10,
+            scaling: { perLevel: { physAtk: 1.4, critDamage: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critRate: 2 },
+                effect: "閾値10: クリ率+2%",
+              },
+              { level: 30, bonus: { speed: 2 }, effect: "閾値30: 行動速度+2" },
+              {
+                level: 50,
+                bonus: { physPen: 5 },
+                effect: "閾値50: 物理貫通+5%",
+              },
             ],
-            statNode: { primary: { int: 2, luck: 1 } },
-            passiveNode: { secondary: { cooldown: 1.2, magAtk: 1.8 } },
-            keystone: {
-              bonus: { cooldown: 10, magPen: 4, critRate: 2 },
-              penalty: { hp: -30, damageReduction: -3 },
+            activation: {
+              cooldown: 6,
+              mpCost: 7,
+              effect: "初手クリティカル率が大幅上昇する高速斬撃",
+              slotCost: 1,
             },
-            activation: { cooldown: 3, mpCost: 5, effect: "連鎖魔法で連撃を誘発" },
           },
-          bulwark: {
-            activeScaling: { perLevel: { physDef: 0.9, magDef: 0.9, barrier: 0.8 } },
-            passiveScaling: [
-              { perLevel: { physDef: 0.9, magDef: 0.9 } },
-              { perLevel: { block: 0.35, debuffResist: 0.3 } },
+          {
+            key: "galeDance",
+            name: "刃風乱舞",
+            desc: "旋風のように舞い、広範囲を切り刻む。",
+            category: "剣士",
+            type: "active",
+            unlockLevel: 14,
+            scaling: { perLevel: { physAtk: 0.9, speed: 0.4 } },
+            thresholds: [
+              { level: 10, bonus: { block: 2 }, effect: "閾値10: ブロック+2%" },
+              {
+                level: 30,
+                bonus: { cooldown: 2 },
+                effect: "閾値30: CT短縮+2%",
+              },
+              {
+                level: 50,
+                bonus: { damageReduction: 3 },
+                effect: "閾値50: 被ダメ-3%",
+              },
             ],
-            statNode: { primary: { vit: 2, int: 1 } },
-            passiveNode: { secondary: { physDef: 2.1, magDef: 2.1, debuffResist: 1 } },
-            keystone: {
-              bonus: { damageReduction: 8, block: 6, controlResist: 4 },
-              penalty: { speed: -4, critRate: -2 },
+            activation: {
+              cooldown: 4,
+              mpCost: 6,
+              effect: "周囲の敵へ3ヒットの斬撃を放つ",
+              slotCost: 1,
             },
-            activation: { cooldown: 5, mpCost: 6, effect: "防御障壁で敵の攻勢を断つ" },
           },
-          radiance: {
-            activeScaling: { perLevel: { magAtk: 0.9, barrier: 0.9, hpRegen: 0.25 } },
-            passiveScaling: [
-              { perLevel: { hpRegen: 0.4, barrier: 1.1 } },
-              { perLevel: { magAtk: 0.6, damageReduction: 0.18 } },
+          // 剣士（パッシブ）
+          {
+            key: "bladeDiscipline",
+            name: "剣技鍛錬",
+            desc: "基本に忠実な鍛錬で体幹と刃筋を整える。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 1,
+            scaling: { perLevel: { physAtk: 1, speed: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critRate: 2 },
+                effect: "閾値10: クリ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { physPen: 4, speed: 1 },
+                effect: "閾値30: 物理貫通+4%、速度+1",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 8 },
+                effect: "閾値50: クリダメ+8%",
+              },
             ],
-            statNode: { primary: { int: 2, vit: 1 } },
-            passiveNode: { secondary: { hpRegen: 1.1, barrier: 14 } },
-            keystone: {
-              bonus: { hpRegen: 2, barrier: 28, magAtk: 4 },
-              penalty: { physAtk: -4, speed: -2 },
-            },
-            activation: { cooldown: 4, mpCost: 6, effect: "光の祈りで味方を支える" },
           },
-          leech: {
-            activeScaling: { perLevel: { physAtk: 1.05, lifeSteal: 0.35, hpRegen: 0.2 } },
-            passiveScaling: [
-              { perLevel: { lifeSteal: 0.35, hpRegen: 0.3 } },
-              { perLevel: { physAtk: 0.7, critRate: 0.12 } },
+          {
+            key: "ironBody",
+            name: "鉄身",
+            desc: "鍛え抜かれた筋肉で衝撃をいなす。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 2,
+            scaling: { perLevel: { hp: 1.2, physDef: 0.8 } },
+            thresholds: [
+              { level: 10, bonus: { block: 2 }, effect: "閾値10: ブロック+2%" },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              { level: 50, bonus: { hp: 30 }, effect: "閾値50: 最大HP+30" },
             ],
-            statNode: { primary: { str: 2, vit: 1 } },
-            passiveNode: { secondary: { lifeSteal: 1.2, hpRegen: 0.7 } },
-            keystone: {
-              bonus: { lifeSteal: 3, hpRegen: 1.6, critRate: 2 },
-              penalty: { damageReduction: -5, cooldown: -3 },
-            },
-            activation: { cooldown: 4, mpCost: 5, effect: "吸血の刃で回復し続ける" },
           },
-          blood: {
-            activeScaling: { perLevel: { physAtk: 1.3, critDamage: 0.4, hp: -0.4 } },
-            passiveScaling: [
-              { perLevel: { physAtk: 1.1, critRate: 0.18 } },
-              { perLevel: { critDamage: 0.35, physPen: 0.25 } },
+          {
+            key: "battleFocus",
+            name: "戦気集中",
+            desc: "戦闘中の集中を高め、無駄なく力を振るう。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 4,
+            scaling: { perLevel: { speed: 0.3, critRate: 0.15 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { cooldown: 2 },
+                effect: "閾値10: CT短縮+2%",
+              },
+              {
+                level: 30,
+                bonus: { critDamage: 6 },
+                effect: "閾値30: クリダメ+6%",
+              },
+              {
+                level: 50,
+                bonus: { namedRate: 3 },
+                effect: "閾値50: ネームド率+3%",
+              },
             ],
-            statNode: { primary: { str: 2, luck: 1 } },
-            passiveNode: { secondary: { physAtk: 2.4, critRate: 0.8 } },
-            keystone: {
-              bonus: { physAtk: 11, critDamage: 8, speed: 3 },
-              penalty: { hp: -50, damageReduction: -6 },
-            },
-            activation: { cooldown: 4, mpCost: 4, effect: "HP代価で火力を引き出す" },
           },
-        };
+          {
+            key: "riposte",
+            name: "返し刃",
+            desc: "受け流しからの反撃を習熟する。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 5,
+            scaling: { perLevel: { block: 0.3, critDamage: 0.3 } },
+            thresholds: [
+              { level: 10, bonus: { physAtk: 6 }, effect: "閾値10: 物攻+6" },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              {
+                level: 50,
+                bonus: { physPen: 4 },
+                effect: "閾値50: 物理貫通+4%",
+              },
+            ],
+          },
+          {
+            key: "frontlineCommander",
+            name: "前線指揮",
+            desc: "味方を鼓舞し、突撃の号令を飛ばす。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 8,
+            scaling: { perLevel: { hp: 0.8, speed: 0.3 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 3 },
+                effect: "閾値10: ドロップ率+3%",
+              },
+              { level: 30, bonus: { barrier: 6 }, effect: "閾値30: バリア+6" },
+              {
+                level: 50,
+                bonus: { goldChance: 4 },
+                effect: "閾値50: ゴールド率+4%",
+              },
+            ],
+          },
+          {
+            key: "unbreakableWill",
+            name: "不屈の意志",
+            desc: "倒れぬ覚悟が身体能力を押し上げる。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 12,
+            scaling: { perLevel: { damageReduction: 0.25, hpRegen: 0.06 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { controlResist: 3 },
+                effect: "閾値10: 行動阻害耐性+3%",
+              },
+              { level: 30, bonus: { hp: 20 }, effect: "閾値30: 最大HP+20" },
+              {
+                level: 50,
+                bonus: { dotResist: 4 },
+                effect: "閾値50: DoT耐性+4%",
+              },
+            ],
+          },
+          {
+            key: "weaponPolish",
+            name: "武器整備",
+            desc: "刃を磨き、重心を整え、扱いやすさを上げる。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 16,
+            scaling: { perLevel: { physAtk: 0.7, physPen: 0.2 } },
+            thresholds: [
+              { level: 10, bonus: { rarity: 3 }, effect: "閾値10: レア率+3%" },
+              {
+                level: 30,
+                bonus: { critRate: 2 },
+                effect: "閾値30: クリ率+2%",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 5 },
+                effect: "閾値50: クリダメ+5%",
+              },
+            ],
+          },
+          {
+            key: "counterTraining",
+            name: "迎撃訓練",
+            desc: "反撃の姿勢を徹底的に叩き込む。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 20,
+            scaling: { perLevel: { block: 0.4, physAtk: 0.4 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 1 },
+                effect: "閾値10: 被ダメ-1%",
+              },
+              {
+                level: 30,
+                bonus: { physPen: 3 },
+                effect: "閾値30: 物理貫通+3%",
+              },
+              {
+                level: 50,
+                bonus: { cooldown: 2 },
+                effect: "閾値50: CT短縮+2%",
+              },
+            ],
+          },
+          {
+            key: "veteranFootwork",
+            name: "歴戦の足さばき",
+            desc: "戦場で培った踏み込みと離脱。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 24,
+            scaling: { perLevel: { speed: 0.5, damageReduction: 0.15 } },
+            thresholds: [
+              { level: 10, bonus: { magDef: 4 }, effect: "閾値10: 魔防+4" },
+              { level: 30, bonus: { physDef: 4 }, effect: "閾値30: 物防+4" },
+              {
+                level: 50,
+                bonus: { controlResist: 4 },
+                effect: "閾値50: 行動阻害耐性+4%",
+              },
+            ],
+          },
+          {
+            key: "heroicLineage",
+            name: "武名継承",
+            desc: "受け継いだ戦技がさらなる力を引き出す。",
+            category: "剣士",
+            type: "passive",
+            unlockLevel: 28,
+            scaling: { perLevel: { critDamage: 0.5, hp: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { titleChance: 2 },
+                effect: "閾値10: 称号率+2%",
+              },
+              {
+                level: 30,
+                bonus: { dropRate: 4 },
+                effect: "閾値30: ドロップ率+4%",
+              },
+              { level: 50, bonus: { rarity: 4 }, effect: "閾値50: レア率+4%" },
+            ],
+          },
+          // 魔法（アクティブ）
+          {
+            key: "arcaneFlow",
+            name: "魔力循環",
+            desc: "魔力の流れを整え、戦闘継続力を高める。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 1,
+            scaling: { perLevel: { mp: 1, magAtk: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { cooldown: 1 },
+                effect: "閾値10: CT短縮+1%",
+              },
+              {
+                level: 30,
+                bonus: { magPen: 3 },
+                effect: "閾値30: 魔法貫通+3%",
+              },
+              {
+                level: 50,
+                bonus: { rarity: 5, dropRate: 5 },
+                effect: "閾値50: レア/ドロップ率+5%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 3,
+              effect: "MPを即時回復し、次の魔法ダメージ強化",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "frostNova",
+            name: "フロストノヴァ",
+            desc: "冷気を爆ぜさせ、周囲を凍てつかせる。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 4,
+            scaling: { perLevel: { magAtk: 1.1, magPen: 0.3 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { controlResist: 2 },
+                effect: "閾値10: 行動阻害耐性+2%",
+              },
+              {
+                level: 30,
+                bonus: { cooldown: 2 },
+                effect: "閾値30: CT短縮+2%",
+              },
+              {
+                level: 50,
+                bonus: { dotResist: 3 },
+                effect: "閾値50: DoT耐性+3%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 7,
+              effect: "範囲氷ダメ+鈍足付与",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "meteorCall",
+            name: "メテオコール",
+            desc: "星の炎を呼び、敵を焼き払う。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { perLevel: { magAtk: 1.5, critDamage: 0.4 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 2 },
+                effect: "閾値10: ドロップ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { magPen: 5 },
+                effect: "閾値30: 魔法貫通+5%",
+              },
+              {
+                level: 50,
+                bonus: { critRate: 3 },
+                effect: "閾値50: クリ率+3%",
+              },
+            ],
+            activation: {
+              cooldown: 6,
+              mpCost: 10,
+              effect: "高倍率の火球を落とし追加で燃焼",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "runeBarrier",
+            name: "ルーンバリア",
+            desc: "魔法陣で障壁を展開し被害を抑える。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { perLevel: { magDef: 0.9, barrier: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 2 },
+                effect: "閾値10: 被ダメ-2%",
+              },
+              {
+                level: 30,
+                bonus: { hpRegen: 0.25 },
+                effect: "閾値30: HP再生+0.25",
+              },
+              { level: 50, bonus: { block: 2 }, effect: "閾値50: ブロック+2%" },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 6,
+              effect: "数ターンバリアと魔防上昇",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "chronoBoost",
+            name: "クロノブースト",
+            desc: "時間の流れを操り、行動を加速する。",
+            category: "魔法",
+            type: "active",
+            unlockLevel: 16,
+            scaling: { perLevel: { speed: 0.7, cooldown: 0.3 } },
+            thresholds: [
+              { level: 10, bonus: { magAtk: 6 }, effect: "閾値10: 魔攻+6" },
+              {
+                level: 30,
+                bonus: { controlResist: 4 },
+                effect: "閾値30: 行動阻害耐性+4%",
+              },
+              { level: 50, bonus: { rarity: 4 }, effect: "閾値50: レア率+4%" },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 8,
+              effect: "味方全体の速度とCT短縮を付与",
+              slotCost: 1,
+            },
+          },
+          // 魔法（パッシブ）
+          {
+            key: "manaAffinity",
+            name: "マナ適性",
+            desc: "魔力との親和性が高く、扱いやすい。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 1,
+            scaling: { perLevel: { mp: 1.5, magAtk: 0.5 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { cooldown: 1 },
+                effect: "閾値10: CT短縮+1%",
+              },
+              {
+                level: 30,
+                bonus: { magPen: 4 },
+                effect: "閾値30: 魔法貫通+4%",
+              },
+              {
+                level: 50,
+                bonus: { dropRate: 3 },
+                effect: "閾値50: ドロップ率+3%",
+              },
+            ],
+          },
+          {
+            key: "spellcraft",
+            name: "スペルクラフト",
+            desc: "詠唱手順の最適化で魔法効率を上げる。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 3,
+            scaling: { perLevel: { magAtk: 0.8, cooldown: 0.15 } },
+            thresholds: [
+              { level: 10, bonus: { magDef: 3 }, effect: "閾値10: 魔防+3" },
+              { level: 30, bonus: { rarity: 3 }, effect: "閾値30: レア率+3%" },
+              { level: 50, bonus: { magAtk: 15 }, effect: "閾値50: 魔攻+15" },
+            ],
+          },
+          {
+            key: "wisdomOfTomes",
+            name: "古書の叡智",
+            desc: "古代書物から学んだ魔法理論。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 5,
+            scaling: { perLevel: { magAtk: 0.9, mp: 0.8 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { magPen: 3 },
+                effect: "閾値10: 魔法貫通+3%",
+              },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { titleChance: 2 },
+                effect: "閾値50: 称号率+2%",
+              },
+            ],
+          },
+          {
+            key: "manaShielding",
+            name: "マナシールド",
+            desc: "魔力を膜として纏い、被害を抑制。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { perLevel: { magDef: 0.7, barrier: 0.4 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 1 },
+                effect: "閾値10: 被ダメ-1%",
+              },
+              {
+                level: 30,
+                bonus: { hpRegen: 0.2 },
+                effect: "閾値30: HP再生+0.2",
+              },
+              {
+                level: 50,
+                bonus: { dotResist: 4 },
+                effect: "閾値50: DoT耐性+4%",
+              },
+            ],
+          },
+          {
+            key: "coldLogic",
+            name: "冷徹な論理",
+            desc: "合理的判断で無駄を削り、魔力効率を極める。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { perLevel: { cooldown: 0.2, magAtk: 0.4 } },
+            thresholds: [
+              { level: 10, bonus: { mp: 12 }, effect: "閾値10: 最大MP+12" },
+              {
+                level: 30,
+                bonus: { magPen: 4 },
+                effect: "閾値30: 魔法貫通+4%",
+              },
+              { level: 50, bonus: { rarity: 3 }, effect: "閾値50: レア率+3%" },
+            ],
+          },
+          {
+            key: "elementalEcho",
+            name: "元素共鳴",
+            desc: "複数の属性を共鳴させ、威力を底上げ。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { perLevel: { magAtk: 1, critRate: 0.1 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critDamage: 4 },
+                effect: "閾値10: クリダメ+4%",
+              },
+              {
+                level: 30,
+                bonus: { cooldown: 2 },
+                effect: "閾値30: CT短縮+2%",
+              },
+              {
+                level: 50,
+                bonus: { magPen: 5 },
+                effect: "閾値50: 魔法貫通+5%",
+              },
+            ],
+          },
+          {
+            key: "forbiddenStudy",
+            name: "禁書の研究",
+            desc: "危険な魔術にも手を伸ばし、さらなる力を得る。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 17,
+            scaling: { perLevel: { magAtk: 1.1, hpRegen: -0.02 } },
+            thresholds: [
+              { level: 10, bonus: { magAtk: 8 }, effect: "閾値10: 魔攻+8" },
+              {
+                level: 30,
+                bonus: { critRate: 2 },
+                effect: "閾値30: クリ率+2%",
+              },
+              {
+                level: 50,
+                bonus: { titleChance: 2 },
+                effect: "閾値50: 称号率+2%",
+              },
+            ],
+          },
+          {
+            key: "arcaneHaste",
+            name: "魔速歩法",
+            desc: "魔法で脚力を補助し、素早い詠唱を可能にする。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 20,
+            scaling: { perLevel: { speed: 0.5, cooldown: 0.1 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 2 },
+                effect: "閾値10: ドロップ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              { level: 50, bonus: { magDef: 10 }, effect: "閾値50: 魔防+10" },
+            ],
+          },
+          {
+            key: "manaOverflow",
+            name: "魔力溢出",
+            desc: "溢れる魔力が放射状に影響を与える。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 23,
+            scaling: { perLevel: { mp: 1.2, magAtk: 0.6 } },
+            thresholds: [
+              { level: 10, bonus: { rarity: 2 }, effect: "閾値10: レア率+2%" },
+              {
+                level: 30,
+                bonus: { magPen: 4 },
+                effect: "閾値30: 魔法貫通+4%",
+              },
+              { level: 50, bonus: { magAtk: 12 }, effect: "閾値50: 魔攻+12" },
+            ],
+          },
+          {
+            key: "astralSight",
+            name: "星界の視野",
+            desc: "星々の位置を読み、運命を見通す。",
+            category: "魔法",
+            type: "passive",
+            unlockLevel: 26,
+            scaling: { perLevel: { critRate: 0.2, dropRate: 0.2 } },
+            thresholds: [
+              { level: 10, bonus: { rarity: 3 }, effect: "閾値10: レア率+3%" },
+              {
+                level: 30,
+                bonus: { goldChance: 4 },
+                effect: "閾値30: ゴールド率+4%",
+              },
+              {
+                level: 50,
+                bonus: { titleChance: 3 },
+                effect: "閾値50: 称号率+3%",
+              },
+            ],
+          },
+          // 聖職（アクティブ）
+          {
+            key: "sacredWard",
+            name: "聖域の守護",
+            desc: "祈りの加護で味方を包み、防御を高める。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 1,
+            scaling: { perLevel: { hp: 1.4, magDef: 0.6, hpRegen: 0.04 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 2 },
+                effect: "閾値10: 被ダメ-2%",
+              },
+              { level: 30, bonus: { barrier: 8 }, effect: "閾値30: バリア+8" },
+              {
+                level: 50,
+                bonus: { controlResist: 6 },
+                effect: "閾値50: 行動阻害耐性+6%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 6,
+              effect: "味方全体にバリアと回復を付与",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "holySmite",
+            name: "ホーリースマイト",
+            desc: "聖光の杭で敵を撃ち抜く。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 4,
+            scaling: { perLevel: { magAtk: 1.2, critDamage: 0.3 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { magPen: 3 },
+                effect: "閾値10: 魔法貫通+3%",
+              },
+              {
+                level: 30,
+                bonus: { cooldown: 2 },
+                effect: "閾値30: CT短縮+2%",
+              },
+              {
+                level: 50,
+                bonus: { dropRate: 3 },
+                effect: "閾値50: ドロップ率+3%",
+              },
+            ],
+            activation: {
+              cooldown: 3,
+              mpCost: 5,
+              effect: "聖属性ダメ+浄化",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "benediction",
+            name: "祝福の祈り",
+            desc: "神への祈りで味方の再生力を高める。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { perLevel: { hpRegen: 0.2, hp: 1 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 1 },
+                effect: "閾値10: 被ダメ-1%",
+              },
+              {
+                level: 30,
+                bonus: { barrier: 10 },
+                effect: "閾値30: バリア+10",
+              },
+              {
+                level: 50,
+                bonus: { controlResist: 5 },
+                effect: "閾値50: 行動阻害耐性+5%",
+              },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 7,
+              effect: "徐々に回復する再生と軽減付与",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "aegisChant",
+            name: "庇護の詠唱",
+            desc: "詠唱により守護の壁を展開する。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { perLevel: { magDef: 0.8, block: 0.25 } },
+            thresholds: [
+              { level: 10, bonus: { hp: 16 }, effect: "閾値10: 最大HP+16" },
+              {
+                level: 30,
+                bonus: { magPen: 2 },
+                effect: "閾値30: 魔法貫通+2%",
+              },
+              {
+                level: 50,
+                bonus: { damageReduction: 3 },
+                effect: "閾値50: 被ダメ-3%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 6,
+              effect: "味方にバリアとブロック強化",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "judgmentRay",
+            name: "裁きの光",
+            desc: "罪を照らす光の柱を降ろす。",
+            category: "聖職",
+            type: "active",
+            unlockLevel: 16,
+            scaling: { perLevel: { magAtk: 1.3, critRate: 0.15 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critDamage: 5 },
+                effect: "閾値10: クリダメ+5%",
+              },
+              {
+                level: 30,
+                bonus: { magPen: 4 },
+                effect: "閾値30: 魔法貫通+4%",
+              },
+              { level: 50, bonus: { rarity: 3 }, effect: "閾値50: レア率+3%" },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 9,
+              effect: "高威力の光ダメ+弱体解除",
+              slotCost: 1,
+            },
+          },
+          // 聖職（パッシブ）
+          {
+            key: "faith",
+            name: "揺るがぬ信仰",
+            desc: "信仰心が己を支え、魔力を安定させる。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 1,
+            scaling: { perLevel: { hp: 1.1, magDef: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { hpRegen: 0.2 },
+                effect: "閾値10: HP再生+0.2",
+              },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              { level: 50, bonus: { barrier: 8 }, effect: "閾値50: バリア+8" },
+            ],
+          },
+          {
+            key: "divineSense",
+            name: "聖感知",
+            desc: "邪悪を察知し、即座に祓う準備を整える。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 3,
+            scaling: { perLevel: { controlResist: 0.25, magAtk: 0.4 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dotResist: 3 },
+                effect: "閾値10: DoT耐性+3%",
+              },
+              { level: 30, bonus: { rarity: 2 }, effect: "閾値30: レア率+2%" },
+              { level: 50, bonus: { magAtk: 10 }, effect: "閾値50: 魔攻+10" },
+            ],
+          },
+          {
+            key: "healingHands",
+            name: "癒しの手",
+            desc: "癒やしの力を込め、回復効率を上げる。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 5,
+            scaling: { perLevel: { hpRegen: 0.25, hp: 0.8 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 2 },
+                effect: "閾値10: ドロップ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              {
+                level: 50,
+                bonus: { barrier: 10 },
+                effect: "閾値50: バリア+10",
+              },
+            ],
+          },
+          {
+            key: "guardianChoir",
+            name: "守護の聖歌",
+            desc: "歌声が味方の士気を高める。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 7,
+            scaling: { perLevel: { hp: 0.9, speed: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { controlResist: 3 },
+                effect: "閾値10: 行動阻害耐性+3%",
+              },
+              {
+                level: 30,
+                bonus: { hpRegen: 0.3 },
+                effect: "閾値30: HP再生+0.3",
+              },
+              {
+                level: 50,
+                bonus: { dropRate: 3 },
+                effect: "閾値50: ドロップ率+3%",
+              },
+            ],
+          },
+          {
+            key: "benison",
+            name: "恵みの加護",
+            desc: "小さな奇跡を重ね、運命を味方にする。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { perLevel: { rarity: 0.2, dropRate: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { goldChance: 3 },
+                effect: "閾値10: ゴールド率+3%",
+              },
+              {
+                level: 30,
+                bonus: { titleChance: 2 },
+                effect: "閾値30: 称号率+2%",
+              },
+              {
+                level: 50,
+                bonus: { namedRate: 3 },
+                effect: "閾値50: ネームド率+3%",
+              },
+            ],
+          },
+          {
+            key: "sanctuaryPractice",
+            name: "神殿修練",
+            desc: "長年の奉仕で得た持久力。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 11,
+            scaling: { perLevel: { hp: 1.1, physDef: 0.5 } },
+            thresholds: [
+              { level: 10, bonus: { block: 2 }, effect: "閾値10: ブロック+2%" },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              { level: 50, bonus: { hp: 30 }, effect: "閾値50: 最大HP+30" },
+            ],
+          },
+          {
+            key: "prayerOfFortune",
+            name: "幸運の祈り",
+            desc: "小さな幸運を呼び寄せる祈り。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 13,
+            scaling: { perLevel: { dropRate: 0.3, rarity: 0.3 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { goldChance: 4 },
+                effect: "閾値10: ゴールド率+4%",
+              },
+              {
+                level: 30,
+                bonus: { titleChance: 2 },
+                effect: "閾値30: 称号率+2%",
+              },
+              {
+                level: 50,
+                bonus: { namedRate: 4 },
+                effect: "閾値50: ネームド率+4%",
+              },
+            ],
+          },
+          {
+            key: "holyDiscipline",
+            name: "聖なる規律",
+            desc: "厳格な生活が心身を引き締める。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 15,
+            scaling: { perLevel: { speed: 0.3, magDef: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { hpRegen: 0.2 },
+                effect: "閾値10: HP再生+0.2",
+              },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { damageReduction: 2 },
+                effect: "閾値50: 被ダメ-2%",
+              },
+            ],
+          },
+          {
+            key: "scriptureMemory",
+            name: "聖典暗唱",
+            desc: "聖句が心を強くし、精神力を高める。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 18,
+            scaling: { perLevel: { mp: 0.9, magAtk: 0.4 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { magPen: 2 },
+                effect: "閾値10: 魔法貫通+2%",
+              },
+              {
+                level: 30,
+                bonus: { cooldown: 1 },
+                effect: "閾値30: CT短縮+1%",
+              },
+              { level: 50, bonus: { magDef: 10 }, effect: "閾値50: 魔防+10" },
+            ],
+          },
+          {
+            key: "relicCurator",
+            name: "聖遺物管理",
+            desc: "神聖な遺物の扱いで幸運を得る。",
+            category: "聖職",
+            type: "passive",
+            unlockLevel: 21,
+            scaling: { perLevel: { rarity: 0.25, goldChance: 0.25 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 3 },
+                effect: "閾値10: ドロップ率+3%",
+              },
+              {
+                level: 30,
+                bonus: { titleChance: 2 },
+                effect: "閾値30: 称号率+2%",
+              },
+              { level: 50, bonus: { rarity: 4 }, effect: "閾値50: レア率+4%" },
+            ],
+          },
+          // 吸血（アクティブ）
+          {
+            key: "bloodPact",
+            name: "血の盟約",
+            desc: "血を媒介に攻防を両立させる秘術。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 1,
+            scaling: { perLevel: { physAtk: 0.8, lifeSteal: 0.08 } },
+            thresholds: [
+              { level: 10, bonus: { hp: 10 }, effect: "閾値10: 最大HP+10" },
+              {
+                level: 30,
+                bonus: { damageReduction: 2, hpRegen: 0.3 },
+                effect: "閾値30: 被ダメ-2%、HP再生+0.3",
+              },
+              {
+                level: 50,
+                bonus: { dropRate: 5 },
+                effect: "閾値50: ドロップ率+5%",
+              },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 5,
+              effect: "HPを消費しつつ高倍率の一撃と吸血",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "scarletRush",
+            name: "紅蓮突進",
+            desc: "血煙を纏い、敵陣へ突撃する。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 4,
+            scaling: { perLevel: { physAtk: 1.1, speed: 0.5 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { physPen: 3 },
+                effect: "閾値10: 物理貫通+3%",
+              },
+              {
+                level: 30,
+                bonus: { critRate: 2 },
+                effect: "閾値30: クリ率+2%",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 6 },
+                effect: "閾値50: クリダメ+6%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 6,
+              effect: "移動しながら斬撃し、吸収の付与",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "midnightFeast",
+            name: "深紅の饗宴",
+            desc: "敵の生命を吸い尽くし、己を満たす。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 8,
+            scaling: { perLevel: { lifeSteal: 0.12, hp: 0.8 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { hpRegen: 0.4 },
+                effect: "閾値10: HP再生+0.4",
+              },
+              {
+                level: 30,
+                bonus: { damageReduction: 2 },
+                effect: "閾値30: 被ダメ-2%",
+              },
+              { level: 50, bonus: { hp: 24 }, effect: "閾値50: 最大HP+24" },
+            ],
+            activation: {
+              cooldown: 5,
+              mpCost: 8,
+              effect: "割合吸血+再生を付与",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "batSwarm",
+            name: "蝙蝠の群れ",
+            desc: "眷属を呼び寄せ、敵をかく乱する。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 12,
+            scaling: { perLevel: { speed: 0.6, damageReduction: 0.25 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 2 },
+                effect: "閾値10: ドロップ率+2%",
+              },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { cooldown: 2 },
+                effect: "閾値50: CT短縮+2%",
+              },
+            ],
+            activation: {
+              cooldown: 4,
+              mpCost: 5,
+              effect: "回避率の代わりに被ダメ軽減と吸収",
+              slotCost: 1,
+            },
+          },
+          {
+            key: "crimsonMoon",
+            name: "紅月降臨",
+            desc: "紅い月の祝福で攻撃本能を解放する。",
+            category: "吸血",
+            type: "active",
+            unlockLevel: 16,
+            scaling: { perLevel: { physAtk: 1.2, critRate: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critDamage: 5 },
+                effect: "閾値10: クリダメ+5%",
+              },
+              {
+                level: 30,
+                bonus: { physPen: 4 },
+                effect: "閾値30: 物理貫通+4%",
+              },
+              { level: 50, bonus: { rarity: 3 }, effect: "閾値50: レア率+3%" },
+            ],
+            activation: {
+              cooldown: 6,
+              mpCost: 9,
+              effect: "一定ターン攻撃強化と吸血量上昇",
+              slotCost: 1,
+            },
+          },
+          // 吸血（パッシブ）
+          {
+            key: "bloodSense",
+            name: "血の感知",
+            desc: "血流の変化を読み取り、機先を制する。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 1,
+            scaling: { perLevel: { speed: 0.4, critRate: 0.15 } },
+            thresholds: [
+              { level: 10, bonus: { physAtk: 6 }, effect: "閾値10: 物攻+6" },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 8 },
+                effect: "閾値50: クリダメ+8%",
+              },
+            ],
+          },
+          {
+            key: "nightRecovery",
+            name: "夜の再生",
+            desc: "闇の中で傷を癒やし、活力を戻す。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 2,
+            scaling: { perLevel: { hpRegen: 0.3, hp: 0.7 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 1 },
+                effect: "閾値10: 被ダメ-1%",
+              },
+              { level: 30, bonus: { hp: 20 }, effect: "閾値30: 最大HP+20" },
+              {
+                level: 50,
+                bonus: { dropRate: 3 },
+                effect: "閾値50: ドロップ率+3%",
+              },
+            ],
+          },
+          {
+            key: "hematophagy",
+            name: "血食習性",
+            desc: "血を糧として力に変える本能。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 4,
+            scaling: { perLevel: { lifeSteal: 0.1, physAtk: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { physPen: 2 },
+                effect: "閾値10: 物理貫通+2%",
+              },
+              {
+                level: 30,
+                bonus: { hpRegen: 0.3 },
+                effect: "閾値30: HP再生+0.3",
+              },
+              {
+                level: 50,
+                bonus: { critRate: 2 },
+                effect: "閾値50: クリ率+2%",
+              },
+            ],
+          },
+          {
+            key: "shadowWalk",
+            name: "影歩き",
+            desc: "影に紛れて動き、被害を避ける。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 6,
+            scaling: { perLevel: { damageReduction: 0.2, speed: 0.3 } },
+            thresholds: [
+              { level: 10, bonus: { block: 2 }, effect: "閾値10: ブロック+2%" },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { cooldown: 2 },
+                effect: "閾値50: CT短縮+2%",
+              },
+            ],
+          },
+          {
+            key: "predatorInstinct",
+            name: "捕食者の本能",
+            desc: "弱点を突き、効率的に仕留める嗅覚。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 9,
+            scaling: { perLevel: { critRate: 0.25, physPen: 0.25 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { critDamage: 5 },
+                effect: "閾値10: クリダメ+5%",
+              },
+              {
+                level: 30,
+                bonus: { dropRate: 3 },
+                effect: "閾値30: ドロップ率+3%",
+              },
+              { level: 50, bonus: { rarity: 3 }, effect: "閾値50: レア率+3%" },
+            ],
+          },
+          {
+            key: "bloodArmor",
+            name: "血鎧",
+            desc: "凝固した血で鎧を形成し、耐久を高める。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 12,
+            scaling: { perLevel: { hp: 1.1, physDef: 0.6 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { damageReduction: 2 },
+                effect: "閾値10: 被ダメ-2%",
+              },
+              {
+                level: 30,
+                bonus: { hpRegen: 0.3 },
+                effect: "閾値30: HP再生+0.3",
+              },
+              { level: 50, bonus: { block: 3 }, effect: "閾値50: ブロック+3%" },
+            ],
+          },
+          {
+            key: "midnightLore",
+            name: "宵闇の伝承",
+            desc: "闇の知識が魔力と幸運を引き寄せる。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 15,
+            scaling: { perLevel: { magAtk: 0.6, rarity: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { titleChance: 2 },
+                effect: "閾値10: 称号率+2%",
+              },
+              {
+                level: 30,
+                bonus: { dropRate: 3 },
+                effect: "閾値30: ドロップ率+3%",
+              },
+              {
+                level: 50,
+                bonus: { goldChance: 3 },
+                effect: "閾値50: ゴールド率+3%",
+              },
+            ],
+          },
+          {
+            key: "immortalVigor",
+            name: "不死の活力",
+            desc: "不死性に近い回復力を誇る。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 18,
+            scaling: { perLevel: { hpRegen: 0.35, damageReduction: 0.2 } },
+            thresholds: [
+              { level: 10, bonus: { hp: 18 }, effect: "閾値10: 最大HP+18" },
+              {
+                level: 30,
+                bonus: { controlResist: 4 },
+                effect: "閾値30: 行動阻害耐性+4%",
+              },
+              {
+                level: 50,
+                bonus: { dotResist: 5 },
+                effect: "閾値50: DoT耐性+5%",
+              },
+            ],
+          },
+          {
+            key: "thirstForPower",
+            name: "渇望の力",
+            desc: "飢えを力へと昇華し続ける。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 21,
+            scaling: { perLevel: { physAtk: 0.9, lifeSteal: 0.08 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { physPen: 3 },
+                effect: "閾値10: 物理貫通+3%",
+              },
+              {
+                level: 30,
+                bonus: { critRate: 2 },
+                effect: "閾値30: クリ率+2%",
+              },
+              {
+                level: 50,
+                bonus: { critDamage: 6 },
+                effect: "閾値50: クリダメ+6%",
+              },
+            ],
+          },
+          {
+            key: "nocturneGrace",
+            name: "夜想の優雅",
+            desc: "夜の帳が力を包み、気配を消す。",
+            category: "吸血",
+            type: "passive",
+            unlockLevel: 24,
+            scaling: { perLevel: { damageReduction: 0.25, rarity: 0.2 } },
+            thresholds: [
+              {
+                level: 10,
+                bonus: { dropRate: 3 },
+                effect: "閾値10: ドロップ率+3%",
+              },
+              {
+                level: 30,
+                bonus: { controlResist: 3 },
+                effect: "閾値30: 行動阻害耐性+3%",
+              },
+              {
+                level: 50,
+                bonus: { goldChance: 4 },
+                effect: "閾値50: ゴールド率+4%",
+              },
+            ],
+          },
+        ];
 
-        function buildPassiveTreeData() {
-          const categories = {};
-          const nodeMap = {};
-
-          Object.entries(PASSIVE_TREE_CONFIG).forEach(([category, config]) => {
-            const categoryData = {
-              key: config.key,
-              upper: { title: config.upper.title, routes: [] },
-              lower: { title: config.lower.title, routes: [] },
-            };
-
-            ["upper", "lower"].forEach((section) => {
-              const sectionConfig = config[section];
-              sectionConfig.routes.forEach((routeName, routeIndex) => {
-                const routeId = `${config.key}-${section}-${routeIndex + 1}`;
-                const route = {
-                  id: routeId,
-                  name: routeName,
-                  section,
-                  focus: sectionConfig.focus,
-                  clusters: [],
-                  nodes: [],
-                };
-
-                for (let clusterIndex = 1; clusterIndex <= 3; clusterIndex += 1) {
-                  const clusterId = `${routeId}-c${clusterIndex}`;
-                  const skillNodeId = `${clusterId}-skill`;
-                  let passiveAKey = `${clusterId}-passive-a`;
-                  let passiveBKey = `${clusterId}-passive-b`;
-                  const activeKey = `${clusterId}-active`;
-
-                  if (
-                    category === "魔法" &&
-                    section === "lower" &&
-                    routeIndex === 1 &&
-                    clusterIndex === 2
-                  ) {
-                    passiveBKey = "arcaneFlow";
-                  }
-
-                  const cluster = {
-                    id: clusterId,
-                    label: `${routeName}クラスタ${clusterIndex}`,
-                    index: clusterIndex,
-                    skillNodeId,
-                    skillKeys: {
-                      active: activeKey,
-                      passiveA: passiveAKey,
-                      passiveB: passiveBKey,
-                    },
-                  };
-
-                  const nodes = [
-                    {
-                      id: `${clusterId}-stat`,
-                      type: "stat",
-                      label: `${cluster.label}：基礎鍛錬`,
-                      primary: PASSIVE_FOCUS_PROFILES[route.focus].statNode.primary,
-                    },
-                    {
-                      id: `${clusterId}-passive`,
-                      type: "passive",
-                      label: `${cluster.label}：適性強化`,
-                      bonus: PASSIVE_FOCUS_PROFILES[route.focus].passiveNode.secondary,
-                    },
-                    {
-                      id: skillNodeId,
-                      type: "unlock",
-                      label: `${cluster.label}：技の解放`,
-                      unlockSkills: [activeKey, passiveAKey, passiveBKey],
-                    },
-                    {
-                      id: `${clusterId}-keystone`,
-                      type: "keystone",
-                      label: `${cluster.label}：キーストーン`,
-                      bonus: PASSIVE_FOCUS_PROFILES[route.focus].keystone.bonus,
-                      penalty: PASSIVE_FOCUS_PROFILES[route.focus].keystone.penalty,
-                    },
-                  ];
-
-                  nodes.forEach((node, nodeIndex) => {
-                    const prevNode = nodeIndex > 0 ? nodes[nodeIndex - 1] : null;
-                    if (prevNode) node.prevId = prevNode.id;
-                    node.clusterId = clusterId;
-                    node.routeId = routeId;
-                    node.section = section;
-                    node.category = category;
-                    nodeMap[node.id] = node;
-                    route.nodes.push(node);
-                  });
-
-                  if (clusterIndex > 1) {
-                    const previousClusterId = `${routeId}-c${clusterIndex - 1}`;
-                    const previousKeystoneId = `${previousClusterId}-keystone`;
-                    const firstNode = nodes[0];
-                    if (firstNode) firstNode.prevId = previousKeystoneId;
-                  }
-
-                  route.clusters.push(cluster);
-                }
-
-                categoryData[section].routes.push(route);
-              });
-            });
-
-            categories[category] = categoryData;
-          });
-
-          return { categories, nodeMap };
-        }
-
-        const PASSIVE_TREE_DATA = buildPassiveTreeData();
-        const PASSIVE_NODE_MAP = PASSIVE_TREE_DATA.nodeMap;
-
-        function buildSkillDefinitions(treeData) {
-          const definitions = [];
-          let orderIndex = 0;
-
-          Object.entries(treeData.categories).forEach(([category, data]) => {
-            ["upper", "lower"].forEach((section) => {
-              data[section].routes.forEach((route) => {
-                const focusProfile = PASSIVE_FOCUS_PROFILES[route.focus];
-                route.clusters.forEach((cluster) => {
-                  const activeName = `${route.name}・奥義${cluster.index}`;
-                  const passiveNameA = `${route.name}鍛錬${cluster.index}`;
-                  const passiveNameB = `${route.name}心得${cluster.index}`;
-
-                  definitions.push({
-                    key: cluster.skillKeys.active,
-                    name: activeName,
-                    desc: `${data[section].title}の主軸となる必殺技。`,
-                    category,
-                    type: "active",
-                    unlockNodeId: cluster.skillNodeId,
-                    order: orderIndex,
-                    scaling: focusProfile.activeScaling,
-                    thresholds: [],
-                    activation: {
-                      ...focusProfile.activation,
-                      cooldown: Math.max(2, focusProfile.activation.cooldown + cluster.index - 1),
-                      mpCost: Math.max(3, focusProfile.activation.mpCost + cluster.index - 1),
-                    },
-                  });
-                  orderIndex += 1;
-
-                  const passiveKeys = [cluster.skillKeys.passiveA, cluster.skillKeys.passiveB];
-                  const passiveNames = [passiveNameA, passiveNameB];
-                  passiveKeys.forEach((key, idx) => {
-                    const name = key === "arcaneFlow" ? "魔力循環" : passiveNames[idx];
-                    definitions.push({
-                      key,
-                      name,
-                      desc: `${data[section].title}の適性を底上げする常時効果。`,
-                      category,
-                      type: "passive",
-                      unlockNodeId: cluster.skillNodeId,
-                      order: orderIndex,
-                      scaling: focusProfile.passiveScaling[idx] || focusProfile.passiveScaling[0],
-                      thresholds: [],
-                    });
-                    orderIndex += 1;
-                  });
-                });
-              });
-            });
-          });
-
-          return definitions;
-        }
-
-        const SKILL_DEFINITIONS = buildSkillDefinitions(PASSIVE_TREE_DATA);
-        assignSkillUnlockLabels(SKILL_DEFINITIONS);
+        applyUnlockPattern(SKILL_DEFINITIONS);
         SKILL_DEFINITIONS.forEach((skill) => {
           skill.thresholds = amplifyThresholdBonuses(skill.thresholds);
         });
+
         const SKILL_DEFINITION_MAP = SKILL_DEFINITIONS.reduce((acc, skill) => {
           acc[skill.key] = skill;
           return acc;
@@ -11133,32 +12153,6 @@
           return aggregated;
         }
 
-        function addPrimaryBonus(target, bonus = {}) {
-          if (!target || !bonus) return;
-          Object.entries(bonus).forEach(([key, value]) => {
-            if (typeof value !== "number") return;
-            target[key] = (target[key] ?? 0) + value;
-          });
-        }
-
-        function calculatePassiveTreeBonuses() {
-          const secondary = createEmptyBonus();
-          const primary = createEmptyPrimaryBonus();
-          const unlocked = Array.isArray(player.passiveNodes)
-            ? player.passiveNodes
-            : [];
-          unlocked.forEach((nodeId) => {
-            const node = PASSIVE_NODE_MAP?.[nodeId];
-            if (!node) return;
-            if (node.primary) addPrimaryBonus(primary, node.primary);
-            if (node.bonus) addBonus(secondary, node.bonus);
-            if (node.penalty) addBonus(secondary, node.penalty);
-          });
-          player.treeBonus = secondary;
-          player.treePrimaryBonus = primary;
-          return { primary, secondary };
-        }
-
         function formatSkillBonusText(bonus = {}) {
           const labels = {
             hp: "最大HP",
@@ -11212,8 +12206,7 @@
               const unit = percentKeys.includes(key) ? "%" : "";
               const formatted =
                 Math.abs(value) >= 1 ? value.toFixed(0) : value.toFixed(2);
-              const sign = value >= 0 ? "+" : "";
-              return `${label}${sign}${formatted}${unit}`;
+              return `${label}+${formatted}${unit}`;
             })
             .filter(Boolean)
             .join(" / ");
@@ -11631,7 +12624,6 @@
         const skillStepOptions = [1, 10, 50];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
-        let selectedPassiveNodeId = null;
         let selectedSkillType = "active";
         let skillSummaryVisible = false;
         let pendingResetSpent = 0;
@@ -12446,7 +13438,6 @@
 
         function recalcDerivedStats() {
           const equipmentBonuses = collectEquipmentBonuses();
-          const treeBonuses = calculatePassiveTreeBonuses();
           player.equipmentBonus = equipmentBonuses.secondary;
           player.equipmentPrimaryBonus = equipmentBonuses.primary;
           player.equipmentPrimaryPerLevel = equipmentBonuses.primaryPerLevel;
@@ -12465,8 +13456,7 @@
             const baseValue = player.primary[key].base;
             const additive =
               (equipmentBonuses.primary[key] ?? 0) +
-              (perLevelPrimaryBonus[key] ?? 0) +
-              (treeBonuses.primary[key] ?? 0);
+              (perLevelPrimaryBonus[key] ?? 0);
             const fixedValue =
               typeof equipmentBonuses.primaryFixed?.[key] === "number"
                 ? equipmentBonuses.primaryFixed[key]
@@ -12503,10 +13493,7 @@
               Math.floor(player.attackCount),
             );
           }
-          player.bonus = mergeBonuses(
-            mergeBonuses(player.baseBonus, player.treeBonus),
-            player.equipmentBonus,
-          );
+          player.bonus = mergeBonuses(player.baseBonus, player.equipmentBonus);
           const derived = calcSecondaryStats();
           const prevMaxHp = player.maxHp || derived.maxHp.total;
           const prevMaxMp = player.maxMp || derived.maxMp.total;
@@ -13973,10 +14960,6 @@ function showDamagePopup(
             player.statPoints;
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
-          const passivePointsLabel = document.getElementById("passive-points");
-          if (passivePointsLabel) {
-            passivePointsLabel.textContent = player.passivePoints;
-          }
           updateHpBar(displayHp, displayMaxHp, displayBarrier);
           updateBars("mp-bar", displayMp, displayMaxMp, "mp");
           updateBars("exp-bar", displayExp, displayExpToLevel, "exp");
@@ -13985,7 +14968,6 @@ function showDamagePopup(
           renderEnemies();
           renderActions();
           renderSecondaryStats(derived);
-          renderPassiveTreeSummary();
           renderPrimaryStats();
           if (
             !playerModal.classList.contains("hidden") &&
@@ -14941,10 +15923,6 @@ function showDamagePopup(
 
           replaceObject(player, payload.player || {});
           replaceObject(game, payload.game || {});
-
-          if (typeof player.passivePoints !== "number")
-            player.passivePoints = 0;
-          if (!Array.isArray(player.passiveNodes)) player.passiveNodes = [];
 
           if (typeof game.autoSkillEnabled !== "boolean") {
             game.autoSkillEnabled = false;
@@ -16249,10 +17227,8 @@ function showDamagePopup(
 
         function isSkillUnlocked(skill) {
           if (!skill) return false;
-          if (!skill.unlockNodeId) return true;
-          return Array.isArray(player.passiveNodes)
-            ? player.passiveNodes.includes(skill.unlockNodeId)
-            : false;
+          const required = skill.unlockLevel || 1;
+          return player.level >= required;
         }
 
         function toggleActiveSkillSlot(skillKey) {
@@ -16349,8 +17325,7 @@ function showDamagePopup(
           if (!skill || delta === 0) return;
           if (delta > 0) {
             if (!isSkillUnlocked(skill)) {
-              const label = skill.unlockLabel || "解放ノード";
-              log(`${label}を解放してください`, "warning");
+              log(`Lv${skill.unlockLevel}で解放されます`, "warning");
               return;
             }
             const spendable = Math.min(
@@ -16412,423 +17387,6 @@ function showDamagePopup(
           });
         }
 
-        function formatPrimaryBonusText(bonus = {}) {
-          const labels = {
-            str: "力",
-            int: "知識",
-            vit: "体力",
-            agi: "敏捷",
-            luck: "運",
-          };
-          return Object.entries(bonus)
-            .map(([key, value]) => {
-              if (typeof value !== "number") return null;
-              const label = labels[key] || key;
-              const sign = value >= 0 ? "+" : "";
-              return `${label}${sign}${value}`;
-            })
-            .filter(Boolean)
-            .join(" / ");
-        }
-
-        function renderPassiveTreeSummary() {
-          const container = document.getElementById("tree-bonus-summary");
-          if (!container) return;
-          const primaryText =
-            formatPrimaryBonusText(player.treePrimaryBonus) || "補正なし";
-          const secondaryText =
-            formatSkillBonusText(player.treeBonus) || "補正なし";
-          container.innerHTML = "";
-          const primaryRow = document.createElement("div");
-          primaryRow.className = "subtle";
-          primaryRow.textContent = `一次ステ: ${primaryText}`;
-          const secondaryRow = document.createElement("div");
-          secondaryRow.className = "subtle";
-          secondaryRow.textContent = `二次ステ: ${secondaryText}`;
-          container.appendChild(primaryRow);
-          container.appendChild(secondaryRow);
-        }
-
-        function describePassiveNode(node) {
-          if (!node) return "";
-          if (node.type === "stat") {
-            return `基礎: ${formatPrimaryBonusText(node.primary) || "効果なし"}`;
-          }
-          if (node.type === "passive") {
-            return `強化: ${formatSkillBonusText(node.bonus) || "効果なし"}`;
-          }
-          if (node.type === "unlock") {
-            const names = (node.unlockSkills || [])
-              .map((key) => SKILL_DEFINITION_MAP[key]?.name || key)
-              .join(" / ");
-            return `解放: ${names || "スキル未設定"}`;
-          }
-          if (node.type === "keystone") {
-            const bonus = formatSkillBonusText(node.bonus);
-            const penalty = formatSkillBonusText(node.penalty);
-            return `効果: ${bonus || "なし"} / 代償: ${penalty || "なし"}`;
-          }
-          return "";
-        }
-
-        function isPassiveNodeUnlocked(nodeId) {
-          return Array.isArray(player.passiveNodes)
-            ? player.passiveNodes.includes(nodeId)
-            : false;
-        }
-
-        function canUnlockPassiveNode(node) {
-          if (!node || isPassiveNodeUnlocked(node.id)) return false;
-          if (player.passivePoints <= 0) return false;
-          if (node.prevId && !isPassiveNodeUnlocked(node.prevId)) return false;
-          return true;
-        }
-
-        function unlockPassiveNode(node) {
-          if (!canUnlockPassiveNode(node)) return;
-          player.passivePoints -= 1;
-          if (!Array.isArray(player.passiveNodes)) player.passiveNodes = [];
-          player.passiveNodes.push(node.id);
-          const label = node.label || "ノード";
-          log(`✨ ${label} を解放`, "good");
-          calculatePassiveTreeBonuses();
-          const derived = recalcDerivedStats();
-          updateUI(derived);
-          renderSkills();
-          maybeAutoSave("パッシブノード解放");
-        }
-
-        function renderPassiveTreePanel() {
-          if (!passiveTreeRoutes) return;
-          const categoryTree = PASSIVE_TREE_DATA.categories[selectedSkillCategory];
-          if (!categoryTree) {
-            passiveTreeRoutes.innerHTML = "";
-            return;
-          }
-          passiveTreeRoutes.innerHTML = "";
-
-          const infoCard = document.createElement("div");
-          infoCard.className = "passive-node-info";
-
-          const title = document.createElement("div");
-          title.className = "info-title";
-          const targetNode =
-            selectedPassiveNodeId && PASSIVE_NODE_MAP[selectedPassiveNodeId];
-          title.textContent = targetNode
-            ? targetNode.label
-            : "ノードを選択してください";
-          infoCard.appendChild(title);
-
-          const status = document.createElement("div");
-          status.className = "info-status";
-          if (targetNode) {
-            const unlocked = isPassiveNodeUnlocked(targetNode.id);
-            status.textContent = unlocked
-              ? "解放済み"
-              : `未解放（必要: ${targetNode.prevId ? "前提ノード" : "なし"}）`;
-          } else {
-            status.textContent = "ツリー上のノードをタップして詳細を確認";
-          }
-          infoCard.appendChild(status);
-
-          const detail = document.createElement("div");
-          detail.className = "subtle";
-          detail.textContent = targetNode
-            ? describePassiveNode(targetNode)
-            : `${categoryTree.upper.title} / ${categoryTree.lower.title}`;
-          infoCard.appendChild(detail);
-
-          const actions = document.createElement("div");
-          actions.className = "info-actions";
-          const unlockButton = document.createElement("button");
-          unlockButton.className = "mini-btn";
-          unlockButton.textContent = "解放";
-          unlockButton.disabled = !targetNode || !canUnlockPassiveNode(targetNode);
-          unlockButton.onclick = () => {
-            if (!targetNode) return;
-            unlockPassiveNode(targetNode);
-            renderPassiveTreePanel();
-            renderPassiveTreeVisual();
-          };
-          actions.appendChild(unlockButton);
-          infoCard.appendChild(actions);
-
-          const sectionSummary = document.createElement("div");
-          sectionSummary.className = "subtle";
-          sectionSummary.textContent = `上: ${categoryTree.upper.title} / 下: ${categoryTree.lower.title}`;
-
-          passiveTreeRoutes.appendChild(infoCard);
-          passiveTreeRoutes.appendChild(sectionSummary);
-        }
-
-        const passiveTreeVisual = {
-          svg: document.getElementById("svg-root"),
-          viewport: document.getElementById("viewport"),
-          nodesGroup: document.getElementById("nodes-group"),
-          linksGroup: document.getElementById("links-group"),
-          nodes: [],
-          links: [],
-          state: { scale: 0.45, panX: 0, panY: 0 },
-          initialized: false,
-          hasUserPan: false,
-          hasUserZoom: false,
-        };
-
-        const passiveTreeInteraction = {
-          isPanning: false,
-          startX: 0,
-          startY: 0,
-          originX: 0,
-          originY: 0,
-        };
-
-        function updatePassiveTreeTransform() {
-          if (!passiveTreeVisual.viewport) return;
-          passiveTreeVisual.viewport.setAttribute(
-            "transform",
-            `translate(${passiveTreeVisual.state.panX}, ${passiveTreeVisual.state.panY}) scale(${passiveTreeVisual.state.scale})`,
-          );
-        }
-
-        function syncPassiveTreeLayout({ forceCenter = false } = {}) {
-          if (!passiveTreeCanvas) return;
-          const rect = passiveTreeCanvas.getBoundingClientRect();
-          if (!rect.width || !rect.height) return;
-          if (forceCenter || !passiveTreeVisual.hasUserPan) {
-            passiveTreeVisual.state.panX = rect.width / 2;
-            passiveTreeVisual.state.panY = rect.height / 2;
-          }
-          updatePassiveTreeTransform();
-        }
-
-        function buildPassiveTreeVisualData(category) {
-          const categoryTree = PASSIVE_TREE_DATA.categories[category];
-          if (!categoryTree) return { nodes: [], links: [] };
-          const nodes = [];
-          const links = [];
-          const nodeSpacing = 80;
-          const clusterGap = 120;
-          const nodesPerCluster = 4;
-          const clustersPerRoute = 3;
-          const routeSpacing = 220;
-          const startOffset = 90;
-
-          nodes.push({ id: "origin", x: 0, y: 0, type: "start", active: true });
-
-          const routeOffsets = [-1, 0, 1];
-          ["upper", "lower"].forEach((section) => {
-            const sectionData = categoryTree[section];
-            const direction = section === "upper" ? -1 : 1;
-            const lastNodes = [];
-
-            sectionData.routes.forEach((route, routeIndex) => {
-              const routeX = routeOffsets[routeIndex] * routeSpacing;
-              let previousNodeId = "origin";
-              route.nodes.forEach((node, nodeIndex) => {
-                const clusterIndex = Math.floor(nodeIndex / nodesPerCluster);
-                const indexInCluster = nodeIndex % nodesPerCluster;
-                const y =
-                  direction *
-                  (startOffset +
-                    clusterIndex * (nodesPerCluster * nodeSpacing + clusterGap) +
-                    indexInCluster * nodeSpacing);
-                const visualNode = {
-                  id: node.id,
-                  x: routeX,
-                  y,
-                  type: node.type,
-                  passiveNodeId: node.id,
-                  section,
-                };
-                nodes.push(visualNode);
-                links.push({ s: previousNodeId, t: node.id });
-                previousNodeId = node.id;
-              });
-              lastNodes.push(previousNodeId);
-            });
-
-            const totalLength =
-              startOffset +
-              clustersPerRoute * nodesPerCluster * nodeSpacing +
-              (clustersPerRoute - 1) * clusterGap +
-              30;
-            const exitId = `exit-${section}`;
-            nodes.push({
-              id: exitId,
-              x: 0,
-              y: direction * totalLength,
-              type: "exit",
-            });
-            lastNodes.forEach((nodeId) => {
-              links.push({ s: nodeId, t: exitId });
-            });
-          });
-
-          return { nodes, links };
-        }
-
-        function initPassiveTreeVisual() {
-          if (passiveTreeVisual.initialized) return;
-          if (
-            !passiveTreeVisual.svg ||
-            !passiveTreeVisual.viewport ||
-            !passiveTreeVisual.nodesGroup ||
-            !passiveTreeVisual.linksGroup
-          )
-            return;
-          passiveTreeVisual.initialized = true;
-          passiveTreeVisual.svg.addEventListener("wheel", (event) => {
-            event.preventDefault();
-            const delta = Math.sign(event.deltaY);
-            const nextScale = Math.min(
-              1.2,
-              Math.max(0.25, passiveTreeVisual.state.scale - delta * 0.06),
-            );
-            if (nextScale !== passiveTreeVisual.state.scale) {
-              passiveTreeVisual.state.scale = nextScale;
-              passiveTreeVisual.hasUserZoom = true;
-              updatePassiveTreeTransform();
-            }
-          });
-
-          passiveTreeVisual.svg.addEventListener("pointerdown", (event) => {
-            if (event.button !== 0 && event.pointerType === "mouse") return;
-            passiveTreeInteraction.isPanning = true;
-            passiveTreeInteraction.startX = event.clientX;
-            passiveTreeInteraction.startY = event.clientY;
-            passiveTreeInteraction.originX = passiveTreeVisual.state.panX;
-            passiveTreeInteraction.originY = passiveTreeVisual.state.panY;
-            passiveTreeVisual.svg.classList.add("dragging");
-          });
-
-          window.addEventListener("pointermove", (event) => {
-            if (!passiveTreeInteraction.isPanning) return;
-            const dx = event.clientX - passiveTreeInteraction.startX;
-            const dy = event.clientY - passiveTreeInteraction.startY;
-            passiveTreeVisual.state.panX = passiveTreeInteraction.originX + dx;
-            passiveTreeVisual.state.panY = passiveTreeInteraction.originY + dy;
-            passiveTreeVisual.hasUserPan = true;
-            updatePassiveTreeTransform();
-          });
-
-          window.addEventListener("pointerup", () => {
-            passiveTreeInteraction.isPanning = false;
-            passiveTreeVisual.svg.classList.remove("dragging");
-          });
-
-          rebuildPassiveTreeVisual();
-          syncPassiveTreeLayout({ forceCenter: true });
-        }
-
-        function rebuildPassiveTreeVisual() {
-          const data = buildPassiveTreeVisualData(selectedSkillCategory);
-          passiveTreeVisual.nodes = data.nodes;
-          passiveTreeVisual.links = data.links;
-          renderPassiveTreeVisual();
-        }
-
-        function renderPassiveTreeVisual() {
-          if (
-            !passiveTreeVisual.nodesGroup ||
-            !passiveTreeVisual.linksGroup
-          )
-            return;
-          passiveTreeVisual.nodesGroup.innerHTML = "";
-          passiveTreeVisual.linksGroup.innerHTML = "";
-
-          passiveTreeVisual.links.forEach((link) => {
-            const s = passiveTreeVisual.nodes.find((n) => n.id === link.s);
-            const t = passiveTreeVisual.nodes.find((n) => n.id === link.t);
-            if (!s || !t) return;
-            const sUnlocked =
-              s.passiveNodeId && isPassiveNodeUnlocked(s.passiveNodeId);
-            const tUnlocked =
-              t.passiveNodeId && isPassiveNodeUnlocked(t.passiveNodeId);
-            const isActive = sUnlocked && tUnlocked;
-            const line = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "line",
-            );
-            const x1 = link.vSrc ? link.vSrc.x : s.x;
-            const y1 = link.vSrc ? link.vSrc.y : s.y;
-            line.setAttribute("x1", x1);
-            line.setAttribute("y1", y1);
-            line.setAttribute("x2", t.x);
-            line.setAttribute("y2", t.y);
-            line.setAttribute(
-              "stroke",
-              isActive ? "var(--accent-blue)" : "rgba(255,255,255,0.06)",
-            );
-            line.setAttribute("stroke-width", isActive ? "5" : "2.2");
-            if (isActive) line.classList.add("active-path");
-            passiveTreeVisual.linksGroup.appendChild(line);
-          });
-
-          passiveTreeVisual.nodes.forEach((node) => {
-            const passiveNode = node.passiveNodeId
-              ? PASSIVE_NODE_MAP[node.passiveNodeId]
-              : null;
-            const isUnlocked = passiveNode
-              ? isPassiveNodeUnlocked(passiveNode.id)
-              : false;
-            const canUnlock = passiveNode ? canUnlockPassiveNode(passiveNode) : false;
-            const circle = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "circle",
-            );
-            let r = 9;
-            let fill = "#0f172a";
-            let stroke = "rgba(255,255,255,0.2)";
-            if (node.type === "start") {
-              r = 26;
-              stroke = "#fff";
-              fill = "#fff";
-            } else if (node.type === "keystone") {
-              r = 18;
-              stroke = "var(--keystone-gold)";
-            } else if (node.type === "unlock") {
-              r = 16;
-              stroke = "var(--active-red)";
-            } else if (node.type === "exit") {
-              r = 12;
-              stroke = "rgba(255,255,255,0.3)";
-            }
-
-            if (isUnlocked) {
-              if (node.type === "keystone") fill = "var(--keystone-gold)";
-              else if (node.type === "unlock") fill = "var(--active-red)";
-              else fill = "var(--accent-blue)";
-              circle.style.filter = `drop-shadow(0 0 12px ${fill})`;
-            } else if (canUnlock) {
-              fill = "rgba(59, 130, 246, 0.35)";
-            }
-
-            circle.setAttribute("cx", node.x);
-            circle.setAttribute("cy", node.y);
-            circle.setAttribute("r", r);
-            circle.setAttribute("fill", fill);
-            circle.setAttribute("stroke", stroke);
-            circle.setAttribute("stroke-width", "3.5");
-            circle.classList.add("node");
-            if (passiveNode) {
-              circle.style.cursor = "pointer";
-              circle.addEventListener("pointerdown", (event) => {
-                event.stopPropagation();
-              });
-              circle.addEventListener("click", (event) => {
-                event.stopPropagation();
-                selectedPassiveNodeId = passiveNode.id;
-                if (canUnlockPassiveNode(passiveNode)) {
-                  unlockPassiveNode(passiveNode);
-                }
-                renderPassiveTreePanel();
-                renderPassiveTreeVisual();
-              });
-            }
-            passiveTreeVisual.nodesGroup.appendChild(circle);
-          });
-        }
-
         function renderSkillCategoryTabs() {
           const container = document.getElementById("skill-category-tabs");
           if (!container) return;
@@ -16843,8 +17401,6 @@ function showDamagePopup(
             btn.setAttribute("aria-pressed", isActive ? "true" : "false");
             btn.onclick = () => {
               selectedSkillCategory = category;
-              selectedPassiveNodeId = null;
-              if (passiveTreeVisual.initialized) rebuildPassiveTreeVisual();
               renderSkills();
             };
             container.appendChild(btn);
@@ -16894,7 +17450,7 @@ function showDamagePopup(
                 skill.category === selectedSkillCategory &&
                 skill.type === selectedSkillType,
             )
-            .sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+            .sort((a, b) => (a[1].unlockLevel || 0) - (b[1].unlockLevel || 0));
 
           filteredSkills.forEach(([key, skill]) => {
             const locked = !isSkillUnlocked(skill);
@@ -16912,8 +17468,8 @@ function showDamagePopup(
 
             const meta = document.createElement("div");
             meta.className = "pill";
-            const unlock = skill.unlockLabel || "初期解放";
-            meta.textContent = `${skill.category} / ${skill.type === "active" ? "アクティブ" : "パッシブ"} / ${unlock}`;
+            const unlock = skill.unlockLevel ? `Lv${skill.unlockLevel}` : "Lv1";
+            meta.textContent = `${skill.category} / ${skill.type === "active" ? "アクティブ" : "パッシブ"} / 取得${unlock}`;
 
             headerRow.appendChild(name);
             headerRow.appendChild(meta);
@@ -17031,14 +17587,16 @@ function showDamagePopup(
 
             const categorySkills = Object.values(skills)
               .filter((skill) => skill.category === category)
-              .sort((a, b) => (a.order || 0) - (b.order || 0));
+              .sort((a, b) => (a.unlockLevel || 0) - (b.unlockLevel || 0));
 
             categorySkills.forEach((skill) => {
               const locked = !isSkillUnlocked(skill);
               const row = document.createElement("div");
               row.className = "option-value";
               const typeLabel = skill.type === "active" ? "Act" : "Pas";
-              const unlock = skill.unlockLabel || "初期解放";
+              const unlock = skill.unlockLevel
+                ? `取得Lv${skill.unlockLevel}`
+                : "取得Lv1";
               const status = locked
                 ? "未解放"
                 : `現在${skill.level}/${skill.max}`;
@@ -17072,8 +17630,6 @@ function showDamagePopup(
           renderSkillCategoryTabs();
           renderSkillTypeTabs();
           renderActiveSkillLoadout();
-          renderPassiveTreePanel();
-          if (passiveTreeVisual.initialized) rebuildPassiveTreeVisual();
           renderSkillDetailList();
           renderSkillSummary();
           updateSkillSummaryVisibility();
@@ -17873,10 +18429,6 @@ function showDamagePopup(
           "equipment-bonus-summary",
         );
         const skillsModal = document.getElementById("skills-modal");
-        const passiveTreeRoutes = document.getElementById(
-          "passive-tree-routes",
-        );
-        const passiveTreeCanvas = document.getElementById("passive-tree-canvas");
         const weaponEnhanceModal = document.getElementById(
           "weapon-enhance-modal",
         );
@@ -19308,9 +19860,6 @@ function showDamagePopup(
         function openSkillsModal() {
           updateUI();
           skillsModal.classList.remove("hidden");
-          initPassiveTreeVisual();
-          rebuildPassiveTreeVisual();
-          setTimeout(syncPassiveTreeLayout, 60);
         }
 
         function closeSkillsModal() {
@@ -20736,9 +21285,8 @@ function showDamagePopup(
           player.mp = player.maxMp;
           player.statPoints += 5;
           player.skillPoints += 1;
-          player.passivePoints += 1;
           log(
-            `⬆️ レベルアップ！ Lv${player.level} 能力P+5 / スキルP+1 / パッシブP+1`,
+            `⬆️ レベルアップ！ Lv${player.level} 能力P+5 / スキルP+1`,
             "good",
           );
           triggerLevelUpEffect(player.level);
@@ -20973,7 +21521,6 @@ function showDamagePopup(
         memoModal.addEventListener("click", (e) => {
           if (e.target === memoModal) memoModal.classList.add("hidden");
         });
-        window.addEventListener("resize", syncPassiveTreeLayout);
 
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
