@@ -3403,7 +3403,7 @@
         <div class="guidance-body">
           <div class="guidance-title">Lv2到達おめでとう！</div>
           <div class="guidance-text">
-            レベルが上がるとステータスポイント5ポイント、スキルポイント1ポイント、パッシブポイント1ポイント付与される。リセットも出来るので色々試してみてください。
+            レベルが上がるとスキルポイント1ポイント、パッシブポイント1ポイント付与される。リセットも出来るので色々試してみてください。
           </div>
           <div class="guidance-actions">
             <button id="level-up-guidance-close" type="button">OK</button>
@@ -3615,25 +3615,7 @@
               <div class="section-title" style="margin: 2px 0 4px">
                 一次ステータス
               </div>
-              <div style="display: flex; align-items: center; gap: 6px">
-                <div class="inline-buttons">
-                  <div class="pill">能力P: <span id="stat-points"></span></div>
-                </div>
-                <button
-                  id="stat-step"
-                  class="step-button"
-                  aria-label="増減幅を切り替え"
-                >
-                  ±1
-                </button>
-                <button
-                  id="reset-stats"
-                  class="help-icon"
-                  aria-label="ステータスをリセット"
-                >
-                  ↺
-                </button>
-              </div>
+              <div style="display: flex; align-items: center; gap: 6px"></div>
             </div>
             <div id="primary-stats" class="primary-grid"></div>
           </div>
@@ -3781,6 +3763,9 @@
             <div class="pill">パッシブP: <span id="passive-points"></span></div>
             <button id="passive-tree-open-skills" class="mini-btn">
               スキル管理へ
+            </button>
+            <button id="passive-tree-center" class="mini-btn">
+              中央へ戻す
             </button>
             <button id="passive-tree-reset" class="help-icon">
               ルートリセット
@@ -10686,18 +10671,11 @@
             speed: 12,
           },
           primary: {
-            str: { label: "力", base: 3, bonus: 0 },
-            int: { label: "知識", base: 3, bonus: 0 },
-            vit: { label: "体力", base: 3, bonus: 0 },
-            agi: { label: "敏捷", base: 3, bonus: 0 },
-            luck: { label: "運", base: 3, bonus: 0 },
-          },
-          allocations: {
-            str: 0,
-            int: 0,
-            vit: 0,
-            agi: 0,
-            luck: 0,
+            str: { label: "力", base: 0, bonus: 0 },
+            int: { label: "知識", base: 0, bonus: 0 },
+            vit: { label: "体力", base: 0, bonus: 0 },
+            agi: { label: "敏捷", base: 0, bonus: 0 },
+            luck: { label: "運", base: 0, bonus: 0 },
           },
           bonus: createEmptyBonus(),
           baseBonus: createEmptyBonus(),
@@ -10715,7 +10693,6 @@
             accessory2: null,
           },
           gold: 0,
-          statPoints: 0,
           skillPoints: 0,
           passivePoints: 0,
           passiveNodes: {},
@@ -10788,7 +10765,7 @@
         };
 
         const PASSIVE_TREE_BLUEPRINTS = {
-          剱士: {
+          剣士: {
             upper: {
               label: "手数重視",
               routes: [
@@ -10868,7 +10845,7 @@
         };
 
         const CLASS_SKILL_PRESETS = {
-          剱士: {
+          剣士: {
             activeScaling: { physAtk: 1.15, speed: 0.35, critRate: 0.12 },
             passiveScaling: { physAtk: 0.6, speed: 0.35 },
             thresholds: {
@@ -11173,11 +11150,15 @@
                 desc: "物理貫通+8% / ブロック-5%",
                 bonus: { physPen: 8, block: -5 },
               },
+              { name: "連撃精度", bonus: { critRate: 2 } },
               {
                 name: "剛断",
                 desc: "クリ率+4% / 物攻+15 / 回避-6%",
                 bonus: { critRate: 4, physAtk: 15, evade: -6 },
               },
+              { name: "素早い踏み込み", bonus: { cooldown: 2 } },
+              { name: "連続斬り", bonus: { physPen: 3 } },
+              { name: "残心", bonus: { evade: 3 } },
             ],
           },
           魔法: {
@@ -12028,6 +12009,8 @@
         const passiveTreeOpenSkillsButton = document.getElementById(
           "passive-tree-open-skills",
         );
+        const passiveTreeCenterButton =
+          document.getElementById("passive-tree-center");
         const passiveTreeResetButton =
           document.getElementById("passive-tree-reset");
         const treeCanvasContainer = document.getElementById("canvas-container");
@@ -12147,6 +12130,14 @@
             "transform",
             `translate(${passiveTreeView.panX}, ${passiveTreeView.panY}) scale(${passiveTreeView.scale})`,
           );
+        }
+
+        function resetPassiveTreeView() {
+          if (!treeCanvasContainer) return;
+          passiveTreeView.scale = 0.45;
+          passiveTreeView.panX = treeCanvasContainer.clientWidth / 2;
+          passiveTreeView.panY = treeCanvasContainer.clientHeight / 2;
+          updatePassiveTreeTransform();
         }
 
         function refreshPassiveTreePoints() {
@@ -12390,10 +12381,7 @@
           if (!passiveTreeModal) return;
           ensurePassiveTreeState();
           recalcDerivedStats();
-          if (treeCanvasContainer) {
-            passiveTreeView.panX = treeCanvasContainer.clientWidth / 2;
-            passiveTreeView.panY = treeCanvasContainer.clientHeight / 2;
-          }
+          resetPassiveTreeView();
           applyPassiveTreeBackground();
           setActivePassiveTreeCategory(activePassiveTreeCategory);
           passiveTreeModal.classList.remove("hidden");
@@ -12689,14 +12677,11 @@
         );
 
         const primaryOrder = ["str", "int", "vit", "agi", "luck"];
-        const stepOptions = [1, 10, 50];
-        let currentStepIndex = 0;
         const skillStepOptions = [1, 10, 50];
         let currentSkillStepIndex = 0;
         let selectedSkillCategory = SKILL_CATEGORIES[0];
         let selectedSkillType = "active";
         let skillSummaryVisible = false;
-        let pendingResetSpent = 0;
         let playerModalPage = "status";
 
         const displayNumber = (num, { isPercent = false } = {}) => {
@@ -15018,7 +15003,6 @@ function showDamagePopup(
         function updateUI(derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           lastDerivedStats = derived;
-          updateStepButton();
           document.getElementById("floor-inline").textContent = game.floor;
           const displayHp = roundBattleValue(player.hp);
           const displayBarrier = Math.max(
@@ -15043,8 +15027,6 @@ function showDamagePopup(
             `EXP ${displayExp} / ${displayExpToLevel}`;
           document.getElementById("level").textContent = player.level;
           document.getElementById("gold").textContent = formatGold(player.gold);
-          document.getElementById("stat-points").textContent =
-            player.statPoints;
           document.getElementById("skill-points-skill").textContent =
             player.skillPoints;
           if (passiveTreePoints) {
@@ -15640,13 +15622,13 @@ function showDamagePopup(
           player.level = nextLevel;
           player.exp = 0;
           player.expToLevel = calcExpToNextLevel(nextLevel);
-          player.statPoints = Math.max(0, player.statPoints + delta * 5);
           player.skillPoints = Math.max(0, player.skillPoints + delta);
+          player.passivePoints = Math.max(0, player.passivePoints + delta);
 
           const derived = recalcDerivedStats();
           updateUI(derived);
           log(
-            `🔧 Lv${nextLevel} に変更 (能力P${delta >= 0 ? "+" : ""}${delta * 5} / スキルP${delta >= 0 ? "+" : ""}${delta})`,
+            `🔧 Lv${nextLevel} に変更 (スキルP${delta >= 0 ? "+" : ""}${delta} / パッシブP${delta >= 0 ? "+" : ""}${delta})`,
             "info",
           );
           maybeAutoSave("デバッグ:レベル変更");
@@ -16016,6 +15998,8 @@ function showDamagePopup(
 
           replaceObject(player, payload.player || {});
           replaceObject(game, payload.game || {});
+          delete player.statPoints;
+          delete player.allocations;
 
           if (typeof game.autoSkillEnabled !== "boolean") {
             game.autoSkillEnabled = false;
@@ -17027,42 +17011,6 @@ function showDamagePopup(
           });
         }
 
-        function adjustPrimary(key, delta) {
-          if (delta === 0) return;
-          if (delta > 0) {
-            const use = Math.min(delta, player.statPoints);
-            if (use <= 0) return;
-            player.statPoints -= use;
-            player.primary[key].base += use;
-            player.allocations[key] += use;
-            log(`能力Pを使用: ${player.primary[key].label} +${use}`, "good");
-          } else {
-            const refundable = player.allocations[key];
-            const giveBack = Math.min(refundable, Math.abs(delta));
-            if (giveBack <= 0) return;
-            player.primary[key].base -= giveBack;
-            player.allocations[key] -= giveBack;
-            player.statPoints += giveBack;
-            log(
-              `能力Pを返却: ${player.primary[key].label} -${giveBack}`,
-              "info",
-            );
-          }
-          updateUI();
-          maybeAutoSave("ステータス調整");
-        }
-
-        function getAdjustStep() {
-          return stepOptions[currentStepIndex];
-        }
-
-        function updateStepButton() {
-          if (!statStepButton) return;
-          const step = getAdjustStep();
-          statStepButton.textContent = `±${step}`;
-          statStepButton.title = `増減幅 ${step}`;
-        }
-
         function getSkillAdjustStep() {
           return skillStepOptions[currentSkillStepIndex];
         }
@@ -17077,7 +17025,6 @@ function showDamagePopup(
         function renderPrimaryStats() {
           const container = document.getElementById("primary-stats");
           container.innerHTML = "";
-          const step = getAdjustStep();
 
           primaryOrder.forEach((key) => {
             const stat = player.primary[key];
@@ -17098,28 +17045,7 @@ function showDamagePopup(
             info.appendChild(label);
             info.appendChild(value);
 
-            const actions = document.createElement("div");
-            actions.className = "primary-actions";
-
-            const inc = document.createElement("button");
-            inc.textContent = `+${step}`;
-            inc.classList.add("mini-btn");
-            inc.disabled = player.statPoints <= 0;
-            inc.title = `${step}ポイント増加`;
-            inc.onclick = () => adjustPrimary(key, step);
-
-            const dec = document.createElement("button");
-            dec.textContent = `-${step}`;
-            dec.classList.add("mini-btn");
-            dec.disabled = player.allocations[key] <= 0;
-            dec.title = `${step}ポイント減少`;
-            dec.onclick = () => adjustPrimary(key, -step);
-
-            actions.appendChild(inc);
-            actions.appendChild(dec);
-
             row.appendChild(info);
-            row.appendChild(actions);
             container.appendChild(row);
           });
         }
@@ -18639,8 +18565,6 @@ function showDamagePopup(
         const resetCancelButton = document.getElementById("reset-cancel");
         const resetConfirmButton = document.getElementById("reset-confirm");
         const resetSpentLabel = document.getElementById("reset-spent");
-        const resetButton = document.getElementById("reset-stats");
-        const statStepButton = document.getElementById("stat-step");
         const skillStepButton = document.getElementById("skill-step");
         const playerModalStatusButton = document.getElementById(
           "player-modal-status-btn",
@@ -21389,11 +21313,10 @@ function showDamagePopup(
           recalcDerivedStats();
           player.hp = player.maxHp;
           player.mp = player.maxMp;
-          player.statPoints += 5;
           player.skillPoints += 1;
           player.passivePoints += 1;
           log(
-            `⬆️ レベルアップ！ Lv${player.level} 能力P+5 / スキルP+1 / パッシブP+1`,
+            `⬆️ レベルアップ！ Lv${player.level} スキルP+1 / パッシブP+1`,
             "good",
           );
           triggerLevelUpEffect(player.level);
@@ -21401,22 +21324,6 @@ function showDamagePopup(
             showLevelUpGuidance();
           }
           maybeAutoSave("レベルアップ");
-        }
-
-        function resetAllocations() {
-          const spent = pendingResetSpent;
-          Object.entries(player.allocations).forEach(([key, amount]) => {
-            if (amount > 0) {
-              player.primary[key].base -= amount;
-              player.allocations[key] = 0;
-            }
-          });
-          player.statPoints += spent;
-          recalcDerivedStats();
-          updateUI();
-          log("ステータスをリセットしました", "info");
-          pendingResetSpent = 0;
-          maybeAutoSave("ステータス振り直し");
         }
 
         function retryBossFloor() {
@@ -21490,6 +21397,9 @@ function showDamagePopup(
         passiveTreeOpenSkillsButton?.addEventListener("click", () => {
           closePassiveTreeModal();
           openSkillsModal();
+        });
+        passiveTreeCenterButton?.addEventListener("click", () => {
+          resetPassiveTreeView();
         });
         passiveTreeResetButton?.addEventListener("click", () => {
           const reset = resetPassiveTree(activePassiveTreeCategory);
@@ -21652,12 +21562,6 @@ function showDamagePopup(
         codexCloseButton?.addEventListener("click", closeCodexModal);
         codexDetailCloseButton?.addEventListener("click", closeCodexDetail);
 
-        statStepButton.addEventListener("click", () => {
-          currentStepIndex = (currentStepIndex + 1) % stepOptions.length;
-          updateStepButton();
-          renderPrimaryStats();
-        });
-
         skillStepButton?.addEventListener("click", () => {
           currentSkillStepIndex =
             (currentSkillStepIndex + 1) % skillStepOptions.length;
@@ -21681,29 +21585,16 @@ function showDamagePopup(
           }
         });
 
-        resetButton.addEventListener("click", () => {
-          pendingResetSpent = Object.values(player.allocations).reduce(
-            (a, b) => a + b,
-            0,
-          );
-          if (pendingResetSpent === 0) {
-            log("リセットするポイントがありません", "info");
-            return;
-          }
-          resetSpentLabel.textContent = pendingResetSpent;
-          resetModal.classList.remove("hidden");
-        });
-        resetCloseButton.addEventListener("click", () =>
-          resetModal.classList.add("hidden"),
+        resetCloseButton?.addEventListener("click", () =>
+          resetModal?.classList.add("hidden"),
         );
-        resetCancelButton.addEventListener("click", () =>
-          resetModal.classList.add("hidden"),
+        resetCancelButton?.addEventListener("click", () =>
+          resetModal?.classList.add("hidden"),
         );
-        resetConfirmButton.addEventListener("click", () => {
-          resetModal.classList.add("hidden");
-          resetAllocations();
+        resetConfirmButton?.addEventListener("click", () => {
+          resetModal?.classList.add("hidden");
         });
-        resetModal.addEventListener("click", (e) => {
+        resetModal?.addEventListener("click", (e) => {
           if (e.target === resetModal) resetModal.classList.add("hidden");
         });
         potionModal.addEventListener("click", (e) => {
