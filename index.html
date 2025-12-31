@@ -12155,6 +12155,14 @@
           }
         }
 
+        function setActivePassiveTreeCategory(category) {
+          if (!SKILL_CATEGORIES.includes(category)) return;
+          activePassiveTreeCategory = category;
+          selectedPassiveNodeId = null;
+          renderPassiveTreeTabs();
+          renderPassiveTree();
+        }
+
         function renderPassiveTreeTabs() {
           if (!passiveTreeTabs) return;
           passiveTreeTabs.innerHTML = "";
@@ -12164,9 +12172,7 @@
             btn.textContent = category;
             btn.classList.toggle("active", category === activePassiveTreeCategory);
             btn.onclick = () => {
-              activePassiveTreeCategory = category;
-              selectedPassiveNodeId = null;
-              renderPassiveTree();
+              setActivePassiveTreeCategory(category);
             };
             passiveTreeTabs.appendChild(btn);
           });
@@ -12389,8 +12395,7 @@
             passiveTreeView.panY = treeCanvasContainer.clientHeight / 2;
           }
           applyPassiveTreeBackground();
-          renderPassiveTreeTabs();
-          renderPassiveTree();
+          setActivePassiveTreeCategory(activePassiveTreeCategory);
           passiveTreeModal.classList.remove("hidden");
         }
 
