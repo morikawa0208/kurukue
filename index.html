@@ -11150,15 +11150,11 @@
                 desc: "物理貫通+8% / ブロック-5%",
                 bonus: { physPen: 8, block: -5 },
               },
-              { name: "連撃精度", bonus: { critRate: 2 } },
               {
                 name: "剛断",
                 desc: "クリ率+4% / 物攻+15 / 回避-6%",
                 bonus: { critRate: 4, physAtk: 15, evade: -6 },
               },
-              { name: "素早い踏み込み", bonus: { cooldown: 2 } },
-              { name: "連続斬り", bonus: { physPen: 3 } },
-              { name: "残心", bonus: { evade: 3 } },
             ],
           },
           魔法: {
@@ -11274,60 +11270,412 @@
 
         const PASSIVE_TREE_CORE_PRESETS = {
           剣士: {
-            inner: {
-              name: "剣士のコア",
-              desc: "剣士の基礎戦技を磨く。",
-              primary: { str: 1 },
-              bonus: { physAtk: 6 },
-            },
-            outer: {
-              name: "剣士の外縁",
-              desc: "剣士の足さばきを整える。",
-              primary: { agi: 1 },
-              bonus: { speed: 1.2 },
-            },
+            inner: [
+              {
+                name: "剣士のコア: 剛撃",
+                desc: "力を研ぎ澄まし攻撃力を底上げ。",
+                primary: { str: 2 },
+                bonus: { physAtk: 20 },
+              },
+              {
+                name: "剣士のコア: 俊撃",
+                desc: "素早い踏み込みで連撃を支える。",
+                primary: { agi: 2 },
+                bonus: { speed: 3.5 },
+              },
+              {
+                name: "剣士のコア: 貫通",
+                desc: "装甲を砕く刃を鍛える。",
+                primary: { str: 2 },
+                bonus: { physPen: 6 },
+              },
+              {
+                name: "剣士のコア: 闘志",
+                desc: "戦意を高め会心の質を上げる。",
+                primary: { str: 1 },
+                bonus: { critDamage: 10 },
+              },
+              {
+                name: "剣士のコア: 精密",
+                desc: "刃筋を整え命中を高める。",
+                primary: { agi: 1 },
+                bonus: { accuracy: 6 },
+              },
+              {
+                name: "剣士のコア: 重心",
+                desc: "安定した構えで被ダメを抑える。",
+                primary: { vit: 1 },
+                bonus: { damageReduction: 4 },
+              },
+              {
+                name: "剣士のコア: 連閃",
+                desc: "手数を増やし連撃を補強。",
+                primary: { agi: 2 },
+                bonus: { critRate: 4 },
+              },
+              {
+                name: "剣士のコア: 鍛錬",
+                desc: "基本を磨き防御力を底上げ。",
+                primary: { vit: 1 },
+                bonus: { physDef: 8 },
+              },
+            ],
+            outer: [
+              {
+                name: "剣士の外縁: 疾走",
+                desc: "機動力を高め戦場を駆ける。",
+                primary: { agi: 2 },
+                bonus: { speed: 4.5 },
+              },
+              {
+                name: "剣士の外縁: 斬撃",
+                desc: "刃の冴えで物理攻撃を押し上げる。",
+                primary: { str: 2 },
+                bonus: { physAtk: 18 },
+              },
+              {
+                name: "剣士の外縁: 俊敏",
+                desc: "反射神経で回避を高める。",
+                primary: { agi: 1 },
+                bonus: { evade: 6 },
+              },
+              {
+                name: "剣士の外縁: 視界",
+                desc: "戦場把握で命中を高める。",
+                primary: { agi: 1 },
+                bonus: { accuracy: 6 },
+              },
+              {
+                name: "剣士の外縁: 守勢",
+                desc: "防御姿勢でブロック率を高める。",
+                primary: { vit: 1 },
+                bonus: { block: 6 },
+              },
+              {
+                name: "剣士の外縁: 集中",
+                desc: "集中力で会心率を引き上げる。",
+                primary: { str: 1 },
+                bonus: { critRate: 4 },
+              },
+              {
+                name: "剣士の外縁: 反撃",
+                desc: "反撃の鋭さでクリダメを伸ばす。",
+                primary: { str: 1 },
+                bonus: { critDamage: 8 },
+              },
+              {
+                name: "剣士の外縁: 防備",
+                desc: "装甲を整え物防を高める。",
+                primary: { vit: 1 },
+                bonus: { physDef: 8 },
+              },
+            ],
           },
           魔法: {
-            inner: {
-              name: "魔法のコア",
-              desc: "魔術の核となる魔力を高める。",
-              primary: { int: 1 },
-              bonus: { magAtk: 6 },
-            },
-            outer: {
-              name: "魔法の外縁",
-              desc: "魔力の流れを整える。",
-              primary: { int: 1 },
-              bonus: { mp: 12 },
-            },
+            inner: [
+              {
+                name: "魔法のコア: 深層",
+                desc: "魔力の核を鍛え魔攻を上げる。",
+                primary: { int: 2 },
+                bonus: { magAtk: 20 },
+              },
+              {
+                name: "魔法のコア: 精密",
+                desc: "術式精度で魔法貫通を高める。",
+                primary: { int: 2 },
+                bonus: { magPen: 6 },
+              },
+              {
+                name: "魔法のコア: 濃度",
+                desc: "魔力濃度を上げMPを底上げ。",
+                primary: { int: 2 },
+                bonus: { mp: 24 },
+              },
+              {
+                name: "魔法のコア: 詠唱",
+                desc: "詠唱効率でCTを短縮。",
+                primary: { int: 1 },
+                bonus: { cooldown: 4 },
+              },
+              {
+                name: "魔法のコア: 速度",
+                desc: "詠唱速度を高める。",
+                primary: { agi: 1 },
+                bonus: { speed: 3.5 },
+              },
+              {
+                name: "魔法のコア: 研鑽",
+                desc: "術式理解でクリ率を上げる。",
+                primary: { int: 1 },
+                bonus: { critRate: 4 },
+              },
+              {
+                name: "魔法のコア: 保護",
+                desc: "魔防を強化し被害を抑える。",
+                primary: { vit: 1 },
+                bonus: { magDef: 8 },
+              },
+              {
+                name: "魔法のコア: 魔導",
+                desc: "魔力制御で魔攻をさらに底上げ。",
+                primary: { int: 1 },
+                bonus: { magAtk: 16 },
+              },
+            ],
+            outer: [
+              {
+                name: "魔法の外縁: 潮流",
+                desc: "魔力の流れでMPを伸ばす。",
+                primary: { int: 2 },
+                bonus: { mp: 22 },
+              },
+              {
+                name: "魔法の外縁: 加速",
+                desc: "魔術の加速で速度を高める。",
+                primary: { agi: 1 },
+                bonus: { speed: 4 },
+              },
+              {
+                name: "魔法の外縁: 洞察",
+                desc: "集中で命中を高める。",
+                primary: { int: 1 },
+                bonus: { accuracy: 6 },
+              },
+              {
+                name: "魔法の外縁: 精緻",
+                desc: "術式の精緻化で魔貫通を上げる。",
+                primary: { int: 1 },
+                bonus: { magPen: 5 },
+              },
+              {
+                name: "魔法の外縁: 再構成",
+                desc: "バリアの基礎を整える。",
+                primary: { vit: 1 },
+                bonus: { barrier: 18 },
+              },
+              {
+                name: "魔法の外縁: 結界",
+                desc: "防壁を強化し魔防を底上げ。",
+                primary: { vit: 1 },
+                bonus: { magDef: 8 },
+              },
+              {
+                name: "魔法の外縁: 刹那",
+                desc: "詠唱短縮でCTを削る。",
+                primary: { int: 1 },
+                bonus: { cooldown: 4 },
+              },
+              {
+                name: "魔法の外縁: 効率",
+                desc: "魔力効率を高める。",
+                primary: { int: 1 },
+                bonus: { magAtk: 14 },
+              },
+            ],
           },
           聖職: {
-            inner: {
-              name: "聖職のコア",
-              desc: "祈りの強度を支える。",
-              primary: { vit: 1 },
-              bonus: { physDef: 5 },
-            },
-            outer: {
-              name: "聖職の外縁",
-              desc: "光の結界を保つ。",
-              primary: { int: 1 },
-              bonus: { magDef: 5 },
-            },
+            inner: [
+              {
+                name: "聖職のコア: 守護",
+                desc: "守りを固め物防を高める。",
+                primary: { vit: 2 },
+                bonus: { physDef: 16 },
+              },
+              {
+                name: "聖職のコア: 祈念",
+                desc: "祈りを強め魔防を高める。",
+                primary: { int: 1 },
+                bonus: { magDef: 12 },
+              },
+              {
+                name: "聖職のコア: 光輝",
+                desc: "光の力で魔攻を引き上げる。",
+                primary: { int: 1 },
+                bonus: { magAtk: 14 },
+              },
+              {
+                name: "聖職のコア: 回復",
+                desc: "再生力を高める。",
+                primary: { vit: 1 },
+                bonus: { hpRegen: 0.6 },
+              },
+              {
+                name: "聖職のコア: 抑制",
+                desc: "弱体耐性を高める。",
+                primary: { vit: 1 },
+                bonus: { debuffResist: 6 },
+              },
+              {
+                name: "聖職のコア: 堅牢",
+                desc: "ブロック率を強化する。",
+                primary: { vit: 1 },
+                bonus: { block: 6 },
+              },
+              {
+                name: "聖職のコア: 神威",
+                desc: "聖なる会心を引き上げる。",
+                primary: { int: 1 },
+                bonus: { critRate: 4 },
+              },
+              {
+                name: "聖職のコア: 結界",
+                desc: "バリアを高める。",
+                primary: { vit: 1 },
+                bonus: { barrier: 20 },
+              },
+            ],
+            outer: [
+              {
+                name: "聖職の外縁: 堅守",
+                desc: "被ダメ軽減を高める。",
+                primary: { vit: 2 },
+                bonus: { damageReduction: 6 },
+              },
+              {
+                name: "聖職の外縁: 守勢",
+                desc: "物防を底上げする。",
+                primary: { vit: 1 },
+                bonus: { physDef: 12 },
+              },
+              {
+                name: "聖職の外縁: 光護",
+                desc: "魔防を強化する。",
+                primary: { int: 1 },
+                bonus: { magDef: 10 },
+              },
+              {
+                name: "聖職の外縁: 慈愛",
+                desc: "最大HPを高める。",
+                primary: { vit: 1 },
+                bonus: { hp: 32 },
+              },
+              {
+                name: "聖職の外縁: 祈り",
+                desc: "回復力を底上げする。",
+                primary: { vit: 1 },
+                bonus: { hpRegen: 0.5 },
+              },
+              {
+                name: "聖職の外縁: 祝詞",
+                desc: "バリアを厚くする。",
+                primary: { vit: 1 },
+                bonus: { barrier: 18 },
+              },
+              {
+                name: "聖職の外縁: 補助",
+                desc: "CT短縮で支援を強化。",
+                primary: { int: 1 },
+                bonus: { cooldown: 4 },
+              },
+              {
+                name: "聖職の外縁: 制裁",
+                desc: "魔攻を強化する。",
+                primary: { int: 1 },
+                bonus: { magAtk: 12 },
+              },
+            ],
           },
           吸血: {
-            inner: {
-              name: "吸血のコア",
-              desc: "血の感覚を研ぎ澄ます。",
-              primary: { agi: 1 },
-              bonus: { lifeSteal: 1.2 },
-            },
-            outer: {
-              name: "吸血の外縁",
-              desc: "血の巡りを整える。",
-              primary: { vit: 1 },
-              bonus: { hp: 18 },
-            },
+            inner: [
+              {
+                name: "吸血のコア: 牙",
+                desc: "吸収量を高める。",
+                primary: { agi: 2 },
+                bonus: { lifeSteal: 3 },
+              },
+              {
+                name: "吸血のコア: 血戦",
+                desc: "物攻を引き上げる。",
+                primary: { str: 1 },
+                bonus: { physAtk: 16 },
+              },
+              {
+                name: "吸血のコア: 血気",
+                desc: "最大HPを増やす。",
+                primary: { vit: 1 },
+                bonus: { hp: 30 },
+              },
+              {
+                name: "吸血のコア: 狂熱",
+                desc: "会心率を高める。",
+                primary: { agi: 1 },
+                bonus: { critRate: 4 },
+              },
+              {
+                name: "吸血のコア: 侵食",
+                desc: "物理貫通を高める。",
+                primary: { str: 1 },
+                bonus: { physPen: 5 },
+              },
+              {
+                name: "吸血のコア: 血護",
+                desc: "被ダメ軽減を高める。",
+                primary: { vit: 1 },
+                bonus: { damageReduction: 5 },
+              },
+              {
+                name: "吸血のコア: 血走",
+                desc: "速度を高める。",
+                primary: { agi: 1 },
+                bonus: { speed: 3.5 },
+              },
+              {
+                name: "吸血のコア: 深血",
+                desc: "HP吸収の質を高める。",
+                primary: { agi: 1 },
+                bonus: { lifeSteal: 2.5 },
+              },
+            ],
+            outer: [
+              {
+                name: "吸血の外縁: 血宴",
+                desc: "吸収をさらに引き上げる。",
+                primary: { agi: 1 },
+                bonus: { lifeSteal: 2.5 },
+              },
+              {
+                name: "吸血の外縁: 強襲",
+                desc: "物攻を底上げする。",
+                primary: { str: 1 },
+                bonus: { physAtk: 14 },
+              },
+              {
+                name: "吸血の外縁: 血脈",
+                desc: "最大HPを増やす。",
+                primary: { vit: 1 },
+                bonus: { hp: 26 },
+              },
+              {
+                name: "吸血の外縁: 俊敏",
+                desc: "速度を高める。",
+                primary: { agi: 1 },
+                bonus: { speed: 4 },
+              },
+              {
+                name: "吸血の外縁: 命中",
+                desc: "命中を高める。",
+                primary: { agi: 1 },
+                bonus: { accuracy: 6 },
+              },
+              {
+                name: "吸血の外縁: 凝血",
+                desc: "クリダメを底上げする。",
+                primary: { str: 1 },
+                bonus: { critDamage: 8 },
+              },
+              {
+                name: "吸血の外縁: 生命力",
+                desc: "再生力を高める。",
+                primary: { vit: 1 },
+                bonus: { hpRegen: 0.4 },
+              },
+              {
+                name: "吸血の外縁: 衝動",
+                desc: "会心率を高める。",
+                primary: { agi: 1 },
+                bonus: { critRate: 4 },
+              },
+            ],
           },
         };
 
@@ -11368,7 +11716,10 @@
                 PASSIVE_TREE_LAYOUT;
               for (let i = 0; i < coreCount; i++) {
                 const angle = (Math.PI * 2 * i) / coreCount;
-                const inner = corePreset.inner || {};
+                const innerSet = Array.isArray(corePreset.inner)
+                  ? corePreset.inner
+                  : [];
+                const inner = innerSet[i % innerSet.length] || {};
                 nodes.push({
                   id: `inner-${i}`,
                   x: Math.cos(angle) * innerRadius,
@@ -11386,7 +11737,10 @@
 
               for (let i = 0; i < coreCount; i++) {
                 const angle = (Math.PI * 2 * i) / coreCount;
-                const outer = corePreset.outer || {};
+                const outerSet = Array.isArray(corePreset.outer)
+                  ? corePreset.outer
+                  : [];
+                const outer = outerSet[i % outerSet.length] || {};
                 nodes.push({
                   id: `outer-${i}`,
                   x: Math.cos(angle) * outerRadius,
