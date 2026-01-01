@@ -11272,6 +11272,65 @@
           },
         };
 
+        const PASSIVE_TREE_CORE_PRESETS = {
+          剣士: {
+            inner: {
+              name: "剣士のコア",
+              desc: "剣士の基礎戦技を磨く。",
+              primary: { str: 1 },
+              bonus: { physAtk: 6 },
+            },
+            outer: {
+              name: "剣士の外縁",
+              desc: "剣士の足さばきを整える。",
+              primary: { agi: 1 },
+              bonus: { speed: 1.2 },
+            },
+          },
+          魔法: {
+            inner: {
+              name: "魔法のコア",
+              desc: "魔術の核となる魔力を高める。",
+              primary: { int: 1 },
+              bonus: { magAtk: 6 },
+            },
+            outer: {
+              name: "魔法の外縁",
+              desc: "魔力の流れを整える。",
+              primary: { int: 1 },
+              bonus: { mp: 12 },
+            },
+          },
+          聖職: {
+            inner: {
+              name: "聖職のコア",
+              desc: "祈りの強度を支える。",
+              primary: { vit: 1 },
+              bonus: { physDef: 5 },
+            },
+            outer: {
+              name: "聖職の外縁",
+              desc: "光の結界を保つ。",
+              primary: { int: 1 },
+              bonus: { magDef: 5 },
+            },
+          },
+          吸血: {
+            inner: {
+              name: "吸血のコア",
+              desc: "血の感覚を研ぎ澄ます。",
+              primary: { agi: 1 },
+              bonus: { lifeSteal: 1.2 },
+            },
+            outer: {
+              name: "吸血の外縁",
+              desc: "血の巡りを整える。",
+              primary: { vit: 1 },
+              bonus: { hp: 18 },
+            },
+          },
+        };
+
         function getRouteSkillKeys(category, route) {
           const baseKey = CATEGORY_KEY_MAP[category] + "-" + route.key + "-";
           const activeKey = route.activeKey || `${baseKey}active`;
@@ -11294,6 +11353,7 @@
               const skillNodes = {};
               const adjacency = {};
               const activeSkills = [];
+              const corePreset = PASSIVE_TREE_CORE_PRESETS[category] || {};
 
               nodes.push({
                 id: "origin",
@@ -11308,12 +11368,16 @@
                 PASSIVE_TREE_LAYOUT;
               for (let i = 0; i < coreCount; i++) {
                 const angle = (Math.PI * 2 * i) / coreCount;
+                const inner = corePreset.inner || {};
                 nodes.push({
                   id: `inner-${i}`,
                   x: Math.cos(angle) * innerRadius,
                   y: Math.sin(angle) * innerRadius,
                   kind: "core",
-                  name: "コア",
+                  name: inner.name || "コア",
+                  desc: inner.desc || "",
+                  primary: inner.primary || {},
+                  bonus: inner.bonus || {},
                 });
                 links.push({ s: "origin", t: `inner-${i}` });
                 if (i > 0) links.push({ s: `inner-${i - 1}`, t: `inner-${i}` });
@@ -11322,12 +11386,16 @@
 
               for (let i = 0; i < coreCount; i++) {
                 const angle = (Math.PI * 2 * i) / coreCount;
+                const outer = corePreset.outer || {};
                 nodes.push({
                   id: `outer-${i}`,
                   x: Math.cos(angle) * outerRadius,
                   y: Math.sin(angle) * outerRadius,
                   kind: "core",
-                  name: "外縁",
+                  name: outer.name || "外縁",
+                  desc: outer.desc || "",
+                  primary: outer.primary || {},
+                  bonus: outer.bonus || {},
                 });
                 links.push({ s: `inner-${i}`, t: `outer-${i}` });
                 if (i > 0) links.push({ s: `outer-${i - 1}`, t: `outer-${i}` });
@@ -11548,10 +11616,7 @@
           const acquired = new Set(player.passiveNodes?.[category] || []);
           const nodes = definition.nodes.map((node) => ({
             ...node,
-            active:
-              node.kind === "start" ||
-              node.kind === "core" ||
-              acquired.has(node.id),
+            active: node.kind === "start" || acquired.has(node.id),
           }));
           return {
             nodes,
@@ -11624,7 +11689,7 @@
           const { nodes, adjacency } = getPassiveTreeState(category);
           const target = nodes.find((node) => node.id === nodeId);
           if (!target || target.active) return false;
-          if (["core", "exit", "start"].includes(target.kind)) return false;
+          if (["exit", "start"].includes(target.kind)) return false;
           if (player.passivePoints <= 0) return false;
           const neighbors = adjacency?.[nodeId];
           if (!neighbors) return false;
