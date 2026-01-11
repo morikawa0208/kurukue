@@ -2942,6 +2942,34 @@
         letter-spacing: 0.04em;
       }
 
+      .debug-tuning-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 8px;
+      }
+
+      .debug-tuning-grid label {
+        font-size: 11px;
+        color: var(--muted);
+        display: grid;
+        gap: 4px;
+      }
+
+      .debug-tuning-grid input {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 6px;
+        color: var(--text);
+        width: 100%;
+      }
+
+      .debug-tuning-subtitle {
+        margin: 6px 0;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
       .legendary-records {
         display: grid;
         gap: 6px;
@@ -4098,6 +4126,211 @@
             </label>
             <div class="subtle">
               デバッグ専用。再読み込みでセーブの状態に戻ります。
+            </div>
+          </div>
+          <div class="debug-section">
+            <h4>バランス調整（簡易）</h4>
+            <div class="debug-tuning-subtitle">成長係数</div>
+            <div class="debug-tuning-grid">
+              <label>
+                プレイヤー成長/レベル
+                <input data-tuning-key="growth.playerPerLevel" type="number" step="0.01" />
+              </label>
+              <label>
+                敵成長/階層
+                <input data-tuning-key="growth.enemyPerFloor" type="number" step="0.01" />
+              </label>
+              <label>
+                ボス成長倍率
+                <input data-tuning-key="growth.bossMultiplier" type="number" step="0.01" />
+              </label>
+              <label>
+                ボス二次倍率
+                <input data-tuning-key="growth.bossSecondaryMultiplier" type="number" step="0.01" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">プレイヤー基礎</div>
+            <div class="debug-tuning-grid">
+              <label>
+                基礎HP
+                <input data-tuning-key="playerBase.hp" type="number" step="1" />
+              </label>
+              <label>
+                基礎MP
+                <input data-tuning-key="playerBase.mp" type="number" step="1" />
+              </label>
+              <label>
+                基礎物攻
+                <input data-tuning-key="playerBase.physAtk" type="number" step="0.1" />
+              </label>
+              <label>
+                基礎魔攻
+                <input data-tuning-key="playerBase.magAtk" type="number" step="0.1" />
+              </label>
+              <label>
+                基礎物防
+                <input data-tuning-key="playerBase.physDef" type="number" step="0.1" />
+              </label>
+              <label>
+                基礎魔防
+                <input data-tuning-key="playerBase.magDef" type="number" step="0.1" />
+              </label>
+              <label>
+                基礎速度
+                <input data-tuning-key="playerBase.speed" type="number" step="0.1" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">二次係数</div>
+            <div class="debug-tuning-grid">
+              <label>
+                HP/体力
+                <input data-tuning-key="secondary.hpVit" type="number" step="0.1" />
+              </label>
+              <label>
+                MP/知識
+                <input data-tuning-key="secondary.mpInt" type="number" step="0.1" />
+              </label>
+              <label>
+                物攻/力
+                <input data-tuning-key="secondary.physAtkStr" type="number" step="0.1" />
+              </label>
+              <label>
+                魔攻/知識
+                <input data-tuning-key="secondary.magAtkInt" type="number" step="0.1" />
+              </label>
+              <label>
+                物防/体力
+                <input data-tuning-key="secondary.physDefVit" type="number" step="0.1" />
+              </label>
+              <label>
+                物防/力
+                <input data-tuning-key="secondary.physDefStr" type="number" step="0.1" />
+              </label>
+              <label>
+                魔防/体力
+                <input data-tuning-key="secondary.magDefVit" type="number" step="0.1" />
+              </label>
+              <label>
+                魔防/知識
+                <input data-tuning-key="secondary.magDefInt" type="number" step="0.1" />
+              </label>
+              <label>
+                速度/敏捷
+                <input data-tuning-key="secondary.speedAgi" type="number" step="0.1" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">上限・補正</div>
+            <div class="debug-tuning-grid">
+              <label>
+                クリ率上限
+                <input data-tuning-key="caps.critRate" type="number" step="1" />
+              </label>
+              <label>
+                回避上限
+                <input data-tuning-key="caps.evade" type="number" step="1" />
+              </label>
+              <label>
+                命中上限
+                <input data-tuning-key="caps.accuracy" type="number" step="1" />
+              </label>
+              <label>
+                貫通上限
+                <input data-tuning-key="caps.penetration" type="number" step="1" />
+              </label>
+              <label>
+                クリダメ上限
+                <input data-tuning-key="caps.critDamage" type="number" step="1" />
+              </label>
+              <label>
+                耐性上限
+                <input data-tuning-key="caps.resist" type="number" step="1" />
+              </label>
+              <label>
+                CT上限
+                <input data-tuning-key="caps.cooldown" type="number" step="1" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">トレハン係数</div>
+            <div class="debug-tuning-grid">
+              <label>
+                ドロップ/運
+                <input data-tuning-key="treasure.dropRatePerLuck" type="number" step="0.01" />
+              </label>
+              <label>
+                レア/運
+                <input data-tuning-key="treasure.rarityPerLuck" type="number" step="0.01" />
+              </label>
+              <label>
+                称号/運
+                <input data-tuning-key="treasure.titlePerLuck" type="number" step="0.01" />
+              </label>
+              <label>
+                ネームド/運
+                <input data-tuning-key="treasure.namedPerLuck" type="number" step="0.01" />
+              </label>
+              <label>
+                ゴールド基礎
+                <input data-tuning-key="treasure.goldBase" type="number" step="1" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">敵基礎</div>
+            <div class="debug-tuning-grid">
+              <label>
+                敵HP基礎
+                <input data-tuning-key="enemyBase.hp" type="number" step="0.1" />
+              </label>
+              <label>
+                敵ATK基礎
+                <input data-tuning-key="enemyBase.atk" type="number" step="0.1" />
+              </label>
+              <label>
+                敵DEF基礎
+                <input data-tuning-key="enemyBase.def" type="number" step="0.1" />
+              </label>
+              <label>
+                敵SPD基礎
+                <input data-tuning-key="enemyBase.spd" type="number" step="0.1" />
+              </label>
+              <label>
+                敵SPDランダム
+                <input data-tuning-key="enemyBase.spdRandom" type="number" step="0.1" />
+              </label>
+              <label>
+                ボスSPD加算
+                <input data-tuning-key="enemyBase.bossSpdBonus" type="number" step="0.1" />
+              </label>
+            </div>
+            <div class="debug-tuning-subtitle">敵二次</div>
+            <div class="debug-tuning-grid">
+              <label>
+                命中基礎
+                <input data-tuning-key="enemySecondary.accuracyBase" type="number" step="1" />
+              </label>
+              <label>
+                命中成長
+                <input data-tuning-key="enemySecondary.accuracyGrowth" type="number" step="0.1" />
+              </label>
+              <label>
+                回避基礎
+                <input data-tuning-key="enemySecondary.evadeBase" type="number" step="0.1" />
+              </label>
+              <label>
+                回避成長
+                <input data-tuning-key="enemySecondary.evadeGrowth" type="number" step="0.1" />
+              </label>
+              <label>
+                耐性基礎
+                <input data-tuning-key="enemySecondary.resistBase" type="number" step="0.1" />
+              </label>
+              <label>
+                耐性成長
+                <input data-tuning-key="enemySecondary.resistGrowth" type="number" step="0.1" />
+              </label>
+            </div>
+            <div class="debug-buttons" style="margin-top: 8px">
+              <button id="debug-apply-balance">反映</button>
+              <button id="debug-reset-balance">初期値に戻す</button>
+              <button id="debug-respawn-enemies">敵を再生成</button>
             </div>
           </div>
           <div class="modal-actions">
@@ -12657,17 +12890,94 @@
           return stat.base + stat.bonus;
         };
 
-        const PLAYER_GROWTH_PER_LEVEL = 0.02;
-        const ENEMY_GROWTH_PER_FLOOR = 0.03;
-        const BOSS_GROWTH_MULTIPLIER = 1.15;
-        const BOSS_SECONDARY_MULTIPLIER = 1.1;
+        const SIMPLE_TUNING_DEFAULTS = {
+          growth: {
+            playerPerLevel: 0.02,
+            enemyPerFloor: 0.03,
+            bossMultiplier: 1.15,
+            bossSecondaryMultiplier: 1.1,
+          },
+          playerBase: {
+            hp: 200,
+            mp: 100,
+            physAtk: 40,
+            magAtk: 32,
+            physDef: 16,
+            magDef: 16,
+            speed: 12,
+          },
+          secondary: {
+            hpVit: 12,
+            mpInt: 5,
+            physAtkStr: 2.5,
+            magAtkInt: 2.6,
+            physDefVit: 1.1,
+            physDefStr: 0.4,
+            magDefVit: 0.9,
+            magDefInt: 0.5,
+            speedAgi: 1.5,
+            critRatePerAgi: 1,
+            critRatePerLuck: 1,
+            evadePerAgi: 0.6,
+            evadePerLuck: 0.4,
+            accuracyBase: 100,
+            accuracyPerAgi: 0.4,
+            physPenPerStr: 0.4,
+            magPenPerInt: 0.4,
+            critDamagePerLuck: 1.1,
+            controlResistVit: 0.5,
+            controlResistLuck: 0.3,
+            dotResistVit: 0.6,
+            dotResistLuck: 0.2,
+            debuffResistVit: 0.4,
+            debuffResistInt: 0.4,
+            debuffResistLuck: 0.2,
+            cooldownPerAgi: 0.2,
+            cooldownPerInt: 0.2,
+          },
+          caps: {
+            critRate: 120,
+            evade: 90,
+            accuracy: 160,
+            penetration: 50,
+            critDamage: 80,
+            resist: 80,
+            cooldown: 30,
+          },
+          treasure: {
+            dropRatePerLuck: 0.6,
+            rarityPerLuck: 0.25,
+            titlePerLuck: 0.35,
+            namedPerLuck: 0.7,
+            goldBase: 200,
+          },
+          enemyBase: {
+            hp: 12,
+            atk: 7.5,
+            def: 3.2,
+            spd: 3.9,
+            spdRandom: 1.2,
+            bossSpdBonus: 1.2,
+          },
+          enemySecondary: {
+            accuracyBase: 80,
+            accuracyGrowth: 4,
+            evadeBase: 6,
+            evadeGrowth: 1.6,
+            resistBase: 8,
+            resistGrowth: 0.6,
+          },
+        };
+        let simpleTuning = JSON.parse(JSON.stringify(SIMPLE_TUNING_DEFAULTS));
+        Object.assign(player.base, simpleTuning.playerBase);
 
         function playerGrowthMultiplier(level) {
           const effective = Math.max(1, Math.floor(level || 1));
-          return 1 + (effective - 1) * PLAYER_GROWTH_PER_LEVEL;
+          return 1 + (effective - 1) * simpleTuning.growth.playerPerLevel;
         }
 
         function calcSecondaryStats() {
+          const tuning = simpleTuning;
           const str = statTotal("str");
           const int = statTotal("int");
           const vit = statTotal("vit");
@@ -12677,23 +12987,57 @@
           // ---- 基本ステータス系 ----
           const baseGrowth = playerGrowthMultiplier(player.level);
 
-          const maxHpBase = (player.base.hp + vit * 12) * baseGrowth;
-          const maxMpBase = (player.base.mp + int * 5) * baseGrowth;
-          const physAtkBase = (player.base.physAtk + str * 2.5) * baseGrowth;
-          const magAtkBase = (player.base.magAtk + int * 2.6) * baseGrowth;
+          const maxHpBase =
+            (player.base.hp + vit * tuning.secondary.hpVit) * baseGrowth;
+          const maxMpBase =
+            (player.base.mp + int * tuning.secondary.mpInt) * baseGrowth;
+          const physAtkBase =
+            (player.base.physAtk + str * tuning.secondary.physAtkStr) *
+            baseGrowth;
+          const magAtkBase =
+            (player.base.magAtk + int * tuning.secondary.magAtkInt) *
+            baseGrowth;
           const physDefBase =
-            (player.base.physDef + vit * 1.1 + str * 0.4) * baseGrowth;
+            (player.base.physDef +
+              vit * tuning.secondary.physDefVit +
+              str * tuning.secondary.physDefStr) *
+            baseGrowth;
           const magDefBase =
-            (player.base.magDef + vit * 0.9 + int * 0.5) * baseGrowth;
-          const speedBase = (player.base.speed + agi * 1.5) * baseGrowth;
+            (player.base.magDef +
+              vit * tuning.secondary.magDefVit +
+              int * tuning.secondary.magDefInt) *
+            baseGrowth;
+          const speedBase =
+            (player.base.speed + agi * tuning.secondary.speedAgi) * baseGrowth;
 
           // 会心・命中・貫通など
-          const critBase = Math.min(120, agi + luck);
-          const evadeBase = Math.min(90, agi * 0.6 + luck * 0.4);
-          const accuracyBase = Math.min(160, 100 + agi * 0.4);
-          const physPenBase = Math.min(50, str * 0.4);
-          const magPenBase = Math.min(50, int * 0.4);
-          const critDmgBase = Math.min(80, luck * 1.1);
+          const critBase = Math.min(
+            tuning.caps.critRate,
+            agi * tuning.secondary.critRatePerAgi +
+              luck * tuning.secondary.critRatePerLuck,
+          );
+          const evadeBase = Math.min(
+            tuning.caps.evade,
+            agi * tuning.secondary.evadePerAgi +
+              luck * tuning.secondary.evadePerLuck,
+          );
+          const accuracyBase = Math.min(
+            tuning.caps.accuracy,
+            tuning.secondary.accuracyBase +
+              agi * tuning.secondary.accuracyPerAgi,
+          );
+          const physPenBase = Math.min(
+            tuning.caps.penetration,
+            str * tuning.secondary.physPenPerStr,
+          );
+          const magPenBase = Math.min(
+            tuning.caps.penetration,
+            int * tuning.secondary.magPenPerInt,
+          );
+          const critDmgBase = Math.min(
+            tuning.caps.critDamage,
+            luck * tuning.secondary.critDamagePerLuck,
+          );
 
           // ---- 防御まわり（方針：体力は関与せず、装備・スキル由来のみ） ----
           // ・被ダメ軽減：装備・スキルでのみ積む。ここでは0固定。
@@ -12703,14 +13047,28 @@
           const blockBase = 0;
 
           // 抵抗は体力/知識/運ベースのまま維持
-          const controlResistBase = Math.min(80, vit * 0.5 + luck * 0.3);
-          const dotResistBase = Math.min(80, vit * 0.6 + luck * 0.2);
+          const controlResistBase = Math.min(
+            tuning.caps.resist,
+            vit * tuning.secondary.controlResistVit +
+              luck * tuning.secondary.controlResistLuck,
+          );
+          const dotResistBase = Math.min(
+            tuning.caps.resist,
+            vit * tuning.secondary.dotResistVit +
+              luck * tuning.secondary.dotResistLuck,
+          );
           const debuffResistBase = Math.min(
-            80,
-            vit * 0.4 + int * 0.4 + luck * 0.2,
+            tuning.caps.resist,
+            vit * tuning.secondary.debuffResistVit +
+              int * tuning.secondary.debuffResistInt +
+              luck * tuning.secondary.debuffResistLuck,
           );
 
-          const cooldownBase = Math.min(30, agi * 0.2 + int * 0.2);
+          const cooldownBase = Math.min(
+            tuning.caps.cooldown,
+            agi * tuning.secondary.cooldownPerAgi +
+              int * tuning.secondary.cooldownPerInt,
+          );
 
           // 体力には依存しないよう、ここはすべて 0 をベースとする
           const hpRegenBase = 0;
@@ -12722,11 +13080,11 @@
           //  ・LUKが低くても「ごくわずかには」増える（5振って約1%）
           //  ・しきい値を超えたあたりからグッと伸びる二段階カーブ
 
-          const dropRateBase = luck * 0.6;
-          const rarityBase = luck * 0.25;
-          const titleChanceBase = luck * 0.35;
-          const namedRateBase = luck * 0.7;
-          const goldChanceBase = 200;
+          const dropRateBase = luck * tuning.treasure.dropRatePerLuck;
+          const rarityBase = luck * tuning.treasure.rarityPerLuck;
+          const titleChanceBase = luck * tuning.treasure.titlePerLuck;
+          const namedRateBase = luck * tuning.treasure.namedPerLuck;
+          const goldChanceBase = tuning.treasure.goldBase;
 
           return {
             // ---- 基礎系 ----
@@ -12771,30 +13129,39 @@
               base: critBase,
               bonus: player.bonus.critRate,
               total: Math.min(
-                120,
+                tuning.caps.critRate,
                 critBase + player.bonus.critRate,
               ),
             },
             evade: {
               base: evadeBase,
               bonus: player.bonus.evade,
-              total: Math.min(90, evadeBase + player.bonus.evade),
+              total: Math.min(tuning.caps.evade, evadeBase + player.bonus.evade),
             },
             accuracy: { base: accuracyBase, bonus: 0, total: accuracyBase },
             physPen: {
               base: physPenBase,
               bonus: player.bonus.physPen,
-              total: Math.min(50, physPenBase + player.bonus.physPen),
+              total: Math.min(
+                tuning.caps.penetration,
+                physPenBase + player.bonus.physPen,
+              ),
             },
             magPen: {
               base: magPenBase,
               bonus: player.bonus.magPen,
-              total: Math.min(50, magPenBase + player.bonus.magPen),
+              total: Math.min(
+                tuning.caps.penetration,
+                magPenBase + player.bonus.magPen,
+              ),
             },
             critDamage: {
               base: critDmgBase,
               bonus: player.bonus.critDamage,
-              total: Math.min(80, critDmgBase + player.bonus.critDamage),
+              total: Math.min(
+                tuning.caps.critDamage,
+                critDmgBase + player.bonus.critDamage,
+              ),
             },
 
             // ---- 防御周り（体力非依存） ----
@@ -12816,7 +13183,7 @@
               base: controlResistBase,
               bonus: player.bonus.controlResist,
               total: Math.min(
-                80,
+                tuning.caps.resist,
                 controlResistBase + player.bonus.controlResist,
               ),
             },
@@ -12824,7 +13191,7 @@
               base: dotResistBase,
               bonus: player.bonus.dotResist,
               total: Math.min(
-                80,
+                tuning.caps.resist,
                 dotResistBase + player.bonus.dotResist,
               ),
             },
@@ -12832,7 +13199,7 @@
               base: debuffResistBase,
               bonus: player.bonus.debuffResist,
               total: Math.min(
-                80,
+                tuning.caps.resist,
                 debuffResistBase + player.bonus.debuffResist,
               ),
             },
@@ -12840,7 +13207,7 @@
               base: cooldownBase,
               bonus: player.bonus.cooldown,
               total: Math.min(
-                30,
+                tuning.caps.cooldown,
                 cooldownBase + player.bonus.cooldown,
               ),
             },
@@ -13904,9 +14271,13 @@
         function createEnemy(isBoss = false, derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           const floorLevel = Math.max(1, game.floor);
-          const baseGrowth = 1 + (floorLevel - 1) * ENEMY_GROWTH_PER_FLOOR;
-          const bossBoost = isBoss ? BOSS_GROWTH_MULTIPLIER : 1;
-          const secondaryBoost = isBoss ? BOSS_SECONDARY_MULTIPLIER : 1;
+          const tuning = simpleTuning;
+          const baseGrowth =
+            1 + (floorLevel - 1) * tuning.growth.enemyPerFloor;
+          const bossBoost = isBoss ? tuning.growth.bossMultiplier : 1;
+          const secondaryBoost = isBoss
+            ? tuning.growth.bossSecondaryMultiplier
+            : 1;
           const baseName = isBoss
             ? `階層ボス ${game.floor}F`
             : pickEnemyBaseName(game.floor);
@@ -13916,10 +14287,10 @@
           const archetypeRolls = !isBoss
             ? rollArchetypes(game.floor, derived)
             : null;
-          const hpBase = 12;
-          const atkBase = 7.5;
-          const defBase = 3.2;
-          const spdBase = 3.9;
+          const hpBase = tuning.enemyBase.hp;
+          const atkBase = tuning.enemyBase.atk;
+          const defBase = tuning.enemyBase.def;
+          const spdBase = tuning.enemyBase.spd;
           const statScale = baseGrowth * bossBoost;
           const enemy = {
             id: generateId("enemy"),
@@ -13930,30 +14301,40 @@
             def: keepDecimal(defBase * statScale, 2),
             spd:
               keepDecimal(spdBase * statScale, 2) +
-              Math.random() * 1.2 +
-              (isBoss ? 1.2 : 0),
+              Math.random() * tuning.enemyBase.spdRandom +
+              (isBoss ? tuning.enemyBase.bossSpdBonus : 0),
             accuracy: Math.min(
-              120,
-              (80 + baseGrowth * 4) * secondaryBoost,
+              tuning.caps.accuracy,
+              (tuning.enemySecondary.accuracyBase +
+                baseGrowth * tuning.enemySecondary.accuracyGrowth) *
+                secondaryBoost,
             ),
             evade: Math.min(
-              35,
-              (6 + baseGrowth * 1.6) * secondaryBoost,
+              tuning.caps.evade,
+              (tuning.enemySecondary.evadeBase +
+                baseGrowth * tuning.enemySecondary.evadeGrowth) *
+                secondaryBoost,
             ),
             attackCount: 1,
             attacksRemaining: 1,
             resist: {
               control: Math.min(
-                60,
-                (10 + baseGrowth * 0.7) * secondaryBoost,
+                tuning.caps.resist,
+                (tuning.enemySecondary.resistBase +
+                  baseGrowth * tuning.enemySecondary.resistGrowth) *
+                  secondaryBoost,
               ),
               dot: Math.min(
-                60,
-                (8 + baseGrowth * 0.6) * secondaryBoost,
+                tuning.caps.resist,
+                (tuning.enemySecondary.resistBase +
+                  baseGrowth * tuning.enemySecondary.resistGrowth) *
+                  secondaryBoost,
               ),
               debuff: Math.min(
-                60,
-                (8 + baseGrowth * 0.6) * secondaryBoost,
+                tuning.caps.resist,
+                (tuning.enemySecondary.resistBase +
+                  baseGrowth * tuning.enemySecondary.resistGrowth) *
+                  secondaryBoost,
               ),
             },
             isBoss,
@@ -15473,6 +15854,65 @@ function showDamagePopup(
             debugAutoAttackCheckbox.checked = !!debugAutoAttackEnabled;
           if (debugCodexUnlockCheckbox)
             debugCodexUnlockCheckbox.checked = !!debugCodexFullyUnlocked;
+          syncSimpleTuningInputs();
+        }
+
+        function getSimpleTuningValue(path) {
+          return path.split(".").reduce((acc, key) => acc?.[key], simpleTuning);
+        }
+
+        function setSimpleTuningValue(path, value) {
+          const keys = path.split(".");
+          const lastKey = keys.pop();
+          if (!lastKey) return;
+          const target = keys.reduce((acc, key) => acc?.[key], simpleTuning);
+          if (!target || typeof target !== "object") return;
+          target[lastKey] = value;
+        }
+
+        function syncSimpleTuningInputs() {
+          if (!debugModal) return;
+          const inputs = debugModal.querySelectorAll("[data-tuning-key]");
+          inputs.forEach((input) => {
+            const path = input.dataset.tuningKey;
+            if (!path) return;
+            const value = getSimpleTuningValue(path);
+            if (typeof value !== "number" || Number.isNaN(value)) return;
+            input.value = value;
+          });
+        }
+
+        function applySimpleTuningState({ respawnEnemies = false } = {}) {
+          Object.assign(player.base, simpleTuning.playerBase);
+          const derived = recalcDerivedStats();
+          updateUI(derived);
+          if (respawnEnemies) {
+            clearTurnOrderPreview();
+            game.turnQueue = [];
+            spawnEnemies();
+          }
+        }
+
+        function applySimpleTuningFromInputs({ respawnEnemies = false } = {}) {
+          if (!debugModal) return;
+          const inputs = debugModal.querySelectorAll("[data-tuning-key]");
+          inputs.forEach((input) => {
+            const path = input.dataset.tuningKey;
+            if (!path) return;
+            const raw = Number(input.value);
+            if (!Number.isFinite(raw)) return;
+            setSimpleTuningValue(path, raw);
+          });
+          applySimpleTuningState({ respawnEnemies });
+          log("🔧 バランス調整を反映しました", "info");
+        }
+
+        function resetSimpleTuning() {
+          simpleTuning = JSON.parse(JSON.stringify(SIMPLE_TUNING_DEFAULTS));
+          Object.assign(player.base, simpleTuning.playerBase);
+          syncSimpleTuningInputs();
+          applySimpleTuningState();
+          log("🔄 バランス調整を初期値へ戻しました", "info");
         }
 
         function runDebugAutoAttackTick() {
@@ -18625,6 +19065,12 @@ function showDamagePopup(
         const debugBossFloorButtons = document.querySelectorAll(
           "[data-debug-boss-floor]",
         );
+        const debugApplyBalanceButton =
+          document.getElementById("debug-apply-balance");
+        const debugResetBalanceButton =
+          document.getElementById("debug-reset-balance");
+        const debugRespawnEnemiesButton =
+          document.getElementById("debug-respawn-enemies");
         const debugNewRunButton = document.getElementById("debug-new-run");
         const inventoryOpenButton = document.getElementById("btn-inventory");
         const bulkSellExecuteButton = document.getElementById("bulk-sell-execute");
@@ -21389,6 +21835,13 @@ function showDamagePopup(
         debugApplyGoldButton?.addEventListener("click", applyDebugGoldChange);
         debugApplyFloorButton?.addEventListener("click", () =>
           applyDebugFloorChange(),
+        );
+        debugApplyBalanceButton?.addEventListener("click", () =>
+          applySimpleTuningFromInputs(),
+        );
+        debugResetBalanceButton?.addEventListener("click", resetSimpleTuning);
+        debugRespawnEnemiesButton?.addEventListener("click", () =>
+          applySimpleTuningFromInputs({ respawnEnemies: true }),
         );
         debugBossFloorButtons.forEach((btn) => {
           btn.addEventListener("click", () => {
