@@ -12657,22 +12657,14 @@
           return stat.base + stat.bonus;
         };
 
-        const BASE_GROWTH_RATE = 1.012;
-        const PLAYER_GROWTH_ADVANTAGE_PER_LEVEL = 0.0008;
-        const PLAYER_GROWTH_ADVANTAGE_CAP = 0.08;
-        const BOSS_GROWTH_MULTIPLIER = 1.1;
-        const BOSS_SECONDARY_MULTIPLIER = 1.05;
+        const PLAYER_GROWTH_PER_LEVEL = 0.02;
+        const ENEMY_GROWTH_PER_FLOOR = 0.03;
+        const BOSS_GROWTH_MULTIPLIER = 1.15;
+        const BOSS_SECONDARY_MULTIPLIER = 1.1;
 
         function playerGrowthMultiplier(level) {
           const effective = Math.max(1, Math.floor(level || 1));
-          const baseGrowth = Math.pow(BASE_GROWTH_RATE, effective - 1);
-          const advantage =
-            1 +
-            Math.min(
-              PLAYER_GROWTH_ADVANTAGE_CAP,
-              (effective - 1) * PLAYER_GROWTH_ADVANTAGE_PER_LEVEL,
-            );
-          return baseGrowth * advantage;
+          return 1 + (effective - 1) * PLAYER_GROWTH_PER_LEVEL;
         }
 
         function calcSecondaryStats() {
@@ -12685,23 +12677,23 @@
           // ---- 基本ステータス系 ----
           const baseGrowth = playerGrowthMultiplier(player.level);
 
-          const maxHpBase = (player.base.hp + vit * 17.2) * baseGrowth;
-          const maxMpBase = (player.base.mp + int * 6.4) * baseGrowth;
-          const physAtkBase = (player.base.physAtk + str * 3.1) * baseGrowth;
-          const magAtkBase = (player.base.magAtk + int * 3.2) * baseGrowth;
+          const maxHpBase = (player.base.hp + vit * 12) * baseGrowth;
+          const maxMpBase = (player.base.mp + int * 5) * baseGrowth;
+          const physAtkBase = (player.base.physAtk + str * 2.5) * baseGrowth;
+          const magAtkBase = (player.base.magAtk + int * 2.6) * baseGrowth;
           const physDefBase =
-            (player.base.physDef + vit * 1.36 + str * 0.52) * baseGrowth;
+            (player.base.physDef + vit * 1.1 + str * 0.4) * baseGrowth;
           const magDefBase =
-            (player.base.magDef + vit * 1.16 + int * 0.72) * baseGrowth;
-          const speedBase = (player.base.speed + agi * 2.36) * baseGrowth;
+            (player.base.magDef + vit * 0.9 + int * 0.5) * baseGrowth;
+          const speedBase = (player.base.speed + agi * 1.5) * baseGrowth;
 
           // 会心・命中・貫通など
-          const critBase = Math.min(156, (agi + luck) * 1.4);
-          const evadeBase = Math.min(120, (agi + luck) * 0.84);
-          const accuracyBase = Math.min(200, 140 + agi * 0.28);
-          const physPenBase = Math.min(68, str * 0.52);
-          const magPenBase = Math.min(68, int * 0.52);
-          const critDmgBase = Math.min(116, luck * 1.4);
+          const critBase = Math.min(120, agi + luck);
+          const evadeBase = Math.min(90, agi * 0.6 + luck * 0.4);
+          const accuracyBase = Math.min(160, 100 + agi * 0.4);
+          const physPenBase = Math.min(50, str * 0.4);
+          const magPenBase = Math.min(50, int * 0.4);
+          const critDmgBase = Math.min(80, luck * 1.1);
 
           // ---- 防御まわり（方針：体力は関与せず、装備・スキル由来のみ） ----
           // ・被ダメ軽減：装備・スキルでのみ積む。ここでは0固定。
@@ -12711,14 +12703,14 @@
           const blockBase = 0;
 
           // 抵抗は体力/知識/運ベースのまま維持
-          const controlResistBase = Math.min(120, (vit + luck) * 0.7);
-          const dotResistBase = Math.min(120, vit * 0.9 + luck * 0.2);
+          const controlResistBase = Math.min(80, vit * 0.5 + luck * 0.3);
+          const dotResistBase = Math.min(80, vit * 0.6 + luck * 0.2);
           const debuffResistBase = Math.min(
-            120,
-            (vit + int) * 0.7 + luck * 0.2,
+            80,
+            vit * 0.4 + int * 0.4 + luck * 0.2,
           );
 
-          const cooldownBase = Math.min(40, (agi + int) * 0.3);
+          const cooldownBase = Math.min(30, agi * 0.2 + int * 0.2);
 
           // 体力には依存しないよう、ここはすべて 0 をベースとする
           const hpRegenBase = 0;
@@ -12730,47 +12722,10 @@
           //  ・LUKが低くても「ごくわずかには」増える（5振って約1%）
           //  ・しきい値を超えたあたりからグッと伸びる二段階カーブ
 
-          const baseSlope = 0.4; // 全トレハン共通の「低LUK帯のゆるい伸び」(LUK5→+2%)
-
-          // しきい値を超えた分には、追加の傾きを足して「高LUK帯で伸びやすく」する
-          // （数字は「LUK100での目安」がだいたい以前のバランスに近くなるように調整）
-
-          // ドロップ数寄り（LUK30から本格的に効き始めるイメージ）
-          const dropBaseline = 20; // 軽くベースを底上げして全体のドロップ体験を滑らかに
-          const dropExtraSlope = 0.64;
-          const dropThreshold = 60;
-
-          // レアリティUP（LUK40からじわじわ）
-          const rarityExtraSlope = 0.14;
-          const rarityThreshold = 80;
-
-          // 称号付与率（LUK40からそこそこ伸びる）
-          const titleExtraSlope = 0.34;
-          const titleThreshold = 80;
-
-          // ネームド遭遇（他より少し効きやすい）
-          const namedExtraSlope = 0.9;
-          const namedThreshold = 40;
-
-          // 実際の計算
-          const dropRateBase =
-            dropBaseline +
-            luck * baseSlope +
-            Math.max(0, luck - dropThreshold) * dropExtraSlope;
-
-          const rarityBase =
-            luck * baseSlope +
-            Math.max(0, luck - rarityThreshold) * rarityExtraSlope;
-
-          const titleChanceBase =
-            luck * baseSlope +
-            Math.max(0, luck - titleThreshold) * titleExtraSlope;
-
-          const namedRateBase =
-            luck * baseSlope +
-            Math.max(0, luck - namedThreshold) * namedExtraSlope;
-
-          // ゴールド率は「基礎100%」のまま
+          const dropRateBase = luck * 0.6;
+          const rarityBase = luck * 0.25;
+          const titleChanceBase = luck * 0.35;
+          const namedRateBase = luck * 0.7;
           const goldChanceBase = 200;
 
           return {
@@ -12815,28 +12770,31 @@
             critRate: {
               base: critBase,
               bonus: player.bonus.critRate,
-              total: Math.min(140, critBase + player.bonus.critRate),
+              total: Math.min(
+                120,
+                critBase + player.bonus.critRate,
+              ),
             },
             evade: {
               base: evadeBase,
               bonus: player.bonus.evade,
-              total: Math.min(120, evadeBase + player.bonus.evade),
+              total: Math.min(90, evadeBase + player.bonus.evade),
             },
             accuracy: { base: accuracyBase, bonus: 0, total: accuracyBase },
             physPen: {
               base: physPenBase,
               bonus: player.bonus.physPen,
-              total: Math.min(60, physPenBase + player.bonus.physPen),
+              total: Math.min(50, physPenBase + player.bonus.physPen),
             },
             magPen: {
               base: magPenBase,
               bonus: player.bonus.magPen,
-              total: Math.min(60, magPenBase + player.bonus.magPen),
+              total: Math.min(50, magPenBase + player.bonus.magPen),
             },
             critDamage: {
               base: critDmgBase,
               bonus: player.bonus.critDamage,
-              total: Math.min(100, critDmgBase + player.bonus.critDamage),
+              total: Math.min(80, critDmgBase + player.bonus.critDamage),
             },
 
             // ---- 防御周り（体力非依存） ----
@@ -12858,24 +12816,33 @@
               base: controlResistBase,
               bonus: player.bonus.controlResist,
               total: Math.min(
-                120,
+                80,
                 controlResistBase + player.bonus.controlResist,
               ),
             },
             dotResist: {
               base: dotResistBase,
               bonus: player.bonus.dotResist,
-              total: Math.min(120, dotResistBase + player.bonus.dotResist),
+              total: Math.min(
+                80,
+                dotResistBase + player.bonus.dotResist,
+              ),
             },
             debuffResist: {
               base: debuffResistBase,
               bonus: player.bonus.debuffResist,
-              total: Math.min(120, debuffResistBase + player.bonus.debuffResist),
+              total: Math.min(
+                80,
+                debuffResistBase + player.bonus.debuffResist,
+              ),
             },
             cooldown: {
               base: cooldownBase,
               bonus: player.bonus.cooldown,
-              total: Math.min(40, cooldownBase + player.bonus.cooldown),
+              total: Math.min(
+                30,
+                cooldownBase + player.bonus.cooldown,
+              ),
             },
 
             // HP再生・吸収・バリアは 0 ＋ 装備／スキル由来のみ
@@ -13937,7 +13904,7 @@
         function createEnemy(isBoss = false, derivedStats = null) {
           const derived = derivedStats || recalcDerivedStats();
           const floorLevel = Math.max(1, game.floor);
-          const baseGrowth = Math.pow(BASE_GROWTH_RATE, floorLevel - 1);
+          const baseGrowth = 1 + (floorLevel - 1) * ENEMY_GROWTH_PER_FLOOR;
           const bossBoost = isBoss ? BOSS_GROWTH_MULTIPLIER : 1;
           const secondaryBoost = isBoss ? BOSS_SECONDARY_MULTIPLIER : 1;
           const baseName = isBoss
@@ -13967,15 +13934,27 @@
               (isBoss ? 1.2 : 0),
             accuracy: Math.min(
               120,
-              (80 + baseGrowth * 6) * secondaryBoost,
+              (80 + baseGrowth * 4) * secondaryBoost,
             ),
-            evade: Math.min(35, (6 + baseGrowth * 2.2) * secondaryBoost),
+            evade: Math.min(
+              35,
+              (6 + baseGrowth * 1.6) * secondaryBoost,
+            ),
             attackCount: 1,
             attacksRemaining: 1,
             resist: {
-              control: Math.min(60, (10 + baseGrowth * 0.9) * secondaryBoost),
-              dot: Math.min(60, (8 + baseGrowth * 0.8) * secondaryBoost),
-              debuff: Math.min(60, (8 + baseGrowth * 0.7) * secondaryBoost),
+              control: Math.min(
+                60,
+                (10 + baseGrowth * 0.7) * secondaryBoost,
+              ),
+              dot: Math.min(
+                60,
+                (8 + baseGrowth * 0.6) * secondaryBoost,
+              ),
+              debuff: Math.min(
+                60,
+                (8 + baseGrowth * 0.6) * secondaryBoost,
+              ),
             },
             isBoss,
             dropChanceBonus: 0,
