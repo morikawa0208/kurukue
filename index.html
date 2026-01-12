@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>White Dungeon - Mobile Optimized</title>
+    <title>White Dungeon - Professional Build System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,36 +11,53 @@
         
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            background-color: #f8fafc;
+            color: #1e293b;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             overscroll-behavior: none;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Custom Scrollbar */
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 2px; }
+        .page { display: none; height: 100%; flex-direction: column; overflow-y: auto; }
+        .page.active { display: flex; }
 
-        /* Bars */
-        .bar-container { background-color: #e2e8f0; border-radius: 9999px; overflow: hidden; height: 10px; }
-        .hp-fill { background-color: #ef4444; height: 100%; transition: width 0.3s ease; }
-        .mp-fill { background-color: #3b82f6; height: 100%; transition: width 0.3s ease; }
-        .exp-fill { background-color: #fbbf24; height: 100%; transition: width 0.3s ease; }
+        /* Status Bars */
+        .bar-container { position: relative; background-color: #e2e8f0; border-radius: 6px; overflow: hidden; height: 20px; border: 1px solid #cbd5e1; width: 100%; }
+        .bar-fill { height: 100%; transition: width 0.3s ease; }
+        .hp-fill { background-color: #ef4444; }
+        .mp-fill { background-color: #3b82f6; }
+        .exp-fill { background-color: #fbbf24; }
+        .bar-text { position: absolute; inset: 0; display: flex; items-center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,0.5); pointer-events: none; }
 
-        /* Animations */
         @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-30px) scale(1.2); }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-40px); }
         }
         .damage-text {
             position: absolute;
-            font-weight: 800;
-            text-shadow: 1px 1px 0 #fff;
+            font-weight: 900;
+            font-size: 1.5rem;
             animation: floatUp 0.8s forwards;
             pointer-events: none;
-            z-index: 50;
+            z-index: 100;
+            text-shadow: 2px 2px 0 #fff;
         }
+
+        .mini-log {
+            font-size: 10px;
+            line-height: 1.2;
+            mask-image: linear-gradient(to top, black 70%, transparent 100%);
+        }
+
+        .rarity-common { color: #64748b; }
+        .rarity-uncommon { color: #22c55e; font-weight: bold; }
+        .rarity-rare { color: #3b82f6; font-weight: bold; }
+        .rarity-epic { color: #a855f7; font-weight: bold; }
+        .rarity-legendary { color: #f59e0b; font-weight: bold; text-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
 
         .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
@@ -50,644 +67,770 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        .rarity-common { color: #4b5563; }
-        .rarity-uncommon { color: #16a34a; font-weight: bold; }
-        .rarity-rare { color: #2563eb; font-weight: bold; }
-        .rarity-epic { color: #9333ea; font-weight: bold; text-shadow: 0 0 5px rgba(147, 51, 234, 0.2); }
-        .rarity-legendary { color: #ea580c; font-weight: bold; text-shadow: 0 0 5px rgba(234, 88, 12, 0.3); }
+        nav button.active { color: #0f172a; border-top: 3px solid #0f172a; background-color: #fff; }
+        .job-tab.active { background-color: #0f172a; color: white; }
+        .type-tab.active { border-bottom: 3px solid #0f172a; color: #0f172a; font-weight: bold; }
 
-        /* Tab Active State */
-        .tab-btn.active {
-            border-bottom: 3px solid #1f2937;
-            color: #1f2937;
-            background-color: #f3f4f6;
-        }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="h-[100dvh] flex flex-col overflow-hidden bg-white text-gray-800">
+<body class="flex flex-col">
 
-    <!-- HEADER -->
-    <header class="h-12 bg-white border-b flex items-center justify-between px-4 shrink-0 shadow-sm z-20">
-        <div class="font-bold text-gray-800 flex items-center gap-2">
-            <i class="fas fa-dungeon text-gray-400"></i>
-            <span>地下 <span id="floor-display" class="text-xl">1</span> 階</span>
+    <!-- TOP BAR -->
+    <header class="h-12 border-b flex items-center justify-between px-4 shrink-0 bg-white z-50 shadow-sm">
+        <div class="font-bold flex items-center gap-2">
+            <span class="text-slate-400 text-xs">FLOOR</span>
+            <span id="floor-display" class="text-xl font-black">1</span>
         </div>
-        <div class="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">
-            Enemy Lv.<span id="enemy-lvl-display">1</span>
+        <div class="flex items-center gap-3">
+            <span class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">SP: <span id="header-sp">0</span></span>
+            <div class="bg-slate-800 text-white text-[10px] px-2 py-1 rounded font-bold">Lv.<span id="header-lvl">1</span></div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT AREA (Split Layout on Desktop, Vertical on Mobile) -->
-    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+    <!-- CONTENT PAGES -->
+    <main class="flex-1 overflow-hidden relative">
         
-        <!-- BATTLE AREA (Top/Left) -->
-        <div id="battle-area" class="flex-1 flex flex-col relative bg-gray-50 md:border-r border-gray-200 transition-colors duration-500">
-            
-            <!-- Enemy Section -->
-            <div class="flex-1 flex flex-col justify-center items-center relative p-4 min-h-[180px]">
-                <div id="enemy-container" class="text-center w-full max-w-xs transition-opacity duration-300">
-                    <div id="enemy-visual" class="text-7xl text-gray-700 mb-3 drop-shadow-sm transition-transform">
-                        <i class="fas fa-ghost"></i>
+        <!-- BATTLE PAGE -->
+        <section id="page-battle" class="page active p-4">
+            <div class="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
+                <div id="enemy-container" class="text-center transition-all duration-300">
+                    <div id="enemy-visual" class="text-8xl mb-4 text-slate-700"><i class="fas fa-ghost"></i></div>
+                    <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
+                    <div class="w-48 bar-container mx-auto mb-1 h-2 border-0 bg-slate-200">
+                        <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
                     </div>
-                    <div class="flex items-center justify-center gap-2 mb-1">
-                        <h2 id="enemy-name" class="font-bold text-lg">さまよう魂</h2>
-                    </div>
-                    
-                    <!-- Enemy HP -->
-                    <div class="relative w-full h-4 bg-gray-300 rounded-full overflow-hidden border border-gray-400">
-                        <div id="enemy-hp-bar" class="hp-fill w-full"></div>
-                    </div>
-                    <div class="text-xs text-gray-500 mt-1 font-mono text-right"><span id="enemy-hp-text">100/100</span> HP</div>
+                    <div class="text-[10px] font-mono text-slate-400">Enemy HP <span id="enemy-hp-text">30/30</span></div>
                 </div>
-
-                <!-- Floating Damage Layer -->
-                <div id="damage-layer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+                <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
+                <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
+                    <div id="mini-log-2"></div>
+                    <div id="mini-log-1"></div>
+                    <div id="mini-log-0" class="text-slate-800 font-bold"></div>
+                </div>
             </div>
 
-            <!-- Player Status & Controls -->
-            <div class="bg-white p-4 border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-10 shrink-0">
-                
-                <!-- Player Bars -->
-                <div class="flex gap-3 mb-3 text-sm">
-                    <div class="flex-1">
-                        <div class="flex justify-between mb-1 text-xs font-bold text-gray-600">
-                            <span>HP</span>
-                            <span id="player-hp-text">100/100</span>
-                        </div>
-                        <div class="bar-container bg-red-100"><div id="player-hp-bar" class="hp-fill"></div></div>
+            <!-- Player Status Section -->
+            <div class="bg-white border rounded-2xl p-4 shadow-sm space-y-3 mb-2">
+                <div class="space-y-1.5">
+                    <div class="bar-container">
+                        <div id="player-hp-bar" class="bar-fill hp-fill"></div>
+                        <div class="bar-text">HP: <span id="player-hp-text">100/100</span></div>
                     </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between mb-1 text-xs font-bold text-gray-600">
-                            <span>MP</span>
-                            <span id="player-mp-text">30/30</span>
-                        </div>
-                        <div class="bar-container bg-blue-100"><div id="player-mp-bar" class="mp-fill"></div></div>
+                    <div class="bar-container">
+                        <div id="player-mp-bar" class="bar-fill mp-fill"></div>
+                        <div class="bar-text">MP: <span id="player-mp-text">30/30</span></div>
+                    </div>
+                    <div class="bar-container">
+                        <div id="player-exp-bar-battle" class="bar-fill exp-fill"></div>
+                        <div class="bar-text">EXP: <span id="player-exp-text-battle">0/100</span></div>
                     </div>
                 </div>
 
-                <!-- Controls -->
-                <div class="flex flex-col gap-2">
-                    <select id="skill-select" class="w-full bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1">
-                        <!-- Skills injected here -->
+                <div class="flex gap-2">
+                    <select id="skill-select" class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:outline-none font-bold">
+                        <option value="normal">通常攻撃 (MP:0)</option>
                     </select>
-
-                    <button id="action-btn" class="w-full bg-gray-800 text-white font-bold h-14 rounded-lg shadow-lg active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2 touch-manipulation">
-                        <i class="fas fa-sword"></i>
-                        <span>攻撃する</span>
-                    </button>
                 </div>
+                <button id="action-btn" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-sword"></i> <span>攻撃</span>
+                </button>
             </div>
             
-            <!-- Game Over Overlay (Hidden by default) -->
-            <div id="game-over-overlay" class="absolute inset-0 bg-red-900/30 pointer-events-none opacity-0 transition-opacity duration-500 flex items-center justify-center z-0">
-                <div class="text-4xl font-bold text-red-600 -rotate-12 border-4 border-red-600 p-4 rounded opacity-0 transform scale-150 transition-all duration-500" id="dead-text">DEATH</div>
+            <div id="death-overlay" class="absolute inset-0 bg-red-900/40 backdrop-blur-[2px] hidden items-center justify-center z-50">
+                <div class="bg-white p-8 rounded-3xl shadow-2xl text-center border-2 border-red-500 mx-4">
+                    <div class="text-6xl mb-4">💀</div>
+                    <h2 class="text-2xl font-black text-red-600 mb-2">YOU DIED</h2>
+                    <p class="text-sm text-slate-500 mb-2">ペナルティが発生しました：</p>
+                    <div class="text-xs text-red-600 font-bold mb-6 bg-red-50 p-3 rounded-xl">
+                        階層: -20<br>
+                        経験値ロスト: <span id="lost-exp-val">0</span>
+                    </div>
+                    <button onclick="revive()" class="w-full bg-red-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg active:scale-95">街に戻る</button>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- INFO PANEL (Bottom/Right - Tabbed) -->
-        <div class="h-[40vh] md:h-full md:w-96 flex flex-col bg-white border-t md:border-t-0 md:border-l border-gray-200 shrink-0">
+        <!-- STATUS PAGE -->
+        <section id="page-status" class="page p-4 bg-slate-50">
+            <h2 class="text-xl font-black mb-4 flex items-center gap-2 px-2"><i class="fas fa-user-circle"></i> ステータス</h2>
             
-            <!-- Tab Header -->
-            <div class="flex border-b border-gray-200 text-sm font-bold text-gray-500 bg-gray-50">
-                <button onclick="switchTab('log')" id="tab-log" class="tab-btn active flex-1 py-3 text-center transition-colors">ログ</button>
-                <button onclick="switchTab('status')" id="tab-status" class="tab-btn flex-1 py-3 text-center transition-colors">ステータス</button>
-                <button onclick="switchTab('inventory')" id="tab-inventory" class="tab-btn flex-1 py-3 text-center transition-colors">持ち物 <span id="inv-badge" class="ml-1 text-[10px] bg-gray-400 text-white px-1.5 rounded-full">0</span></button>
-            </div>
-
-            <!-- Tab Content Area -->
-            <div class="flex-1 overflow-hidden relative bg-white">
-                
-                <!-- LOG TAB -->
-                <div id="content-log" class="tab-content active h-full overflow-y-auto custom-scroll p-3 font-mono text-xs leading-5">
-                    <div class="text-gray-400 pb-2 border-b mb-2">--- Battle Log ---</div>
-                    <div id="log-container" class="flex flex-col gap-1"></div>
+            <!-- Summary Card -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm mb-4">
+                <div class="flex items-center justify-between border-b pb-4 mb-4">
+                    <div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Level</div>
+                        <div class="text-4xl font-black" id="status-lvl">1</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Experience</div>
+                        <div class="text-sm font-bold"><span id="status-exp">0</span> / <span id="status-next">100</span></div>
+                        <div class="w-32 bar-container h-2 mt-1 border-0 bg-slate-100"><div id="status-exp-bar" class="bar-fill exp-fill"></div></div>
+                    </div>
                 </div>
 
-                <!-- STATUS TAB -->
-                <div id="content-status" class="tab-content h-full overflow-y-auto custom-scroll p-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold">Player Lv.<span id="status-lvl">1</span></span>
-                        <div class="text-xs text-gray-500 flex flex-col items-end">
-                            <span>EXP: <span id="status-exp">0/100</span></span>
-                            <div class="w-24 h-1.5 bg-gray-200 rounded mt-1"><div id="status-exp-bar" class="exp-fill w-0"></div></div>
-                        </div>
+                <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">STR (物理攻撃)</span>
+                        <span class="text-2xl font-black text-slate-700" id="status-atk">10</span>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-3 mb-6">
-                        <div class="p-3 bg-gray-50 border rounded text-center">
-                            <div class="text-xs text-gray-500">STR (攻撃)</div>
-                            <div id="status-atk" class="text-xl font-bold text-gray-800">10</div>
-                        </div>
-                        <div class="p-3 bg-gray-50 border rounded text-center">
-                            <div class="text-xs text-gray-500">VIT (防御)</div>
-                            <div id="status-def" class="text-xl font-bold text-gray-800">5</div>
-                        </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">VIT (物理防御)</span>
+                        <span class="text-2xl font-black text-slate-700" id="status-def">5</span>
                     </div>
-
-                    <div class="space-y-3">
-                        <div class="text-xs font-bold text-gray-400 uppercase">装備</div>
-                        <div class="p-2 border rounded flex items-center gap-3">
-                            <i class="fas fa-hammer text-gray-400 w-6 text-center"></i>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-[10px] text-gray-400">武器</div>
-                                <div id="equip-weapon" class="font-bold text-sm truncate">なし</div>
-                            </div>
-                            <div id="weapon-stats" class="text-xs font-bold text-gray-500"></div>
-                        </div>
-                        <div class="p-2 border rounded flex items-center gap-3">
-                            <i class="fas fa-shield-alt text-gray-400 w-6 text-center"></i>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-[10px] text-gray-400">防具</div>
-                                <div id="equip-armor" class="font-bold text-sm truncate">なし</div>
-                            </div>
-                            <div id="armor-stats" class="text-xs font-bold text-gray-500"></div>
-                        </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">INT (魔法威力)</span>
+                        <span class="text-2xl font-black text-blue-600" id="status-int">5</span>
                     </div>
-
-                    <button id="rest-btn" class="mt-6 w-full py-3 bg-green-50 text-green-700 border border-green-200 rounded font-bold text-sm hover:bg-green-100 transition-colors">
-                        <i class="fas fa-bed mr-2"></i>休息する (全回復)
-                    </button>
-                    <p class="text-[10px] text-center text-gray-400 mt-1">※戦闘中以外のみ</p>
-                </div>
-
-                <!-- INVENTORY TAB -->
-                <div id="content-inventory" class="tab-content h-full overflow-y-auto custom-scroll p-2">
-                    <div id="inventory-list" class="space-y-2 pb-4"></div>
-                    <div id="empty-inv-msg" class="text-center text-gray-400 text-sm mt-10 italic">持ち物はありません</div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase">DEX (器用さ)</span>
+                        <span class="text-2xl font-black text-green-600" id="status-dex">5</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <!-- Detailed Stats -->
+            <div class="bg-slate-800 rounded-3xl p-6 text-white mb-6">
+                <h3 class="text-xs font-bold text-slate-400 mb-4 uppercase tracking-tighter border-b border-slate-700 pb-2">Secondary Attributes</h3>
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>会心率</span><span id="stat-crit">5%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>回避率</span><span id="stat-eva">3%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>吸血率</span><span id="stat-leech">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>追加経験値</span><span id="stat-exp-boost">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>魔法貫通</span><span id="stat-m-pen">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>ドロップ運</span><span id="stat-luck">0%</span></div>
+                </div>
+            </div>
+
+            <!-- Equipment -->
+            <div class="space-y-3 mb-12">
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-sword"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Weapon Slot</div>
+                        <div id="equip-weapon" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="weapon-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-shield-halved"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Armor Slot</div>
+                        <div id="equip-armor" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="armor-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <button id="rest-btn" class="w-full py-4 bg-green-500 text-white font-black rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 mt-4">
+                    <i class="fas fa-bed"></i> 休息して全回復する
+                </button>
+            </div>
+        </section>
+
+        <!-- SKILL PAGE -->
+        <section id="page-skill" class="page bg-slate-50 flex flex-col h-full">
+            <div class="p-4 bg-white border-b shrink-0">
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <h2 class="text-xl font-black">スキルツリー</h2>
+                    <div class="text-sm font-bold bg-amber-100 text-amber-700 px-3 py-1 rounded-full">SP: <span id="skill-sp-display">0</span></div>
+                </div>
+                <!-- Job Tabs -->
+                <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                    <button onclick="switchJob('warrior')" id="tab-warrior" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">戦士</button>
+                    <button onclick="switchJob('mage')" id="tab-mage" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">魔術師</button>
+                    <button onclick="switchJob('thief')" id="tab-thief" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">盗賊</button>
+                </div>
+            </div>
+            <div class="flex bg-white shrink-0 shadow-sm">
+                <button onclick="switchSkillType('active')" id="tab-active" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">アクティブ</button>
+                <button onclick="switchSkillType('passive')" id="tab-passive" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">パッシブ</button>
+            </div>
+            <div id="skill-list" class="flex-1 overflow-y-auto p-4 space-y-3 pb-8"></div>
+        </section>
+
+        <!-- INVENTORY PAGE -->
+        <section id="page-inventory" class="page p-4 bg-slate-50">
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h2 class="text-xl font-black flex items-center gap-2"><i class="fas fa-box-open"></i> 持ち物</h2>
+                <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full"><span id="inv-count">0</span> / 20</span>
+            </div>
+            <div id="inventory-list" class="flex-1 overflow-y-auto space-y-2 pb-12"></div>
+        </section>
+
+        <!-- LOG PAGE -->
+        <section id="page-log" class="page p-4 bg-slate-900 text-slate-300 font-mono text-[10px]">
+            <h2 class="text-slate-500 border-b border-slate-800 pb-2 mb-2 uppercase tracking-widest font-black">System History Log</h2>
+            <div id="full-log-container" class="flex-1 overflow-y-auto space-y-1"></div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="h-16 border-t bg-white flex shrink-0 items-center justify-around pb-1 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <button onclick="switchPage('battle')" id="nav-battle" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
+            <i class="fas fa-sword text-xl"></i><span class="text-[9px] font-black">戦闘</span>
+        </button>
+        <button onclick="switchPage('status')" id="nav-status" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
+            <i class="fas fa-user-circle text-xl"></i><span class="text-[9px] font-black">能力</span>
+        </button>
+        <button onclick="switchPage('skill')" id="nav-skill" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all relative">
+            <i class="fas fa-sparkles text-xl"></i><span class="text-[9px] font-black">スキル</span>
+            <div id="nav-sp-dot" class="absolute top-3 right-6 w-2 h-2 bg-amber-500 rounded-full border-2 border-white hidden"></div>
+        </button>
+        <button onclick="switchPage('inventory')" id="nav-inventory" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all relative">
+            <i class="fas fa-box-open text-xl"></i><span class="text-[9px] font-black">装備</span>
+            <div id="nav-inv-dot" class="absolute top-3 right-6 w-2 h-2 bg-red-500 rounded-full border-2 border-white hidden"></div>
+        </button>
+        <button onclick="switchPage('log')" id="nav-log" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
+            <i class="fas fa-scroll text-xl"></i><span class="text-[9px] font-black">履歴</span>
+        </button>
+    </nav>
 
     <!-- LOOT MODAL -->
-    <div id="loot-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-xs rounded-xl shadow-2xl p-5 text-center transform scale-100 transition-all">
-            <div class="text-5xl mb-4 text-yellow-500 drop-shadow-md animate-bounce">🎁</div>
-            <h3 class="text-lg font-bold mb-1">お宝発見！</h3>
-            
-            <div id="loot-display" class="bg-gray-50 border border-gray-200 p-3 rounded-lg my-4">
-                <!-- content -->
-            </div>
-
+    <div id="loot-modal" class="fixed inset-0 bg-slate-900/80 z-[100] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-xs rounded-[2rem] overflow-hidden shadow-2xl transform scale-100 p-8 text-center border-b-8 border-slate-200">
+            <div class="text-6xl mb-6">📦</div>
+            <h3 class="font-black text-xl mb-2">戦利品を発見！</h3>
+            <div id="loot-display" class="bg-slate-50 rounded-2xl p-6 my-4 border border-slate-100"></div>
             <div class="flex gap-3">
-                <button onclick="discardLoot()" class="flex-1 py-3 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg active:bg-gray-200">捨てる</button>
-                <button onclick="takeLoot()" class="flex-1 py-3 text-sm font-bold text-white bg-blue-600 rounded-lg shadow-lg active:bg-blue-700">拾う</button>
+                <button onclick="closeLoot(false)" class="flex-1 py-4 text-sm font-bold text-slate-400 bg-slate-100 rounded-2xl">捨てる</button>
+                <button onclick="closeLoot(true)" class="flex-1 py-4 text-sm font-bold text-white bg-slate-800 rounded-2xl shadow-lg">拾う</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- GAME CONFIG & STATE ---
-        const CONFIG = {
-            baseExp: 20,
-            maxInventory: 20
-        };
-
+        // --- DATA STRUCTURE ---
         const Game = {
             floor: 1,
-            state: 'idle', // idle, combat, loot, dead
+            state: 'idle',
             player: {
                 level: 1,
-                currentHp: 100, maxHp: 100,
-                currentMp: 30, maxMp: 30,
-                baseStr: 10, baseDef: 5,
-                exp: 0, nextLevelExp: 100,
-                equipment: { weapon: null, armor: null },
-                inventory: []
+                hp: 100, maxHp: 100, mp: 30, maxMp: 30,
+                // Primary Stats
+                str: 10, vit: 5, int: 5, dex: 5,
+                // Secondary Stats (calculated)
+                critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 0,
+                exp: 0, next: 100, sp: 0,
+                weapon: null, armor: null, inventory: [],
+                skills: {
+                    warrior: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
+                    mage: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
+                    thief: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] }
+                }
             },
-            enemy: null,
-            tempLoot: null
+            currentJobTab: 'warrior',
+            currentSkillType: 'active',
+            enemy: null, logs: []
         };
 
-        // --- DATABASE ---
-        const Skills = [
-            { id: 0, name: '通常攻撃', mp: 0, power: 1.0, type: 'phys' },
-            { id: 1, name: '強撃', mp: 5, power: 1.5, type: 'phys' },
-            { id: 2, name: '二連斬り', mp: 8, power: 0.9, hits: 2, type: 'phys' },
-            { id: 3, name: 'ヒール', mp: 10, power: 0, type: 'heal', amount: 35 },
-            { id: 4, name: 'ファイア', mp: 12, power: 2.5, type: 'mag' },
-            { id: 5, name: '兜割り', mp: 15, power: 2.0, type: 'phys' } // High cost
+        const JobData = {
+            warrior: {
+                name: "戦士",
+                active: [
+                    { id: 0, name: "パワースラッシュ", mp: 4, pow: 1.8, desc: "強力な一撃を叩き込む" },
+                    { id: 1, name: "シールドバッシュ", mp: 6, pow: 1.2, desc: "盾で殴る。防御力の50%を加算" },
+                    { id: 2, name: "バーサク", mp: 10, pow: 2.5, desc: "HPを10%消費し、大ダメージを与える", hpCost: 0.1 },
+                    { id: 3, name: "鼓舞", mp: 8, pow: 0, type: 'heal', val: 30, desc: "気合を入れ直しHPを回復する" },
+                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.5, desc: "攻撃しつつ、被ダメージを軽減する" },
+                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 5.0, desc: "全力を込めた究極の斬撃" }
+                ],
+                passive: [
+                    { id: 0, name: "筋力増強", desc: "STR+10", effect: () => Game.player.str += 10 },
+                    { id: 1, name: "頑強", desc: "VIT+10", effect: () => Game.player.vit += 10 },
+                    { id: 2, name: "ライフスティール", desc: "与えたダメージの5%を回復する", effect: () => Game.player.leechRate += 5 },
+                    { id: 3, name: "カウンター", desc: "被弾時に10%の確率でSTRの50%で反撃", logic: 'counter' },
+                    { id: 4, name: "重厚な防具", desc: "防具のVIT効果を1.5倍にする", logic: 'armor_boost' },
+                    { id: 5, name: "不屈の精神", desc: "HP30%以下で物理攻撃力が1.5倍", logic: 'low_hp_boost' }
+                ]
+            },
+            mage: {
+                name: "魔術師",
+                active: [
+                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.2, desc: "標準的な火球呪文" },
+                    { id: 1, name: "アイスランス", mp: 10, pow: 2.5, desc: "冷気の槍で貫く" },
+                    { id: 2, name: "マナドレイン", mp: 0, pow: 0.8, desc: "ダメージの50%分MPを回復する", mpHeal: 0.5 },
+                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.5, desc: "激しい雷雨で敵を焼く" },
+                    { id: 4, name: "メテオ", mp: 30, pow: 6.0, desc: "巨大な隕石を落とす" },
+                    { id: 5, name: "禁呪：終焉", mp: 50, pow: 12.0, desc: "魔力を全開放する究極魔法" }
+                ],
+                passive: [
+                    { id: 0, name: "知力増強", desc: "INT+15", effect: () => Game.player.int += 15 },
+                    { id: 1, name: "魔力の泉", desc: "最大MP+100", effect: () => { Game.player.maxMp += 100; Game.player.mp += 100; } },
+                    { id: 2, name: "瞑想", desc: "ターン終了時にMPが5回復する", logic: 'mp_regen' },
+                    { id: 3, name: "魔術の真髄", desc: "魔法のクリティカル率+10%", effect: () => Game.player.critRate += 10 },
+                    { id: 4, name: "属性強化", desc: "魔法威力がINTの2倍加算される", logic: 'magic_boost' },
+                    { id: 5, name: "魔力貫通", desc: "敵の防御を20%無視して攻撃する", effect: () => Game.player.mPen += 20 }
+                ]
+            },
+            thief: {
+                name: "盗賊",
+                active: [
+                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.1, desc: "素早い突き。回避率が一時上昇" },
+                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.9, hits: 2, desc: "2回連続で攻撃する" },
+                    { id: 2, name: "毒の刃", mp: 10, pow: 2.0, desc: "急所を狙い大ダメージ" },
+                    { id: 3, name: "強奪", mp: 5, pow: 1.0, desc: "攻撃しつつ、追加経験値を獲得", expBonus: 20 },
+                    { id: 4, name: "影縫い", mp: 12, pow: 2.5, desc: "敵の隙を突く強烈な一撃" },
+                    { id: 5, name: "千手観音", mp: 30, pow: 1.2, hits: 5, desc: "目にも止まらぬ速さの5連撃" }
+                ],
+                passive: [
+                    { id: 0, name: "俊敏", desc: "DEX+10", effect: () => Game.player.dex += 10 },
+                    { id: 1, name: "神速の回避", desc: "回避率+10%", effect: () => Game.player.evasionRate += 10 },
+                    { id: 2, name: "目利き", desc: "ドロップ運（LUCK）+20", effect: () => Game.player.luck += 20 },
+                    { id: 3, name: "幸運の女神", desc: "獲得経験値+25%", effect: () => Game.player.expBoost += 25 },
+                    { id: 4, name: "急所攻撃", desc: "クリティカル率+15%", effect: () => Game.player.critRate += 15 },
+                    { id: 5, name: "暗殺者の心得", desc: "敵HPが満タンなら初撃ダメージ2倍", logic: 'first_hit_boost' }
+                ]
+            }
+        };
+
+        const EnemyBases = [
+            { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12 },
+            { name: "コウモリ", icon: "fa-bat", hp: 35, str: 10, exp: 15 },
+            { name: "ゴブリン", icon: "fa-user-ninja", hp: 60, str: 14, exp: 25 },
+            { name: "スケルトン", icon: "fa-skull", hp: 80, str: 20, exp: 40 },
+            { name: "ゴーレム", icon: "fa-mountain", hp: 150, str: 25, exp: 70 },
+            { name: "シャドウ", icon: "fa-ghost", hp: 200, str: 35, exp: 100 },
+            { name: "ドラゴン", icon: "fa-dragon", hp: 500, str: 60, exp: 300 }
         ];
 
-        const Enemies = [
-            { name: "スライム", icon: "fa-bacteria", hp: 30, str: 8, exp: 10 },
-            { name: "ラット", icon: "fa-otter", hp: 40, str: 10, exp: 12 },
-            { name: "ゴブリン", icon: "fa-user-secret", hp: 55, str: 13, exp: 18 },
-            { name: "バット", icon: "fa-crow", hp: 45, str: 15, exp: 15 },
-            { name: "スケルトン", icon: "fa-skull", hp: 70, str: 18, exp: 25 },
-            { name: "オーク", icon: "fa-hippo", hp: 120, str: 22, exp: 40 },
-            { name: "死神", icon: "fa-scythe", hp: 200, str: 35, exp: 80 },
-            { name: "ドラゴン", icon: "fa-dragon", hp: 350, str: 50, exp: 150 }
+        const ItemPrefix = [
+            { name: "普通の", mul: 1.0, r: "common" },
+            { name: "鋭い", mul: 1.2, r: "uncommon" },
+            { name: "丈夫な", mul: 1.3, r: "uncommon" },
+            { name: "魔法の", mul: 1.5, r: "rare" },
+            { name: "王家の", mul: 2.0, r: "epic" },
+            { name: "神話の", mul: 4.5, r: "legendary" }
         ];
 
-        const Prefixes = [
-            { name: "ボロの", mul: 0.8, rarity: "common" },
-            { name: "普通の", mul: 1.0, rarity: "common" },
-            { name: "良質な", mul: 1.2, rarity: "uncommon" },
-            { name: "鋭利な", mul: 1.3, rarity: "uncommon" },
-            { name: "熟練の", mul: 1.5, rarity: "rare" },
-            { name: "守護の", mul: 1.6, rarity: "rare" },
-            { name: "英雄の", mul: 2.0, rarity: "epic" },
-            { name: "伝説の", mul: 3.0, rarity: "legendary" },
-            { name: "神殺しの", mul: 5.0, rarity: "legendary" }
-        ];
-
-        // --- INIT ---
+        // --- CORE LOGIC ---
         window.onload = () => {
-            initSkillSelect();
-            startFloor();
-            log("ダンジョンに入った...", "text-gray-500 italic");
+            spawn();
+            updateUI();
+            switchJob('warrior');
+            switchSkillType('active');
         };
 
-        function initSkillSelect() {
-            const el = document.getElementById('skill-select');
-            Skills.forEach(s => {
-                const opt = document.createElement('option');
-                opt.value = s.id;
-                opt.textContent = `${s.name} (MP:${s.mp})`;
-                el.appendChild(opt);
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById(`page-${p}`).classList.add('active');
+            document.getElementById(`nav-${p}`).classList.add('active');
+            if (p === 'skill') document.getElementById('nav-sp-dot').classList.add('hidden');
+        }
+
+        function switchJob(job) {
+            Game.currentJobTab = job;
+            document.querySelectorAll('.job-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${job}`).classList.add('active');
+            renderSkillList();
+        }
+
+        function switchSkillType(type) {
+            Game.currentSkillType = type;
+            document.querySelectorAll('.type-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${type}`).classList.add('active');
+            renderSkillList();
+        }
+
+        function renderSkillList() {
+            const list = document.getElementById('skill-list');
+            list.innerHTML = '';
+            const data = JobData[Game.currentJobTab][Game.currentSkillType];
+            
+            data.forEach((skill, idx) => {
+                const isLearned = Game.player.skills[Game.currentJobTab][Game.currentSkillType][idx] > 0;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border-2 transition-all shadow-sm ${isLearned ? 'bg-white border-slate-800' : 'bg-slate-100 border-slate-200 opacity-60'}`;
+                
+                let actionPart = '';
+                if (!isLearned) {
+                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
+                } else {
+                    actionPart = `<span class="shrink-0 text-xs font-black text-slate-400"><i class="fas fa-check-circle"></i></span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="font-black text-sm truncate">${skill.name}</span>
+                                ${skill.mp !== undefined ? `<span class="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">MP ${skill.mp}</span>` : ''}
+                            </div>
+                            <p class="text-[10px] text-slate-500 leading-tight">${skill.desc}</p>
+                        </div>
+                        ${actionPart}
+                    </div>
+                `;
+                list.appendChild(card);
             });
         }
 
-        // --- CORE GAMEPLAY ---
-        function startFloor() {
-            // Pick enemy based on floor
-            const difficulty = Math.floor((Game.floor - 1) * 0.4);
-            const range = Math.min(Enemies.length, 3 + Math.floor(Game.floor / 5));
-            const idx = Math.min(Enemies.length - 1, Math.floor(Math.random() * range) + Math.floor(difficulty / 2));
-            const base = Enemies[Math.min(idx, Enemies.length - 1)];
-
-            const scale = 1 + (Game.floor * 0.15);
-
-            Game.enemy = {
-                ...base,
-                maxHp: Math.floor(base.hp * scale),
-                currentHp: Math.floor(base.hp * scale),
-                str: Math.floor(base.str * scale),
-                exp: Math.floor(base.exp * scale)
-            };
+        function learnSkill(job, type, idx) {
+            if (Game.player.sp <= 0) return;
+            Game.player.sp--;
+            Game.player.skills[job][type][idx] = 1;
             
-            Game.state = 'combat';
+            if (type === 'passive' && JobData[job].passive[idx].effect) {
+                JobData[job].passive[idx].effect();
+            }
+
+            renderSkillList();
             updateUI();
+        }
+
+        function spawn() {
+            const scale = 1 + (Game.floor * 0.22);
+            const baseIdx = Math.min(EnemyBases.length - 1, Math.floor(Game.floor / 5));
+            const base = EnemyBases[baseIdx];
+            Game.enemy = { 
+                ...base, 
+                maxHp: Math.floor(base.hp * scale), 
+                hp: Math.floor(base.hp * scale), 
+                str: Math.floor(base.str * scale) 
+            };
+            Game.state = 'combat';
         }
 
         document.getElementById('action-btn').onclick = () => {
-            if (Game.state === 'dead') {
-                resetGame();
-                return;
-            }
-            if (Game.state === 'loot') return; // Modal open
-
-            // Next Floor / Spawn Logic
+            if (Game.state === 'dead') return;
             if (Game.state === 'idle') {
                 Game.floor++;
-                startFloor();
-                log(`地下${Game.floor}階へ進んだ。`);
+                spawn();
+                addLog(`B${Game.floor}へ潜入...`);
+                updateUI();
                 return;
             }
 
-            // Player Turn
-            if (Game.state === 'combat') {
-                const skillId = document.getElementById('skill-select').value;
-                const skill = Skills.find(s => s.id == skillId);
+            const skillVal = document.getElementById('skill-select').value;
+            let currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
+            let isMagic = false;
+            
+            if (skillVal !== 'normal') {
+                const [job, idx] = skillVal.split('-');
+                currentSkill = JobData[job].active[idx];
+                if (job === 'mage') isMagic = true;
+            }
+
+            if (Game.player.mp < currentSkill.mp) {
+                addLog("MP不足！", "text-blue-400");
+                return;
+            }
+
+            if (currentSkill.hpCost) {
+                const cost = Math.floor(Game.player.maxHp * currentSkill.hpCost);
+                Game.player.hp = Math.max(1, Game.player.hp - cost);
+            }
+
+            Game.player.mp -= currentSkill.mp;
+
+            if (currentSkill.type === 'heal') {
+                const amt = Math.floor(currentSkill.val + (Game.player.int * 1.2));
+                Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + amt);
+                addLog(`【回復】${amt}HP`, "text-green-500");
+                dmgText(amt, true);
+            } else {
+                let hits = currentSkill.hits || 1;
+                let totalDamage = 0;
                 
-                if (Game.player.currentMp >= skill.mp) {
-                    performSkill(skill);
-                } else {
-                    log("MP不足！通常攻撃！", "text-blue-500");
-                    performSkill(Skills[0]);
+                for(let i=0; i<hits; i++){
+                    // Base Attack Power Calculation
+                    let atkBase = isMagic ? (Game.player.int * 2) : (Game.player.str + (Game.player.weapon?.val||0));
+                    
+                    // Critical Check
+                    let isCrit = Math.random() * 100 < Game.player.critRate;
+                    let dmg = Math.floor(currentSkill.pow * atkBase * (0.9 + Math.random() * 0.2));
+                    if (isCrit) dmg = Math.floor(dmg * 2);
+
+                    // Passive: Low HP boost
+                    if (Game.player.skills.warrior.passive[5] && Game.player.hp < Game.player.maxHp * 0.3) dmg = Math.floor(dmg * 1.5);
+                    // Passive: First hit boost
+                    if (Game.player.skills.thief.passive[5] && Game.enemy.hp === Game.enemy.maxHp) dmg *= 2;
+
+                    dmg = Math.max(1, dmg);
+                    Game.enemy.hp = Math.max(0, Game.enemy.hp - dmg);
+                    totalDamage += dmg;
+                    
+                    // Leech
+                    if (Game.player.leechRate > 0) {
+                        let l = Math.floor(dmg * (Game.player.leechRate / 100));
+                        if (l > 0) {
+                            Game.player.hp = Math.min(Game.player.maxHp, Game.player.hp + l);
+                        }
+                    }
+                }
+                
+                addLog(`${currentSkill.name}！ ${totalDamage}のダメージ`);
+                dmgText(totalDamage);
+
+                if (currentSkill.mpHeal) {
+                    const mHeal = Math.floor(totalDamage * currentSkill.mpHeal);
+                    Game.player.mp = Math.min(Game.player.maxMp, Game.player.mp + mHeal);
+                }
+                if (currentSkill.expBonus) {
+                    let b = Math.floor(Game.player.next * (currentSkill.expBonus / 100));
+                    Game.player.exp += b;
+                    addLog(`EXP +${b} 奪取！`);
                 }
 
-                if (Game.enemy.currentHp <= 0) {
-                    winBattle();
-                } else {
-                    // Enemy Turn delayed
-                    setTimeout(() => {
-                        if (Game.state === 'combat') enemyAction();
-                    }, 400);
-                }
+                document.getElementById('enemy-visual').classList.add('shake');
+                setTimeout(()=>document.getElementById('enemy-visual').classList.remove('shake'), 200);
             }
+
+            if (Game.enemy.hp <= 0) {
+                victory();
+            } else {
+                setTimeout(enemyTurn, 300);
+            }
+            updateUI();
         };
 
-        function performSkill(skill) {
-            Game.player.currentMp -= skill.mp;
-            const pStats = getStats();
-            
-            if (skill.type === 'heal') {
-                const healAmt = Math.floor(skill.amount + (pStats.str * 0.5));
-                const old = Game.player.currentHp;
-                Game.player.currentHp = Math.min(Game.player.maxHp, Game.player.currentHp + healAmt);
-                const val = Game.player.currentHp - old;
-                log(`${skill.name}！ HP${val}回復`, "text-green-600");
-                spawnDamageText(val, 'heal');
-            } else {
-                let hits = skill.hits || 1;
-                let total = 0;
-                for(let i=0; i<hits; i++) {
-                    let dmg = Math.floor(skill.power * pStats.str * (0.9 + Math.random() * 0.2));
-                    dmg = Math.max(1, dmg);
-                    Game.enemy.currentHp = Math.max(0, Game.enemy.currentHp - dmg);
-                    total += dmg;
-                }
-                
-                // Shake
-                const vis = document.getElementById('enemy-visual');
-                vis.classList.remove('shake');
-                void vis.offsetWidth;
-                vis.classList.add('shake');
-
-                log(`${skill.name}！ ${total}ダメージ`);
-                spawnDamageText(total, 'dmg');
-            }
-            updateUI();
-        }
-
-        function enemyAction() {
+        function enemyTurn() {
             if (Game.state !== 'combat') return;
             
-            const pStats = getStats();
-            let dmg = Math.floor(Game.enemy.str * (0.9 + Math.random() * 0.2)) - pStats.def;
-            dmg = Math.max(1, dmg);
-
-            Game.player.currentHp = Math.max(0, Game.player.currentHp - dmg);
-            log(`${Game.enemy.name}の攻撃！ ${dmg}ダメージ`, "text-red-500");
-            
-            if (Game.player.currentHp <= 0) {
-                handleDeath();
+            // Evasion Check
+            if (Math.random() * 100 < Game.player.evasionRate) {
+                addLog("攻撃を回避！", "text-blue-500 font-bold");
+                dmgText("MISS", false);
+                return;
             }
+
+            let d = Math.floor(Game.enemy.str * (0.8 + Math.random() * 0.4)) - (Game.player.vit + (Game.player.armor?.val||0));
+            // Passive: Armor Boost
+            if (Game.player.skills.warrior.passive[4]) d -= Math.floor((Game.player.armor?.val||0) * 0.5);
+            
+            d = Math.max(1, d);
+            Game.player.hp = Math.max(0, Game.player.hp - d);
+            addLog(`${Game.enemy.name}：${d}ダメ`, "text-red-400");
+            
+            // Passive: MP Regen
+            if (Game.player.skills.mage.passive[2]) {
+                Game.player.mp = Math.min(Game.player.maxMp, Game.player.mp + 5);
+            }
+            
+            // Passive: Counter
+            if (Game.player.skills.warrior.passive[3] && Math.random() < 0.1) {
+                let cdmg = Math.floor(Game.player.str * 0.5);
+                Game.enemy.hp = Math.max(0, Game.enemy.hp - cdmg);
+                addLog("カウンター！", "text-orange-500");
+                dmgText(cdmg);
+                if (Game.enemy.hp <= 0) victory();
+            }
+
+            if (Game.player.hp <= 0) die();
             updateUI();
         }
 
-        function handleDeath() {
-            Game.state = 'dead';
-            log("目の前が真っ暗になった...", "font-bold text-red-600");
-            
-            // UI Effects
-            document.getElementById('game-over-overlay').style.opacity = '1';
-            document.getElementById('game-over-overlay').style.pointerEvents = 'auto';
-            setTimeout(() => {
-                document.getElementById('dead-text').style.opacity = '1';
-                document.getElementById('dead-text').style.transform = 'scale(1) rotate(-12deg)';
-            }, 100);
-
-            // Update Button
-            const btn = document.getElementById('action-btn');
-            btn.classList.remove('bg-gray-800');
-            btn.classList.add('bg-red-700');
-            btn.innerHTML = '<i class="fas fa-skull"></i> 蘇る (リセット)';
-        }
-
-        function resetGame() {
-            // Reset Data
-            Game.floor = 1;
-            Game.player.level = 1;
-            Game.player.exp = 0;
-            Game.player.nextLevelExp = 100;
-            Game.player.maxHp = 100; Game.player.currentHp = 100;
-            Game.player.maxMp = 30; Game.player.currentMp = 30;
-            Game.player.baseStr = 10; Game.player.baseDef = 5;
-            Game.player.equipment = { weapon: null, armor: null };
-            Game.player.inventory = [];
-            
-            // Reset UI State
+        function victory() {
             Game.state = 'idle';
-            document.getElementById('game-over-overlay').style.opacity = '0';
-            document.getElementById('game-over-overlay').style.pointerEvents = 'none';
-            document.getElementById('dead-text').style.opacity = '0';
-            document.getElementById('dead-text').style.transform = 'scale(1.5)';
-            
-            document.getElementById('log-container').innerHTML = ''; // Clear log
-            log("女神の加護により蘇った！", "text-yellow-600 font-bold");
+            addLog(`討伐成功！`, "text-yellow-500 font-black");
+            let gain = Game.enemy.exp;
+            // Exp Boost Calculation
+            gain = Math.floor(gain * (1 + Game.player.expBoost / 100));
+            Game.player.exp += gain;
 
-            startFloor();
-        }
-
-        function winBattle() {
-            Game.state = 'idle';
-            Game.enemy.currentHp = 0;
-            
-            // Exp
-            Game.player.exp += Game.enemy.exp;
-            log(`${Game.enemy.name}を倒した！ (EXP+${Game.enemy.exp})`, "font-bold");
-            
-            if (Game.player.exp >= Game.player.nextLevelExp) {
+            if (Game.player.exp >= Game.player.next) {
                 Game.player.level++;
-                Game.player.exp -= Game.player.nextLevelExp;
-                Game.player.nextLevelExp = Math.floor(Game.player.nextLevelExp * 1.5);
-                Game.player.maxHp += 15; Game.player.currentHp = Game.player.maxHp;
-                Game.player.maxMp += 5; Game.player.currentMp = Game.player.maxMp;
-                Game.player.baseStr += 2; Game.player.baseDef += 1;
-                log(`レベルアップ！ (Lv.${Game.player.level})`, "text-yellow-600 font-bold");
+                Game.player.exp -= Game.player.next;
+                Game.player.next = Math.floor(Game.player.next * 1.4);
+                Game.player.maxHp += 25; Game.player.hp = Game.player.maxHp;
+                Game.player.maxMp += 15; Game.player.mp = Game.player.maxMp;
+                Game.player.str += 3; Game.player.vit += 3; Game.player.int += 3; Game.player.dex += 2;
+                Game.player.sp += 3;
+                addLog(`LEVEL UP! [${Game.player.level}]`, "text-blue-400 font-black");
+                document.getElementById('nav-sp-dot').classList.remove('hidden');
             }
+            // Drop Luck Check
+            let dropChance = 0.5 + (Game.player.luck / 100);
+            if (Math.random() < dropChance) drop();
+        }
 
-            // Drop?
-            if (Math.random() < 0.6) {
-                generateLoot();
-            } else {
-                updateUI();
+        function die() {
+            Game.state = 'dead';
+            const lostExp = Math.floor(Game.player.next * 0.1);
+            document.getElementById('lost-exp-val').innerText = lostExp;
+            Game.player.exp = Math.max(0, Game.player.exp - lostExp);
+            Game.floor = Math.max(1, Game.floor - 20);
+            document.getElementById('death-overlay').style.display = 'flex';
+        }
+
+        function revive() {
+            Game.player.hp = Game.player.maxHp;
+            Game.player.mp = Game.player.maxMp;
+            document.getElementById('death-overlay').style.display = 'none';
+            document.getElementById('full-log-container').innerHTML = '';
+            addLog("命からがら生還した...", "text-slate-400 italic");
+            spawn();
+            updateUI();
+            switchPage('battle');
+        }
+
+        function addLog(m, c="") {
+            const div = document.createElement('div');
+            div.className = c;
+            div.innerText = `> ${m}`;
+            const full = document.getElementById('full-log-container');
+            full.prepend(div);
+            if (full.children.length > 50) full.lastChild.remove();
+            Game.logs.unshift({m, c});
+            if (Game.logs.length > 3) Game.logs.pop();
+            for(let i=0; i<3; i++) {
+                const el = document.getElementById(`mini-log-${i}`);
+                if (Game.logs[i]) {
+                    el.innerText = Game.logs[i].m;
+                    el.className = Game.logs[i].c || (i===0 ? 'text-slate-800 font-bold' : 'text-slate-400');
+                }
             }
         }
 
-        // --- LOOT ---
-        function generateLoot() {
-            const isWeapon = Math.random() < 0.6;
-            const type = isWeapon ? 'weapon' : 'armor';
-            const baseVal = Game.floor * 3 + (isWeapon ? 5 : 2);
-            
-            // Random Prefix
-            const pIdx = Math.min(Prefixes.length - 1, Math.floor(Math.random() * (Prefixes.length)));
-            // Weighted random could be better but simple random for now, slightly biased to lower
-            let prefix = Prefixes[Math.floor(Math.random() * Prefixes.length)];
-            // Bias towards common early
-            if (Game.floor < 5 && prefix.rarity === 'legendary') prefix = Prefixes[0];
+        function dmgText(v, isH=false) {
+            const el = document.createElement('div');
+            el.className = `damage-text ${isH?'text-green-500':'text-red-600'}`;
+            el.innerText = v;
+            el.style.left = (35 + Math.random()*30) + '%';
+            el.style.top = (35 + Math.random()*30) + '%';
+            document.getElementById('damage-layer').appendChild(el);
+            setTimeout(()=>el.remove(), 800);
+        }
 
-            const val = Math.floor(baseVal * prefix.mul * (0.8 + Math.random() * 0.4));
-            
-            Game.tempLoot = {
-                id: Date.now(),
-                name: `${prefix.name}${isWeapon ? '剣' : '鎧'}`,
-                type: type,
-                val: val,
-                rarity: prefix.rarity,
-                desc: `${isWeapon ? '攻' : '防'} +${val}`
-            };
-
-            // Show Modal
-            const d = document.getElementById('loot-display');
-            d.innerHTML = `
-                <div class="font-bold text-lg rarity-${Game.tempLoot.rarity}">${Game.tempLoot.name}</div>
-                <div class="text-sm text-gray-600 mt-1">${Game.tempLoot.desc}</div>
-                <div class="text-xs text-gray-400 mt-2 uppercase">${Game.tempLoot.rarity}</div>
+        function drop() {
+            const isW = Math.random() < 0.6;
+            const p = ItemPrefix[Math.floor(Math.random()*ItemPrefix.length)];
+            const baseVal = Game.floor * 2 + 5;
+            const val = Math.floor(baseVal * p.mul);
+            Game.tempLoot = { name: p.name + (isW ? "剣" : "鎧"), type: isW ? 'weapon' : 'armor', val: val, r: p.r };
+            document.getElementById('loot-display').innerHTML = `
+                <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${Game.tempLoot.type} Found</div>
+                <div class="text-xl font-black rarity-${Game.tempLoot.r}">${Game.tempLoot.name}</div>
+                <div class="font-black text-slate-500 mt-1">${isW?'ATK':'DEF'} +${val}</div>
             `;
-            document.getElementById('loot-modal').classList.remove('hidden');
+            document.getElementById('loot-modal').style.display = 'flex';
             Game.state = 'loot';
         }
 
-        function takeLoot() {
-            if (Game.player.inventory.length >= CONFIG.maxInventory) {
-                alert("持ち物がいっぱいです！");
-                return;
+        function closeLoot(take) {
+            if (take) {
+                if (Game.player.inventory.length >= 20) { return; }
+                Game.player.inventory.push(Game.tempLoot);
+                document.getElementById('nav-inv-dot').classList.remove('hidden');
             }
-            Game.player.inventory.push(Game.tempLoot);
-            log(`${Game.tempLoot.name}を手に入れた`);
-            closeLoot();
-        }
-
-        function discardLoot() {
-            log("宝箱を無視した");
-            closeLoot();
-        }
-
-        function closeLoot() {
-            document.getElementById('loot-modal').classList.add('hidden');
-            Game.state = 'idle'; // ready for next floor
+            document.getElementById('loot-modal').style.display = 'none';
+            Game.state = 'idle';
             updateUI();
-        }
-
-        // --- UI & UTILS ---
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById(`content-${tab}`).classList.add('active');
-        }
-
-        function getStats() {
-            let s = Game.player.baseStr;
-            let d = Game.player.baseDef;
-            if (Game.player.equipment.weapon) s += Game.player.equipment.weapon.val;
-            if (Game.player.equipment.armor) d += Game.player.equipment.armor.val;
-            return { str: s, def: d };
         }
 
         function equip(idx) {
             const item = Game.player.inventory[idx];
-            const old = Game.player.equipment[item.type];
-            if (old) Game.player.inventory.push(old);
-            
-            Game.player.equipment[item.type] = item;
+            const old = Game.player[item.type];
+            Game.player[item.type] = item;
             Game.player.inventory.splice(idx, 1);
+            if (old) Game.player.inventory.push(old);
             updateUI();
         }
 
         document.getElementById('rest-btn').onclick = () => {
-            if (Game.state !== 'idle') {
-                log("敵がいる！休めない！", "text-red-500"); return;
-            }
-            Game.player.currentHp = Game.player.maxHp;
-            Game.player.currentMp = Game.player.maxMp;
-            log("全回復した。", "text-green-600");
+            if (Game.state !== 'idle') return;
+            Game.player.hp = Game.player.maxHp;
+            Game.player.mp = Game.player.maxMp;
+            addLog("キャンプで休息。全回復！");
             updateUI();
         };
 
-        function spawnDamageText(val, type) {
-            const el = document.createElement('div');
-            el.className = `damage-text left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl ${type==='heal'?'text-green-500':'text-red-600'}`;
-            el.innerText = type==='heal' ? `+${val}` : val;
-            document.getElementById('damage-layer').appendChild(el);
-            setTimeout(() => el.remove(), 800);
-        }
-
         function updateUI() {
-            // Stats
             const p = Game.player;
-            const stats = getStats();
             document.getElementById('floor-display').innerText = Game.floor;
-            document.getElementById('enemy-lvl-display').innerText = Math.floor((Game.floor*0.4)+1);
-            
-            document.getElementById('player-hp-text').innerText = `${p.currentHp}/${p.maxHp}`;
-            document.getElementById('player-hp-bar').style.width = `${(p.currentHp/p.maxHp)*100}%`;
-            document.getElementById('player-mp-text').innerText = `${p.currentMp}/${p.maxMp}`;
-            document.getElementById('player-mp-bar').style.width = `${(p.currentMp/p.maxMp)*100}%`;
+            document.getElementById('header-lvl').innerText = p.level;
+            document.getElementById('header-sp').innerText = p.sp;
+            document.getElementById('skill-sp-display').innerText = p.sp;
 
-            // Status Tab
+            // Health/Mana/Exp
+            document.getElementById('player-hp-text').innerText = `${p.hp}/${p.maxHp}`;
+            document.getElementById('player-hp-bar').style.width = (p.hp/p.maxHp*100)+'%';
+            document.getElementById('player-mp-text').innerText = `${p.mp}/${p.maxMp}`;
+            document.getElementById('player-mp-bar').style.width = (p.mp/p.maxMp*100)+'%';
+            document.getElementById('player-exp-text-battle').innerText = `${p.exp}/${p.next}`;
+            document.getElementById('player-exp-bar-battle').style.width = (p.exp/p.next*100)+'%';
+
+            const e = Game.enemy;
+            if (e) {
+                document.getElementById('enemy-name').innerText = e.name;
+                document.getElementById('enemy-hp-text').innerText = `${e.hp}/${e.maxHp}`;
+                document.getElementById('enemy-hp-bar').style.width = (e.hp/e.maxHp*100)+'%';
+                document.getElementById('enemy-visual').innerHTML = `<i class="fas ${e.icon}"></i>`;
+            }
+
+            // Skill Selection
+            const sel = document.getElementById('skill-select');
+            const currentVal = sel.value;
+            sel.innerHTML = '<option value="normal">通常攻撃 (MP:0)</option>';
+            ['warrior', 'mage', 'thief'].forEach(job => {
+                Game.player.skills[job].active.forEach((lv, idx) => {
+                    if (lv > 0) {
+                        const s = JobData[job].active[idx];
+                        const opt = document.createElement('option');
+                        opt.value = `${job}-${idx}`;
+                        opt.textContent = `${s.name} (MP:${s.mp})`;
+                        sel.appendChild(opt);
+                    }
+                });
+            });
+            if (Array.from(sel.options).some(o => o.value === currentVal)) {
+                sel.value = currentVal;
+            }
+
+            // Button Control
+            const btn = document.getElementById('action-btn');
+            if (Game.state === 'combat') {
+                btn.innerHTML = `<i class="fas fa-sword"></i> <span>攻撃</span>`;
+                btn.className = "w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2";
+            } else {
+                btn.innerHTML = `<i class="fas fa-shoe-prints"></i> <span>次の階層へ</span>`;
+                btn.className = "w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2";
+            }
+
+            // Status Details
             document.getElementById('status-lvl').innerText = p.level;
-            document.getElementById('status-exp').innerText = `${p.exp}/${p.nextLevelExp}`;
-            document.getElementById('status-exp-bar').style.width = `${(p.exp/p.nextLevelExp)*100}%`;
-            document.getElementById('status-atk').innerText = stats.str;
-            document.getElementById('status-def').innerText = stats.def;
+            document.getElementById('status-atk').innerText = p.str + (p.weapon?.val||0);
+            document.getElementById('status-def').innerText = p.vit + (p.armor?.val||0);
+            document.getElementById('status-int').innerText = p.int;
+            document.getElementById('status-dex').innerText = p.dex;
+            document.getElementById('status-exp').innerText = p.exp;
+            document.getElementById('status-next').innerText = p.next;
+            document.getElementById('status-exp-bar').style.width = (p.exp/p.next*100)+'%';
+            
+            // Secondary Stats Display
+            document.getElementById('stat-crit').innerText = p.critRate + "%";
+            document.getElementById('stat-eva').innerText = p.evasionRate + "%";
+            document.getElementById('stat-leech').innerText = p.leechRate + "%";
+            document.getElementById('stat-exp-boost').innerText = p.expBoost + "%";
+            document.getElementById('stat-m-pen').innerText = p.mPen + "%";
+            document.getElementById('stat-luck').innerText = p.luck;
 
-            // Equipment
-            const updateEquipUI = (slot, elId, statId) => {
-                const item = p.equipment[slot];
-                const el = document.getElementById(elId);
-                const st = document.getElementById(statId);
-                if (item) {
-                    el.innerText = item.name;
-                    el.className = `font-bold text-sm truncate rarity-${item.rarity}`;
-                    st.innerText = `+${item.val}`;
-                } else {
-                    el.innerText = "なし";
-                    el.className = "text-gray-400 text-sm";
-                    st.innerText = "";
-                }
-            };
-            updateEquipUI('weapon', 'equip-weapon', 'weapon-stats');
-            updateEquipUI('armor', 'equip-armor', 'armor-stats');
+            document.getElementById('equip-weapon').innerText = p.weapon?.name || "なし";
+            document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.r||'common'}`;
+            document.getElementById('weapon-val').innerText = p.weapon ? `+${p.weapon.val}` : "";
+            document.getElementById('equip-armor').innerText = p.armor?.name || "なし";
+            document.getElementById('equip-armor').className = `font-bold truncate text-sm rarity-${p.armor?.r||'common'}`;
+            document.getElementById('armor-val').innerText = p.armor ? `+${p.armor.val}` : "";
 
             // Inventory
-            const list = document.getElementById('inventory-list');
-            list.innerHTML = '';
-            document.getElementById('inv-badge').innerText = p.inventory.length;
-            document.getElementById('empty-inv-msg').style.display = p.inventory.length ? 'none' : 'block';
-            
-            p.inventory.forEach((item, idx) => {
-                const row = document.createElement('div');
-                row.className = "flex justify-between items-center p-2 bg-gray-50 border border-gray-100 rounded hover:bg-gray-100";
-                row.innerHTML = `
-                    <div class="flex-1 overflow-hidden">
-                        <div class="text-sm font-bold truncate rarity-${item.rarity}">${item.name}</div>
-                        <div class="text-[10px] text-gray-500">${item.desc}</div>
+            const invList = document.getElementById('inventory-list');
+            invList.innerHTML = '';
+            document.getElementById('inv-count').innerText = p.inventory.length;
+            p.inventory.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm";
+                div.innerHTML = `
+                    <div class="min-w-0 flex-1">
+                        <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${item.type}</div>
+                        <div class="font-black text-sm truncate rarity-${item.r}">${item.name}</div>
+                        <div class="text-[10px] text-slate-400 font-bold">${item.type==='weapon'?'ATK':'DEF'} +${item.val}</div>
                     </div>
-                    <button onclick="equip(${idx})" class="text-xs bg-gray-800 text-white px-3 py-1.5 rounded shadow active:scale-95">装備</button>
+                    <button onclick="equip(${i})" class="ml-4 px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
                 `;
-                list.appendChild(row);
+                invList.appendChild(div);
             });
-
-            // Battle State Visuals
-            const btn = document.getElementById('action-btn');
-            const enemyCont = document.getElementById('enemy-container');
-            
-            if (Game.state === 'dead') {
-                enemyCont.style.opacity = '0.3';
-                return; // Handled in handleDeath
-            }
-
-            // Button reset style
-            btn.classList.remove('bg-red-700', 'bg-green-600', 'bg-gray-800');
-            
-            if (Game.state === 'combat') {
-                enemyCont.style.opacity = '1';
-                document.getElementById('enemy-name').innerText = Game.enemy.name;
-                document.getElementById('enemy-visual').innerHTML = `<i class="fas ${Game.enemy.icon}"></i>`;
-                document.getElementById('enemy-hp-text').innerText = `${Game.enemy.currentHp}/${Game.enemy.maxHp}`;
-                document.getElementById('enemy-hp-bar').style.width = `${(Game.enemy.currentHp/Game.enemy.maxHp)*100}%`;
-                
-                btn.classList.add('bg-gray-800');
-                btn.innerHTML = '<i class="fas fa-sword"></i> <span>攻撃</span>';
-            } else if (Game.state === 'idle') {
-                enemyCont.style.opacity = '0.4';
-                document.getElementById('enemy-hp-bar').style.width = '0%';
-                
-                btn.classList.add('bg-green-600');
-                btn.innerHTML = '<i class="fas fa-shoe-prints"></i> <span>次の階層へ</span>';
-            }
         }
-        
-        function log(msg, cls="") {
-            const div = document.createElement('div');
-            div.className = cls;
-            div.innerText = `> ${msg}`;
-            const cont = document.getElementById('log-container');
-            cont.prepend(div); // Newest top
-            if (cont.children.length > 30) cont.lastChild.remove();
-        }
-
     </script>
 </body>
 </html>
-
 
