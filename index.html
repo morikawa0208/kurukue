@@ -22,7 +22,7 @@
             overflow: hidden;
         }
 
-        .page { display: none; height: 100%; flex-direction: column; overflow-y: auto; }
+        .page { display: none; height: 100%; min-height: 0; flex-direction: column; overflow-y: auto; }
         .page.active { display: flex; }
 
         /* Status Bars */
@@ -89,7 +89,7 @@
     </header>
 
     <!-- CONTENT PAGES -->
-    <main class="flex-1 overflow-hidden relative">
+    <main class="flex-1 overflow-hidden relative min-h-0">
         
         <!-- BATTLE PAGE -->
         <section id="page-battle" class="page active p-4">
@@ -227,7 +227,7 @@
         </section>
 
         <!-- SKILL PAGE -->
-        <section id="page-skill" class="page bg-slate-50 flex flex-col h-full">
+        <section id="page-skill" class="page bg-slate-50 flex-col h-full min-h-0">
             <div class="p-4 bg-white border-b shrink-0">
                 <div class="flex justify-between items-center mb-4 px-1">
                     <h2 class="text-xl font-black">スキルツリー</h2>
@@ -244,7 +244,7 @@
                 <button onclick="switchSkillType('active')" id="tab-active" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">アクティブ</button>
                 <button onclick="switchSkillType('passive')" id="tab-passive" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">パッシブ</button>
             </div>
-            <div id="skill-list" class="flex-1 overflow-y-auto p-4 space-y-3 pb-8"></div>
+            <div id="skill-list" class="flex-1 overflow-y-auto p-4 space-y-3 pb-8 min-h-0"></div>
         </section>
 
         <!-- INVENTORY PAGE -->
@@ -265,7 +265,7 @@
     </main>
 
     <!-- BOTTOM NAV -->
-    <nav class="h-16 border-t bg-white flex shrink-0 items-center justify-around pb-1 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <nav class="h-16 border-t bg-white flex shrink-0 items-center justify-around pb-1 z-50 relative shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <button onclick="switchPage('battle')" id="nav-battle" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
             <i class="fas fa-sword text-xl"></i><span class="text-[9px] font-black">戦闘</span>
         </button>
@@ -803,7 +803,7 @@
             document.getElementById('stat-leech').innerText = p.leechRate + "%";
             document.getElementById('stat-exp-boost').innerText = p.expBoost + "%";
             document.getElementById('stat-m-pen').innerText = p.mPen + "%";
-            document.getElementById('stat-luck').innerText = p.luck;
+            document.getElementById('stat-luck').innerText = `${p.luck}%`;
 
             document.getElementById('equip-weapon').innerText = p.weapon?.name || "なし";
             document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.r||'common'}`;
@@ -833,4 +833,3 @@
     </script>
 </body>
 </html>
-
