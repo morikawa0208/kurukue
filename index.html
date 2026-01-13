@@ -102,12 +102,14 @@
             <div class="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
                 <div id="enemy-container" class="text-center transition-all duration-300">
                     <div id="enemy-visual" class="text-8xl mb-4 text-slate-700"><i class="fas fa-ghost"></i></div>
-                    <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
-                    <div class="w-48 bar-container mx-auto mb-1 h-2 border-0 bg-slate-200">
-                        <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
-                    </div>
-                    <div class="text-[10px] font-mono text-slate-400">Enemy HP <span id="enemy-hp-text">30/30</span></div>
+                <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
+                <div class="w-48 bar-container mx-auto mb-1 h-2 border-0 bg-slate-200">
+                    <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
                 </div>
+                <div class="text-[10px] font-mono text-slate-400">Enemy HP <span id="enemy-hp-text">30/30</span></div>
+                <div class="mt-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
+                <div id="enemy-status-effects" class="flex flex-wrap justify-center gap-1 mt-1 text-[10px]"></div>
+            </div>
                 <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
                 <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
                     <div id="mini-log-2"></div>
@@ -131,6 +133,10 @@
                         <div id="player-exp-bar-battle" class="bar-fill exp-fill"></div>
                         <div class="bar-text">EXP: <span id="player-exp-text-battle">0/100</span></div>
                     </div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
+                    <div id="player-status-effects" class="flex flex-wrap gap-1 mt-1 text-[10px]"></div>
                 </div>
 
                 <div class="space-y-2">
@@ -349,7 +355,7 @@
     </main>
 
     <!-- BOTTOM NAV -->
-    <nav class="h-16 border-t bg-white flex shrink-0 items-center justify-around pb-1 z-50 relative shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <nav class="h-16 border-t bg-white grid grid-cols-6 shrink-0 items-center pb-1 z-50 relative shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <button onclick="switchPage('battle')" id="nav-battle" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
             <i class="fas fa-hand-fist text-xl"></i><span class="text-[9px] font-black">戦闘</span>
         </button>
@@ -1219,6 +1225,31 @@
                 document.getElementById('enemy-hp-bar').style.width = (e.hp/e.maxHp*100)+'%';
                 document.getElementById('enemy-visual').innerHTML = `<i class="fas ${e.icon}"></i>`;
             }
+
+            const renderStatusEffects = (target, containerId) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                if (!target || !Array.isArray(target.statusEffects) || target.statusEffects.length === 0) {
+                    container.innerHTML = '<span class="text-[10px] text-slate-400">なし</span>';
+                    return;
+                }
+                target.statusEffects.forEach(effect => {
+                    const def = StatusDefs[effect.id];
+                    if (!def) return;
+                    const badge = document.createElement('div');
+                    badge.className = "flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-1 rounded-full";
+                    badge.innerHTML = `
+                        <i class="fas ${def.icon}"></i>
+                        <span class="font-bold">${def.name}</span>
+                        <span class="text-[9px]">x${effect.stacks || 1}</span>
+                        <span class="text-[9px]">${effect.turns}T</span>
+                    `;
+                    container.appendChild(badge);
+                });
+            };
+            renderStatusEffects(Game.player, 'player-status-effects');
+            renderStatusEffects(Game.enemy, 'enemy-status-effects');
 
             // Skill Slots
             const battleSlots = document.getElementById('battle-skill-slots');
