@@ -197,7 +197,12 @@
 
             <!-- Detailed Stats -->
             <div class="bg-slate-800 rounded-3xl p-6 text-white mb-6">
-                <h3 class="text-xs font-bold text-slate-400 mb-4 uppercase tracking-tighter border-b border-slate-700 pb-2">Secondary Attributes</h3>
+                <div class="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Secondary Attributes</h3>
+                    <button id="secondary-info-btn" class="text-slate-400 hover:text-white transition-colors text-xs font-bold flex items-center gap-1">
+                        <i class="fas fa-circle-info"></i> Info
+                    </button>
+                </div>
                 <div class="grid grid-cols-2 gap-4 text-xs">
                     <div class="flex justify-between border-b border-slate-700 pb-1"><span>会心率</span><span id="stat-crit">5%</span></div>
                     <div class="flex justify-between border-b border-slate-700 pb-1"><span>回避率</span><span id="stat-eva">3%</span></div>
@@ -306,6 +311,46 @@
                 <button onclick="closeLoot(false)" class="flex-1 py-4 text-sm font-bold text-slate-400 bg-slate-100 rounded-2xl">捨てる</button>
                 <button onclick="closeLoot(true)" class="flex-1 py-4 text-sm font-bold text-white bg-slate-800 rounded-2xl shadow-lg">拾う</button>
             </div>
+        </div>
+    </div>
+
+    <!-- STATUS INFO MODAL -->
+    <div id="status-info-modal" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-black text-lg text-slate-800 flex items-center gap-2">
+                    <i class="fas fa-circle-info text-slate-500"></i> ステータスメモ
+                </h3>
+                <button id="status-info-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="space-y-4 text-xs text-slate-600">
+                <div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase">Primary</div>
+                    <ul class="mt-2 space-y-1">
+                        <li><span class="font-bold text-slate-700">STR</span>：物理攻撃の基礎値。武器のATKと合算されます。</li>
+                        <li><span class="font-bold text-slate-700">VIT</span>：被ダメージ軽減の基礎値。防具DEFと合算されます。</li>
+                        <li><span class="font-bold text-slate-700">INT</span>：魔法攻撃の基礎値。回復量にも影響。</li>
+                        <li><span class="font-bold text-slate-700">DEX</span>：器用さの基礎値。装備厳選の目安に利用。</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase">Secondary</div>
+                    <ul class="mt-2 space-y-1">
+                        <li>会心率：クリティカルが発生する確率。</li>
+                        <li>回避率：敵の攻撃を回避する確率。</li>
+                        <li>吸血率：与えたダメージの一部をHP回復。</li>
+                        <li>追加経験値：獲得経験値の増加率。</li>
+                        <li>魔法貫通：敵の防御を無視する割合（魔法系スキル向け）。</li>
+                        <li>ドロップ率：戦利品が出る確率の上昇。</li>
+                        <li>命中率：攻撃が命中する確率。</li>
+                        <li>会心ダメージ：会心時のダメージ倍率。</li>
+                        <li>与ダメ増加：通常攻撃・スキル全体の与ダメ補正。</li>
+                        <li>被ダメ軽減：敵攻撃の最終ダメージを軽減。</li>
+                        <li>レアドロ率：ドロップ品のレア度上昇確率。</li>
+                    </ul>
+                </div>
+            </div>
+            <button id="status-info-close-bottom" class="mt-5 w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg">閉じる</button>
         </div>
     </div>
 
@@ -445,6 +490,22 @@
             document.getElementById(`tab-${job}`).classList.add('active');
             renderSkillList();
         }
+
+        const infoModal = document.getElementById('status-info-modal');
+        const openInfoModal = () => {
+            infoModal.classList.remove('hidden');
+            infoModal.classList.add('flex');
+        };
+        const closeInfoModal = () => {
+            infoModal.classList.add('hidden');
+            infoModal.classList.remove('flex');
+        };
+        document.getElementById('secondary-info-btn').addEventListener('click', openInfoModal);
+        document.getElementById('status-info-close').addEventListener('click', closeInfoModal);
+        document.getElementById('status-info-close-bottom').addEventListener('click', closeInfoModal);
+        infoModal.addEventListener('click', (event) => {
+            if (event.target === infoModal) closeInfoModal();
+        });
 
         function switchSkillType(type) {
             Game.currentSkillType = type;
