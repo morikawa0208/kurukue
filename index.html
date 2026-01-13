@@ -265,6 +265,9 @@
                     <button onclick="switchJob('warrior')" id="tab-warrior" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">戦士</button>
                     <button onclick="switchJob('mage')" id="tab-mage" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">魔術師</button>
                     <button onclick="switchJob('thief')" id="tab-thief" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">盗賊</button>
+                    <button onclick="switchJob('ranger')" id="tab-ranger" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">レンジャー</button>
+                    <button onclick="switchJob('paladin')" id="tab-paladin" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">聖騎士</button>
+                    <button onclick="switchJob('monk')" id="tab-monk" class="job-tab px-6 py-2 rounded-full text-xs font-bold bg-slate-100 text-slate-400 transition-all">拳闘士</button>
                 </div>
             </div>
             <div class="flex bg-white shrink-0 shadow-sm">
@@ -406,7 +409,10 @@
                 skills: {
                     warrior: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
                     mage: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
-                    thief: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] }
+                    thief: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
+                    ranger: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
+                    paladin: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
+                    monk: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] }
                 }
             },
             currentJobTab: 'warrior',
@@ -414,62 +420,121 @@
             enemy: null, logs: []
         };
 
+        const JobKeys = ['warrior', 'mage', 'thief', 'ranger', 'paladin', 'monk'];
+
         const JobData = {
             warrior: {
                 name: "戦士",
                 active: [
-                    { id: 0, name: "パワースラッシュ", mp: 4, pow: 1.8, desc: "強力な一撃を叩き込む" },
-                    { id: 1, name: "シールドバッシュ", mp: 6, pow: 1.2, desc: "盾で殴る。防御力の50%を加算" },
-                    { id: 2, name: "バーサク", mp: 10, pow: 2.5, desc: "HPを10%消費し、大ダメージを与える", hpCost: 0.1 },
-                    { id: 3, name: "鼓舞", mp: 8, pow: 0, type: 'heal', val: 30, desc: "気合を入れ直しHPを回復する" },
-                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.5, desc: "攻撃しつつ、被ダメージを軽減する" },
-                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 5.0, desc: "全力を込めた究極の斬撃" }
+                    { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 5, desc: "力で叩き込む一撃。Lvで威力上昇" },
+                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "盾で叩き、命中率が高い" },
+                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 5, desc: "HPを消費して高火力を叩き出す" },
+                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 5, desc: "気合でHPを回復する" },
+                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 5, desc: "堅い一撃で持久戦に強い" },
+                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 4.5, powGrowth: 0.7, maxLevel: 5, desc: "渾身の斬撃。Lvで超火力" }
                 ],
                 passive: [
-                    { id: 0, name: "筋力増強", desc: "STR+10", effect: () => Game.player.str += 10 },
-                    { id: 1, name: "頑強", desc: "VIT+10", effect: () => Game.player.vit += 10 },
-                    { id: 2, name: "ライフスティール", desc: "与えたダメージの5%を回復する", effect: () => Game.player.leechRate += 5 },
-                    { id: 3, name: "カウンター", desc: "被弾時に10%の確率でSTRの50%で反撃", logic: 'counter' },
-                    { id: 4, name: "重厚な防具", desc: "防具のVIT効果を1.5倍にする", logic: 'armor_boost' },
-                    { id: 5, name: "不屈の精神", desc: "HP30%以下で物理攻撃力が1.5倍", logic: 'low_hp_boost' }
+                    { id: 0, name: "筋力増強", desc: "STR+3/レベル", maxLevel: 5, apply: (d) => Game.player.str += 3 * d },
+                    { id: 1, name: "頑強", desc: "VIT+3/レベル", maxLevel: 5, apply: (d) => Game.player.vit += 3 * d },
+                    { id: 2, name: "血の渇望", desc: "吸血率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.leechRate += 2 * d },
+                    { id: 3, name: "反撃の構え", desc: "被弾時の反撃率が上昇", maxLevel: 5, logic: 'counter' },
+                    { id: 4, name: "鉄壁装備", desc: "防具で受けるダメージがさらに減少", maxLevel: 5, logic: 'armor_boost' },
+                    { id: 5, name: "不屈の闘志", desc: "HP30%以下で攻撃力上昇", maxLevel: 5, logic: 'low_hp_boost' }
                 ]
             },
             mage: {
                 name: "魔術師",
                 active: [
-                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.2, desc: "標準的な火球呪文" },
-                    { id: 1, name: "アイスランス", mp: 10, pow: 2.5, desc: "冷気の槍で貫く" },
-                    { id: 2, name: "マナドレイン", mp: 0, pow: 0.8, desc: "ダメージの50%分MPを回復する", mpHeal: 0.5 },
-                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.5, desc: "激しい雷雨で敵を焼く" },
-                    { id: 4, name: "メテオ", mp: 30, pow: 6.0, desc: "巨大な隕石を落とす" },
-                    { id: 5, name: "禁呪：終焉", mp: 50, pow: 12.0, desc: "魔力を全開放する究極魔法" }
+                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 5, desc: "燃え上がる火球で焼き払う" },
+                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 5, desc: "鋭い氷槍で貫く" },
+                    { id: 2, name: "マナドレイン", mp: 0, pow: 0.7, powGrowth: 0.1, isMagic: true, mpHeal: 0.4, mpHealGrowth: 0.05, maxLevel: 5, desc: "与ダメに応じてMPを吸収" },
+                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 5, desc: "雷撃を叩きつける広範囲魔法" },
+                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 5, desc: "隕石を召喚する大魔法" },
+                    { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 5, desc: "魔力を解き放つ禁呪" }
                 ],
                 passive: [
-                    { id: 0, name: "知力増強", desc: "INT+15", effect: () => Game.player.int += 15 },
-                    { id: 1, name: "魔力の泉", desc: "最大MP+100", effect: () => { Game.player.maxMp += 100; Game.player.mp += 100; } },
-                    { id: 2, name: "瞑想", desc: "ターン終了時にMPが5回復する", logic: 'mp_regen' },
-                    { id: 3, name: "魔術の真髄", desc: "魔法のクリティカル率+10%", effect: () => Game.player.critRate += 10 },
-                    { id: 4, name: "属性強化", desc: "魔法威力がINTの2倍加算される", logic: 'magic_boost' },
-                    { id: 5, name: "魔力貫通", desc: "敵の防御を20%無視して攻撃する", effect: () => Game.player.mPen += 20 }
+                    { id: 0, name: "知力増強", desc: "INT+4/レベル", maxLevel: 5, apply: (d) => Game.player.int += 4 * d },
+                    { id: 1, name: "魔力循環", desc: "最大MP+15/レベル", maxLevel: 5, apply: (d) => { Game.player.maxMpFlat += 15 * d; } },
+                    { id: 2, name: "瞑想", desc: "MP自動回復+2/レベル", maxLevel: 5, apply: (d) => Game.player.mpRegen += 2 * d },
+                    { id: 3, name: "魔導集中", desc: "会心率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 2 * d },
+                    { id: 4, name: "魔力貫通", desc: "魔法貫通+4%/レベル", maxLevel: 5, apply: (d) => Game.player.mPen += 4 * d },
+                    { id: 5, name: "秘奥強化", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d }
                 ]
             },
             thief: {
                 name: "盗賊",
                 active: [
-                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.1, desc: "素早い突き。回避率が一時上昇" },
-                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.9, hits: 2, desc: "2回連続で攻撃する" },
-                    { id: 2, name: "毒の刃", mp: 10, pow: 2.0, desc: "急所を狙い大ダメージ" },
-                    { id: 3, name: "強奪", mp: 5, pow: 1.0, desc: "攻撃しつつ、追加経験値を獲得", expBonus: 20 },
-                    { id: 4, name: "影縫い", mp: 12, pow: 2.5, desc: "敵の隙を突く強烈な一撃" },
-                    { id: 5, name: "千手観音", mp: 30, pow: 1.2, hits: 5, desc: "目にも止まらぬ速さの5連撃" }
+                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, desc: "素早い突きで確実に削る" },
+                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 5, desc: "二連撃で手数を稼ぐ" },
+                    { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 5, desc: "急所狙いで会心率上昇" },
+                    { id: 3, name: "強奪", mp: 5, pow: 1.0, powGrowth: 0.1, expBonus: 15, expBonusGrowth: 5, maxLevel: 5, desc: "攻撃しながら経験値を奪う" },
+                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 5, desc: "影から一撃を加える" },
+                    { id: 5, name: "千手観音", mp: 30, pow: 1.1, powGrowth: 0.1, hits: 5, maxLevel: 5, desc: "圧倒的な五連撃" }
                 ],
                 passive: [
-                    { id: 0, name: "俊敏", desc: "DEX+10", effect: () => Game.player.dex += 10 },
-                    { id: 1, name: "神速の回避", desc: "回避率+10%", effect: () => Game.player.evasionRate += 10 },
-                    { id: 2, name: "目利き", desc: "ドロップ運（LUCK）+20", effect: () => Game.player.luck += 20 },
-                    { id: 3, name: "幸運の女神", desc: "獲得経験値+25%", effect: () => Game.player.expBoost += 25 },
-                    { id: 4, name: "急所攻撃", desc: "クリティカル率+15%", effect: () => Game.player.critRate += 15 },
-                    { id: 5, name: "暗殺者の心得", desc: "敵HPが満タンなら初撃ダメージ2倍", logic: 'first_hit_boost' }
+                    { id: 0, name: "俊敏", desc: "DEX+3/レベル", maxLevel: 5, apply: (d) => Game.player.dex += 3 * d },
+                    { id: 1, name: "神速回避", desc: "回避率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 2 * d },
+                    { id: 2, name: "目利き", desc: "ドロップ率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.luck += 3 * d },
+                    { id: 3, name: "幸運の女神", desc: "追加経験値+5%/レベル", maxLevel: 5, apply: (d) => Game.player.expBoost += 5 * d },
+                    { id: 4, name: "急所攻撃", desc: "会心率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 3 * d },
+                    { id: 5, name: "暗殺者の心得", desc: "満タンの敵への初撃が強化", maxLevel: 5, logic: 'first_hit_boost' }
+                ]
+            },
+            ranger: {
+                name: "レンジャー",
+                active: [
+                    { id: 0, name: "プレシジョンショット", mp: 5, pow: 1.5, powGrowth: 0.2, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, desc: "狙いすました一射" },
+                    { id: 1, name: "トリプルショット", mp: 10, pow: 0.8, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "三連射で圧倒する" },
+                    { id: 2, name: "ブラッドアロー", mp: 8, pow: 1.3, powGrowth: 0.2, leech: 8, leechGrowth: 2, maxLevel: 5, desc: "与ダメの一部を吸収する矢" },
+                    { id: 3, name: "爆裂矢", mp: 16, pow: 2.6, powGrowth: 0.4, maxLevel: 5, desc: "爆発で敵を貫く強撃" },
+                    { id: 4, name: "ハンターズラッシュ", mp: 18, pow: 1.0, powGrowth: 0.1, hits: 4, maxLevel: 5, desc: "連射で削り続ける" },
+                    { id: 5, name: "テンペストボレー", mp: 32, pow: 1.4, powGrowth: 0.15, hits: 6, maxLevel: 5, desc: "嵐のような矢の雨" }
+                ],
+                passive: [
+                    { id: 0, name: "射撃訓練", desc: "命中率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.accuracy += 3 * d },
+                    { id: 1, name: "クリティカルアイ", desc: "会心率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 2 * d },
+                    { id: 2, name: "集中", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d },
+                    { id: 3, name: "野生の勘", desc: "回避率+1%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 1 * d },
+                    { id: 4, name: "レアハント", desc: "レアドロ率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.rareFind += 3 * d },
+                    { id: 5, name: "獲物の追跡", desc: "ゴールド増加率+5%/レベル", maxLevel: 5, apply: (d) => Game.player.goldBoost += 5 * d }
+                ]
+            },
+            paladin: {
+                name: "聖騎士",
+                active: [
+                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 5, desc: "聖なる衝撃で浄化する" },
+                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "盾で突撃し敵を崩す" },
+                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 5, desc: "聖なる力でHPを回復" },
+                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 5, desc: "眩い光で敵を撃つ" },
+                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 5, desc: "聖なる裁きを連撃で与える" },
+                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 5, desc: "聖域の光が降り注ぐ一撃" }
+                ],
+                passive: [
+                    { id: 0, name: "信仰", desc: "最大HP+15/レベル", maxLevel: 5, apply: (d) => Game.player.maxHpFlat += 15 * d },
+                    { id: 1, name: "聖なる守り", desc: "被ダメ軽減+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageReduction += 2 * d },
+                    { id: 2, name: "聖癒力", desc: "HP自動回復+2/レベル", maxLevel: 5, apply: (d) => Game.player.hpRegen += 2 * d },
+                    { id: 3, name: "敬虔", desc: "MP自動回復+1/レベル", maxLevel: 5, apply: (d) => Game.player.mpRegen += 1 * d },
+                    { id: 4, name: "神罰", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d },
+                    { id: 5, name: "守護誓約", desc: "防御効率+4%/レベル", maxLevel: 5, apply: (d) => Game.player.defenseEfficiency += 4 * d }
+                ]
+            },
+            monk: {
+                name: "拳闘士",
+                active: [
+                    { id: 0, name: "連打拳", mp: 4, pow: 0.7, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "素早い連打で削る" },
+                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 5, desc: "気を飛ばして攻撃する" },
+                    { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 5, desc: "岩をも砕く一撃" },
+                    { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "回転蹴りで連撃" },
+                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 5, desc: "内なる気でHPを回復" },
+                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 5, desc: "集中して渾身の一撃" }
+                ],
+                passive: [
+                    { id: 0, name: "体術鍛錬", desc: "STR+2/レベル & DEX+2/レベル", maxLevel: 5, apply: (d) => { Game.player.str += 2 * d; Game.player.dex += 2 * d; } },
+                    { id: 1, name: "気の流れ", desc: "HP効率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.hpEfficiency += 3 * d },
+                    { id: 2, name: "内功", desc: "MP効率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.mpEfficiency += 3 * d },
+                    { id: 3, name: "闘志", desc: "会心ダメージ+8%/レベル", maxLevel: 5, apply: (d) => Game.player.critDamage += 8 * d },
+                    { id: 4, name: "霞身", desc: "回避率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 2 * d },
+                    { id: 5, name: "闘気吸収", desc: "吸血率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.leechRate += 2 * d }
                 ]
             }
         };
@@ -514,6 +579,31 @@
             document.querySelectorAll('.job-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${job}`).classList.add('active');
             renderSkillList();
+        }
+
+        function getSkillLevel(job, type, idx) {
+            return Game.player.skills[job]?.[type]?.[idx] || 0;
+        }
+
+        function getPassiveLevel(job, idx) {
+            return Game.player.skills[job]?.passive?.[idx] || 0;
+        }
+
+        function buildActiveSkill(job, idx, level) {
+            const base = JobData[job].active[idx];
+            const lv = Math.max(1, level);
+            const scale = lv - 1;
+            const skill = { ...base, level: lv, maxLevel: base.maxLevel || 5 };
+            if (base.mp !== undefined) skill.mp = Math.max(0, Math.round(base.mp + (base.mpGrowth || 0) * scale));
+            if (base.pow !== undefined) skill.pow = Math.max(0, base.pow + (base.powGrowth || 0) * scale);
+            if (base.val !== undefined) skill.val = Math.max(0, Math.round(base.val + (base.valGrowth || 0) * scale));
+            if (base.hits !== undefined) skill.hits = Math.max(1, Math.round(base.hits + (base.hitsGrowth || 0) * scale));
+            if (base.mpHeal !== undefined) skill.mpHeal = Math.max(0, base.mpHeal + (base.mpHealGrowth || 0) * scale);
+            if (base.expBonus !== undefined) skill.expBonus = Math.max(0, Math.round(base.expBonus + (base.expBonusGrowth || 0) * scale));
+            if (base.accuracyBonus !== undefined) skill.accuracyBonus = Math.round(base.accuracyBonus + (base.accuracyGrowth || 0) * scale);
+            if (base.critBonus !== undefined) skill.critBonus = Math.round(base.critBonus + (base.critGrowth || 0) * scale);
+            if (base.leech !== undefined) skill.leech = Math.max(0, base.leech + (base.leechGrowth || 0) * scale);
+            return skill;
         }
 
         function getDerivedStats() {
@@ -567,25 +657,35 @@
             const data = JobData[Game.currentJobTab][Game.currentSkillType];
             
             data.forEach((skill, idx) => {
-                const isLearned = Game.player.skills[Game.currentJobTab][Game.currentSkillType][idx] > 0;
+                const level = getSkillLevel(Game.currentJobTab, Game.currentSkillType, idx);
+                const maxLevel = skill.maxLevel || 5;
+                const isLearned = level > 0;
+                const isMax = level >= maxLevel;
                 const card = document.createElement('div');
                 card.className = `p-4 rounded-2xl border-2 transition-all shadow-sm ${isLearned ? 'bg-white border-slate-800' : 'bg-slate-100 border-slate-200 opacity-60'}`;
                 
                 let actionPart = '';
                 if (!isLearned) {
                     actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
+                } else if (!isMax) {
+                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-amber-500 text-white text-[10px] font-black rounded-xl">1SP強化</button>`;
                 } else {
                     actionPart = `<span class="shrink-0 text-xs font-black text-slate-400"><i class="fas fa-check-circle"></i></span>`;
                 }
+
+                const displaySkill = (Game.currentSkillType === 'active')
+                    ? buildActiveSkill(Game.currentJobTab, idx, Math.max(1, level || 1))
+                    : skill;
 
                 card.innerHTML = `
                     <div class="flex justify-between items-center gap-4">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 mb-0.5">
-                                <span class="font-black text-sm truncate">${skill.name}</span>
-                                ${skill.mp !== undefined ? `<span class="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">MP ${skill.mp}</span>` : ''}
+                                <span class="font-black text-sm truncate">${displaySkill.name}</span>
+                                ${displaySkill.mp !== undefined ? `<span class="text-[9px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-bold">MP ${displaySkill.mp}</span>` : ''}
+                                <span class="text-[9px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full font-bold">Lv ${level}/${maxLevel}</span>
                             </div>
-                            <p class="text-[10px] text-slate-500 leading-tight">${skill.desc}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight">${displaySkill.desc}</p>
                         </div>
                         ${actionPart}
                     </div>
@@ -595,12 +695,15 @@
         }
 
         function learnSkill(job, type, idx) {
-            if (Game.player.sp <= 0) return;
+            const skill = JobData[job][type][idx];
+            const current = getSkillLevel(job, type, idx);
+            const maxLevel = skill.maxLevel || 5;
+            if (Game.player.sp <= 0 || current >= maxLevel) return;
             Game.player.sp--;
-            Game.player.skills[job][type][idx] = 1;
+            Game.player.skills[job][type][idx] = current + 1;
             
-            if (type === 'passive' && JobData[job].passive[idx].effect) {
-                JobData[job].passive[idx].effect();
+            if (type === 'passive' && skill.apply) {
+                skill.apply(1);
             }
 
             renderSkillList();
@@ -636,8 +739,9 @@
             
             if (skillVal !== 'normal') {
                 const [job, idx] = skillVal.split('-');
-                currentSkill = JobData[job].active[idx];
-                if (job === 'mage') isMagic = true;
+                const level = getSkillLevel(job, 'active', idx);
+                currentSkill = buildActiveSkill(job, idx, level);
+                if (currentSkill.isMagic) isMagic = true;
             }
 
             if (Game.player.mp < currentSkill.mp) {
@@ -664,7 +768,7 @@
                 let totalDamage = 0;
                 
                 for(let i=0; i<hits; i++){
-                    let hitChance = Math.min(100, Game.player.accuracy);
+                    let hitChance = Math.min(100, Game.player.accuracy + (currentSkill.accuracyBonus || 0));
                     if (Math.random() * 100 > hitChance) {
                         continue;
                     }
@@ -672,14 +776,20 @@
                     let atkBase = isMagic ? (Game.player.int * 2) : derived.atk;
                     
                     // Critical Check
-                    let isCrit = Math.random() * 100 < Game.player.critRate;
+                    let isCrit = Math.random() * 100 < (Game.player.critRate + (currentSkill.critBonus || 0));
                     let dmg = Math.floor(currentSkill.pow * atkBase * (0.9 + Math.random() * 0.2));
                     if (isCrit) dmg = Math.floor(dmg * (Game.player.critDamage / 100));
 
                     // Passive: Low HP boost
-                    if (Game.player.skills.warrior.passive[5] && Game.player.hp < Game.player.maxHp * 0.3) dmg = Math.floor(dmg * 1.5);
+                    const lowHpLevel = getPassiveLevel('warrior', 5);
+                    if (lowHpLevel > 0 && Game.player.hp < derived.maxHp * 0.3) {
+                        dmg = Math.floor(dmg * (1 + 0.1 * lowHpLevel));
+                    }
                     // Passive: First hit boost
-                    if (Game.player.skills.thief.passive[5] && Game.enemy.hp === Game.enemy.maxHp) dmg *= 2;
+                    const firstHitLevel = getPassiveLevel('thief', 5);
+                    if (firstHitLevel > 0 && Game.enemy.hp === Game.enemy.maxHp) {
+                        dmg = Math.floor(dmg * (1 + 0.25 * firstHitLevel));
+                    }
 
                     if (Game.player.damageBoost > 0) {
                         dmg = Math.floor(dmg * (1 + Game.player.damageBoost / 100));
@@ -690,8 +800,9 @@
                     totalDamage += dmg;
                     
                     // Leech
-                    if (Game.player.leechRate > 0) {
-                        let l = Math.floor(dmg * (Game.player.leechRate / 100));
+                    const totalLeech = Game.player.leechRate + (currentSkill.leech || 0);
+                    if (totalLeech > 0) {
+                        let l = Math.floor(dmg * (totalLeech / 100));
                         if (l > 0) {
                             Game.player.hp = Math.min(derived.maxHp, Game.player.hp + l);
                         }
@@ -742,7 +853,8 @@
             const derived = getDerivedStats();
             let d = Math.floor(Game.enemy.str * (0.8 + Math.random() * 0.4)) - derived.def;
             // Passive: Armor Boost
-            if (Game.player.skills.warrior.passive[4]) d -= Math.floor((Game.player.armor?.val||0) * 0.5);
+            const armorBoostLevel = getPassiveLevel('warrior', 4);
+            if (armorBoostLevel > 0) d -= Math.floor((Game.player.armor?.val||0) * 0.15 * armorBoostLevel);
             
             if (Game.player.damageReduction > 0) {
                 d = Math.floor(d * (1 - Game.player.damageReduction / 100));
@@ -752,13 +864,15 @@
             addLog(`${Game.enemy.name}：${d}ダメ`, "text-red-400");
             
             // Passive: MP Regen
-            if (Game.player.skills.mage.passive[2]) {
-                Game.player.mp = Math.min(derived.maxMp, Game.player.mp + 5);
+            const mpRegenLevel = getPassiveLevel('mage', 2);
+            if (mpRegenLevel > 0) {
+                Game.player.mp = Math.min(derived.maxMp, Game.player.mp + (2 * mpRegenLevel));
             }
             
             // Passive: Counter
-            if (Game.player.skills.warrior.passive[3] && Math.random() < 0.1) {
-                let cdmg = Math.floor(Game.player.str * 0.5);
+            const counterLevel = getPassiveLevel('warrior', 3);
+            if (counterLevel > 0 && Math.random() < (0.03 * counterLevel)) {
+                let cdmg = Math.floor(Game.player.str * (0.2 + 0.1 * counterLevel));
                 Game.enemy.hp = Math.max(0, Game.enemy.hp - cdmg);
                 addLog("カウンター！", "text-orange-500");
                 dmgText(cdmg);
@@ -921,13 +1035,13 @@
             const sel = document.getElementById('skill-select');
             const currentVal = sel.value;
             sel.innerHTML = '<option value="normal">通常攻撃 (MP:0)</option>';
-            ['warrior', 'mage', 'thief'].forEach(job => {
+            JobKeys.forEach(job => {
                 Game.player.skills[job].active.forEach((lv, idx) => {
                     if (lv > 0) {
-                        const s = JobData[job].active[idx];
+                        const s = buildActiveSkill(job, idx, lv);
                         const opt = document.createElement('option');
                         opt.value = `${job}-${idx}`;
-                        opt.textContent = `${s.name} (MP:${s.mp})`;
+                        opt.textContent = `${s.name} Lv.${lv} (MP:${s.mp})`;
                         sel.appendChild(opt);
                     }
                 });
