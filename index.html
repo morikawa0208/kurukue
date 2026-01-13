@@ -102,12 +102,14 @@
             <div class="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
                 <div id="enemy-container" class="text-center transition-all duration-300">
                     <div id="enemy-visual" class="text-8xl mb-4 text-slate-700"><i class="fas fa-ghost"></i></div>
-                    <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
-                    <div class="w-48 bar-container mx-auto mb-1 h-2 border-0 bg-slate-200">
-                        <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
-                    </div>
-                    <div class="text-[10px] font-mono text-slate-400">Enemy HP <span id="enemy-hp-text">30/30</span></div>
+                <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
+                <div class="w-48 bar-container mx-auto mb-1 h-2 border-0 bg-slate-200">
+                    <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
                 </div>
+                <div class="text-[10px] font-mono text-slate-400">Enemy HP <span id="enemy-hp-text">30/30</span></div>
+                <div class="mt-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
+                <div id="enemy-status-effects" class="flex flex-wrap justify-center gap-1 mt-1 text-[10px]"></div>
+            </div>
                 <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
                 <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
                     <div id="mini-log-2"></div>
@@ -131,6 +133,10 @@
                         <div id="player-exp-bar-battle" class="bar-fill exp-fill"></div>
                         <div class="bar-text">EXP: <span id="player-exp-text-battle">0/100</span></div>
                     </div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
+                    <div id="player-status-effects" class="flex flex-wrap gap-1 mt-1 text-[10px]"></div>
                 </div>
 
                 <div class="space-y-2">
@@ -298,10 +304,58 @@
             <div id="full-log-container" class="flex-1 overflow-y-auto space-y-1"></div>
         </section>
 
+        <!-- HELP PAGE -->
+        <section id="page-help" class="page p-4 bg-slate-50">
+            <h2 class="text-xl font-black mb-4 flex items-center gap-2 px-2"><i class="fas fa-circle-question"></i> ヘルプ</h2>
+            <div class="bg-white rounded-3xl p-6 shadow-sm space-y-4">
+                <div>
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
+                    <p class="text-xs text-slate-500 mt-2">戦闘で発生する状態異常の効果一覧です。</p>
+                </div>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-skull-crossbones"></i></div>
+                        <div>
+                            <div class="font-black text-slate-700">毒</div>
+                            <div class="text-xs text-slate-500">ターン開始時にスタック数ぶんのダメージ。</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-droplet"></i></div>
+                        <div>
+                            <div class="font-black text-slate-700">出血</div>
+                            <div class="text-xs text-slate-500">ターン開始時にスタック数ぶんのダメージ。</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-down-long"></i></div>
+                        <div>
+                            <div class="font-black text-slate-700">弱体</div>
+                            <div class="text-xs text-slate-500">能力が低下する状態。</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-shield-halved"></i></div>
+                        <div>
+                            <div class="font-black text-slate-700">脆弱</div>
+                            <div class="text-xs text-slate-500">被ダメージが増加する状態。</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-arrow-up-long"></i></div>
+                        <div>
+                            <div class="font-black text-slate-700">強化</div>
+                            <div class="text-xs text-slate-500">能力が上昇する状態。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- BOTTOM NAV -->
-    <nav class="h-16 border-t bg-white flex shrink-0 items-center justify-around pb-1 z-50 relative shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <nav class="h-16 border-t bg-white grid grid-cols-6 shrink-0 items-center pb-1 z-50 relative shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
         <button onclick="switchPage('battle')" id="nav-battle" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
             <i class="fas fa-hand-fist text-xl"></i><span class="text-[9px] font-black">戦闘</span>
         </button>
@@ -318,6 +372,9 @@
         </button>
         <button onclick="switchPage('log')" id="nav-log" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
             <i class="fas fa-scroll text-xl"></i><span class="text-[9px] font-black">履歴</span>
+        </button>
+        <button onclick="switchPage('help')" id="nav-help" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
+            <i class="fas fa-circle-question text-xl"></i><span class="text-[9px] font-black">ヘルプ</span>
         </button>
     </nav>
 
@@ -416,6 +473,7 @@
                 skillSlots: [null, null, null, null],
                 skillSlotIndex: 0,
                 skillSlotTarget: 0,
+                statusEffects: [],
                 skills: {
                     warrior: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
                     mage: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
@@ -549,6 +607,14 @@
             }
         };
 
+        const StatusDefs = {
+            poison: { id: 'poison', name: '毒', effectType: 'poison', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-skull-crossbones' },
+            bleed: { id: 'bleed', name: '出血', effectType: 'bleed', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-droplet' },
+            weaken: { id: 'weaken', name: '弱体', effectType: 'weaken', stackable: false, maxStacks: 1, defaultTurns: 2, icon: 'fa-down-long' },
+            vulnerable: { id: 'vulnerable', name: '脆弱', effectType: 'vulnerable', stackable: false, maxStacks: 1, defaultTurns: 2, icon: 'fa-shield-halved' },
+            buff: { id: 'buff', name: '強化', effectType: 'buff', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-arrow-up-long' }
+        };
+
         const EnemyBases = [
             { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12 },
             { name: "コウモリ", icon: "fa-moon", hp: 35, str: 10, exp: 15 },
@@ -676,6 +742,53 @@
             }
         }
 
+        function advanceStatusEffects(target, phase) {
+            if (!target || !Array.isArray(target.statusEffects)) return;
+            target.statusEffects = target.statusEffects.filter(effect => effect.turns > 0);
+            if (phase === 'start') {
+                target.statusEffects.forEach(effect => {
+                    const def = StatusDefs[effect.id];
+                    if (!def) return;
+                    if (def.effectType === 'poison' || def.effectType === 'bleed') {
+                        const stacks = Math.max(1, effect.stacks || 1);
+                        const dmg = Math.max(1, stacks);
+                        target.hp = Math.max(0, target.hp - dmg);
+                    }
+                });
+            }
+            if (phase === 'end') {
+                target.statusEffects.forEach(effect => {
+                    effect.turns -= 1;
+                });
+                target.statusEffects = target.statusEffects.filter(effect => effect.turns > 0);
+            }
+        }
+
+        function applyStatusEffect(target, effectId, stacks = 1, turns = null) {
+            const def = StatusDefs[effectId];
+            if (!def) return;
+            if (!Array.isArray(target.statusEffects)) {
+                target.statusEffects = [];
+            }
+            const duration = turns ?? def.defaultTurns ?? 1;
+            const maxStacks = def.maxStacks ?? stacks;
+            const existing = target.statusEffects.find(effect => effect.id === effectId);
+            if (existing) {
+                if (def.stackable) {
+                    existing.stacks = Math.min(maxStacks, existing.stacks + stacks);
+                } else {
+                    existing.stacks = 1;
+                }
+                existing.turns = Math.max(existing.turns, duration);
+            } else {
+                target.statusEffects.push({
+                    id: effectId,
+                    stacks: def.stackable ? Math.min(maxStacks, stacks) : 1,
+                    turns: duration
+                });
+            }
+        }
+
         const infoModal = document.getElementById('status-info-modal');
         const openInfoModal = () => {
             infoModal.classList.remove('hidden');
@@ -776,7 +889,8 @@
                 ...base, 
                 maxHp: Math.floor(base.hp * scale), 
                 hp: Math.floor(base.hp * scale), 
-                str: Math.floor(base.str * scale) 
+                str: Math.floor(base.str * scale),
+                statusEffects: []
             };
             Game.state = 'combat';
         }
@@ -787,6 +901,13 @@
                 Game.floor++;
                 spawn();
                 addLog(`B${Game.floor}へ潜入...`);
+                updateUI();
+                return;
+            }
+
+            advanceStatusEffects(Game.player, 'start');
+            if (Game.player.hp <= 0) {
+                die();
                 updateUI();
                 return;
             }
@@ -890,6 +1011,7 @@
                 setTimeout(()=>document.getElementById('enemy-visual').classList.remove('shake'), 200);
             }
 
+            advanceStatusEffects(Game.player, 'end');
             applyAutoRegen();
             if (Game.enemy.hp <= 0) {
                 victory();
@@ -901,11 +1023,20 @@
 
         function enemyTurn() {
             if (Game.state !== 'combat') return;
+
+            advanceStatusEffects(Game.enemy, 'start');
+            if (Game.enemy.hp <= 0) {
+                victory();
+                updateUI();
+                return;
+            }
             
             // Evasion Check
             if (Math.random() * 100 < Game.player.evasionRate) {
                 addLog("攻撃を回避！", "text-blue-500 font-bold");
                 dmgText("MISS", false);
+                advanceStatusEffects(Game.enemy, 'end');
+                updateUI();
                 return;
             }
 
@@ -921,6 +1052,10 @@
             d = Math.max(1, d);
             Game.player.hp = Math.max(0, Game.player.hp - d);
             addLog(`${Game.enemy.name}：${d}ダメ`, "text-red-400");
+            if (Math.random() < 0.2) {
+                applyStatusEffect(Game.player, 'poison');
+                addLog("毒を受けた！", "text-green-600");
+            }
             
             // Passive: MP Regen
             const mpRegenLevel = getPassiveLevel('mage', 2);
@@ -938,6 +1073,7 @@
                 if (Game.enemy.hp <= 0) victory();
             }
 
+            advanceStatusEffects(Game.enemy, 'end');
             applyAutoRegen();
             if (Game.player.hp <= 0) die();
             updateUI();
@@ -1089,6 +1225,31 @@
                 document.getElementById('enemy-hp-bar').style.width = (e.hp/e.maxHp*100)+'%';
                 document.getElementById('enemy-visual').innerHTML = `<i class="fas ${e.icon}"></i>`;
             }
+
+            const renderStatusEffects = (target, containerId) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                if (!target || !Array.isArray(target.statusEffects) || target.statusEffects.length === 0) {
+                    container.innerHTML = '<span class="text-[10px] text-slate-400">なし</span>';
+                    return;
+                }
+                target.statusEffects.forEach(effect => {
+                    const def = StatusDefs[effect.id];
+                    if (!def) return;
+                    const badge = document.createElement('div');
+                    badge.className = "flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-1 rounded-full";
+                    badge.innerHTML = `
+                        <i class="fas ${def.icon}"></i>
+                        <span class="font-bold">${def.name}</span>
+                        <span class="text-[9px]">x${effect.stacks || 1}</span>
+                        <span class="text-[9px]">${effect.turns}T</span>
+                    `;
+                    container.appendChild(badge);
+                });
+            };
+            renderStatusEffects(Game.player, 'player-status-effects');
+            renderStatusEffects(Game.enemy, 'enemy-status-effects');
 
             // Skill Slots
             const battleSlots = document.getElementById('battle-skill-slots');
