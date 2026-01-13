@@ -133,10 +133,9 @@
                     </div>
                 </div>
 
-                <div class="flex gap-2">
-                    <select id="skill-select" class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm bg-slate-50 focus:outline-none font-bold">
-                        <option value="normal">通常攻撃 (MP:0)</option>
-                    </select>
+                <div class="space-y-2">
+                    <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">アクティブスロット</div>
+                    <div id="battle-skill-slots" class="grid grid-cols-4 gap-2"></div>
                 </div>
                 <button id="action-btn" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-sword"></i> <span>攻撃</span>
@@ -274,6 +273,13 @@
                 <button onclick="switchSkillType('active')" id="tab-active" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">アクティブ</button>
                 <button onclick="switchSkillType('passive')" id="tab-passive" class="type-tab flex-1 py-3 text-sm text-slate-400 transition-all">パッシブ</button>
             </div>
+            <div class="p-4 bg-white border-b shrink-0">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-black">アクティブスロット</div>
+                    <div class="text-[10px] text-slate-400">タップでスロット選択</div>
+                </div>
+                <div id="skill-slot-settings" class="grid grid-cols-2 gap-2"></div>
+            </div>
             <div id="skill-list" class="flex-1 overflow-y-auto p-4 space-y-3 pb-8 min-h-0"></div>
         </section>
 
@@ -407,6 +413,9 @@
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0,
                 exp: 0, next: 100, sp: 0,
                 weapon: null, armor: null, inventory: [],
+                skillSlots: [null, null, null, null],
+                skillSlotIndex: 0,
+                skillSlotTarget: 0,
                 skills: {
                     warrior: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
                     mage: { active: [0,0,0,0,0,0], passive: [0,0,0,0,0,0] },
@@ -607,6 +616,44 @@
             return skill;
         }
 
+        function getSlotSkill(slot) {
+            if (!slot) return null;
+            const level = getSkillLevel(slot.job, 'active', slot.idx);
+            if (level <= 0) return null;
+            return buildActiveSkill(slot.job, slot.idx, level);
+        }
+
+        function getNextSlotSkill() {
+            const slots = Game.player.skillSlots;
+            const start = Game.player.skillSlotIndex || 0;
+            for (let i = 0; i < slots.length; i++) {
+                const idx = (start + i) % slots.length;
+                const skill = getSlotSkill(slots[idx]);
+                if (skill) {
+                    return { skill, slotIndex: idx, nextIndex: (idx + 1) % slots.length };
+                }
+            }
+            return { skill: null, slotIndex: start, nextIndex: (start + 1) % slots.length };
+        }
+
+        function setSkillSlotTarget(idx) {
+            Game.player.skillSlotTarget = idx;
+            renderSkillList();
+            updateUI();
+        }
+
+        function assignSkillToSlot(job, idx) {
+            const level = getSkillLevel(job, 'active', idx);
+            if (level <= 0) return;
+            Game.player.skillSlots[Game.player.skillSlotTarget] = { job, idx };
+            updateUI();
+        }
+
+        function clearSkillSlot(idx) {
+            Game.player.skillSlots[idx] = null;
+            updateUI();
+        }
+
         function getDerivedStats() {
             const p = Game.player;
             const maxHp = Math.max(1, Math.floor((p.maxHp + p.maxHpFlat) * (1 + p.hpEfficiency / 100)));
@@ -674,6 +721,16 @@
                     actionPart = `<span class="shrink-0 text-xs font-black text-slate-400"><i class="fas fa-check-circle"></i></span>`;
                 }
 
+                if (Game.currentSkillType === 'active' && isLearned) {
+                    const targetSlot = Game.player.skillSlotTarget + 1;
+                    actionPart = `
+                        <div class="flex items-center gap-2">
+                            ${actionPart}
+                            <button onclick="assignSkillToSlot('${Game.currentJobTab}', ${idx})" class="shrink-0 px-3 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl">S${targetSlot}セット</button>
+                        </div>
+                    `;
+                }
+
                 const displaySkill = (Game.currentSkillType === 'active')
                     ? buildActiveSkill(Game.currentJobTab, idx, Math.max(1, level || 1))
                     : skill;
@@ -734,21 +791,22 @@
                 return;
             }
 
-            const skillVal = document.getElementById('skill-select').value;
+            const slotResult = getNextSlotSkill();
             let currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
             let isMagic = false;
             
-            if (skillVal !== 'normal') {
-                const [job, idx] = skillVal.split('-');
-                const level = getSkillLevel(job, 'active', idx);
-                currentSkill = buildActiveSkill(job, idx, level);
+            if (slotResult.skill) {
+                currentSkill = slotResult.skill;
                 if (currentSkill.isMagic) isMagic = true;
             }
 
             if (Game.player.mp < currentSkill.mp) {
-                addLog("MP不足！", "text-blue-400");
-                return;
+                addLog("MP不足！通常攻撃", "text-blue-400");
+                currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
+                isMagic = false;
             }
+
+            Game.player.skillSlotIndex = slotResult.nextIndex;
 
             const derived = getDerivedStats();
 
@@ -1032,23 +1090,59 @@
                 document.getElementById('enemy-visual').innerHTML = `<i class="fas ${e.icon}"></i>`;
             }
 
-            // Skill Selection
-            const sel = document.getElementById('skill-select');
-            const currentVal = sel.value;
-            sel.innerHTML = '<option value="normal">通常攻撃 (MP:0)</option>';
-            JobKeys.forEach(job => {
-                Game.player.skills[job].active.forEach((lv, idx) => {
-                    if (lv > 0) {
-                        const s = buildActiveSkill(job, idx, lv);
-                        const opt = document.createElement('option');
-                        opt.value = `${job}-${idx}`;
-                        opt.textContent = `${s.name} Lv.${lv} (MP:${s.mp})`;
-                        sel.appendChild(opt);
-                    }
+            // Skill Slots
+            const battleSlots = document.getElementById('battle-skill-slots');
+            if (battleSlots) {
+                battleSlots.innerHTML = '';
+                Game.player.skillSlots.forEach((slot, idx) => {
+                    const skill = getSlotSkill(slot);
+                    const isNext = idx === Game.player.skillSlotIndex;
+                    const card = document.createElement('div');
+                    card.className = `rounded-xl border px-2 py-2 text-center text-[10px] font-bold ${
+                        isNext ? 'border-slate-800 bg-slate-100 text-slate-900' : 'border-slate-200 bg-slate-50 text-slate-400'
+                    }`;
+                    card.innerHTML = `
+                        <div class="text-[9px] font-black">S${idx + 1}</div>
+                        <div class="truncate">${skill ? skill.name : '未設定'}</div>
+                        <div class="text-[9px] ${skill ? 'text-blue-500' : 'text-slate-300'}">MP ${skill ? skill.mp : '-'}</div>
+                    `;
+                    battleSlots.appendChild(card);
                 });
-            });
-            if (Array.from(sel.options).some(o => o.value === currentVal)) {
-                sel.value = currentVal;
+            }
+
+            const slotSettings = document.getElementById('skill-slot-settings');
+            if (slotSettings) {
+                slotSettings.innerHTML = '';
+                Game.player.skillSlots.forEach((slot, idx) => {
+                    const skill = getSlotSkill(slot);
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "flex items-center gap-2";
+
+                    const slotButton = document.createElement('button');
+                    slotButton.className = `flex-1 text-left px-3 py-2 rounded-xl border text-[11px] font-bold ${
+                        Game.player.skillSlotTarget === idx ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-200 bg-slate-50 text-slate-500'
+                    }`;
+                    slotButton.innerHTML = `
+                        <div class="text-[9px] font-black">S${idx + 1}</div>
+                        <div class="truncate">${skill ? skill.name : '未設定'}</div>
+                    `;
+                    slotButton.addEventListener('click', () => setSkillSlotTarget(idx));
+
+                    const clearButton = document.createElement('button');
+                    clearButton.className = `w-10 h-10 rounded-xl border flex items-center justify-center ${
+                        skill ? 'border-slate-200 text-slate-500 bg-white' : 'border-slate-100 text-slate-300 bg-slate-50'
+                    }`;
+                    clearButton.innerHTML = '<i class="fas fa-xmark"></i>';
+                    if (skill) {
+                        clearButton.addEventListener('click', () => clearSkillSlot(idx));
+                    } else {
+                        clearButton.disabled = true;
+                    }
+
+                    wrapper.appendChild(slotButton);
+                    wrapper.appendChild(clearButton);
+                    slotSettings.appendChild(wrapper);
+                });
             }
 
             // Button Control
