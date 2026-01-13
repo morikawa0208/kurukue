@@ -205,6 +205,10 @@
                     <div class="flex justify-between border-b border-slate-700 pb-1"><span>追加経験値</span><span id="stat-exp-boost">0%</span></div>
                     <div class="flex justify-between border-b border-slate-700 pb-1"><span>魔法貫通</span><span id="stat-m-pen">0%</span></div>
                     <div class="flex justify-between border-b border-slate-700 pb-1"><span>ドロップ運</span><span id="stat-luck">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>会心ダメージ</span><span id="stat-crit-dmg">200%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>与ダメ増加</span><span id="stat-dmg-boost">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>被ダメ軽減</span><span id="stat-dmg-reduction">0%</span></div>
+                    <div class="flex justify-between border-b border-slate-700 pb-1"><span>レアドロ率</span><span id="stat-rare-find">0%</span></div>
                 </div>
             </div>
 
@@ -325,6 +329,7 @@
                 str: 10, vit: 5, int: 5, dex: 5,
                 // Secondary Stats (calculated)
                 critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 0,
+                critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0,
                 exp: 0, next: 100, sp: 0,
                 weapon: null, armor: null, inventory: [],
                 skills: {
@@ -554,12 +559,16 @@
                     // Critical Check
                     let isCrit = Math.random() * 100 < Game.player.critRate;
                     let dmg = Math.floor(currentSkill.pow * atkBase * (0.9 + Math.random() * 0.2));
-                    if (isCrit) dmg = Math.floor(dmg * 2);
+                    if (isCrit) dmg = Math.floor(dmg * (Game.player.critDamage / 100));
 
                     // Passive: Low HP boost
                     if (Game.player.skills.warrior.passive[5] && Game.player.hp < Game.player.maxHp * 0.3) dmg = Math.floor(dmg * 1.5);
                     // Passive: First hit boost
                     if (Game.player.skills.thief.passive[5] && Game.enemy.hp === Game.enemy.maxHp) dmg *= 2;
+
+                    if (Game.player.damageBoost > 0) {
+                        dmg = Math.floor(dmg * (1 + Game.player.damageBoost / 100));
+                    }
 
                     dmg = Math.max(1, dmg);
                     Game.enemy.hp = Math.max(0, Game.enemy.hp - dmg);
@@ -613,6 +622,9 @@
             // Passive: Armor Boost
             if (Game.player.skills.warrior.passive[4]) d -= Math.floor((Game.player.armor?.val||0) * 0.5);
             
+            if (Game.player.damageReduction > 0) {
+                d = Math.floor(d * (1 - Game.player.damageReduction / 100));
+            }
             d = Math.max(1, d);
             Game.player.hp = Math.max(0, Game.player.hp - d);
             addLog(`${Game.enemy.name}：${d}ダメ`, "text-red-400");
@@ -709,7 +721,11 @@
 
         function drop() {
             const isW = Math.random() < 0.6;
-            const p = ItemPrefix[Math.floor(Math.random()*ItemPrefix.length)];
+            let prefixIdx = Math.floor(Math.random()*ItemPrefix.length);
+            if (Game.player.rareFind > 0 && Math.random() * 100 < Game.player.rareFind) {
+                prefixIdx = Math.min(ItemPrefix.length - 1, prefixIdx + 1);
+            }
+            const p = ItemPrefix[prefixIdx];
             const baseVal = Game.floor * 2 + 5;
             const val = Math.floor(baseVal * p.mul);
             Game.tempLoot = { name: p.name + (isW ? "剣" : "鎧"), type: isW ? 'weapon' : 'armor', val: val, r: p.r };
@@ -819,6 +835,10 @@
             document.getElementById('stat-exp-boost').innerText = p.expBoost + "%";
             document.getElementById('stat-m-pen').innerText = p.mPen + "%";
             document.getElementById('stat-luck').innerText = `${p.luck}%`;
+            document.getElementById('stat-crit-dmg').innerText = `${p.critDamage}%`;
+            document.getElementById('stat-dmg-boost').innerText = `${p.damageBoost}%`;
+            document.getElementById('stat-dmg-reduction').innerText = `${p.damageReduction}%`;
+            document.getElementById('stat-rare-find').innerText = `${p.rareFind}%`;
 
             document.getElementById('equip-weapon').innerText = p.weapon?.name || "なし";
             document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.r||'common'}`;
