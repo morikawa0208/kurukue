@@ -26,6 +26,14 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            align-items: center;
+        }
+
+        .app-shell {
+            width: clamp(0px, 100%, 460px);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
 
         .page { display: none; height: 100%; min-height: 0; flex-direction: column; overflow-y: auto; }
@@ -81,6 +89,7 @@
     </style>
 </head>
 <body class="flex flex-col">
+    <div class="app-shell">
 
     <!-- TOP BAR -->
     <header class="h-12 border-b flex items-center justify-between px-4 shrink-0 bg-white z-50 shadow-sm">
@@ -1414,5 +1423,6 @@
             });
         }
     </script>
+    </div>
 </body>
 </html>
