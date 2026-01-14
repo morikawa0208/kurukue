@@ -99,6 +99,7 @@
         </div>
         <div class="flex items-center gap-3">
             <span class="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">SP: <span id="header-sp">0</span></span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold"><i class="fas fa-coins"></i> <span id="header-gold">0</span>G</span>
             <div class="bg-slate-800 text-white text-[10px] px-2 py-1 rounded font-bold">Lv.<span id="header-lvl">1</span></div>
         </div>
     </header>
@@ -611,6 +612,7 @@
                 critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 50, accuracy: 95,
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0, affixFind: 0,
                 exp: 0, next: 100, sp: 0,
+                gold: 0,
                 weapon: null, armor: null, head: null, hands: null, feet: null, accessory1: null, accessory2: null, inventory: [],
                 skillSlots: [null, null, null, null],
                 skillSlotIndex: 0,
@@ -831,6 +833,18 @@
             { key: "legendary", name: "レジェンダリー", mul: 5.0 }
         ];
         const RaritySortOrder = Object.fromEntries(RarityDefs.map((def, index) => [def.key, index]));
+        const SellBasePrices = {
+            normal: 1,
+            magic: 10,
+            rare: 1000,
+            epic: 10000,
+            legendary: 100000
+        };
+        const AffixRankMultipliers = {
+            1: 1.2,
+            2: 1.5,
+            3: 2.0
+        };
 
         const EquipmentTypeLabels = {
             weapon: "武器",
@@ -1124,6 +1138,14 @@
 
         const getItemStatValue = (item, key) => {
             return getItemStats(item).filter((stat) => stat.key === key).reduce((sum, stat) => sum + stat.value, 0);
+        };
+
+        const getSellPrice = (item) => {
+            if (!item) return 0;
+            const base = SellBasePrices[item.rarity] ?? 0;
+            const prefixMul = AffixRankMultipliers[item.prefix?.rank] ?? 1;
+            const suffixMul = AffixRankMultipliers[item.suffix?.rank] ?? 1;
+            return Math.floor(base * prefixMul * suffixMul);
         };
 
         const getEquipmentStats = () => {
@@ -1805,8 +1827,7 @@
             if (take) {
                 Game.tempLoot.acquiredAt = Game.inventoryCounter++;
                 if (Game.lootFilter?.[Game.tempLoot.rarity]) {
-                    Game.player.inventory.push(Game.tempLoot);
-                    removeInventoryItem(Game.player.inventory.length - 1);
+                    Game.player.gold += getSellPrice(Game.tempLoot);
                 } else {
                     Game.player.inventory.push(Game.tempLoot);
                     document.getElementById('nav-inv-dot').classList.remove('hidden');
@@ -1868,7 +1889,12 @@
         }
 
         function deleteItem(idx) {
-            removeInventoryItem(idx);
+            const item = Game.player.inventory[idx];
+            if (!item || isItemEquipped(item)) return;
+            const price = getSellPrice(item);
+            if (removeInventoryItem(idx)) {
+                Game.player.gold += price;
+            }
             updateUI();
         }
 
@@ -1888,6 +1914,7 @@
             document.getElementById('floor-display').innerText = Game.floor;
             document.getElementById('header-lvl').innerText = p.level;
             document.getElementById('header-sp').innerText = p.sp;
+            document.getElementById('header-gold').innerText = p.gold;
             document.getElementById('skill-sp-display').innerText = p.sp;
 
             // Health/Mana/Exp
@@ -2083,13 +2110,14 @@
                 return acquiredA - acquiredB;
             });
             sortedItems.forEach(({ item, index }) => {
+                const sellPrice = getSellPrice(item);
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm";
                 const equipped = isItemEquipped(item);
                 const equipMarker = equipped
                     ? '<span class="text-emerald-500 font-black mr-1">[E]</span>'
                     : '';
-                const deleteLabel = equipped ? '装備中' : '削除';
+                const deleteLabel = equipped ? '装備中' : '売却';
                 const deleteClasses = equipped
                     ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                     : 'bg-slate-100 text-slate-500';
@@ -2101,7 +2129,8 @@
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
                         <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
-                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${equipped ? 'disabled' : ''}><i class="fas fa-trash"></i> ${deleteLabel}</button>
+                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${equipped ? 'disabled' : ''}><i class="fas fa-coins"></i> ${deleteLabel}</button>
+                        <div class="text-[10px] text-slate-400 font-bold text-right">売値 ${sellPrice}G</div>
                     </div>
                 `;
                 invList.appendChild(div);
