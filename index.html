@@ -349,10 +349,16 @@
             <div class="bg-white rounded-2xl border p-3 mt-3 shadow-sm">
                 <div class="flex items-center justify-between mb-2">
                     <div class="text-[10px] font-black text-slate-400">並び替え</div>
-                    <button id="inv-sort-toggle" onclick="toggleInventorySort()" class="px-3 py-2 rounded-xl border text-[10px] font-black flex items-center gap-2 bg-slate-50 text-slate-500 border-slate-200">
-                        <i class="fas fa-clock"></i>
-                        <span id="inv-sort-label">入手順</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button id="inv-sort-toggle" onclick="toggleInventorySort()" class="px-3 py-2 rounded-xl border text-[10px] font-black flex items-center gap-2 bg-slate-50 text-slate-500 border-slate-200">
+                            <i class="fas fa-clock"></i>
+                            <span id="inv-sort-label">入手順</span>
+                        </button>
+                        <button id="loot-filter-open" class="px-3 py-2 rounded-xl border text-[10px] font-black flex items-center gap-2 bg-slate-50 text-slate-500 border-slate-200">
+                            <i class="fas fa-filter"></i>
+                            <span>取得設定</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-3 gap-2 text-[10px] font-bold">
                     <button data-inv-filter="all" onclick="setInventoryFilter('all')" class="inv-filter-btn py-2 rounded-xl border">全て</button>
@@ -456,6 +462,57 @@
                 <button onclick="closeLoot(false)" class="flex-1 py-4 text-sm font-bold text-slate-400 bg-slate-100 rounded-2xl">捨てる</button>
                 <button onclick="closeLoot(true)" class="flex-1 py-4 text-sm font-bold text-white bg-slate-800 rounded-2xl shadow-lg">拾う</button>
             </div>
+        </div>
+    </div>
+
+    <!-- LOOT FILTER MODAL -->
+    <div id="loot-filter-modal" class="fixed inset-0 bg-slate-900/80 z-[105] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-black text-lg text-slate-800 flex items-center gap-2">
+                    <i class="fas fa-filter text-slate-500"></i> 取得フィルター
+                </h3>
+                <button id="loot-filter-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">チェックしたレア度は拾わず、削除扱いにします。</p>
+            <div class="space-y-2 text-sm">
+                <label class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                    <span class="flex items-center gap-2 font-bold rarity-normal">
+                        <input type="checkbox" class="loot-filter-checkbox accent-slate-800" data-rarity="normal">
+                        ノーマル
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">拾わない</span>
+                </label>
+                <label class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                    <span class="flex items-center gap-2 font-bold rarity-magic">
+                        <input type="checkbox" class="loot-filter-checkbox accent-slate-800" data-rarity="magic">
+                        マジック
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">拾わない</span>
+                </label>
+                <label class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                    <span class="flex items-center gap-2 font-bold rarity-rare">
+                        <input type="checkbox" class="loot-filter-checkbox accent-slate-800" data-rarity="rare">
+                        レア
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">拾わない</span>
+                </label>
+                <label class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                    <span class="flex items-center gap-2 font-bold rarity-epic">
+                        <input type="checkbox" class="loot-filter-checkbox accent-slate-800" data-rarity="epic">
+                        エピック
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">拾わない</span>
+                </label>
+                <label class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-3 py-2">
+                    <span class="flex items-center gap-2 font-bold rarity-legendary">
+                        <input type="checkbox" class="loot-filter-checkbox accent-slate-800" data-rarity="legendary">
+                        レジェンダリー
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">拾わない</span>
+                </label>
+            </div>
+            <button id="loot-filter-close-bottom" class="mt-5 w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg">閉じる</button>
         </div>
     </div>
 
@@ -573,6 +630,7 @@
             inventoryFilter: 'all',
             inventorySort: 'acquired',
             inventoryCounter: 0,
+            lootFilter: { normal: false, magic: false, rare: false, epic: false, legendary: false },
             enemy: null, logs: []
         };
 
@@ -1342,6 +1400,43 @@
             if (event.target === statusEffectModal) closeStatusEffectModal();
         });
 
+        const lootFilterModal = document.getElementById('loot-filter-modal');
+        const lootFilterOpenBtn = document.getElementById('loot-filter-open');
+        const lootFilterCloseBtn = document.getElementById('loot-filter-close');
+        const lootFilterCloseBottomBtn = document.getElementById('loot-filter-close-bottom');
+        const lootFilterCheckboxes = Array.from(document.querySelectorAll('.loot-filter-checkbox'));
+
+        const syncLootFilterUI = () => {
+            lootFilterCheckboxes.forEach((checkbox) => {
+                const rarity = checkbox.dataset.rarity;
+                checkbox.checked = Boolean(Game.lootFilter?.[rarity]);
+            });
+        };
+
+        const openLootFilterModal = () => {
+            syncLootFilterUI();
+            lootFilterModal.classList.remove('hidden');
+            lootFilterModal.classList.add('flex');
+        };
+
+        const closeLootFilterModal = () => {
+            lootFilterModal.classList.add('hidden');
+            lootFilterModal.classList.remove('flex');
+        };
+
+        lootFilterOpenBtn.addEventListener('click', openLootFilterModal);
+        lootFilterCloseBtn.addEventListener('click', closeLootFilterModal);
+        lootFilterCloseBottomBtn.addEventListener('click', closeLootFilterModal);
+        lootFilterModal.addEventListener('click', (event) => {
+            if (event.target === lootFilterModal) closeLootFilterModal();
+        });
+        lootFilterCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', (event) => {
+                const rarity = event.target.dataset.rarity;
+                Game.lootFilter[rarity] = event.target.checked;
+            });
+        });
+
         function switchSkillType(type) {
             Game.currentSkillType = type;
             document.querySelectorAll('.type-tab').forEach(el => el.classList.remove('active'));
@@ -1709,8 +1804,13 @@
         function closeLoot(take) {
             if (take) {
                 Game.tempLoot.acquiredAt = Game.inventoryCounter++;
-                Game.player.inventory.push(Game.tempLoot);
-                document.getElementById('nav-inv-dot').classList.remove('hidden');
+                if (Game.lootFilter?.[Game.tempLoot.rarity]) {
+                    Game.player.inventory.push(Game.tempLoot);
+                    removeInventoryItem(Game.player.inventory.length - 1);
+                } else {
+                    Game.player.inventory.push(Game.tempLoot);
+                    document.getElementById('nav-inv-dot').classList.remove('hidden');
+                }
             }
             document.getElementById('loot-modal').style.display = 'none';
             Game.state = 'idle';
@@ -1741,6 +1841,14 @@
                 || Game.player.accessory2 === item;
         }
 
+        function removeInventoryItem(idx) {
+            if (idx < 0 || idx >= Game.player.inventory.length) return false;
+            const item = Game.player.inventory[idx];
+            if (!item || isItemEquipped(item)) return false;
+            Game.player.inventory.splice(idx, 1);
+            return true;
+        }
+
         function equip(idx) {
             const item = Game.player.inventory[idx];
             if (!item || isItemEquipped(item)) return;
@@ -1760,9 +1868,7 @@
         }
 
         function deleteItem(idx) {
-            if (idx < 0 || idx >= Game.player.inventory.length) return;
-            if (isItemEquipped(Game.player.inventory[idx])) return;
-            Game.player.inventory.splice(idx, 1);
+            removeInventoryItem(idx);
             updateUI();
         }
 
