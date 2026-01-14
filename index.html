@@ -259,6 +259,46 @@
                     </div>
                     <div id="armor-val" class="text-sm font-black text-slate-400"></div>
                 </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-helmet-safety"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Helm Slot</div>
+                        <div id="equip-head" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="head-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-hand"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Hand Slot</div>
+                        <div id="equip-hands" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="hands-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-shoe-prints"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Foot Slot</div>
+                        <div id="equip-feet" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="feet-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-gem"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Accessory Slot 1</div>
+                        <div id="equip-accessory1" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="accessory1-val" class="text-sm font-black text-slate-400"></div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400"><i class="fas fa-gem"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase">Accessory Slot 2</div>
+                        <div id="equip-accessory2" class="font-bold truncate text-sm">なし</div>
+                    </div>
+                    <div id="accessory2-val" class="text-sm font-black text-slate-400"></div>
+                </div>
                 <button id="rest-btn" class="w-full py-4 bg-green-500 text-white font-black rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2 mt-4">
                     <i class="fas fa-bed"></i> 休息して全回復する
                 </button>
@@ -300,9 +340,21 @@
         <section id="page-inventory" class="page p-4 bg-slate-50">
             <div class="flex items-center justify-between mb-4 px-2">
                 <h2 class="text-xl font-black flex items-center gap-2"><i class="fas fa-box-open"></i> 持ち物</h2>
-                <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full"><span id="inv-count">0</span> / 20</span>
+                <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full"><span id="inv-count">0</span> / ∞</span>
             </div>
             <div id="inventory-list" class="flex-1 overflow-y-auto space-y-2 pb-12"></div>
+            <div class="bg-white rounded-2xl border p-3 mt-3 shadow-sm">
+                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">カテゴリ絞り込み</div>
+                <div class="grid grid-cols-3 gap-2 text-[10px] font-bold">
+                    <button data-inv-filter="all" onclick="setInventoryFilter('all')" class="inv-filter-btn py-2 rounded-xl border">全て</button>
+                    <button data-inv-filter="weapon" onclick="setInventoryFilter('weapon')" class="inv-filter-btn py-2 rounded-xl border">武器</button>
+                    <button data-inv-filter="armor" onclick="setInventoryFilter('armor')" class="inv-filter-btn py-2 rounded-xl border">鎧</button>
+                    <button data-inv-filter="head" onclick="setInventoryFilter('head')" class="inv-filter-btn py-2 rounded-xl border">兜</button>
+                    <button data-inv-filter="hands" onclick="setInventoryFilter('hands')" class="inv-filter-btn py-2 rounded-xl border">手</button>
+                    <button data-inv-filter="feet" onclick="setInventoryFilter('feet')" class="inv-filter-btn py-2 rounded-xl border">足</button>
+                    <button data-inv-filter="accessory" onclick="setInventoryFilter('accessory')" class="inv-filter-btn py-2 rounded-xl border col-span-3">装飾品</button>
+                </div>
+            </div>
         </section>
 
         <!-- LOG PAGE -->
@@ -493,7 +545,7 @@
                 critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 50, accuracy: 95,
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0, affixFind: 0,
                 exp: 0, next: 100, sp: 0,
-                weapon: null, armor: null, inventory: [],
+                weapon: null, armor: null, head: null, hands: null, feet: null, accessory1: null, accessory2: null, inventory: [],
                 skillSlots: [null, null, null, null],
                 skillSlotIndex: 0,
                 skillSlotTarget: 0,
@@ -509,6 +561,7 @@
             },
             currentJobTab: 'warrior',
             currentSkillType: 'active',
+            inventoryFilter: 'all',
             enemy: null, logs: []
         };
 
@@ -709,6 +762,24 @@
             { key: "legendary", name: "レジェンダリー", mul: 5.0 }
         ];
 
+        const EquipmentTypeLabels = {
+            weapon: "武器",
+            armor: "鎧",
+            head: "兜",
+            hands: "手",
+            feet: "足",
+            accessory: "装飾品"
+        };
+
+        const EquipmentTypePools = {
+            weapon: "weapons",
+            armor: "armors",
+            head: "heads",
+            hands: "hands",
+            feet: "feet",
+            accessory: "accessories"
+        };
+
         const EquipmentTiers = [
             {
                 floorStart: 1,
@@ -721,6 +792,26 @@
                     { name: "布のローブ", stats: [{ key: "defenseFlat", value: 4 }, { key: "maxMp", value: 10 }] },
                     { name: "革の胴着", stats: [{ key: "defenseFlat", value: 5 }, { key: "dex", value: 2 }, { key: "maxHp", value: 8 }] },
                     { name: "木の盾鎧", stats: [{ key: "defenseFlat", value: 6 }, { key: "vit", value: 2 }] }
+                ],
+                heads: [
+                    { name: "旅人のフード", stats: [{ key: "defenseFlat", value: 2 }, { key: "maxMp", value: 6 }] },
+                    { name: "革のキャップ", stats: [{ key: "defenseFlat", value: 3 }, { key: "dex", value: 2 }] },
+                    { name: "木綿のヘルム", stats: [{ key: "defenseFlat", value: 3 }, { key: "vit", value: 1 }] }
+                ],
+                hands: [
+                    { name: "旅人の手袋", stats: [{ key: "attackFlat", value: 2 }, { key: "dex", value: 1 }] },
+                    { name: "革のグローブ", stats: [{ key: "defenseFlat", value: 2 }, { key: "dex", value: 2 }] },
+                    { name: "布のミトン", stats: [{ key: "mpEfficiency", value: 2 }, { key: "int", value: 1 }] }
+                ],
+                feet: [
+                    { name: "旅人のブーツ", stats: [{ key: "defenseFlat", value: 2 }, { key: "evasionRate", value: 1 }] },
+                    { name: "革のブーツ", stats: [{ key: "defenseFlat", value: 3 }, { key: "dex", value: 1 }] },
+                    { name: "軽歩の靴", stats: [{ key: "accuracy", value: 2 }, { key: "dex", value: 1 }] }
+                ],
+                accessories: [
+                    { name: "素朴な指輪", stats: [{ key: "critRate", value: 1 }, { key: "str", value: 1 }] },
+                    { name: "護りのペンダント", stats: [{ key: "damageReduction", value: 1 }, { key: "maxHp", value: 6 }] },
+                    { name: "学徒のタリスマン", stats: [{ key: "mpEfficiency", value: 2 }, { key: "int", value: 2 }] }
                 ]
             },
             {
@@ -734,6 +825,26 @@
                     { name: "魔導ローブ", stats: [{ key: "defenseFlat", value: 9 }, { key: "maxMp", value: 25 }, { key: "int", value: 3 }] },
                     { name: "熟練の革鎧", stats: [{ key: "defenseFlat", value: 11 }, { key: "dex", value: 4 }, { key: "maxHp", value: 18 }] },
                     { name: "鋼鉄の鎧", stats: [{ key: "defenseFlat", value: 13 }, { key: "vit", value: 5 }] }
+                ],
+                heads: [
+                    { name: "鋼の兜", stats: [{ key: "defenseFlat", value: 6 }, { key: "vit", value: 3 }] },
+                    { name: "レンジャーハット", stats: [{ key: "defenseFlat", value: 5 }, { key: "dex", value: 4 }] },
+                    { name: "魔導のサークレット", stats: [{ key: "defenseFlat", value: 4 }, { key: "int", value: 4 }, { key: "maxMp", value: 10 }] }
+                ],
+                hands: [
+                    { name: "鋼のガントレット", stats: [{ key: "defenseFlat", value: 5 }, { key: "str", value: 3 }] },
+                    { name: "疾風のグローブ", stats: [{ key: "attackFlat", value: 4 }, { key: "dex", value: 4 }] },
+                    { name: "詠唱の手甲", stats: [{ key: "mpEfficiency", value: 4 }, { key: "int", value: 3 }] }
+                ],
+                feet: [
+                    { name: "鋼のブーツ", stats: [{ key: "defenseFlat", value: 6 }, { key: "vit", value: 2 }] },
+                    { name: "風切りの靴", stats: [{ key: "evasionRate", value: 2 }, { key: "dex", value: 3 }] },
+                    { name: "巡礼の靴", stats: [{ key: "hpEfficiency", value: 3 }, { key: "maxHp", value: 10 }] }
+                ],
+                accessories: [
+                    { name: "勇気の指輪", stats: [{ key: "critRate", value: 2 }, { key: "str", value: 3 }] },
+                    { name: "守護の首飾り", stats: [{ key: "damageReduction", value: 2 }, { key: "maxHp", value: 15 }] },
+                    { name: "知恵の護符", stats: [{ key: "mpEfficiency", value: 4 }, { key: "int", value: 4 }] }
                 ]
             },
             {
@@ -747,6 +858,26 @@
                     { name: "星紡ぎのローブ", stats: [{ key: "defenseFlat", value: 15 }, { key: "maxMp", value: 40 }, { key: "int", value: 6 }] },
                     { name: "影纏いの胴着", stats: [{ key: "defenseFlat", value: 16 }, { key: "dex", value: 7 }, { key: "maxHp", value: 28 }] },
                     { name: "重厚なる鎧", stats: [{ key: "defenseFlat", value: 18 }, { key: "vit", value: 9 }, { key: "maxHp", value: 20 }] }
+                ],
+                heads: [
+                    { name: "星冠のヘルム", stats: [{ key: "defenseFlat", value: 9 }, { key: "vit", value: 6 }] },
+                    { name: "影縫いのフード", stats: [{ key: "defenseFlat", value: 8 }, { key: "dex", value: 6 }, { key: "evasionRate", value: 2 }] },
+                    { name: "天文のサークレット", stats: [{ key: "defenseFlat", value: 7 }, { key: "int", value: 7 }, { key: "maxMp", value: 15 }] }
+                ],
+                hands: [
+                    { name: "黒曜の籠手", stats: [{ key: "attackFlat", value: 7 }, { key: "str", value: 5 }] },
+                    { name: "影走りのグローブ", stats: [{ key: "dex", value: 7 }, { key: "critRate", value: 2 }] },
+                    { name: "星詠みの手甲", stats: [{ key: "mpEfficiency", value: 6 }, { key: "int", value: 6 }] }
+                ],
+                feet: [
+                    { name: "重装のブーツ", stats: [{ key: "defenseFlat", value: 9 }, { key: "damageReduction", value: 2 }] },
+                    { name: "影歩きの靴", stats: [{ key: "evasionRate", value: 3 }, { key: "dex", value: 6 }] },
+                    { name: "神官の靴", stats: [{ key: "hpEfficiency", value: 4 }, { key: "maxHp", value: 18 }] }
+                ],
+                accessories: [
+                    { name: "覇者の指輪", stats: [{ key: "critRate", value: 3 }, { key: "damageBoost", value: 2 }] },
+                    { name: "星守の護符", stats: [{ key: "rareFind", value: 3 }, { key: "maxMp", value: 20 }] },
+                    { name: "黒曜のペンダント", stats: [{ key: "damageReduction", value: 3 }, { key: "maxHp", value: 20 }] }
                 ]
             }
         ];
@@ -922,7 +1053,20 @@
         const getEquipmentStats = () => {
             const weaponStats = getItemStats(Game.player.weapon);
             const armorStats = getItemStats(Game.player.armor);
-            return sumStats([...weaponStats, ...armorStats]);
+            const headStats = getItemStats(Game.player.head);
+            const handsStats = getItemStats(Game.player.hands);
+            const feetStats = getItemStats(Game.player.feet);
+            const accessory1Stats = getItemStats(Game.player.accessory1);
+            const accessory2Stats = getItemStats(Game.player.accessory2);
+            return sumStats([
+                ...weaponStats,
+                ...armorStats,
+                ...headStats,
+                ...handsStats,
+                ...feetStats,
+                ...accessory1Stats,
+                ...accessory2Stats
+            ]);
         };
 
         const getTotalStats = () => {
@@ -1527,12 +1671,14 @@
         }
 
         function drop() {
-            const isW = Math.random() < 0.6;
             const tier = EquipmentTiers[getTierIndex(Game.floor)];
-            const base = isW ? pickRandom(tier.weapons) : pickRandom(tier.armors);
-            Game.tempLoot = buildItem(base, isW ? 'weapon' : 'armor');
+            const types = Object.keys(EquipmentTypePools);
+            const type = pickRandom(types);
+            const poolKey = EquipmentTypePools[type];
+            const base = pickRandom(tier[poolKey]);
+            Game.tempLoot = buildItem(base, type);
             document.getElementById('loot-display').innerHTML = `
-                <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${Game.tempLoot.type} Found</div>
+                <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${EquipmentTypeLabels[Game.tempLoot.type]} Found</div>
                 <div class="text-xl font-black rarity-${Game.tempLoot.rarity}">${Game.tempLoot.name}</div>
                 <div class="mt-2 space-y-1">${renderItemStatsHtml(Game.tempLoot)}</div>
             `;
@@ -1542,7 +1688,6 @@
 
         function closeLoot(take) {
             if (take) {
-                if (Game.player.inventory.length >= 20) { return; }
                 Game.player.inventory.push(Game.tempLoot);
                 document.getElementById('nav-inv-dot').classList.remove('hidden');
             }
@@ -1551,12 +1696,38 @@
             updateUI();
         }
 
+        function setInventoryFilter(type) {
+            Game.inventoryFilter = type;
+            updateUI();
+        }
+
         function equip(idx) {
             const item = Game.player.inventory[idx];
+            if (!item) return;
+            if (item.type === 'accessory') {
+                let slotKey = 'accessory1';
+                if (!Game.player.accessory1) {
+                    slotKey = 'accessory1';
+                } else if (!Game.player.accessory2) {
+                    slotKey = 'accessory2';
+                }
+                const old = Game.player[slotKey];
+                Game.player[slotKey] = item;
+                Game.player.inventory.splice(idx, 1);
+                if (old) Game.player.inventory.push(old);
+                updateUI();
+                return;
+            }
             const old = Game.player[item.type];
             Game.player[item.type] = item;
             Game.player.inventory.splice(idx, 1);
             if (old) Game.player.inventory.push(old);
+            updateUI();
+        }
+
+        function deleteItem(idx) {
+            if (idx < 0 || idx >= Game.player.inventory.length) return;
+            Game.player.inventory.splice(idx, 1);
             updateUI();
         }
 
@@ -1721,23 +1892,53 @@
             document.getElementById('equip-armor').innerText = p.armor?.name || "なし";
             document.getElementById('equip-armor').className = `font-bold truncate text-sm rarity-${p.armor?.rarity||'normal'}`;
             document.getElementById('armor-val').innerHTML = p.armor ? renderItemStatsHtml(p.armor) : "";
+            document.getElementById('equip-head').innerText = p.head?.name || "なし";
+            document.getElementById('equip-head').className = `font-bold truncate text-sm rarity-${p.head?.rarity||'normal'}`;
+            document.getElementById('head-val').innerHTML = p.head ? renderItemStatsHtml(p.head) : "";
+            document.getElementById('equip-hands').innerText = p.hands?.name || "なし";
+            document.getElementById('equip-hands').className = `font-bold truncate text-sm rarity-${p.hands?.rarity||'normal'}`;
+            document.getElementById('hands-val').innerHTML = p.hands ? renderItemStatsHtml(p.hands) : "";
+            document.getElementById('equip-feet').innerText = p.feet?.name || "なし";
+            document.getElementById('equip-feet').className = `font-bold truncate text-sm rarity-${p.feet?.rarity||'normal'}`;
+            document.getElementById('feet-val').innerHTML = p.feet ? renderItemStatsHtml(p.feet) : "";
+            document.getElementById('equip-accessory1').innerText = p.accessory1?.name || "なし";
+            document.getElementById('equip-accessory1').className = `font-bold truncate text-sm rarity-${p.accessory1?.rarity||'normal'}`;
+            document.getElementById('accessory1-val').innerHTML = p.accessory1 ? renderItemStatsHtml(p.accessory1) : "";
+            document.getElementById('equip-accessory2').innerText = p.accessory2?.name || "なし";
+            document.getElementById('equip-accessory2').className = `font-bold truncate text-sm rarity-${p.accessory2?.rarity||'normal'}`;
+            document.getElementById('accessory2-val').innerHTML = p.accessory2 ? renderItemStatsHtml(p.accessory2) : "";
 
             // Inventory
             const invList = document.getElementById('inventory-list');
             invList.innerHTML = '';
             document.getElementById('inv-count').innerText = p.inventory.length;
-            p.inventory.forEach((item, i) => {
+            const activeFilter = Game.inventoryFilter || 'all';
+            const filteredItems = p.inventory
+                .map((item, index) => ({ item, index }))
+                .filter(({ item }) => activeFilter === 'all' || item.type === activeFilter);
+            filteredItems.forEach(({ item, index }) => {
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm";
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
-                        <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${item.type}</div>
+                        <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${EquipmentTypeLabels[item.type]}</div>
                         <div class="font-black text-sm truncate rarity-${item.rarity}">${item.name}</div>
                         <div class="mt-1 space-y-0.5">${renderItemStatsHtml(item)}</div>
                     </div>
-                    <button onclick="equip(${i})" class="ml-4 px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
+                    <div class="ml-4 flex flex-col gap-2">
+                        <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
+                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 bg-slate-100 text-slate-500 text-[11px] font-black rounded-xl"><i class="fas fa-trash"></i> 削除</button>
+                    </div>
                 `;
                 invList.appendChild(div);
+            });
+
+            document.querySelectorAll('.inv-filter-btn').forEach((button) => {
+                const type = button.getAttribute('data-inv-filter');
+                const active = type === activeFilter;
+                button.className = `inv-filter-btn py-2 rounded-xl border ${
+                    active ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-200 bg-slate-50 text-slate-500'
+                }`;
             });
         }
     </script>
