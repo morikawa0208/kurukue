@@ -388,75 +388,129 @@
                     <p class="text-xs text-slate-500 mt-2">戦闘で発生する状態異常の効果一覧です。攻撃力/防御力のバフ・デバフ設計もここに整理しています。</p>
                 </div>
                 <div class="space-y-4 text-sm">
-                    <div class="border border-slate-100 rounded-2xl p-4 bg-slate-50">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">攻撃力/防御力バフ・デバフ設計</div>
-                        <div class="mt-3 grid gap-3">
-                            <div class="flex items-start gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-emerald-500"><i class="fas fa-arrow-up-long"></i></div>
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-3">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">攻撃力/防御力バフ・デバフ</div>
+                        <div class="grid gap-3">
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-emerald-500"><i class="fas fa-arrow-up-long"></i></div>
                                 <div>
-                                    <div class="font-black text-slate-700">闘志 (攻撃力アップ)</div>
-                                    <div class="text-xs text-slate-500">1スタックごとに攻撃力+10%。最大5スタック。再付与でターン延長。</div>
+                                    <div class="font-black text-slate-700">闘志</div>
+                                    <div class="text-xs text-slate-500">攻撃力+10%/スタック。最大5スタック。</div>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-rose-500"><i class="fas fa-arrow-down-long"></i></div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-rose-500"><i class="fas fa-arrow-down-long"></i></div>
                                 <div>
-                                    <div class="font-black text-slate-700">衰弱 (攻撃力ダウン)</div>
-                                    <div class="text-xs text-slate-500">1スタックごとに攻撃力-10%。最大5スタック。防御側の行動で解除されやすい。</div>
+                                    <div class="font-black text-slate-700">衰弱</div>
+                                    <div class="text-xs text-slate-500">攻撃力-10%/スタック。最大5スタック。</div>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-sky-500"><i class="fas fa-shield-halved"></i></div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-sky-500"><i class="fas fa-shield-halved"></i></div>
                                 <div>
-                                    <div class="font-black text-slate-700">守勢 (防御力アップ)</div>
-                                    <div class="text-xs text-slate-500">1スタックごとに防御力+12%。最大4スタック。被ダメ軽減と乗算。</div>
+                                    <div class="font-black text-slate-700">守勢</div>
+                                    <div class="text-xs text-slate-500">防御力+12%/スタック。最大4スタック。</div>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-amber-500"><i class="fas fa-shield"></i></div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-amber-500"><i class="fas fa-shield"></i></div>
                                 <div>
-                                    <div class="font-black text-slate-700">脆甲 (防御力ダウン)</div>
-                                    <div class="text-xs text-slate-500">1スタックごとに防御力-12%。最大4スタック。貫通系と相性が良い。</div>
+                                    <div class="font-black text-slate-700">脆甲</div>
+                                    <div class="text-xs text-slate-500">防御力-12%/スタック。最大4スタック。</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-3 text-[11px] text-slate-500">
-                            <span class="font-bold text-slate-600">運用ルール例:</span> 効果は「基礎攻撃/防御 × (1 + 合計補正)」で計算。バフとデバフは合算後に上限・下限を設定。
+                        <div class="text-[11px] text-slate-500">
+                            <span class="font-bold text-slate-600">運用ルール:</span> 基礎攻撃/防御 × (1 + 合計補正) で計算。
                         </div>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-skull-crossbones"></i></div>
-                        <div>
-                            <div class="font-black text-slate-700">毒</div>
-                            <div class="text-xs text-slate-500">ターン開始時にスタック数ぶんのダメージ。</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-droplet"></i></div>
-                        <div>
-                            <div class="font-black text-slate-700">出血</div>
-                            <div class="text-xs text-slate-500">ターン開始時にスタック数ぶんのダメージ。</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-down-long"></i></div>
-                        <div>
-                            <div class="font-black text-slate-700">弱体</div>
-                            <div class="text-xs text-slate-500">能力が低下する状態。</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-shield-halved"></i></div>
-                        <div>
-                            <div class="font-black text-slate-700">脆弱</div>
-                            <div class="text-xs text-slate-500">被ダメージが増加する状態。</div>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-arrow-up-long"></i></div>
-                        <div>
-                            <div class="font-black text-slate-700">強化</div>
-                            <div class="text-xs text-slate-500">能力が上昇する状態。</div>
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-3">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">実装済みの状態異常</div>
+                        <div class="grid gap-3">
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-skull-crossbones"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">毒</div>
+                                    <div class="text-xs text-slate-500">ターン開始時に最大HP依存ダメージ。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-droplet"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">出血</div>
+                                    <div class="text-xs text-slate-500">ターン開始時にSTR依存ダメージ。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-down-long"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">弱体</div>
+                                    <div class="text-xs text-slate-500">与ダメージ低下。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-shield-halved"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">脆弱</div>
+                                    <div class="text-xs text-slate-500">被ダメージ増加。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-arrow-up-long"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">強化</div>
+                                    <div class="text-xs text-slate-500">与ダメージ増加。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-snowflake"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">凍結</div>
+                                    <div class="text-xs text-slate-500">行動不能。被ダメージで解除。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-eye-slash"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">暗闇</div>
+                                    <div class="text-xs text-slate-500">命中率・会心率低下。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-hand-sparkles"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">沈黙</div>
+                                    <div class="text-xs text-slate-500">スキル使用不可。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-person-running"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">迅速</div>
+                                    <div class="text-xs text-slate-500">命中率・回避率上昇。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-layer-group"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">バリア</div>
+                                    <div class="text-xs text-slate-500">ダメージを一定量吸収。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-retweet"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">反射</div>
+                                    <div class="text-xs text-slate-500">被ダメージの一部を反射。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center text-slate-500"><i class="fas fa-user-slash"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">挑発</div>
+                                    <div class="text-xs text-slate-500">被ダメージ増加・回避率低下。</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="border-t border-slate-100 pt-4 space-y-3">
