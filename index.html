@@ -713,15 +713,23 @@
 
         function getNextSlotSkill() {
             const slots = Game.player.skillSlots;
-            const start = Game.player.skillSlotIndex || 0;
-            for (let i = 0; i < slots.length; i++) {
-                const idx = (start + i) % slots.length;
+            const start = Game.player.skillSlotIndex ?? 0;
+            const totalSlots = slots.length;
+            const findNextIndex = (currentIndex) => {
+                for (let i = 1; i <= totalSlots; i++) {
+                    const idx = (currentIndex + i) % totalSlots;
+                    if (getSlotSkill(slots[idx])) return idx;
+                }
+                return currentIndex;
+            };
+            for (let i = 0; i < totalSlots; i++) {
+                const idx = (start + i) % totalSlots;
                 const skill = getSlotSkill(slots[idx]);
                 if (skill) {
-                    return { skill, slotIndex: idx, nextIndex: (idx + 1) % slots.length };
+                    return { skill, slotIndex: idx, nextIndex: findNextIndex(idx) };
                 }
             }
-            return { skill: null, slotIndex: start, nextIndex: (start + 1) % slots.length };
+            return { skill: null, slotIndex: start, nextIndex: start };
         }
 
         function setSkillSlotTarget(idx) {
@@ -1302,17 +1310,20 @@
             const battleSlots = document.getElementById('battle-skill-slots');
             if (battleSlots) {
                 battleSlots.innerHTML = '';
-                Game.player.skillSlots.forEach((slot, idx) => {
-                    const skill = getSlotSkill(slot);
-                    const isNext = idx === Game.player.skillSlotIndex;
+                const allSlotsFilled = Game.player.skillSlots.every(slot => getSlotSkill(slot));
+                const activeSlots = Game.player.skillSlots
+                    .map((slot, idx) => ({ slot, idx, skill: getSlotSkill(slot) }))
+                    .filter(entry => entry.skill);
+                activeSlots.forEach(({ idx, skill }) => {
+                    const isNext = allSlotsFilled && idx === Game.player.skillSlotIndex;
                     const card = document.createElement('div');
                     card.className = `rounded-xl border px-2 py-2 text-center text-[10px] font-bold ${
                         isNext ? 'border-slate-800 bg-slate-100 text-slate-900' : 'border-slate-200 bg-slate-50 text-slate-400'
                     }`;
                     card.innerHTML = `
                         <div class="text-[9px] font-black">S${idx + 1}</div>
-                        <div class="truncate">${skill ? skill.name : '未設定'}</div>
-                        <div class="text-[9px] ${skill ? 'text-blue-500' : 'text-slate-300'}">MP ${skill ? skill.mp : '-'}</div>
+                        <div class="truncate">${skill.name}</div>
+                        <div class="text-[9px] text-blue-500">MP ${skill.mp}</div>
                     `;
                     battleSlots.appendChild(card);
                 });
