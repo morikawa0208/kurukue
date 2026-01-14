@@ -385,9 +385,45 @@
             <div class="bg-white rounded-3xl p-6 shadow-sm space-y-4">
                 <div>
                     <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">状態異常</div>
-                    <p class="text-xs text-slate-500 mt-2">戦闘で発生する状態異常の効果一覧です。</p>
+                    <p class="text-xs text-slate-500 mt-2">戦闘で発生する状態異常の効果一覧です。攻撃力/防御力のバフ・デバフ設計もここに整理しています。</p>
                 </div>
-                <div class="space-y-3 text-sm">
+                <div class="space-y-4 text-sm">
+                    <div class="border border-slate-100 rounded-2xl p-4 bg-slate-50">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">攻撃力/防御力バフ・デバフ設計</div>
+                        <div class="mt-3 grid gap-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-emerald-500"><i class="fas fa-arrow-up-long"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">闘志 (攻撃力アップ)</div>
+                                    <div class="text-xs text-slate-500">1スタックごとに攻撃力+10%。最大5スタック。再付与でターン延長。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-rose-500"><i class="fas fa-arrow-down-long"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">衰弱 (攻撃力ダウン)</div>
+                                    <div class="text-xs text-slate-500">1スタックごとに攻撃力-10%。最大5スタック。防御側の行動で解除されやすい。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-sky-500"><i class="fas fa-shield-halved"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">守勢 (防御力アップ)</div>
+                                    <div class="text-xs text-slate-500">1スタックごとに防御力+12%。最大4スタック。被ダメ軽減と乗算。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-amber-500"><i class="fas fa-shield"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">脆甲 (防御力ダウン)</div>
+                                    <div class="text-xs text-slate-500">1スタックごとに防御力-12%。最大4スタック。貫通系と相性が良い。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-[11px] text-slate-500">
+                            <span class="font-bold text-slate-600">運用ルール例:</span> 効果は「基礎攻撃/防御 × (1 + 合計補正)」で計算。バフとデバフは合算後に上限・下限を設定。
+                        </div>
+                    </div>
                     <div class="flex items-start gap-3">
                         <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-skull-crossbones"></i></div>
                         <div>
@@ -421,6 +457,74 @@
                         <div>
                             <div class="font-black text-slate-700">強化</div>
                             <div class="text-xs text-slate-500">能力が上昇する状態。</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-4 space-y-3">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">その他の面白い状態異常案</div>
+                        <div class="grid gap-3">
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-bolt"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">感電</div>
+                                    <div class="text-xs text-slate-500">行動時に追加ダメージ。連鎖で周囲にも伝播。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-snowflake"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">凍結</div>
+                                    <div class="text-xs text-slate-500">1ターン行動不能。被ダメージで解除。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-eye-slash"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">暗闇</div>
+                                    <div class="text-xs text-slate-500">命中率低下。会心率も減少。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-hand-sparkles"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">沈黙</div>
+                                    <div class="text-xs text-slate-500">魔法/スキル使用不可。通常攻撃のみ。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-person-running"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">迅速</div>
+                                    <div class="text-xs text-slate-500">行動順が早くなる。回避率も少し上昇。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-layer-group"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">バリア</div>
+                                    <div class="text-xs text-slate-500">一定量のダメージを吸収。残量が見えるタイプ。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-retweet"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">反射</div>
+                                    <div class="text-xs text-slate-500">被弾時に一部ダメージを攻撃者へ返す。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-fire"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">燃焼</div>
+                                    <div class="text-xs text-slate-500">ターン終了時にダメージ。回復効果が低下。</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500"><i class="fas fa-user-slash"></i></div>
+                                <div>
+                                    <div class="font-black text-slate-700">挑発</div>
+                                    <div class="text-xs text-slate-500">ターゲット固定。防御行動と組み合わせると戦略的。</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -757,9 +861,20 @@
         const StatusDefs = {
             poison: { id: 'poison', name: '毒', effectType: 'poison', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-skull-crossbones', desc: 'ターン開始時に最大HPの3%×スタックのダメージ。' },
             bleed: { id: 'bleed', name: '出血', effectType: 'bleed', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-droplet', desc: 'ターン開始時に(固定2+STR×0.3)×スタックのダメージ。' },
-            weaken: { id: 'weaken', name: '弱体', effectType: 'weaken', stackable: false, maxStacks: 1, defaultTurns: 2, icon: 'fa-down-long', desc: '与ダメが減少する。' },
-            vulnerable: { id: 'vulnerable', name: '脆弱', effectType: 'vulnerable', stackable: false, maxStacks: 1, defaultTurns: 2, icon: 'fa-shield-halved', desc: '被ダメージが増加する状態。' },
-            buff: { id: 'buff', name: '強化', effectType: 'buff', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-arrow-up-long', desc: '与ダメが増加する。' }
+            weaken: { id: 'weaken', name: '弱体', effectType: 'weaken', stackable: true, maxStacks: 5, defaultTurns: 2, icon: 'fa-down-long', desc: '与ダメが低下する。' },
+            vulnerable: { id: 'vulnerable', name: '脆弱', effectType: 'vulnerable', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-shield-halved', desc: '被ダメージが増加する状態。' },
+            buff: { id: 'buff', name: '強化', effectType: 'buff', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-arrow-up-long', desc: '与ダメが増加する。' },
+            attackUp: { id: 'attackUp', name: '闘志', effectType: 'attackUp', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-arrow-up-long', desc: '攻撃力が上昇する。' },
+            attackDown: { id: 'attackDown', name: '衰弱', effectType: 'attackDown', stackable: true, maxStacks: 5, defaultTurns: 3, icon: 'fa-arrow-down-long', desc: '攻撃力が低下する。' },
+            defenseUp: { id: 'defenseUp', name: '守勢', effectType: 'defenseUp', stackable: true, maxStacks: 4, defaultTurns: 3, icon: 'fa-shield-halved', desc: '防御力が上昇する。' },
+            defenseDown: { id: 'defenseDown', name: '脆甲', effectType: 'defenseDown', stackable: true, maxStacks: 4, defaultTurns: 3, icon: 'fa-shield', desc: '防御力が低下する。' },
+            freeze: { id: 'freeze', name: '凍結', effectType: 'freeze', stackable: false, maxStacks: 1, defaultTurns: 1, icon: 'fa-snowflake', desc: '行動不能。被ダメージで解除。' },
+            blind: { id: 'blind', name: '暗闇', effectType: 'blind', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-eye-slash', desc: '命中率と会心率が低下する。' },
+            silence: { id: 'silence', name: '沈黙', effectType: 'silence', stackable: false, maxStacks: 1, defaultTurns: 2, icon: 'fa-hand-sparkles', desc: 'スキル使用不可。' },
+            haste: { id: 'haste', name: '迅速', effectType: 'haste', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-person-running', desc: '命中率と回避率が上昇する。' },
+            barrier: { id: 'barrier', name: 'バリア', effectType: 'barrier', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-layer-group', shieldPerStack: 30, desc: '一定量のダメージを吸収する。' },
+            reflect: { id: 'reflect', name: '反射', effectType: 'reflect', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-retweet', desc: '被ダメージの一部を反射する。' },
+            taunt: { id: 'taunt', name: '挑発', effectType: 'taunt', stackable: true, maxStacks: 2, defaultTurns: 2, icon: 'fa-user-slash', desc: 'ターゲットを引きつける。' }
         };
 
         const EnemyBases = [
@@ -1201,6 +1316,90 @@
             };
         };
 
+        function getStatusEffect(target, effectId) {
+            if (!target || !Array.isArray(target.statusEffects)) return null;
+            return target.statusEffects.find(effect => effect.id === effectId) || null;
+        }
+
+        function removeStatusEffect(target, effectId) {
+            if (!target || !Array.isArray(target.statusEffects)) return;
+            target.statusEffects = target.statusEffects.filter(effect => effect.id !== effectId);
+        }
+
+        function getStatusModifiers(target) {
+            const effects = Array.isArray(target?.statusEffects) ? target.statusEffects : [];
+            const mods = {
+                atkMul: 1,
+                defMul: 1,
+                accuracyMul: 1,
+                critMul: 1,
+                evasionMul: 1,
+                damageDoneMul: 1,
+                damageTakenMul: 1,
+                reflectPct: 0,
+                silence: false,
+                frozen: false
+            };
+            effects.forEach(effect => {
+                const def = StatusDefs[effect.id];
+                if (!def) return;
+                const stacks = Math.max(1, effect.stacks || 1);
+                if (def.effectType === 'attackUp') {
+                    mods.atkMul += 0.1 * stacks;
+                }
+                if (def.effectType === 'attackDown') {
+                    mods.atkMul -= 0.1 * stacks;
+                }
+                if (def.effectType === 'defenseUp') {
+                    mods.defMul += 0.12 * stacks;
+                    mods.damageTakenMul *= Math.max(0.2, 1 - 0.08 * stacks);
+                }
+                if (def.effectType === 'defenseDown') {
+                    mods.defMul -= 0.12 * stacks;
+                    mods.damageTakenMul *= 1 + 0.08 * stacks;
+                }
+                if (def.effectType === 'buff') {
+                    mods.damageDoneMul *= 1 + 0.1 * stacks;
+                }
+                if (def.effectType === 'weaken') {
+                    mods.damageDoneMul *= Math.max(0.2, 1 - 0.1 * stacks);
+                }
+                if (def.effectType === 'vulnerable') {
+                    mods.damageTakenMul *= 1 + 0.15 * stacks;
+                }
+                if (def.effectType === 'blind') {
+                    mods.accuracyMul *= Math.max(0.2, 1 - 0.15 * stacks);
+                    mods.critMul *= Math.max(0.2, 1 - 0.2 * stacks);
+                }
+                if (def.effectType === 'haste') {
+                    mods.accuracyMul *= 1 + 0.08 * stacks;
+                    mods.evasionMul *= 1 + 0.1 * stacks;
+                }
+                if (def.effectType === 'silence') {
+                    mods.silence = true;
+                }
+                if (def.effectType === 'freeze') {
+                    mods.frozen = true;
+                }
+                if (def.effectType === 'reflect') {
+                    mods.reflectPct += 0.08 * stacks;
+                }
+                if (def.effectType === 'taunt') {
+                    mods.damageTakenMul *= 1 + 0.05 * stacks;
+                    mods.evasionMul *= Math.max(0.2, 1 - 0.05 * stacks);
+                }
+            });
+            mods.atkMul = Math.max(0.1, mods.atkMul);
+            mods.defMul = Math.max(0.1, mods.defMul);
+            mods.accuracyMul = Math.max(0.2, mods.accuracyMul);
+            mods.critMul = Math.max(0.2, mods.critMul);
+            mods.evasionMul = Math.max(0.2, mods.evasionMul);
+            mods.damageDoneMul = Math.max(0.2, mods.damageDoneMul);
+            mods.damageTakenMul = Math.max(0.2, mods.damageTakenMul);
+            mods.reflectPct = Math.min(0.6, mods.reflectPct);
+            return mods;
+        }
+
         const renderStatLines = (stats) => {
             return stats.map((stat) => {
                 const suffix = PercentStats.has(stat.key) ? "%" : "";
@@ -1312,15 +1511,56 @@
         function getDerivedStats() {
             const p = Game.player;
             const totals = getTotalStats();
+            const statusMods = getStatusModifiers(p);
             const maxHpBase = totals.maxHp + totals.maxHpFlat;
             const maxMpBase = totals.maxMp + totals.maxMpFlat;
             const maxHp = Math.max(1, Math.floor(maxHpBase * (1 + totals.hpEfficiency / 100)));
             const maxMp = Math.max(0, Math.floor(maxMpBase * (1 + totals.mpEfficiency / 100)));
             const atkBase = totals.str + totals.attackFlat;
-            const atk = Math.max(0, Math.floor(atkBase * (1 + totals.attackEfficiency / 100)));
+            const atk = Math.max(0, Math.floor(atkBase * (1 + totals.attackEfficiency / 100) * statusMods.atkMul));
             const defBase = totals.vit + totals.defenseFlat;
-            const def = Math.max(0, Math.floor(defBase * (1 + totals.defenseEfficiency / 100)));
-            return { maxHp, maxMp, atk, def, totals };
+            const def = Math.max(0, Math.floor(defBase * (1 + totals.defenseEfficiency / 100) * statusMods.defMul));
+            const modifiedTotals = {
+                ...totals,
+                accuracy: Math.max(0, Math.floor(totals.accuracy * statusMods.accuracyMul)),
+                critRate: Math.max(0, Math.floor(totals.critRate * statusMods.critMul)),
+                evasionRate: Math.max(0, Math.floor(totals.evasionRate * statusMods.evasionMul))
+            };
+            return { maxHp, maxMp, atk, def, totals: modifiedTotals };
+        }
+
+        function applyDamage(target, amount, source = null, options = {}) {
+            const safeAmount = Math.max(0, Math.floor(amount));
+            if (!target || safeAmount <= 0) return 0;
+            let remaining = safeAmount;
+            const barrierEffect = getStatusEffect(target, 'barrier');
+            if (barrierEffect) {
+                const def = StatusDefs.barrier;
+                if (barrierEffect.shield === undefined) {
+                    barrierEffect.shield = (def.shieldPerStack || 0) * (barrierEffect.stacks || 1);
+                }
+                const absorbed = Math.min(remaining, barrierEffect.shield);
+                barrierEffect.shield -= absorbed;
+                remaining -= absorbed;
+                if (barrierEffect.shield <= 0) {
+                    removeStatusEffect(target, 'barrier');
+                } else if (def.shieldPerStack) {
+                    barrierEffect.stacks = Math.max(1, Math.ceil(barrierEffect.shield / def.shieldPerStack));
+                }
+            }
+            if (remaining > 0) {
+                target.hp = Math.max(0, target.hp - remaining);
+                removeStatusEffect(target, 'freeze');
+            }
+            if (!options.ignoreReflect && remaining > 0 && source) {
+                const mods = getStatusModifiers(target);
+                if (mods.reflectPct > 0) {
+                    const reflectDamage = Math.max(1, Math.floor(remaining * mods.reflectPct));
+                    applyDamage(source, reflectDamage, null, { ignoreReflect: true });
+                    addLog(`反射ダメージ ${reflectDamage}`, "text-purple-400");
+                }
+            }
+            return remaining;
         }
 
         function applyAutoRegen() {
@@ -1349,12 +1589,12 @@
                         const stacks = Math.max(1, effect.stacks || 1);
                         const baseHp = maxHp || target.hp || 0;
                         const dmg = Math.max(1, Math.floor(baseHp * 0.03 * stacks));
-                        target.hp = Math.max(0, target.hp - dmg);
+                        applyDamage(target, dmg, null, { ignoreReflect: true });
                     }
                     if (def.effectType === 'bleed') {
                         const stacks = Math.max(1, effect.stacks || 1);
                         const dmg = Math.max(1, Math.floor((2 + strValue * 0.3) * stacks));
-                        target.hp = Math.max(0, target.hp - dmg);
+                        applyDamage(target, dmg, null, { ignoreReflect: true });
                     }
                 });
             }
@@ -1382,12 +1622,25 @@
                     existing.stacks = 1;
                 }
                 existing.turns = Math.max(existing.turns, duration);
+                if (def.effectType === 'barrier') {
+                    const perStack = def.shieldPerStack || 0;
+                    existing.shield = (existing.shield || 0) + perStack * stacks;
+                    const maxShield = perStack * (existing.stacks || 1);
+                    if (maxShield > 0) {
+                        existing.shield = Math.min(maxShield, existing.shield);
+                    }
+                }
             } else {
-                target.statusEffects.push({
+                const entry = {
                     id: effectId,
                     stacks: def.stackable ? Math.min(maxStacks, stacks) : 1,
                     turns: duration
-                });
+                };
+                if (def.effectType === 'barrier') {
+                    const perStack = def.shieldPerStack || 0;
+                    entry.shield = perStack * entry.stacks;
+                }
+                target.statusEffects.push(entry);
             }
         }
 
@@ -1574,6 +1827,15 @@
                 updateUI();
                 return;
             }
+            const playerStatusMods = getStatusModifiers(Game.player);
+            if (playerStatusMods.frozen) {
+                addLog("凍結で行動不能！", "text-sky-400");
+                advanceStatusEffects(Game.player, 'end');
+                applyAutoRegen();
+                setTimeout(enemyTurn, 300);
+                updateUI();
+                return;
+            }
 
             const slotResult = getNextSlotSkill();
             let currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
@@ -1589,10 +1851,16 @@
                 currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
                 isMagic = false;
             }
+            if (playerStatusMods.silence && currentSkill.name !== '通常攻撃') {
+                addLog("沈黙でスキル不可！通常攻撃に変更", "text-slate-400");
+                currentSkill = { name: '通常攻撃', mp: 0, pow: 1.0 };
+                isMagic = false;
+            }
 
             Game.player.skillSlotIndex = slotResult.nextIndex;
 
             const derived = getDerivedStats();
+            const enemyStatusMods = getStatusModifiers(Game.enemy);
 
             if (currentSkill.hpCost) {
                 const cost = Math.floor(derived.maxHp * currentSkill.hpCost);
@@ -1609,12 +1877,14 @@
             } else {
                 let hits = currentSkill.hits || 1;
                 let totalDamage = 0;
+                let landedHit = false;
                 
                 for(let i=0; i<hits; i++){
                     let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0));
                     if (Math.random() * 100 > hitChance) {
                         continue;
                     }
+                    landedHit = true;
                     // Base Attack Power Calculation
                     let atkBase = isMagic ? (derived.totals.int * 2) : derived.atk;
                     
@@ -1637,15 +1907,17 @@
                     if (derived.totals.damageBoost > 0) {
                         dmg = Math.floor(dmg * (1 + derived.totals.damageBoost / 100));
                     }
+                    dmg = Math.floor(dmg * playerStatusMods.damageDoneMul);
+                    dmg = Math.floor(dmg * enemyStatusMods.damageTakenMul);
 
                     dmg = Math.max(1, dmg);
-                    Game.enemy.hp = Math.max(0, Game.enemy.hp - dmg);
-                    totalDamage += dmg;
+                    const appliedDamage = applyDamage(Game.enemy, dmg, Game.player);
+                    totalDamage += appliedDamage;
                     
                     // Leech
                     const totalLeech = derived.totals.leechRate + (currentSkill.leech || 0);
-                    if (totalLeech > 0) {
-                        let l = Math.floor(dmg * (totalLeech / 100));
+                    if (totalLeech > 0 && appliedDamage > 0) {
+                        let l = Math.floor(appliedDamage * (totalLeech / 100));
                         if (l > 0) {
                             Game.player.hp = Math.min(derived.maxHp, Game.player.hp + l);
                         }
@@ -1653,8 +1925,13 @@
                 }
                 
                 if (totalDamage === 0) {
-                    addLog("攻撃が外れた！", "text-slate-400");
-                    dmgText("MISS", false);
+                    if (landedHit) {
+                        addLog("バリアに防がれた！", "text-slate-400");
+                        dmgText(0, false);
+                    } else {
+                        addLog("攻撃が外れた！", "text-slate-400");
+                        dmgText("MISS", false);
+                    }
                 } else {
                     addLog(`${currentSkill.name}！ ${totalDamage}のダメージ`);
                     dmgText(totalDamage);
@@ -1693,7 +1970,16 @@
                 updateUI();
                 return;
             }
+            const enemyStatusMods = getStatusModifiers(Game.enemy);
+            if (enemyStatusMods.frozen) {
+                addLog(`${Game.enemy.name}は凍結で動けない！`, "text-sky-400");
+                advanceStatusEffects(Game.enemy, 'end');
+                applyAutoRegen();
+                updateUI();
+                return;
+            }
             const derived = getDerivedStats();
+            const playerStatusMods = getStatusModifiers(Game.player);
             
             // Evasion Check
             if (Math.random() * 100 < derived.totals.evasionRate) {
@@ -1703,7 +1989,8 @@
                 updateUI();
                 return;
             }
-            let d = Math.floor(Game.enemy.str * (0.8 + Math.random() * 0.4)) - derived.def;
+            let enemyAtk = Game.enemy.str * enemyStatusMods.atkMul;
+            let d = Math.floor(enemyAtk * (0.8 + Math.random() * 0.4)) - derived.def;
             // Passive: Armor Boost
             const armorBoostLevel = getPassiveLevel('warrior', 4);
             if (armorBoostLevel > 0) d -= Math.floor(getItemStatValue(Game.player.armor, "defenseFlat") * 0.15 * armorBoostLevel);
@@ -1711,9 +1998,11 @@
             if (derived.totals.damageReduction > 0) {
                 d = Math.floor(d * (1 - derived.totals.damageReduction / 100));
             }
+            d = Math.floor(d * enemyStatusMods.damageDoneMul);
+            d = Math.floor(d * playerStatusMods.damageTakenMul);
             d = Math.max(1, d);
-            Game.player.hp = Math.max(0, Game.player.hp - d);
-            addLog(`${Game.enemy.name}：${d}ダメ`, "text-red-400");
+            const appliedDamage = applyDamage(Game.player, d, Game.enemy);
+            addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
             if (Math.random() < 0.2) {
                 applyStatusEffect(Game.player, 'poison');
                 addLog("毒を受けた！", "text-green-600");
