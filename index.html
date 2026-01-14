@@ -67,11 +67,11 @@
             mask-image: linear-gradient(to top, black 70%, transparent 100%);
         }
 
-        .rarity-common { color: #64748b; }
-        .rarity-uncommon { color: #22c55e; font-weight: bold; }
-        .rarity-rare { color: #3b82f6; font-weight: bold; }
+        .rarity-normal { color: #f8fafc; font-weight: bold; text-shadow: 0 1px 2px rgba(15, 23, 42, 0.6); }
+        .rarity-magic { color: #3b82f6; font-weight: bold; }
+        .rarity-rare { color: #facc15; font-weight: bold; text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35); }
         .rarity-epic { color: #a855f7; font-weight: bold; }
-        .rarity-legendary { color: #f59e0b; font-weight: bold; text-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
+        .rarity-legendary { color: #a16207; font-weight: bold; text-shadow: 0 0 8px rgba(161, 98, 7, 0.35); }
 
         .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
@@ -647,14 +647,221 @@
             { name: "ドラゴン", icon: "fa-dragon", hp: 500, str: 60, exp: 300 }
         ];
 
-        const ItemPrefix = [
-            { name: "普通の", mul: 1.0, r: "common" },
-            { name: "鋭い", mul: 1.2, r: "uncommon" },
-            { name: "丈夫な", mul: 1.3, r: "uncommon" },
-            { name: "魔法の", mul: 1.5, r: "rare" },
-            { name: "王家の", mul: 2.0, r: "epic" },
-            { name: "神話の", mul: 4.5, r: "legendary" }
+        const StatLabels = {
+            str: "STR",
+            vit: "VIT",
+            int: "INT",
+            dex: "DEX",
+            maxHp: "最大HP",
+            maxMp: "最大MP",
+            attackFlat: "ATK",
+            defenseFlat: "DEF"
+        };
+
+        const RarityDefs = [
+            { key: "normal", name: "ノーマル", mul: 1.0 },
+            { key: "magic", name: "マジック", mul: 1.2 },
+            { key: "rare", name: "レア", mul: 1.5 },
+            { key: "epic", name: "エピック", mul: 2.0 },
+            { key: "legendary", name: "レジェンダリー", mul: 5.0 }
         ];
+
+        const EquipmentTiers = [
+            {
+                floorStart: 1,
+                weapons: [
+                    { name: "旅人の剣", stats: [{ key: "attackFlat", value: 6 }, { key: "str", value: 2 }] },
+                    { name: "見習いの短剣", stats: [{ key: "attackFlat", value: 5 }, { key: "dex", value: 3 }] },
+                    { name: "木杖", stats: [{ key: "attackFlat", value: 4 }, { key: "int", value: 4 }] }
+                ],
+                armors: [
+                    { name: "布のローブ", stats: [{ key: "defenseFlat", value: 4 }, { key: "maxMp", value: 10 }] },
+                    { name: "革の胴着", stats: [{ key: "defenseFlat", value: 5 }, { key: "dex", value: 2 }, { key: "maxHp", value: 8 }] },
+                    { name: "木の盾鎧", stats: [{ key: "defenseFlat", value: 6 }, { key: "vit", value: 2 }] }
+                ]
+            },
+            {
+                floorStart: 51,
+                weapons: [
+                    { name: "鋼の剣", stats: [{ key: "attackFlat", value: 12 }, { key: "str", value: 5 }] },
+                    { name: "疾風の短剣", stats: [{ key: "attackFlat", value: 10 }, { key: "dex", value: 6 }] },
+                    { name: "賢者の杖", stats: [{ key: "attackFlat", value: 9 }, { key: "int", value: 8 }] }
+                ],
+                armors: [
+                    { name: "魔導ローブ", stats: [{ key: "defenseFlat", value: 9 }, { key: "maxMp", value: 25 }, { key: "int", value: 3 }] },
+                    { name: "熟練の革鎧", stats: [{ key: "defenseFlat", value: 11 }, { key: "dex", value: 4 }, { key: "maxHp", value: 18 }] },
+                    { name: "鋼鉄の鎧", stats: [{ key: "defenseFlat", value: 13 }, { key: "vit", value: 5 }] }
+                ]
+            },
+            {
+                floorStart: 101,
+                weapons: [
+                    { name: "黒曜剣", stats: [{ key: "attackFlat", value: 20 }, { key: "str", value: 8 }, { key: "dex", value: 4 }] },
+                    { name: "影刃", stats: [{ key: "attackFlat", value: 18 }, { key: "dex", value: 10 }] },
+                    { name: "星詠みの杖", stats: [{ key: "attackFlat", value: 16 }, { key: "int", value: 12 }, { key: "maxMp", value: 15 }] }
+                ],
+                armors: [
+                    { name: "星紡ぎのローブ", stats: [{ key: "defenseFlat", value: 15 }, { key: "maxMp", value: 40 }, { key: "int", value: 6 }] },
+                    { name: "影纏いの胴着", stats: [{ key: "defenseFlat", value: 16 }, { key: "dex", value: 7 }, { key: "maxHp", value: 28 }] },
+                    { name: "重厚なる鎧", stats: [{ key: "defenseFlat", value: 18 }, { key: "vit", value: 9 }, { key: "maxHp", value: 20 }] }
+                ]
+            }
+        ];
+
+        const PrefixAffixes = [
+            { name: "猛攻の", stats: { weapon: ["attackFlat", "str", "dex"], armor: ["defenseFlat", "vit", "maxHp"] } },
+            { name: "魔導の", stats: { weapon: ["int", "attackFlat", "maxMp"], armor: ["int", "maxMp", "maxHp"] } },
+            { name: "精密の", stats: { weapon: ["dex", "attackFlat", "str"], armor: ["dex", "defenseFlat", "vit"] } }
+        ];
+
+        const SuffixAffixes = [
+            { name: "の守護", stats: { weapon: ["vit", "defenseFlat", "maxHp"], armor: ["defenseFlat", "vit", "maxHp"] } },
+            { name: "の智慧", stats: { weapon: ["int", "maxMp", "attackFlat"], armor: ["int", "maxMp", "maxHp"] } },
+            { name: "の活力", stats: { weapon: ["maxHp", "str", "attackFlat"], armor: ["maxHp", "vit", "defenseFlat"] } }
+        ];
+
+        const AffixValueTable = {
+            str: [3, 6, 10],
+            vit: [3, 6, 10],
+            int: [3, 6, 10],
+            dex: [3, 6, 10],
+            maxHp: [15, 35, 70],
+            maxMp: [10, 25, 55],
+            attackFlat: [6, 12, 22],
+            defenseFlat: [6, 12, 22]
+        };
+
+        const pickRandom = (list) => list[Math.floor(Math.random() * list.length)];
+
+        const getTierIndex = (floor) => {
+            const idx = Math.floor((floor - 1) / 50);
+            return Math.min(EquipmentTiers.length - 1, Math.max(0, idx));
+        };
+
+        const rollRarity = () => {
+            const weights = [
+                { key: "normal", weight: 60 },
+                { key: "magic", weight: 25 },
+                { key: "rare", weight: 10 },
+                { key: "epic", weight: 4 },
+                { key: "legendary", weight: 1 }
+            ];
+            const total = weights.reduce((sum, r) => sum + r.weight, 0);
+            let roll = Math.random() * total;
+            let selected = weights[0];
+            for (const rarity of weights) {
+                if (roll < rarity.weight) {
+                    selected = rarity;
+                    break;
+                }
+                roll -= rarity.weight;
+            }
+            if (Game.player.rareFind > 0 && Math.random() * 100 < Game.player.rareFind) {
+                const idx = weights.findIndex((r) => r.key === selected.key);
+                selected = weights[Math.min(weights.length - 1, idx + 1)];
+            }
+            return RarityDefs.find((rarity) => rarity.key === selected.key);
+        };
+
+        const rollAffixRank = () => {
+            const roll = Math.random();
+            if (roll < 0.6) return 1;
+            if (roll < 0.9) return 2;
+            return 3;
+        };
+
+        const getAffixStats = (affix, type, rank) => {
+            const pool = affix.stats[type];
+            const stats = [];
+            const keys = [...pool];
+            for (let i = 0; i < rank; i++) {
+                if (keys.length === 0) break;
+                const idx = Math.floor(Math.random() * keys.length);
+                const key = keys.splice(idx, 1)[0];
+                const baseValues = AffixValueTable[key] || [1, 2, 3];
+                stats.push({ key, value: baseValues[rank - 1] });
+            }
+            return stats;
+        };
+
+        const rollAffix = (pool, type) => {
+            const affix = pickRandom(pool);
+            const rank = rollAffixRank();
+            const stats = getAffixStats(affix, type, rank);
+            return { name: affix.name, rank, stats };
+        };
+
+        const buildItem = (base, type) => {
+            const rarity = rollRarity();
+            const prefix = rollAffix(PrefixAffixes, type);
+            const suffix = rollAffix(SuffixAffixes, type);
+            const prefixStars = "☆".repeat(prefix.rank);
+            const suffixStars = "☆".repeat(suffix.rank);
+            const baseStats = base.stats.map((stat) => ({
+                key: stat.key,
+                value: Math.max(1, Math.floor(stat.value * rarity.mul))
+            }));
+            const affixStats = [
+                ...prefix.stats.map((stat) => ({ ...stat, source: "prefix" })),
+                ...suffix.stats.map((stat) => ({ ...stat, source: "suffix" }))
+            ];
+            return {
+                name: `${prefixStars}${prefix.name}${base.name}${suffix.name}${suffixStars}`,
+                type,
+                rarity: rarity.key,
+                rarityMul: rarity.mul,
+                baseStats,
+                affixStats,
+                uniqueStats: [],
+                prefix,
+                suffix
+            };
+        };
+
+        const getItemStats = (item) => {
+            if (!item) return [];
+            return [...(item.baseStats || []), ...(item.affixStats || []), ...(item.uniqueStats || [])];
+        };
+
+        const sumStats = (stats) => {
+            return stats.reduce((acc, stat) => {
+                acc[stat.key] = (acc[stat.key] || 0) + stat.value;
+                return acc;
+            }, {});
+        };
+
+        const getItemStatValue = (item, key) => {
+            return getItemStats(item).filter((stat) => stat.key === key).reduce((sum, stat) => sum + stat.value, 0);
+        };
+
+        const getEquipmentStats = () => {
+            const weaponStats = getItemStats(Game.player.weapon);
+            const armorStats = getItemStats(Game.player.armor);
+            return sumStats([...weaponStats, ...armorStats]);
+        };
+
+        const getTotalStats = () => {
+            const equip = getEquipmentStats();
+            return {
+                str: Game.player.str + (equip.str || 0),
+                vit: Game.player.vit + (equip.vit || 0),
+                int: Game.player.int + (equip.int || 0),
+                dex: Game.player.dex + (equip.dex || 0),
+                maxHp: Game.player.maxHp + (equip.maxHp || 0),
+                maxMp: Game.player.maxMp + (equip.maxMp || 0),
+                attackFlat: Game.player.attackFlat + (equip.attackFlat || 0),
+                defenseFlat: Game.player.defenseFlat + (equip.defenseFlat || 0)
+            };
+        };
+
+        const renderStatLines = (stats) => {
+            return stats.map((stat) => `${StatLabels[stat.key] || stat.key} +${stat.value}`);
+        };
+
+        const renderItemStatsHtml = (item) => {
+            const stats = renderStatLines(getItemStats(item));
+            return stats.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
+        };
 
         // --- CORE LOGIC ---
         window.onload = () => {
@@ -752,13 +959,16 @@
 
         function getDerivedStats() {
             const p = Game.player;
-            const maxHp = Math.max(1, Math.floor((p.maxHp + p.maxHpFlat) * (1 + p.hpEfficiency / 100)));
-            const maxMp = Math.max(0, Math.floor((p.maxMp + p.maxMpFlat) * (1 + p.mpEfficiency / 100)));
-            const atkBase = p.str + (p.weapon?.val || 0) + p.attackFlat;
+            const totals = getTotalStats();
+            const maxHpBase = totals.maxHp + p.maxHpFlat;
+            const maxMpBase = totals.maxMp + p.maxMpFlat;
+            const maxHp = Math.max(1, Math.floor(maxHpBase * (1 + p.hpEfficiency / 100)));
+            const maxMp = Math.max(0, Math.floor(maxMpBase * (1 + p.mpEfficiency / 100)));
+            const atkBase = totals.str + totals.attackFlat;
             const atk = Math.max(0, Math.floor(atkBase * (1 + p.attackEfficiency / 100)));
-            const defBase = p.vit + (p.armor?.val || 0) + p.defenseFlat;
+            const defBase = totals.vit + totals.defenseFlat;
             const def = Math.max(0, Math.floor(defBase * (1 + p.defenseEfficiency / 100)));
-            return { maxHp, maxMp, atk, def };
+            return { maxHp, maxMp, atk, def, totals };
         }
 
         function applyAutoRegen() {
@@ -993,7 +1203,7 @@
             Game.player.mp -= currentSkill.mp;
 
             if (currentSkill.type === 'heal') {
-                const amt = Math.floor(currentSkill.val + (Game.player.int * 1.2));
+                const amt = Math.floor(currentSkill.val + (derived.totals.int * 1.2));
                 Game.player.hp = Math.min(derived.maxHp, Game.player.hp + amt);
                 addLog(`【回復】${amt}HP`, "text-green-500");
                 dmgText(amt, true);
@@ -1007,7 +1217,7 @@
                         continue;
                     }
                     // Base Attack Power Calculation
-                    let atkBase = isMagic ? (Game.player.int * 2) : derived.atk;
+                    let atkBase = isMagic ? (derived.totals.int * 2) : derived.atk;
                     
                     // Critical Check
                     let isCrit = Math.random() * 100 < (Game.player.critRate + (currentSkill.critBonus || 0));
@@ -1098,7 +1308,7 @@
             let d = Math.floor(Game.enemy.str * (0.8 + Math.random() * 0.4)) - derived.def;
             // Passive: Armor Boost
             const armorBoostLevel = getPassiveLevel('warrior', 4);
-            if (armorBoostLevel > 0) d -= Math.floor((Game.player.armor?.val||0) * 0.15 * armorBoostLevel);
+            if (armorBoostLevel > 0) d -= Math.floor(getItemStatValue(Game.player.armor, "defenseFlat") * 0.15 * armorBoostLevel);
             
             if (Game.player.damageReduction > 0) {
                 d = Math.floor(d * (1 - Game.player.damageReduction / 100));
@@ -1120,7 +1330,8 @@
             // Passive: Counter
             const counterLevel = getPassiveLevel('warrior', 3);
             if (counterLevel > 0 && Math.random() < (0.03 * counterLevel)) {
-                let cdmg = Math.floor(Game.player.str * (0.2 + 0.1 * counterLevel));
+                const derived = getDerivedStats();
+                let cdmg = Math.floor(derived.totals.str * (0.2 + 0.1 * counterLevel));
                 Game.enemy.hp = Math.max(0, Game.enemy.hp - cdmg);
                 addLog("カウンター！", "text-orange-500");
                 dmgText(cdmg);
@@ -1208,18 +1419,13 @@
 
         function drop() {
             const isW = Math.random() < 0.6;
-            let prefixIdx = Math.floor(Math.random()*ItemPrefix.length);
-            if (Game.player.rareFind > 0 && Math.random() * 100 < Game.player.rareFind) {
-                prefixIdx = Math.min(ItemPrefix.length - 1, prefixIdx + 1);
-            }
-            const p = ItemPrefix[prefixIdx];
-            const baseVal = Game.floor * 2 + 5;
-            const val = Math.floor(baseVal * p.mul);
-            Game.tempLoot = { name: p.name + (isW ? "剣" : "鎧"), type: isW ? 'weapon' : 'armor', val: val, r: p.r };
+            const tier = EquipmentTiers[getTierIndex(Game.floor)];
+            const base = isW ? pickRandom(tier.weapons) : pickRandom(tier.armors);
+            Game.tempLoot = buildItem(base, isW ? 'weapon' : 'armor');
             document.getElementById('loot-display').innerHTML = `
                 <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${Game.tempLoot.type} Found</div>
-                <div class="text-xl font-black rarity-${Game.tempLoot.r}">${Game.tempLoot.name}</div>
-                <div class="font-black text-slate-500 mt-1">${isW?'ATK':'DEF'} +${val}</div>
+                <div class="text-xl font-black rarity-${Game.tempLoot.rarity}">${Game.tempLoot.name}</div>
+                <div class="mt-2 space-y-1">${renderItemStatsHtml(Game.tempLoot)}</div>
             `;
             document.getElementById('loot-modal').style.display = 'flex';
             Game.state = 'loot';
@@ -1257,6 +1463,7 @@
         function updateUI() {
             const p = Game.player;
             const derived = getDerivedStats();
+            const totals = derived.totals;
             document.getElementById('floor-display').innerText = Game.floor;
             document.getElementById('header-lvl').innerText = p.level;
             document.getElementById('header-sp').innerText = p.sp;
@@ -1366,10 +1573,10 @@
 
             // Status Details
             document.getElementById('status-lvl').innerText = p.level;
-            document.getElementById('status-atk').innerText = derived.atk;
-            document.getElementById('status-def').innerText = derived.def;
-            document.getElementById('status-int').innerText = p.int;
-            document.getElementById('status-dex').innerText = p.dex;
+            document.getElementById('status-atk').innerText = totals.str;
+            document.getElementById('status-def').innerText = totals.vit;
+            document.getElementById('status-int').innerText = totals.int;
+            document.getElementById('status-dex').innerText = totals.dex;
             document.getElementById('status-exp').innerText = p.exp;
             document.getElementById('status-next').innerText = p.next;
             document.getElementById('status-exp-bar').style.width = (p.exp/p.next*100)+'%';
@@ -1399,11 +1606,11 @@
             document.getElementById('stat-gold-boost').innerText = `${p.goldBoost}%`;
 
             document.getElementById('equip-weapon').innerText = p.weapon?.name || "なし";
-            document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.r||'common'}`;
-            document.getElementById('weapon-val').innerText = p.weapon ? `+${p.weapon.val}` : "";
+            document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.rarity||'normal'}`;
+            document.getElementById('weapon-val').innerHTML = p.weapon ? renderItemStatsHtml(p.weapon) : "";
             document.getElementById('equip-armor').innerText = p.armor?.name || "なし";
-            document.getElementById('equip-armor').className = `font-bold truncate text-sm rarity-${p.armor?.r||'common'}`;
-            document.getElementById('armor-val').innerText = p.armor ? `+${p.armor.val}` : "";
+            document.getElementById('equip-armor').className = `font-bold truncate text-sm rarity-${p.armor?.rarity||'normal'}`;
+            document.getElementById('armor-val').innerHTML = p.armor ? renderItemStatsHtml(p.armor) : "";
 
             // Inventory
             const invList = document.getElementById('inventory-list');
@@ -1415,8 +1622,8 @@
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${item.type}</div>
-                        <div class="font-black text-sm truncate rarity-${item.r}">${item.name}</div>
-                        <div class="text-[10px] text-slate-400 font-bold">${item.type==='weapon'?'ATK':'DEF'} +${item.val}</div>
+                        <div class="font-black text-sm truncate rarity-${item.rarity}">${item.name}</div>
+                        <div class="mt-1 space-y-0.5">${renderItemStatsHtml(item)}</div>
                     </div>
                     <button onclick="equip(${i})" class="ml-4 px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
                 `;
