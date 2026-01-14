@@ -347,6 +347,13 @@
             </div>
             <div id="inventory-list" class="flex-1 overflow-y-auto space-y-2 pb-12"></div>
             <div class="bg-white rounded-2xl border p-3 mt-3 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-[10px] font-black text-slate-400">並び替え</div>
+                    <button id="inv-sort-toggle" onclick="toggleInventorySort()" class="px-3 py-2 rounded-xl border text-[10px] font-black flex items-center gap-2 bg-slate-50 text-slate-500 border-slate-200">
+                        <i class="fas fa-clock"></i>
+                        <span id="inv-sort-label">入手順</span>
+                    </button>
+                </div>
                 <div class="grid grid-cols-3 gap-2 text-[10px] font-bold">
                     <button data-inv-filter="all" onclick="setInventoryFilter('all')" class="inv-filter-btn py-2 rounded-xl border">全て</button>
                     <button data-inv-filter="weapon" onclick="setInventoryFilter('weapon')" class="inv-filter-btn py-2 rounded-xl border">武器</button>
@@ -564,6 +571,8 @@
             currentJobTab: 'warrior',
             currentSkillType: 'active',
             inventoryFilter: 'all',
+            inventorySort: 'acquired',
+            inventoryCounter: 0,
             enemy: null, logs: []
         };
 
@@ -763,6 +772,7 @@
             { key: "epic", name: "エピック", mul: 2.0 },
             { key: "legendary", name: "レジェンダリー", mul: 5.0 }
         ];
+        const RaritySortOrder = Object.fromEntries(RarityDefs.map((def, index) => [def.key, index]));
 
         const EquipmentTypeLabels = {
             weapon: "武器",
@@ -771,6 +781,12 @@
             hands: "手",
             feet: "足",
             accessory: "装飾品"
+        };
+
+        const InventorySortDefs = {
+            acquired: { label: "入手順", icon: "fa-clock" },
+            rarity: { label: "レア度順", icon: "fa-gem" },
+            affix: { label: "Affix順", icon: "fa-star" }
         };
 
         const EquipmentTypePools = {
@@ -1692,6 +1708,7 @@
 
         function closeLoot(take) {
             if (take) {
+                Game.tempLoot.acquiredAt = Game.inventoryCounter++;
                 Game.player.inventory.push(Game.tempLoot);
                 document.getElementById('nav-inv-dot').classList.remove('hidden');
             }
@@ -1702,6 +1719,15 @@
 
         function setInventoryFilter(type) {
             Game.inventoryFilter = type;
+            updateUI();
+        }
+
+        function toggleInventorySort() {
+            const order = ['acquired', 'rarity', 'affix'];
+            const current = Game.inventorySort || 'acquired';
+            const currentIndex = order.indexOf(current);
+            const next = order[(currentIndex + 1) % order.length];
+            Game.inventorySort = next;
             updateUI();
         }
 
@@ -1735,6 +1761,7 @@
 
         function deleteItem(idx) {
             if (idx < 0 || idx >= Game.player.inventory.length) return;
+            if (isItemEquipped(Game.player.inventory[idx])) return;
             Game.player.inventory.splice(idx, 1);
             updateUI();
         }
@@ -1920,16 +1947,46 @@
             const invList = document.getElementById('inventory-list');
             invList.innerHTML = '';
             document.getElementById('inv-count').innerText = p.inventory.length;
+            p.inventory.forEach((item) => {
+                if (item.acquiredAt === undefined) {
+                    item.acquiredAt = Game.inventoryCounter++;
+                }
+            });
             const activeFilter = Game.inventoryFilter || 'all';
+            const sortMode = Game.inventorySort || 'acquired';
             const filteredItems = p.inventory
                 .map((item, index) => ({ item, index }))
                 .filter(({ item }) => activeFilter === 'all' || item.type === activeFilter);
-            filteredItems.forEach(({ item, index }) => {
+            const getAffixScore = (item) => (item.prefix?.rank || 0) + (item.suffix?.rank || 0);
+            const sortedItems = [...filteredItems].sort((a, b) => {
+                const rarityA = RaritySortOrder[a.item.rarity] ?? 0;
+                const rarityB = RaritySortOrder[b.item.rarity] ?? 0;
+                const acquiredA = a.item.acquiredAt ?? a.index;
+                const acquiredB = b.item.acquiredAt ?? b.index;
+                if (sortMode === 'rarity') {
+                    if (rarityA !== rarityB) return rarityB - rarityA;
+                    return acquiredA - acquiredB;
+                }
+                if (sortMode === 'affix') {
+                    const affixA = getAffixScore(a.item);
+                    const affixB = getAffixScore(b.item);
+                    if (affixA !== affixB) return affixB - affixA;
+                    if (rarityA !== rarityB) return rarityB - rarityA;
+                    return acquiredA - acquiredB;
+                }
+                return acquiredA - acquiredB;
+            });
+            sortedItems.forEach(({ item, index }) => {
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm";
-                const equipMarker = isItemEquipped(item)
+                const equipped = isItemEquipped(item);
+                const equipMarker = equipped
                     ? '<span class="text-emerald-500 font-black mr-1">[E]</span>'
                     : '';
+                const deleteLabel = equipped ? '装備中' : '削除';
+                const deleteClasses = equipped
+                    ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                    : 'bg-slate-100 text-slate-500';
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${EquipmentTypeLabels[item.type]}</div>
@@ -1938,7 +1995,7 @@
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
                         <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
-                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 bg-slate-100 text-slate-500 text-[11px] font-black rounded-xl"><i class="fas fa-trash"></i> 削除</button>
+                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${equipped ? 'disabled' : ''}><i class="fas fa-trash"></i> ${deleteLabel}</button>
                     </div>
                 `;
                 invList.appendChild(div);
@@ -1951,6 +2008,19 @@
                     active ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-200 bg-slate-50 text-slate-500'
                 }`;
             });
+
+            const sortDef = InventorySortDefs[sortMode] || InventorySortDefs.acquired;
+            const sortLabel = document.getElementById('inv-sort-label');
+            if (sortLabel) {
+                sortLabel.innerText = sortDef.label;
+            }
+            const sortButton = document.getElementById('inv-sort-toggle');
+            if (sortButton) {
+                const icon = sortButton.querySelector('i');
+                if (icon) {
+                    icon.className = `fas ${sortDef.icon}`;
+                }
+            }
         }
     </script>
     </div>
