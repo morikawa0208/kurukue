@@ -443,7 +443,6 @@
         </button>
         <button onclick="switchPage('inventory')" id="nav-inventory" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all relative">
             <i class="fas fa-box-open text-xl"></i><span class="text-[9px] font-black">装備</span>
-            <div id="nav-inv-dot" class="absolute top-3 right-6 w-2 h-2 bg-red-500 rounded-full border-2 border-white hidden"></div>
         </button>
         <button onclick="switchPage('log')" id="nav-log" class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-slate-300 transition-all">
             <i class="fas fa-scroll text-xl"></i><span class="text-[9px] font-black">履歴</span>
@@ -1830,7 +1829,6 @@
                     Game.player.gold += getSellPrice(Game.tempLoot);
                 } else {
                     Game.player.inventory.push(Game.tempLoot);
-                    document.getElementById('nav-inv-dot').classList.remove('hidden');
                 }
             } else {
                 Game.player.gold += getSellPrice(Game.tempLoot);
