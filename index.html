@@ -1701,9 +1701,19 @@
             updateUI();
         }
 
+        function isItemEquipped(item) {
+            return Game.player.weapon === item
+                || Game.player.armor === item
+                || Game.player.head === item
+                || Game.player.hands === item
+                || Game.player.feet === item
+                || Game.player.accessory1 === item
+                || Game.player.accessory2 === item;
+        }
+
         function equip(idx) {
             const item = Game.player.inventory[idx];
-            if (!item) return;
+            if (!item || isItemEquipped(item)) return;
             if (item.type === 'accessory') {
                 let slotKey = 'accessory1';
                 if (!Game.player.accessory1) {
@@ -1711,17 +1721,11 @@
                 } else if (!Game.player.accessory2) {
                     slotKey = 'accessory2';
                 }
-                const old = Game.player[slotKey];
                 Game.player[slotKey] = item;
-                Game.player.inventory.splice(idx, 1);
-                if (old) Game.player.inventory.push(old);
                 updateUI();
                 return;
             }
-            const old = Game.player[item.type];
             Game.player[item.type] = item;
-            Game.player.inventory.splice(idx, 1);
-            if (old) Game.player.inventory.push(old);
             updateUI();
         }
 
@@ -1919,10 +1923,13 @@
             filteredItems.forEach(({ item, index }) => {
                 const div = document.createElement('div');
                 div.className = "bg-white p-4 rounded-2xl border flex items-center justify-between shadow-sm";
+                const equipMarker = isItemEquipped(item)
+                    ? '<span class="text-emerald-500 font-black mr-1">[E]</span>'
+                    : '';
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${EquipmentTypeLabels[item.type]}</div>
-                        <div class="font-black text-sm truncate rarity-${item.rarity}">${item.name}</div>
+                        <div class="font-black text-sm truncate rarity-${item.rarity}">${equipMarker}${item.name}</div>
                         <div class="mt-1 space-y-0.5">${renderItemStatsHtml(item)}</div>
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
