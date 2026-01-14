@@ -1832,6 +1832,8 @@
                     Game.player.inventory.push(Game.tempLoot);
                     document.getElementById('nav-inv-dot').classList.remove('hidden');
                 }
+            } else {
+                Game.player.gold += getSellPrice(Game.tempLoot);
             }
             document.getElementById('loot-modal').style.display = 'none';
             Game.state = 'idle';
