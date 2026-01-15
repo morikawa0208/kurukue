@@ -73,6 +73,39 @@
         .rarity-epic { color: #a855f7; font-weight: bold; }
         .rarity-legendary { color: #a16207; font-weight: bold; text-shadow: 0 0 8px rgba(161, 98, 7, 0.35); }
 
+        .loot-log-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: rgba(30, 41, 59, 0.85);
+            box-shadow: 0 6px 12px rgba(15, 23, 42, 0.35);
+            color: #e2e8f0;
+        }
+        .loot-log-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            font-size: 12px;
+        }
+        .loot-log-title {
+            font-size: 9px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.7);
+        }
+        .loot-log-name {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
         .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -151,6 +184,13 @@
             </div>
                 <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
                 <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
+                    <div id="mini-log-9"></div>
+                    <div id="mini-log-8"></div>
+                    <div id="mini-log-7"></div>
+                    <div id="mini-log-6"></div>
+                    <div id="mini-log-5"></div>
+                    <div id="mini-log-4"></div>
+                    <div id="mini-log-3"></div>
                     <div id="mini-log-2"></div>
                     <div id="mini-log-1"></div>
                     <div id="mini-log-0" class="text-slate-800 font-bold"></div>
@@ -3096,15 +3136,36 @@
             const full = document.getElementById('full-log-container');
             full.prepend(div);
             if (full.children.length > 50) full.lastChild.remove();
+            registerMiniLog(m, c);
+        }
+
+        function registerMiniLog(m, c="") {
             Game.logs.unshift({m, c});
-            if (Game.logs.length > 3) Game.logs.pop();
-            for(let i=0; i<3; i++) {
+            if (Game.logs.length > 10) Game.logs.pop();
+            for(let i=0; i<10; i++) {
                 const el = document.getElementById(`mini-log-${i}`);
                 if (Game.logs[i]) {
                     el.innerText = Game.logs[i].m;
                     el.className = Game.logs[i].c || (i===0 ? 'text-slate-800 font-bold' : 'text-slate-400');
                 }
             }
+        }
+
+        function addLootLog(item) {
+            const message = `戦利品を入手: ${item.name}`;
+            const full = document.getElementById('full-log-container');
+            const div = document.createElement('div');
+            div.className = 'loot-log-card';
+            div.innerHTML = `
+                <div class="loot-log-icon"><i class="fas fa-box-open"></i></div>
+                <div>
+                    <div class="loot-log-title">戦利品獲得</div>
+                    <div class="loot-log-name rarity-${item.rarity}">${item.name}</div>
+                </div>
+            `;
+            full.prepend(div);
+            if (full.children.length > 50) full.lastChild.remove();
+            registerMiniLog(message, `rarity-${item.rarity}`);
         }
 
         function dmgText(v, isH=false) {
@@ -3147,9 +3208,26 @@
         }
 
         function openNextLoot() {
-            if (Game.state === 'loot') return;
             if (Game.lootQueue.length === 0) return;
-            openLootModal(Game.lootQueue.shift());
+            while (Game.lootQueue.length > 0) {
+                acquireLoot(Game.lootQueue.shift());
+            }
+            updateUI();
+        }
+
+        function acquireLoot(item) {
+            if (!item) return;
+            if (Game.lootFilter?.[item.rarity]) {
+                Game.player.gold += getSellPrice(item);
+                return;
+            }
+            item.acquiredAt = Game.inventoryCounter++;
+            if (item.type === 'potion') {
+                const derived = syncPotionCapacity(item);
+                item.currentCapacity = derived.maxCapacity;
+            }
+            Game.player.inventory.push(item);
+            addLootLog(item);
         }
 
         function openLootModal(item) {
