@@ -3065,6 +3065,18 @@
                 openEquipSlotModal(item, idx);
                 return;
             }
+            if (item.type === 'potion') {
+                let slotKey = 'potion1';
+                if (!Game.player.potion1) {
+                    slotKey = 'potion1';
+                } else if (!Game.player.potion2) {
+                    slotKey = 'potion2';
+                }
+                Game.player[slotKey] = item;
+                syncPotionCapacity(item);
+                updateUI();
+                return;
+            }
             Game.player[item.type] = item;
             updateUI();
         }
