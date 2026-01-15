@@ -300,6 +300,77 @@
                 </div>
             </div>
 
+            <div class="bg-white rounded-3xl p-6 shadow-sm mb-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-black text-slate-700 flex items-center gap-2"><i class="fas fa-floppy-disk"></i> セーブ/ロード</h3>
+                    <span id="autosave-indicator" class="text-[10px] text-emerald-600 font-bold">オートセーブ: スロット1</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mb-3">30秒ごとに選択したスロットへ自動保存します。</p>
+                <div id="save-status" class="text-[10px] text-slate-400 mb-3">未保存</div>
+                <div class="space-y-3">
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <div class="text-xs font-black text-slate-700">スロット1</div>
+                                <div id="save-slot-info-1" class="text-[10px] text-slate-400">空</div>
+                            </div>
+                            <label class="text-[9px] font-bold text-slate-500 flex items-center gap-1">
+                                <input type="radio" name="autosave-slot" value="1" class="accent-slate-800">
+                                オートセーブ
+                            </label>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button data-save-slot="1" class="flex-1 py-2 rounded-xl bg-slate-800 text-white text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-floppy-disk"></i> セーブ
+                            </button>
+                            <button data-load-slot="1" class="flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-download"></i> ロード
+                            </button>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <div class="text-xs font-black text-slate-700">スロット2</div>
+                                <div id="save-slot-info-2" class="text-[10px] text-slate-400">空</div>
+                            </div>
+                            <label class="text-[9px] font-bold text-slate-500 flex items-center gap-1">
+                                <input type="radio" name="autosave-slot" value="2" class="accent-slate-800">
+                                オートセーブ
+                            </label>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button data-save-slot="2" class="flex-1 py-2 rounded-xl bg-slate-800 text-white text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-floppy-disk"></i> セーブ
+                            </button>
+                            <button data-load-slot="2" class="flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-download"></i> ロード
+                            </button>
+                        </div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <div>
+                                <div class="text-xs font-black text-slate-700">スロット3</div>
+                                <div id="save-slot-info-3" class="text-[10px] text-slate-400">空</div>
+                            </div>
+                            <label class="text-[9px] font-bold text-slate-500 flex items-center gap-1">
+                                <input type="radio" name="autosave-slot" value="3" class="accent-slate-800">
+                                オートセーブ
+                            </label>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button data-save-slot="3" class="flex-1 py-2 rounded-xl bg-slate-800 text-white text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-floppy-disk"></i> セーブ
+                            </button>
+                            <button data-load-slot="3" class="flex-1 py-2 rounded-xl bg-slate-200 text-slate-700 text-[10px] font-black flex items-center justify-center gap-1">
+                                <i class="fas fa-download"></i> ロード
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Equipment -->
             <div class="space-y-3 mb-12">
                 <div class="bg-white p-4 rounded-2xl border flex items-center gap-4">
@@ -871,6 +942,157 @@
         };
 
         const JobKeys = ['warrior', 'mage', 'thief', 'ranger', 'paladin', 'monk'];
+
+        const SaveConfig = {
+            prefix: 'kurukue_save_slot_',
+            autosaveKey: 'kurukue_autosave_slot',
+            autosaveIntervalMs: 30000
+        };
+
+        const getSaveKey = (slot) => `${SaveConfig.prefix}${slot}`;
+
+        const formatSaveTimestamp = (isoString) => {
+            if (!isoString) return '日時不明';
+            const date = new Date(isoString);
+            if (Number.isNaN(date.getTime())) return '日時不明';
+            const year = date.getFullYear();
+            const month = `${date.getMonth() + 1}`.padStart(2, '0');
+            const day = `${date.getDate()}`.padStart(2, '0');
+            const hours = `${date.getHours()}`.padStart(2, '0');
+            const minutes = `${date.getMinutes()}`.padStart(2, '0');
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        };
+
+        const getAutosaveSlot = () => {
+            const raw = localStorage.getItem(SaveConfig.autosaveKey);
+            const slot = Number.parseInt(raw, 10);
+            return Number.isNaN(slot) ? 1 : Math.min(3, Math.max(1, slot));
+        };
+
+        const setAutosaveSlot = (slot) => {
+            localStorage.setItem(SaveConfig.autosaveKey, String(slot));
+            renderSaveSlots();
+        };
+
+        const setSaveStatus = (message, tone = 'text-slate-400') => {
+            const statusEl = document.getElementById('save-status');
+            if (!statusEl) return;
+            statusEl.textContent = message;
+            statusEl.className = `text-[10px] ${tone} mb-3`;
+        };
+
+        const buildSaveSnapshot = () => JSON.parse(JSON.stringify(Game));
+
+        const mergeSaveData = (target, source) => {
+            if (!source || typeof source !== 'object') return;
+            Object.keys(source).forEach((key) => {
+                const value = source[key];
+                if (Array.isArray(value)) {
+                    target[key] = value;
+                } else if (value && typeof value === 'object') {
+                    if (!target[key] || typeof target[key] !== 'object' || Array.isArray(target[key])) {
+                        target[key] = {};
+                    }
+                    mergeSaveData(target[key], value);
+                } else {
+                    target[key] = value;
+                }
+            });
+        };
+
+        const applySaveData = (snapshot) => {
+            if (!snapshot || typeof snapshot !== 'object') return;
+            mergeSaveData(Game, snapshot);
+        };
+
+        const renderSaveSlots = () => {
+            const autosaveSlot = getAutosaveSlot();
+            const indicator = document.getElementById('autosave-indicator');
+            if (indicator) {
+                indicator.textContent = `オートセーブ: スロット${autosaveSlot}`;
+            }
+            for (let slot = 1; slot <= 3; slot += 1) {
+                const infoEl = document.getElementById(`save-slot-info-${slot}`);
+                const raw = localStorage.getItem(getSaveKey(slot));
+                if (!infoEl) continue;
+                if (!raw) {
+                    infoEl.textContent = '空';
+                    continue;
+                }
+                const payload = JSON.parse(raw);
+                const timestamp = formatSaveTimestamp(payload?.savedAt);
+                const savedFloor = payload?.data?.floor ?? '-';
+                const savedLevel = payload?.data?.player?.level ?? '-';
+                infoEl.textContent = `${timestamp} / Lv.${savedLevel} / F${savedFloor}`;
+            }
+            document.querySelectorAll('input[name="autosave-slot"]').forEach((input) => {
+                const slotValue = Number.parseInt(input.value, 10);
+                input.checked = slotValue === autosaveSlot;
+            });
+        };
+
+        const saveToSlot = (slot, isAuto = false) => {
+            const payload = {
+                savedAt: new Date().toISOString(),
+                data: buildSaveSnapshot()
+            };
+            localStorage.setItem(getSaveKey(slot), JSON.stringify(payload));
+            const modeLabel = isAuto ? 'オートセーブ' : '手動セーブ';
+            setSaveStatus(`${modeLabel}: スロット${slot}に保存しました。`, 'text-emerald-600');
+            renderSaveSlots();
+        };
+
+        const loadFromSlot = (slot) => {
+            const raw = localStorage.getItem(getSaveKey(slot));
+            if (!raw) {
+                setSaveStatus(`スロット${slot}は空です。`, 'text-rose-500');
+                return;
+            }
+            const payload = JSON.parse(raw);
+            if (!payload?.data) {
+                setSaveStatus(`スロット${slot}のデータが読み込めません。`, 'text-rose-500');
+                return;
+            }
+            applySaveData(payload.data);
+            initializeStarterPotions();
+            if (!Game.enemy) {
+                spawn();
+            }
+            switchJob(Game.currentJobTab || 'warrior');
+            switchSkillType(Game.currentSkillType || 'active');
+            updateUI();
+            setSaveStatus(`スロット${slot}からロードしました。`, 'text-blue-600');
+            renderSaveSlots();
+        };
+
+        const setupSaveControls = () => {
+            document.querySelectorAll('[data-save-slot]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const slot = Number.parseInt(button.dataset.saveSlot, 10);
+                    if (!Number.isNaN(slot)) saveToSlot(slot);
+                });
+            });
+            document.querySelectorAll('[data-load-slot]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const slot = Number.parseInt(button.dataset.loadSlot, 10);
+                    if (!Number.isNaN(slot)) loadFromSlot(slot);
+                });
+            });
+            document.querySelectorAll('input[name="autosave-slot"]').forEach((input) => {
+                input.addEventListener('change', () => {
+                    const slot = Number.parseInt(input.value, 10);
+                    if (!Number.isNaN(slot)) setAutosaveSlot(slot);
+                });
+            });
+            renderSaveSlots();
+        };
+
+        const startAutosaveTimer = () => {
+            setInterval(() => {
+                const slot = getAutosaveSlot();
+                saveToSlot(slot, true);
+            }, SaveConfig.autosaveIntervalMs);
+        };
 
         const JobData = {
             warrior: {
@@ -2190,6 +2412,8 @@
             updateUI();
             switchJob('warrior');
             switchSkillType('active');
+            setupSaveControls();
+            startAutosaveTimer();
         };
 
         function switchPage(p) {
