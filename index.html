@@ -73,37 +73,19 @@
         .rarity-epic { color: #a855f7; font-weight: bold; }
         .rarity-legendary { color: #a16207; font-weight: bold; text-shadow: 0 0 8px rgba(161, 98, 7, 0.35); }
 
-        .loot-log-card {
+        .drop-log-box {
+            font-size: 10px;
+            line-height: 1.2;
+        }
+        .drop-log-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            background: rgba(30, 41, 59, 0.85);
-            box-shadow: 0 6px 12px rgba(15, 23, 42, 0.35);
-            color: #e2e8f0;
+            gap: 6px;
+            font-size: 10px;
+            line-height: 1.2;
         }
-        .loot-log-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            font-size: 12px;
-        }
-        .loot-log-title {
-            font-size: 9px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: rgba(226, 232, 240, 0.7);
-        }
-        .loot-log-name {
-            font-size: 11px;
-            font-weight: 800;
+        .drop-log-item i {
+            color: #94a3b8;
         }
 
         .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
@@ -183,6 +165,13 @@
                 <div id="enemy-status-effects" class="flex flex-wrap justify-center gap-1 mt-1 text-[10px]"></div>
             </div>
                 <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
+                <div class="absolute left-0 bottom-4 w-1/2 drop-log-box pointer-events-none text-left pl-2 text-slate-500 italic">
+                    <div class="text-[9px] font-black text-slate-400 mb-1 flex items-center gap-1">
+                        <i class="fas fa-box-open"></i>
+                        <span>ドロップ履歴</span>
+                    </div>
+                    <div id="drop-log-list" class="space-y-1"></div>
+                </div>
                 <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
                     <div id="mini-log-9"></div>
                     <div id="mini-log-8"></div>
@@ -881,7 +870,7 @@
             lootFilter: { normal: false, magic: false, rare: false, epic: false, legendary: false },
             lootQueue: [],
             pendingEquip: null,
-            enemy: null, logs: []
+            enemy: null, logs: [], dropLogs: []
         };
 
         const JobKeys = ['warrior', 'mage', 'thief', 'ranger', 'paladin', 'monk'];
@@ -3151,21 +3140,22 @@
             }
         }
 
-        function addLootLog(item) {
-            const message = `戦利品を入手: ${item.name}`;
-            const full = document.getElementById('full-log-container');
-            const div = document.createElement('div');
-            div.className = 'loot-log-card';
-            div.innerHTML = `
-                <div class="loot-log-icon"><i class="fas fa-box-open"></i></div>
-                <div>
-                    <div class="loot-log-title">戦利品獲得</div>
-                    <div class="loot-log-name rarity-${item.rarity}">${item.name}</div>
-                </div>
-            `;
-            full.prepend(div);
-            if (full.children.length > 50) full.lastChild.remove();
-            registerMiniLog(message, `rarity-${item.rarity}`);
+        function addDropLog(item) {
+            Game.dropLogs.unshift({ name: item.name, rarity: item.rarity });
+            if (Game.dropLogs.length > 6) Game.dropLogs.pop();
+            renderDropLog();
+        }
+
+        function renderDropLog() {
+            const list = document.getElementById('drop-log-list');
+            if (!list) return;
+            list.innerHTML = '';
+            Game.dropLogs.forEach((entry) => {
+                const row = document.createElement('div');
+                row.className = `drop-log-item rarity-${entry.rarity}`;
+                row.innerHTML = `<i class="fas fa-caret-right"></i><span>${entry.name}</span>`;
+                list.appendChild(row);
+            });
         }
 
         function dmgText(v, isH=false) {
@@ -3227,7 +3217,7 @@
                 item.currentCapacity = derived.maxCapacity;
             }
             Game.player.inventory.push(item);
-            addLootLog(item);
+            addDropLog(item);
         }
 
         function openLootModal(item) {
