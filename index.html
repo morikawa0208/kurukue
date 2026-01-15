@@ -1684,7 +1684,7 @@
             return Math.min(EquipmentTiers.length - 1, Math.max(0, idx));
         };
 
-        const rollRarity = (rareFind) => {
+        const rollRarity = (rareFind, eliteRank = 0) => {
             const weights = [
                 { key: "normal", weight: 60 },
                 { key: "magic", weight: 25 },
@@ -1693,9 +1693,10 @@
                 { key: "legendary", weight: 1 }
             ];
             const bonus = Math.max(0, rareFind) / 100;
+            const eliteBonus = Math.max(0, eliteRank) * 0.12;
             const adjusted = weights.map((rarity, idx) => ({
                 key: rarity.key,
-                weight: rarity.weight * (1 + bonus * idx)
+                weight: rarity.weight * (1 + bonus * idx + eliteBonus * idx)
             }));
             const total = adjusted.reduce((sum, r) => sum + r.weight, 0);
             let roll = Math.random() * total;
@@ -1710,10 +1711,11 @@
             return RarityDefs.find((rarity) => rarity.key === selected.key);
         };
 
-        const rollAffixRank = (affixRate) => {
+        const rollAffixRank = (affixRate, eliteRank = 0) => {
             const bonus = Math.min(0.3, Math.max(0, affixRate) / 200);
-            const rank1 = Math.max(0.65 - bonus, 0.3);
-            const rank3 = Math.min(0.1 + bonus, 0.4);
+            const eliteBonus = Math.min(0.15, Math.max(0, eliteRank) * 0.03);
+            const rank1 = Math.max(0.65 - bonus - eliteBonus, 0.2);
+            const rank3 = Math.min(0.1 + bonus + eliteBonus, 0.5);
             const rank2 = 1 - rank1 - rank3;
             const roll = Math.random();
             if (roll < rank1) return 1;
@@ -1744,10 +1746,12 @@
 
         const buildItem = (base, type) => {
             const totals = getTotalStats();
-            const rarity = rollRarity(totals.rareFind);
-            const affixChance = Math.min(100, 2 + totals.affixFind);
-            const prefixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
-            const suffixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
+            const eliteRank = Game.enemy?.elite?.rank || 0;
+            const rarity = rollRarity(totals.rareFind, eliteRank);
+            const affixRate = totals.affixFind + eliteRank * 8;
+            const affixChance = Math.min(100, 2 + affixRate);
+            const prefixRank = Math.random() * 100 < affixChance ? rollAffixRank(affixRate, eliteRank) : 0;
+            const suffixRank = Math.random() * 100 < affixChance ? rollAffixRank(affixRate, eliteRank) : 0;
             const prefix = prefixRank ? rollAffix(PrefixAffixes, prefixRank) : null;
             const suffix = suffixRank ? rollAffix(SuffixAffixes, suffixRank) : null;
             const prefixStars = prefix ? "☆".repeat(prefix.rank) : "";
@@ -1783,12 +1787,14 @@
 
         const buildPotion = (base, options = {}) => {
             const totals = getTotalStats();
+            const eliteRank = Game.enemy?.elite?.rank || 0;
             const rarity = options.forceRarityKey
                 ? (RarityDefs.find((def) => def.key === options.forceRarityKey) || RarityDefs[0])
-                : rollRarity(totals.rareFind);
-            const affixChance = options.noAffix ? 0 : Math.min(100, 2 + totals.affixFind);
-            const prefixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
-            const suffixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
+                : rollRarity(totals.rareFind, eliteRank);
+            const affixRate = totals.affixFind + eliteRank * 8;
+            const affixChance = options.noAffix ? 0 : Math.min(100, 2 + affixRate);
+            const prefixRank = Math.random() * 100 < affixChance ? rollAffixRank(affixRate, eliteRank) : 0;
+            const suffixRank = Math.random() * 100 < affixChance ? rollAffixRank(affixRate, eliteRank) : 0;
             const prefix = prefixRank ? rollAffix(PotionPrefixAffixes, prefixRank) : null;
             const suffix = suffixRank ? rollAffix(PotionSuffixAffixes, suffixRank) : null;
             const prefixStars = prefix ? "☆".repeat(prefix.rank) : "";
@@ -2966,6 +2972,9 @@
             // Exp Boost Calculation
             const totals = getTotalStats();
             gain = Math.floor(gain * (1 + totals.expBoost / 100));
+            if (Game.enemy?.elite?.rank) {
+                gain = Math.floor(gain * (1 + 0.08 * Game.enemy.elite.rank));
+            }
             Game.player.exp += gain;
 
             if (Game.player.exp >= Game.player.next) {
