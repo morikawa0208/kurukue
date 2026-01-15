@@ -984,14 +984,77 @@
             potionRegenMp: { id: 'potionRegenMp', name: '再生(MP)', effectType: 'regen', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-circle-nodes', regenPerStack: 4, resource: 'mp', desc: 'ターン終了時にMPが回復する。' }
         };
 
-        const EnemyBases = [
-            { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12 },
-            { name: "コウモリ", icon: "fa-moon", hp: 35, str: 10, exp: 15 },
-            { name: "ゴブリン", icon: "fa-user-ninja", hp: 60, str: 14, exp: 25 },
-            { name: "スケルトン", icon: "fa-skull", hp: 80, str: 20, exp: 40 },
-            { name: "ゴーレム", icon: "fa-mountain", hp: 150, str: 25, exp: 70 },
-            { name: "シャドウ", icon: "fa-ghost", hp: 200, str: 35, exp: 100 },
-            { name: "ドラゴン", icon: "fa-dragon", hp: 500, str: 60, exp: 300 }
+        const EnemyTiers = [
+            [
+                { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12 },
+                { name: "コウモリ", icon: "fa-moon", hp: 35, str: 10, exp: 15 },
+                { name: "コモンバグ", icon: "fa-bug", hp: 28, str: 8, exp: 12 },
+                { name: "野犬", icon: "fa-dog", hp: 40, str: 11, exp: 16 },
+                { name: "草の精", icon: "fa-leaf", hp: 32, str: 9, exp: 14 }
+            ],
+            [
+                { name: "ゴブリン", icon: "fa-user-ninja", hp: 60, str: 14, exp: 25 },
+                { name: "スケルトン", icon: "fa-skull", hp: 80, str: 20, exp: 40 },
+                { name: "大蜘蛛", icon: "fa-spider", hp: 70, str: 18, exp: 32 },
+                { name: "小悪魔", icon: "fa-ghost", hp: 65, str: 17, exp: 30 },
+                { name: "野生狼", icon: "fa-paw", hp: 75, str: 19, exp: 35 }
+            ],
+            [
+                { name: "洞窟トカゲ", icon: "fa-dragon", hp: 110, str: 24, exp: 55 },
+                { name: "スピアゴブリン", icon: "fa-user-ninja", hp: 95, str: 23, exp: 50 },
+                { name: "骨戦士", icon: "fa-skull", hp: 120, str: 26, exp: 60 },
+                { name: "夜影", icon: "fa-ghost", hp: 100, str: 25, exp: 56 },
+                { name: "岩トカゲ", icon: "fa-mountain", hp: 130, str: 22, exp: 58 }
+            ],
+            [
+                { name: "ゴーレム", icon: "fa-mountain", hp: 150, str: 25, exp: 70 },
+                { name: "シャドウ", icon: "fa-ghost", hp: 200, str: 35, exp: 100 },
+                { name: "バンシー", icon: "fa-skull", hp: 170, str: 32, exp: 90 },
+                { name: "鋼鉄獣", icon: "fa-hippo", hp: 190, str: 34, exp: 95 },
+                { name: "雷鳥", icon: "fa-bolt", hp: 160, str: 33, exp: 92 }
+            ],
+            [
+                { name: "炎の精霊", icon: "fa-fire", hp: 220, str: 38, exp: 110 },
+                { name: "氷の精霊", icon: "fa-snowflake", hp: 210, str: 37, exp: 108 },
+                { name: "毒クモ女王", icon: "fa-spider", hp: 240, str: 40, exp: 120 },
+                { name: "邪悪な魔導師", icon: "fa-hat-wizard", hp: 200, str: 42, exp: 125 },
+                { name: "深海魔", icon: "fa-fish", hp: 230, str: 39, exp: 118 }
+            ],
+            [
+                { name: "蒼狼", icon: "fa-dog", hp: 260, str: 45, exp: 135 },
+                { name: "闇騎士", icon: "fa-chess-knight", hp: 280, str: 47, exp: 140 },
+                { name: "死霊騎士", icon: "fa-skull", hp: 300, str: 48, exp: 145 },
+                { name: "雷獣", icon: "fa-bolt", hp: 270, str: 50, exp: 148 },
+                { name: "異界の影", icon: "fa-ghost", hp: 290, str: 46, exp: 142 }
+            ],
+            [
+                { name: "灼熱竜", icon: "fa-dragon", hp: 340, str: 58, exp: 175 },
+                { name: "凍結竜", icon: "fa-dragon", hp: 330, str: 56, exp: 170 },
+                { name: "漆黒の翼", icon: "fa-crow", hp: 320, str: 55, exp: 168 },
+                { name: "深緑の獣", icon: "fa-hippo", hp: 360, str: 57, exp: 178 },
+                { name: "破砕ゴーレム", icon: "fa-mountain", hp: 380, str: 54, exp: 172 }
+            ],
+            [
+                { name: "虚無の影", icon: "fa-ghost", hp: 420, str: 62, exp: 200 },
+                { name: "星屑の魔獣", icon: "fa-crow", hp: 410, str: 64, exp: 205 },
+                { name: "深海王", icon: "fa-fish", hp: 430, str: 63, exp: 202 },
+                { name: "雷帝", icon: "fa-bolt", hp: 400, str: 66, exp: 210 },
+                { name: "冥界の騎士", icon: "fa-chess-knight", hp: 440, str: 61, exp: 198 }
+            ],
+            [
+                { name: "獄炎獣", icon: "fa-fire", hp: 470, str: 70, exp: 230 },
+                { name: "氷晶獣", icon: "fa-snowflake", hp: 460, str: 68, exp: 225 },
+                { name: "深淵竜", icon: "fa-dragon", hp: 500, str: 72, exp: 240 },
+                { name: "絶叫の亡霊", icon: "fa-skull", hp: 480, str: 69, exp: 228 },
+                { name: "奈落の巨影", icon: "fa-ghost", hp: 520, str: 71, exp: 235 }
+            ],
+            [
+                { name: "終焉竜", icon: "fa-dragon", hp: 600, str: 80, exp: 280 },
+                { name: "星滅の影", icon: "fa-ghost", hp: 580, str: 82, exp: 285 },
+                { name: "無限の巨獣", icon: "fa-hippo", hp: 620, str: 78, exp: 275 },
+                { name: "審判の騎士", icon: "fa-chess-knight", hp: 590, str: 81, exp: 282 },
+                { name: "終末の魔導", icon: "fa-hat-wizard", hp: 570, str: 83, exp: 290 }
+            ]
         ];
 
         const ElitePrefixes = {
@@ -2647,8 +2710,9 @@
                 addLog(`BOSS ${bossDef.name}が出現！`, "text-amber-500 font-black");
             } else {
                 const scale = 1 + (Game.floor * 0.22);
-                const baseIdx = Math.min(EnemyBases.length - 1, Math.floor(Game.floor / 5));
-                const base = EnemyBases[baseIdx];
+                const baseIdx = Math.min(EnemyTiers.length - 1, Math.floor((Game.floor - 1) / 100));
+                const basePool = EnemyTiers[baseIdx];
+                const base = pickRandom(basePool);
                 Game.enemy = { 
                     ...base, 
                     maxHp: Math.floor(base.hp * scale), 
