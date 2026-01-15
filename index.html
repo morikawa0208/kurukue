@@ -180,6 +180,7 @@
                 <div class="space-y-2">
                     <div id="battle-skill-slots"></div>
                 </div>
+                <div id="battle-potion-slots" class="grid grid-cols-2 gap-2"></div>
                 <button id="action-btn" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2">
                     <i class="fas fa-sword"></i> <span>攻撃</span>
                 </button>
@@ -399,6 +400,7 @@
                     <button data-inv-filter="hands" onclick="setInventoryFilter('hands')" class="inv-filter-btn py-2 rounded-xl border">手</button>
                     <button data-inv-filter="feet" onclick="setInventoryFilter('feet')" class="inv-filter-btn py-2 rounded-xl border">足</button>
                     <button data-inv-filter="accessory" onclick="setInventoryFilter('accessory')" class="inv-filter-btn py-2 rounded-xl border col-span-3">装飾品</button>
+                    <button data-inv-filter="potion" onclick="setInventoryFilter('potion')" class="inv-filter-btn py-2 rounded-xl border col-span-3">ポーション</button>
                 </div>
             </div>
         </section>
@@ -800,7 +802,7 @@
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0, affixFind: 0,
                 exp: 0, next: 100, sp: 0,
                 gold: 0,
-                weapon: null, armor: null, head: null, hands: null, feet: null, accessory1: null, accessory2: null, inventory: [],
+                weapon: null, armor: null, head: null, hands: null, feet: null, accessory1: null, accessory2: null, potion1: null, potion2: null, inventory: [],
                 skillSlots: [null, null, null, null],
                 skillSlotIndex: 0,
                 skillSlotTarget: 0,
@@ -820,6 +822,7 @@
             inventorySort: 'acquired',
             inventoryCounter: 0,
             lootFilter: { normal: false, magic: false, rare: false, epic: false, legendary: false },
+            lootQueue: [],
             enemy: null, logs: []
         };
 
@@ -958,7 +961,9 @@
             haste: { id: 'haste', name: '迅速', effectType: 'haste', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-person-running', desc: '命中率と回避率が上昇する。' },
             barrier: { id: 'barrier', name: 'バリア', effectType: 'barrier', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-layer-group', shieldPerStack: 30, desc: '一定量のダメージを吸収する。' },
             reflect: { id: 'reflect', name: '反射', effectType: 'reflect', stackable: true, maxStacks: 3, defaultTurns: 2, icon: 'fa-retweet', desc: '被ダメージの一部を反射する。' },
-            taunt: { id: 'taunt', name: '挑発', effectType: 'taunt', stackable: true, maxStacks: 2, defaultTurns: 2, icon: 'fa-user-slash', desc: 'ターゲットを引きつける。' }
+            taunt: { id: 'taunt', name: '挑発', effectType: 'taunt', stackable: true, maxStacks: 2, defaultTurns: 2, icon: 'fa-user-slash', desc: 'ターゲットを引きつける。' },
+            potionRegenHp: { id: 'potionRegenHp', name: '再生(HP)', effectType: 'regen', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-heart-pulse', regenPerStack: 6, resource: 'hp', desc: 'ターン終了時にHPが回復する。' },
+            potionRegenMp: { id: 'potionRegenMp', name: '再生(MP)', effectType: 'regen', stackable: true, maxStacks: 3, defaultTurns: 3, icon: 'fa-circle-nodes', regenPerStack: 4, resource: 'mp', desc: 'ターン終了時にMPが回復する。' }
         };
 
         const EnemyBases = [
@@ -1287,7 +1292,16 @@
             accuracy: "命中率",
             rareFind: "レアドロ率",
             affixFind: "Affix率",
-            goldBoost: "ゴールド増加率"
+            goldBoost: "ゴールド増加率",
+            potionCapacity: "容量",
+            potionCost: "消費量",
+            potionCostReduction: "消費量",
+            potionHealFlat: "回復量",
+            potionHealPct: "回復量",
+            potionChargeOnKill: "討伐回復",
+            potionCleanse: "状態異常回復",
+            potionAutoRegen: "再生付与",
+            potionBarrier: "バリア付与"
         };
 
         const PercentStats = new Set([
@@ -1307,7 +1321,8 @@
             "accuracy",
             "rareFind",
             "affixFind",
-            "goldBoost"
+            "goldBoost",
+            "potionHealPct"
         ]);
 
         const RarityDefs = [
@@ -1337,7 +1352,8 @@
             head: "兜",
             hands: "手",
             feet: "足",
-            accessory: "装飾品"
+            accessory: "装飾品",
+            potion: "ポーション"
         };
 
         const InventorySortDefs = {
@@ -1457,6 +1473,52 @@
             }
         ];
 
+        const PotionScaledStats = new Set([
+            "potionCapacity",
+            "potionHealFlat",
+            "potionHealPct",
+            "potionChargeOnKill"
+        ]);
+
+        const PotionBases = [
+            { name: "HP回復薬(小)", target: "hp", healType: "flat", icon: "fa-heart", stats: [{ key: "potionHealFlat", value: 50 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 25 }, { key: "potionChargeOnKill", value: 15 }] },
+            { name: "HP回復薬(中)", target: "hp", healType: "flat", icon: "fa-heart", stats: [{ key: "potionHealFlat", value: 120 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 35 }, { key: "potionChargeOnKill", value: 14 }] },
+            { name: "HP回復薬(大)", target: "hp", healType: "flat", icon: "fa-heart", stats: [{ key: "potionHealFlat", value: 240 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 50 }, { key: "potionChargeOnKill", value: 12 }] },
+            { name: "MP回復薬(小)", target: "mp", healType: "flat", icon: "fa-droplet", stats: [{ key: "potionHealFlat", value: 50 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 25 }, { key: "potionChargeOnKill", value: 15 }] },
+            { name: "MP回復薬(中)", target: "mp", healType: "flat", icon: "fa-droplet", stats: [{ key: "potionHealFlat", value: 110 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 35 }, { key: "potionChargeOnKill", value: 14 }] },
+            { name: "MP回復薬(大)", target: "mp", healType: "flat", icon: "fa-droplet", stats: [{ key: "potionHealFlat", value: 220 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 50 }, { key: "potionChargeOnKill", value: 12 }] },
+            { name: "HP回復剤(小)", target: "hp", healType: "pct", icon: "fa-heart", stats: [{ key: "potionHealPct", value: 15 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 30 }, { key: "potionChargeOnKill", value: 14 }] },
+            { name: "HP回復剤(中)", target: "hp", healType: "pct", icon: "fa-heart", stats: [{ key: "potionHealPct", value: 30 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 45 }, { key: "potionChargeOnKill", value: 12 }] },
+            { name: "HP回復剤(大)", target: "hp", healType: "pct", icon: "fa-heart", stats: [{ key: "potionHealPct", value: 50 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 60 }, { key: "potionChargeOnKill", value: 10 }] },
+            { name: "MP回復剤(小)", target: "mp", healType: "pct", icon: "fa-droplet", stats: [{ key: "potionHealPct", value: 15 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 30 }, { key: "potionChargeOnKill", value: 14 }] },
+            { name: "MP回復剤(中)", target: "mp", healType: "pct", icon: "fa-droplet", stats: [{ key: "potionHealPct", value: 30 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 45 }, { key: "potionChargeOnKill", value: 12 }] },
+            { name: "MP回復剤(大)", target: "mp", healType: "pct", icon: "fa-droplet", stats: [{ key: "potionHealPct", value: 50 }, { key: "potionCapacity", value: 100 }, { key: "potionCost", value: 60 }, { key: "potionChargeOnKill", value: 10 }] }
+        ];
+
+        const PotionPrefixAffixes = [
+            { name: "増量の", rank: 1, stats: ["potionCapacity", "potionChargeOnKill", "potionBarrier"] },
+            { name: "濃縮の", rank: 1, stats: ["potionHeal", "potionAutoRegen", "potionBarrier"] },
+            { name: "浄化の", rank: 1, stats: ["potionCleanse", "potionAutoRegen", "potionBarrier"] },
+            { name: "大容量の", rank: 2, stats: ["potionCapacity", "potionHeal", "potionChargeOnKill", "potionBarrier"] },
+            { name: "精製の", rank: 2, stats: ["potionHeal", "potionAutoRegen", "potionCleanse", "potionChargeOnKill"] },
+            { name: "祈りの", rank: 2, stats: ["potionAutoRegen", "potionCleanse", "potionBarrier", "potionCapacity"] },
+            { name: "神薬の", rank: 3, stats: ["potionCapacity", "potionHeal", "potionAutoRegen", "potionCleanse", "potionBarrier", "potionChargeOnKill"] },
+            { name: "霊薬の", rank: 3, stats: ["potionHeal", "potionAutoRegen", "potionBarrier", "potionChargeOnKill", "potionCapacity"] },
+            { name: "秘薬の", rank: 3, stats: ["potionCapacity", "potionHeal", "potionCleanse", "potionBarrier", "potionAutoRegen"] }
+        ];
+
+        const PotionSuffixAffixes = [
+            { name: "の節約", rank: 1, stats: ["potionCostReduction", "potionCapacity", "potionChargeOnKill"] },
+            { name: "の芽吹き", rank: 1, stats: ["potionAutoRegen", "potionHeal", "potionBarrier"] },
+            { name: "の解毒", rank: 1, stats: ["potionCleanse", "potionHeal", "potionCostReduction"] },
+            { name: "の渇望", rank: 2, stats: ["potionHeal", "potionCostReduction", "potionCapacity", "potionChargeOnKill"] },
+            { name: "の循環", rank: 2, stats: ["potionAutoRegen", "potionCostReduction", "potionBarrier", "potionChargeOnKill"] },
+            { name: "の浄化", rank: 2, stats: ["potionCleanse", "potionAutoRegen", "potionCostReduction"] },
+            { name: "の超越", rank: 3, stats: ["potionCapacity", "potionHeal", "potionCostReduction", "potionAutoRegen", "potionCleanse", "potionBarrier", "potionChargeOnKill"] },
+            { name: "の祝福", rank: 3, stats: ["potionHeal", "potionCostReduction", "potionAutoRegen", "potionBarrier", "potionChargeOnKill"] },
+            { name: "の浄天", rank: 3, stats: ["potionCleanse", "potionHeal", "potionCostReduction", "potionAutoRegen", "potionCapacity"] }
+        ];
+
         const PrefixAffixes = [
             { name: "鋭撃の", rank: 1, group: "attack", stats: ["str", "attackFlat", "accuracy", "critRate", "attackEfficiency"] },
             { name: "鉄壁の", rank: 1, group: "defense", stats: ["vit", "defenseFlat", "maxHp", "damageReduction", "hpRegen"] },
@@ -1510,7 +1572,14 @@
             accuracy: [2, 4, 7],
             rareFind: [4, 8, 15],
             affixFind: [5, 10, 18],
-            goldBoost: [5, 10, 18]
+            goldBoost: [5, 10, 18],
+            potionCapacity: [15, 30, 50],
+            potionHeal: [10, 22, 38],
+            potionCostReduction: [5, 10, 18],
+            potionCleanse: [1, 2, 3],
+            potionAutoRegen: [1, 2, 3],
+            potionChargeOnKill: [5, 10, 18],
+            potionBarrier: [1, 2, 3]
         };
 
         const pickRandom = (list) => list[Math.floor(Math.random() * list.length)];
@@ -1609,6 +1678,52 @@
             };
         };
 
+        const convertPotionAffixStats = (stats, base) => {
+            return stats.map((stat) => {
+                if (stat.key !== "potionHeal") return stat;
+                const key = base.healType === "pct" ? "potionHealPct" : "potionHealFlat";
+                return { ...stat, key };
+            });
+        };
+
+        const buildPotion = (base, options = {}) => {
+            const totals = getTotalStats();
+            const rarity = options.forceRarityKey
+                ? (RarityDefs.find((def) => def.key === options.forceRarityKey) || RarityDefs[0])
+                : rollRarity(totals.rareFind);
+            const affixChance = options.noAffix ? 0 : Math.min(100, 2 + totals.affixFind);
+            const prefixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
+            const suffixRank = Math.random() * 100 < affixChance ? rollAffixRank(totals.affixFind) : 0;
+            const prefix = prefixRank ? rollAffix(PotionPrefixAffixes, prefixRank) : null;
+            const suffix = suffixRank ? rollAffix(PotionSuffixAffixes, suffixRank) : null;
+            const prefixStars = prefix ? "☆".repeat(prefix.rank) : "";
+            const suffixStars = suffix ? "☆".repeat(suffix.rank) : "";
+            const baseStats = base.stats.map((stat) => {
+                const scale = PotionScaledStats.has(stat.key) ? rarity.mul : 1;
+                return { key: stat.key, value: Math.max(1, Math.floor(stat.value * scale)) };
+            });
+            const affixStats = convertPotionAffixStats([
+                ...(prefix ? prefix.stats.map((stat) => ({ ...stat, source: "prefix" })) : []),
+                ...(suffix ? suffix.stats.map((stat) => ({ ...stat, source: "suffix" })) : [])
+            ], base);
+            const potion = {
+                name: `${prefixStars}${prefix ? prefix.name : ""}${base.name}${suffix ? suffix.name : ""}${suffixStars}`,
+                type: "potion",
+                target: base.target,
+                healType: base.healType,
+                icon: base.icon,
+                rarity: rarity.key,
+                rarityMul: rarity.mul,
+                baseStats,
+                affixStats,
+                uniqueStats: [],
+                prefix,
+                suffix,
+                currentCapacity: 0
+            };
+            return potion;
+        };
+
         const buildBossItem = (base) => {
             const rarityKey = base.rarity || "epic";
             const rarity = RarityDefs.find((def) => def.key === rarityKey) || RarityDefs[2];
@@ -1652,6 +1767,46 @@
             const suffixMul = AffixRankMultipliers[item.suffix?.rank] ?? 1;
             return Math.floor(base * prefixMul * suffixMul);
         };
+
+        const getPotionDerived = (potion) => {
+            if (!potion) return null;
+            const totals = sumStats(getItemStats(potion));
+            const maxCapacity = Math.max(1, totals.potionCapacity || 0);
+            const cost = Math.max(1, (totals.potionCost || 0) - (totals.potionCostReduction || 0));
+            return {
+                maxCapacity,
+                cost,
+                healFlat: totals.potionHealFlat || 0,
+                healPct: totals.potionHealPct || 0,
+                chargeOnKill: totals.potionChargeOnKill || 0,
+                cleanse: totals.potionCleanse || 0,
+                autoRegen: totals.potionAutoRegen || 0,
+                barrier: totals.potionBarrier || 0
+            };
+        };
+
+        const syncPotionCapacity = (potion) => {
+            if (!potion) return null;
+            const derived = getPotionDerived(potion);
+            if (potion.currentCapacity === undefined || potion.currentCapacity === null) {
+                potion.currentCapacity = derived.maxCapacity;
+            }
+            potion.currentCapacity = Math.min(potion.currentCapacity, derived.maxCapacity);
+            return derived;
+        };
+
+        const NegativeStatusEffectIds = new Set([
+            "poison",
+            "bleed",
+            "weaken",
+            "vulnerable",
+            "attackDown",
+            "defenseDown",
+            "freeze",
+            "blind",
+            "silence",
+            "taunt"
+        ]);
 
         const getEquipmentStats = () => {
             const weaponStats = getItemStats(Game.player.weapon);
@@ -1791,8 +1946,22 @@
             return mods;
         }
 
+        const CustomStatRenderers = {
+            potionCapacity: (stat) => `容量 ${stat.source ? "+" : ""}${stat.value}`,
+            potionCost: (stat) => `消費量 ${stat.value}`,
+            potionCostReduction: (stat) => `消費量 -${stat.value}`,
+            potionHealFlat: (stat) => `回復量 ${stat.source ? "+" : ""}${stat.value}`,
+            potionHealPct: (stat) => `回復量 ${stat.source ? "+" : ""}${stat.value}%`,
+            potionChargeOnKill: (stat) => `討伐回復 ${stat.source ? "+" : ""}${stat.value}`,
+            potionCleanse: (stat) => `状態異常回復 ${stat.source ? "+" : ""}${stat.value}`,
+            potionAutoRegen: (stat) => `再生付与 ${stat.source ? "+" : ""}${stat.value}スタック`,
+            potionBarrier: (stat) => `バリア付与 ${stat.source ? "+" : ""}${stat.value}`
+        };
+
         const renderStatLines = (stats) => {
             return stats.map((stat) => {
+                const custom = CustomStatRenderers[stat.key];
+                if (custom) return custom(stat);
                 const suffix = PercentStats.has(stat.key) ? "%" : "";
                 return `${StatLabels[stat.key] || stat.key} +${stat.value}${suffix}`;
             });
@@ -1803,8 +1972,29 @@
             return stats.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
         };
 
+        const createStarterPotion = (name) => {
+            const base = PotionBases.find((potion) => potion.name === name);
+            if (!base) return null;
+            const potion = buildPotion(base, { forceRarityKey: "normal", noAffix: true });
+            const derived = syncPotionCapacity(potion);
+            potion.currentCapacity = derived.maxCapacity;
+            return potion;
+        };
+
+        const initializeStarterPotions = () => {
+            if (!Game.player.potion1) {
+                Game.player.potion1 = createStarterPotion("HP回復薬(小)");
+            }
+            if (!Game.player.potion2) {
+                Game.player.potion2 = createStarterPotion("MP回復薬(小)");
+            }
+            syncPotionCapacity(Game.player.potion1);
+            syncPotionCapacity(Game.player.potion2);
+        };
+
         // --- CORE LOGIC ---
         window.onload = () => {
+            initializeStarterPotions();
             spawn();
             updateUI();
             switchJob('warrior');
@@ -1963,6 +2153,102 @@
             if (derived.totals.mpRegen > 0) {
                 p.mp = Math.min(derived.maxMp, p.mp + derived.totals.mpRegen);
             }
+            if (Array.isArray(p.statusEffects)) {
+                p.statusEffects.forEach(effect => {
+                    const def = StatusDefs[effect.id];
+                    if (!def || def.effectType !== 'regen') return;
+                    const stacks = Math.max(1, effect.stacks || 1);
+                    const amount = (def.regenPerStack || 0) * stacks;
+                    if (amount <= 0) return;
+                    if (def.resource === 'hp') {
+                        p.hp = Math.min(derived.maxHp, p.hp + amount);
+                    }
+                    if (def.resource === 'mp') {
+                        p.mp = Math.min(derived.maxMp, p.mp + amount);
+                    }
+                });
+            }
+        }
+
+        function cleanseStatusEffects(target, count) {
+            if (!target || !Array.isArray(target.statusEffects) || count <= 0) return 0;
+            let remaining = count;
+            const removed = [];
+            target.statusEffects = target.statusEffects.filter(effect => {
+                if (remaining > 0 && NegativeStatusEffectIds.has(effect.id)) {
+                    remaining -= 1;
+                    removed.push(effect);
+                    return false;
+                }
+                return true;
+            });
+            return removed.length;
+        }
+
+        function restorePotionCapacity(potion) {
+            if (!potion) return;
+            const derived = syncPotionCapacity(potion);
+            potion.currentCapacity = Math.min(derived.maxCapacity, potion.currentCapacity + derived.chargeOnKill);
+        }
+
+        function usePotion(slotIndex) {
+            if (Game.state === 'dead') return;
+            const slotKey = slotIndex === 0 ? 'potion1' : 'potion2';
+            const potion = Game.player[slotKey];
+            if (!potion) {
+                addLog("ポーションが未装備", "text-slate-400");
+                return;
+            }
+            const potionDerived = syncPotionCapacity(potion);
+            if (potion.currentCapacity < potionDerived.cost) {
+                addLog("ポーション容量が足りない！", "text-slate-400");
+                return;
+            }
+            potion.currentCapacity -= potionDerived.cost;
+            const derived = getDerivedStats();
+            if (potion.target === 'hp') {
+                const before = Game.player.hp;
+                const healAmount = potionDerived.healPct > 0
+                    ? Math.floor(derived.maxHp * (potionDerived.healPct / 100))
+                    : potionDerived.healFlat;
+                Game.player.hp = Math.min(derived.maxHp, Game.player.hp + healAmount);
+                const actual = Game.player.hp - before;
+                if (actual > 0) {
+                    addLog(`HPポーション！ ${actual}回復`, "text-emerald-500");
+                    dmgText(actual, true);
+                } else {
+                    addLog("HPポーション！ これ以上回復できない", "text-slate-400");
+                }
+            }
+            if (potion.target === 'mp') {
+                const before = Game.player.mp;
+                const healAmount = potionDerived.healPct > 0
+                    ? Math.floor(derived.maxMp * (potionDerived.healPct / 100))
+                    : potionDerived.healFlat;
+                Game.player.mp = Math.min(derived.maxMp, Game.player.mp + healAmount);
+                const actual = Game.player.mp - before;
+                if (actual > 0) {
+                    addLog(`MPポーション！ ${actual}回復`, "text-blue-500");
+                } else {
+                    addLog("MPポーション！ これ以上回復できない", "text-slate-400");
+                }
+            }
+            if (potionDerived.cleanse > 0) {
+                const removed = cleanseStatusEffects(Game.player, potionDerived.cleanse);
+                if (removed > 0) {
+                    addLog(`状態異常を${removed}個回復`, "text-purple-400");
+                }
+            }
+            if (potionDerived.autoRegen > 0) {
+                const regenId = potion.target === 'mp' ? 'potionRegenMp' : 'potionRegenHp';
+                applyStatusEffect(Game.player, regenId, potionDerived.autoRegen);
+                addLog("再生効果を付与！", "text-emerald-400");
+            }
+            if (potionDerived.barrier > 0) {
+                applyStatusEffect(Game.player, 'barrier', potionDerived.barrier);
+                addLog("バリアを付与！", "text-sky-400");
+            }
+            updateUI();
         }
 
         function advanceStatusEffects(target, phase) {
@@ -2538,9 +2824,13 @@
                 addLog(`LEVEL UP! [${Game.player.level}]`, "text-blue-400 font-black");
                 document.getElementById('nav-sp-dot').classList.remove('hidden');
             }
+            restorePotionCapacity(Game.player.potion1);
+            restorePotionCapacity(Game.player.potion2);
             // Drop Luck Check
             let dropChance = Math.min(0.95, getTotalStats().luck / 100);
-            if (Math.random() < dropChance) drop();
+            if (Math.random() < dropChance) queueLoot(buildEquipmentLoot());
+            if (Math.random() < dropChance) queueLoot(buildPotionLoot());
+            openNextLoot();
         }
 
         function die() {
@@ -2592,23 +2882,42 @@
             setTimeout(()=>el.remove(), 800);
         }
 
-        function drop() {
-            Game.tempLoot = null;
+        function buildEquipmentLoot() {
             if (Game.enemy?.isBoss) {
                 const bossTable = BossLootTables[Game.enemy.floor];
                 if (bossTable && bossTable.length > 0) {
                     const base = pickRandom(bossTable);
-                    Game.tempLoot = buildBossItem(base);
+                    return buildBossItem(base);
                 }
             }
-            if (!Game.tempLoot) {
-                const tier = EquipmentTiers[getTierIndex(Game.floor)];
-                const types = Object.keys(EquipmentTypePools);
-                const type = pickRandom(types);
-                const poolKey = EquipmentTypePools[type];
-                const base = pickRandom(tier[poolKey]);
-                Game.tempLoot = buildItem(base, type);
-            }
+            const tier = EquipmentTiers[getTierIndex(Game.floor)];
+            const types = Object.keys(EquipmentTypePools);
+            const type = pickRandom(types);
+            const poolKey = EquipmentTypePools[type];
+            const base = pickRandom(tier[poolKey]);
+            return buildItem(base, type);
+        }
+
+        function buildPotionLoot() {
+            const base = pickRandom(PotionBases);
+            const potion = buildPotion(base);
+            syncPotionCapacity(potion);
+            return potion;
+        }
+
+        function queueLoot(item) {
+            if (!item) return;
+            Game.lootQueue.push(item);
+        }
+
+        function openNextLoot() {
+            if (Game.state === 'loot') return;
+            if (Game.lootQueue.length === 0) return;
+            openLootModal(Game.lootQueue.shift());
+        }
+
+        function openLootModal(item) {
+            Game.tempLoot = item;
             document.getElementById('loot-display').innerHTML = `
                 <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${EquipmentTypeLabels[Game.tempLoot.type]} Found</div>
                 <div class="text-xl font-black rarity-${Game.tempLoot.rarity}">${Game.tempLoot.name}</div>
@@ -2632,6 +2941,9 @@
             document.getElementById('loot-modal').style.display = 'none';
             Game.state = 'idle';
             updateUI();
+            if (Game.lootQueue.length > 0) {
+                openNextLoot();
+            }
         }
 
         function setInventoryFilter(type) {
@@ -2655,7 +2967,9 @@
                 || Game.player.hands === item
                 || Game.player.feet === item
                 || Game.player.accessory1 === item
-                || Game.player.accessory2 === item;
+                || Game.player.accessory2 === item
+                || Game.player.potion1 === item
+                || Game.player.potion2 === item;
         }
 
         function removeInventoryItem(idx) {
@@ -2677,6 +2991,18 @@
                     slotKey = 'accessory2';
                 }
                 Game.player[slotKey] = item;
+                updateUI();
+                return;
+            }
+            if (item.type === 'potion') {
+                let slotKey = 'potion1';
+                if (!Game.player.potion1) {
+                    slotKey = 'potion1';
+                } else if (!Game.player.potion2) {
+                    slotKey = 'potion2';
+                }
+                Game.player[slotKey] = item;
+                syncPotionCapacity(item);
                 updateUI();
                 return;
             }
@@ -2786,6 +3112,45 @@
                 card.className = "rounded-xl border px-3 py-2 text-center text-[10px] font-bold border-slate-200 bg-slate-50 text-slate-700";
                 card.innerHTML = `<div class="truncate">${label}</div>`;
                 battleSlots.appendChild(card);
+            }
+
+            const potionSlots = document.getElementById('battle-potion-slots');
+            if (potionSlots) {
+                potionSlots.innerHTML = '';
+                ['potion1', 'potion2'].forEach((slotKey, index) => {
+                    const potion = Game.player[slotKey];
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    if (!potion) {
+                        button.className = "w-full rounded-xl border border-dashed border-slate-200 bg-slate-50 text-slate-300 px-3 py-2 text-[10px] font-bold flex items-center justify-center gap-2";
+                        button.innerHTML = `<i class="fas fa-plus"></i> 空きスロット`;
+                        button.disabled = true;
+                    } else {
+                        const potionDerived = syncPotionCapacity(potion);
+                        const capPct = potionDerived.maxCapacity > 0 ? (potion.currentCapacity / potionDerived.maxCapacity) * 100 : 0;
+                        const healText = potionDerived.healPct > 0 ? `${potionDerived.healPct}%` : `${potionDerived.healFlat}`;
+                        const canUse = potion.currentCapacity >= potionDerived.cost;
+                        button.className = `w-full rounded-xl border px-3 py-2 text-[10px] font-bold flex items-center gap-2 transition-colors ${
+                            canUse ? 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50' : 'border-slate-200 bg-slate-50 text-slate-300'
+                        }`;
+                        button.innerHTML = `
+                            <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center ${canUse ? 'text-emerald-500' : 'text-slate-300'}">
+                                <i class="fas ${potion.icon || 'fa-flask'}"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 text-left">
+                                <div class="truncate">${potion.name}</div>
+                                <div class="text-[9px] text-slate-400">回復 ${healText} / 消費 ${potionDerived.cost}</div>
+                                <div class="mt-1 h-1 w-full rounded-full bg-slate-200 overflow-hidden">
+                                    <div class="h-full bg-emerald-400" style="width:${capPct}%;"></div>
+                                </div>
+                                <div class="text-[9px] text-slate-400">容量 ${potion.currentCapacity}/${potionDerived.maxCapacity}</div>
+                            </div>
+                        `;
+                        button.disabled = !canUse;
+                        button.addEventListener('click', () => usePotion(index));
+                    }
+                    potionSlots.appendChild(button);
+                });
             }
 
             const slotSettings = document.getElementById('skill-slot-settings');
