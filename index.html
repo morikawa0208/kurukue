@@ -706,6 +706,21 @@
         </div>
     </div>
 
+    <!-- EQUIP SLOT MODAL -->
+    <div id="equip-slot-modal" class="fixed inset-0 bg-slate-900/80 z-[108] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="equip-slot-title" class="font-black text-lg text-slate-800 flex items-center gap-2"></h3>
+                <button id="equip-slot-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <button id="equip-slot-1" class="w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2"></button>
+                <button id="equip-slot-2" class="w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2"></button>
+            </div>
+            <button id="equip-slot-close-bottom" class="mt-5 w-full bg-slate-100 text-slate-500 font-black py-3 rounded-2xl shadow">キャンセル</button>
+        </div>
+    </div>
+
     <!-- STATUS INFO MODAL -->
     <div id="status-info-modal" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
@@ -823,6 +838,7 @@
             inventoryCounter: 0,
             lootFilter: { normal: false, magic: false, rare: false, epic: false, legendary: false },
             lootQueue: [],
+            pendingEquip: null,
             enemy: null, logs: []
         };
 
@@ -2398,6 +2414,59 @@
             });
         });
 
+        const equipSlotModal = document.getElementById('equip-slot-modal');
+        const equipSlotTitle = document.getElementById('equip-slot-title');
+        const equipSlotButton1 = document.getElementById('equip-slot-1');
+        const equipSlotButton2 = document.getElementById('equip-slot-2');
+        const closeEquipSlotModal = () => {
+            equipSlotModal.classList.add('hidden');
+            equipSlotModal.classList.remove('flex');
+            Game.pendingEquip = null;
+        };
+        const openEquipSlotModal = (item, idx) => {
+            if (!item) return;
+            const isPotion = item.type === 'potion';
+            const titleIcon = isPotion ? 'fa-flask' : 'fa-gem';
+            equipSlotTitle.innerHTML = `<i class="fas ${titleIcon} text-slate-500"></i> 装備スロット選択`;
+            const slot1Item = isPotion ? Game.player.potion1 : Game.player.accessory1;
+            const slot2Item = isPotion ? Game.player.potion2 : Game.player.accessory2;
+            const slotLabel = isPotion ? 'ポーション' : '装飾品';
+            const label1 = slot1Item ? slot1Item.name : '空き';
+            const label2 = slot2Item ? slot2Item.name : '空き';
+            equipSlotButton1.innerHTML = `<span>${slotLabel}1</span><span class="text-[10px] text-slate-300">${label1}</span>`;
+            equipSlotButton2.innerHTML = `<span>${slotLabel}2</span><span class="text-[10px] text-slate-300">${label2}</span>`;
+            Game.pendingEquip = { idx, itemType: item.type };
+            equipSlotModal.classList.remove('hidden');
+            equipSlotModal.classList.add('flex');
+        };
+        const equipToSlot = (slotNumber) => {
+            const pending = Game.pendingEquip;
+            if (!pending) return;
+            const item = Game.player.inventory[pending.idx];
+            if (!item || isItemEquipped(item)) {
+                closeEquipSlotModal();
+                return;
+            }
+            if (pending.itemType === 'accessory') {
+                const slotKey = slotNumber === 1 ? 'accessory1' : 'accessory2';
+                Game.player[slotKey] = item;
+            }
+            if (pending.itemType === 'potion') {
+                const slotKey = slotNumber === 1 ? 'potion1' : 'potion2';
+                Game.player[slotKey] = item;
+                syncPotionCapacity(item);
+            }
+            closeEquipSlotModal();
+            updateUI();
+        };
+        equipSlotButton1.addEventListener('click', () => equipToSlot(1));
+        equipSlotButton2.addEventListener('click', () => equipToSlot(2));
+        document.getElementById('equip-slot-close').addEventListener('click', closeEquipSlotModal);
+        document.getElementById('equip-slot-close-bottom').addEventListener('click', closeEquipSlotModal);
+        equipSlotModal.addEventListener('click', (event) => {
+            if (event.target === equipSlotModal) closeEquipSlotModal();
+        });
+
         function switchSkillType(type) {
             Game.currentSkillType = type;
             document.querySelectorAll('.type-tab').forEach(el => el.classList.remove('active'));
@@ -2901,7 +2970,8 @@
         function buildPotionLoot() {
             const base = pickRandom(PotionBases);
             const potion = buildPotion(base);
-            syncPotionCapacity(potion);
+            const derived = syncPotionCapacity(potion);
+            potion.currentCapacity = derived.maxCapacity;
             return potion;
         }
 
@@ -2930,6 +3000,10 @@
         function closeLoot(take) {
             if (take) {
                 Game.tempLoot.acquiredAt = Game.inventoryCounter++;
+                if (Game.tempLoot.type === 'potion') {
+                    const derived = syncPotionCapacity(Game.tempLoot);
+                    Game.tempLoot.currentCapacity = derived.maxCapacity;
+                }
                 if (Game.lootFilter?.[Game.tempLoot.rarity]) {
                     Game.player.gold += getSellPrice(Game.tempLoot);
                 } else {
@@ -2984,14 +3058,11 @@
             const item = Game.player.inventory[idx];
             if (!item || isItemEquipped(item)) return;
             if (item.type === 'accessory') {
-                let slotKey = 'accessory1';
-                if (!Game.player.accessory1) {
-                    slotKey = 'accessory1';
-                } else if (!Game.player.accessory2) {
-                    slotKey = 'accessory2';
-                }
-                Game.player[slotKey] = item;
-                updateUI();
+                openEquipSlotModal(item, idx);
+                return;
+            }
+            if (item.type === 'potion') {
+                openEquipSlotModal(item, idx);
                 return;
             }
             if (item.type === 'potion') {
