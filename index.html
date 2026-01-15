@@ -151,6 +151,13 @@
             </div>
                 <div id="damage-layer" class="absolute inset-0 pointer-events-none"></div>
                 <div class="absolute right-0 bottom-4 w-1/2 mini-log pointer-events-none text-right pr-2 text-slate-500 italic space-y-1">
+                    <div id="mini-log-9"></div>
+                    <div id="mini-log-8"></div>
+                    <div id="mini-log-7"></div>
+                    <div id="mini-log-6"></div>
+                    <div id="mini-log-5"></div>
+                    <div id="mini-log-4"></div>
+                    <div id="mini-log-3"></div>
                     <div id="mini-log-2"></div>
                     <div id="mini-log-1"></div>
                     <div id="mini-log-0" class="text-slate-800 font-bold"></div>
@@ -3097,8 +3104,8 @@
             full.prepend(div);
             if (full.children.length > 50) full.lastChild.remove();
             Game.logs.unshift({m, c});
-            if (Game.logs.length > 3) Game.logs.pop();
-            for(let i=0; i<3; i++) {
+            if (Game.logs.length > 10) Game.logs.pop();
+            for(let i=0; i<10; i++) {
                 const el = document.getElementById(`mini-log-${i}`);
                 if (Game.logs[i]) {
                     el.innerText = Game.logs[i].m;
