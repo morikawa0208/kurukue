@@ -86,6 +86,33 @@
         .type-tab.active { border-bottom: 3px solid #0f172a; color: #0f172a; font-weight: bold; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        .boss-visual {
+            color: #f59e0b;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+            animation: bossPulse 1.8s ease-in-out infinite;
+        }
+        .boss-name {
+            color: #b45309;
+            text-shadow: 0 0 6px rgba(245, 158, 11, 0.35);
+        }
+        .boss-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: #fff7ed;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+        }
+        @keyframes bossPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
     </style>
 </head>
 <body class="flex flex-col">
@@ -113,6 +140,9 @@
                 <div id="enemy-container" class="text-center transition-all duration-300">
                     <div id="enemy-visual" class="text-8xl mb-4 text-slate-700"><i class="fas fa-ghost"></i></div>
                 <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
+                <div id="enemy-boss-badge" class="hidden justify-center mb-2">
+                    <span class="boss-badge"><i class="fas fa-crown"></i> BOSS</span>
+                </div>
                 <div class="w-48 bar-container mx-auto mb-1 border-0 bg-slate-200">
                     <div id="enemy-hp-bar" class="bar-fill hp-fill"></div>
                     <div class="bar-text">HP: <span id="enemy-hp-text">30/30</span></div>
@@ -941,6 +971,293 @@
             { name: "ドラゴン", icon: "fa-dragon", hp: 500, str: 60, exp: 300 }
         ];
 
+        const BossFloors = [10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+        const BossDefs = {
+            10: {
+                floor: 10,
+                name: "毒沼のヴィス",
+                icon: "fa-skull-crossbones",
+                hp: 80,
+                str: 12,
+                exp: 60,
+                skillInterval: 3,
+                skills: [
+                    {
+                        name: "毒霧散布",
+                        pow: 1.0,
+                        effects: [
+                            { target: "player", id: "poison", stacks: 2, turns: 3, log: "毒が回った！" },
+                            { target: "player", id: "attackDown", stacks: 1, turns: 2, log: "攻撃力が低下した…" }
+                        ]
+                    }
+                ]
+            },
+            50: {
+                floor: 50,
+                name: "疾風狼セイル",
+                icon: "fa-wind",
+                hp: 140,
+                str: 20,
+                exp: 120,
+                skillInterval: 2,
+                skills: [
+                    {
+                        name: "疾風連斬",
+                        pow: 0.8,
+                        hits: 3,
+                        effects: [
+                            { target: "self", id: "haste", stacks: 2, turns: 3 },
+                            { target: "player", id: "blind", stacks: 1, turns: 2, log: "視界がかすむ！" }
+                        ]
+                    }
+                ]
+            },
+            100: {
+                floor: 100,
+                name: "岩塊王ガルド",
+                icon: "fa-mountain",
+                hp: 200,
+                str: 28,
+                exp: 200,
+                skillInterval: 4,
+                skills: [
+                    {
+                        name: "岩殻結界",
+                        pow: null,
+                        effects: [
+                            { target: "self", id: "defenseUp", stacks: 2, turns: 3 },
+                            { target: "self", id: "barrier", stacks: 2, turns: 3 }
+                        ],
+                        log: "岩の結界で身を固めた！"
+                    }
+                ]
+            },
+            200: {
+                floor: 200,
+                name: "氷牢のフロスト",
+                icon: "fa-snowflake",
+                hp: 260,
+                str: 35,
+                exp: 320,
+                skillInterval: 5,
+                skills: [
+                    {
+                        name: "氷柱落とし",
+                        pow: 1.2,
+                        effects: [
+                            { target: "player", id: "freeze", stacks: 1, turns: 1, log: "凍結した！" },
+                            { target: "player", id: "vulnerable", stacks: 1, turns: 2 }
+                        ]
+                    }
+                ]
+            },
+            300: {
+                floor: 300,
+                name: "闇紡ぎノクト",
+                icon: "fa-mask",
+                hp: 320,
+                str: 42,
+                exp: 450,
+                skillInterval: 3,
+                skills: [
+                    {
+                        name: "闇の帳",
+                        pow: null,
+                        effects: [
+                            { target: "player", id: "blind", stacks: 2, turns: 3, log: "暗闇に包まれた！" },
+                            { target: "player", id: "silence", stacks: 1, turns: 2, log: "沈黙でスキルが封じられた！" },
+                            { target: "self", id: "attackUp", stacks: 2, turns: 3 }
+                        ]
+                    }
+                ]
+            },
+            400: {
+                floor: 400,
+                name: "灼熱王イグニス",
+                icon: "fa-fire",
+                hp: 380,
+                str: 50,
+                exp: 600,
+                skillInterval: 3,
+                skills: [
+                    {
+                        name: "灼熱裂傷",
+                        pow: 1.3,
+                        effects: [
+                            { target: "player", id: "bleed", stacks: 2, turns: 3, log: "出血が止まらない！" }
+                        ]
+                    }
+                ]
+            },
+            500: {
+                floor: 500,
+                name: "雷王ヴォルト",
+                icon: "fa-bolt",
+                hp: 450,
+                str: 58,
+                exp: 800,
+                skillInterval: 3,
+                skills: [
+                    {
+                        name: "雷槌",
+                        pow: 1.4,
+                        effects: [
+                            { target: "player", id: "vulnerable", stacks: 2, turns: 2, log: "脆弱状態になった！" }
+                        ]
+                    }
+                ]
+            },
+            600: {
+                floor: 600,
+                name: "聖堂守タリム",
+                icon: "fa-sun",
+                hp: 520,
+                str: 66,
+                exp: 1000,
+                skillInterval: 4,
+                skills: [
+                    {
+                        name: "聖域",
+                        pow: null,
+                        healPct: 0.15,
+                        effects: [
+                            { target: "self", id: "barrier", stacks: 1, turns: 3 },
+                            { target: "self", id: "reflect", stacks: 1, turns: 2 }
+                        ],
+                        log: "聖域が展開された！"
+                    }
+                ]
+            },
+            700: {
+                floor: 700,
+                name: "疫病のラグ",
+                icon: "fa-virus",
+                hp: 600,
+                str: 74,
+                exp: 1200,
+                skillInterval: 5,
+                skills: [
+                    {
+                        name: "疫病散布",
+                        pow: 1.0,
+                        effects: [
+                            { target: "player", id: "poison", stacks: 3, turns: 3, log: "疫毒が体を蝕む！" },
+                            { target: "player", id: "weaken", stacks: 2, turns: 2 }
+                        ]
+                    }
+                ]
+            },
+            800: {
+                floor: 800,
+                name: "鉄壁王フェリス",
+                icon: "fa-shield-halved",
+                hp: 680,
+                str: 82,
+                exp: 1400,
+                skillInterval: 4,
+                skills: [
+                    {
+                        name: "鉄壁衝撃",
+                        pow: 1.1,
+                        effects: [
+                            { target: "self", id: "defenseUp", stacks: 3, turns: 3 },
+                            { target: "player", id: "attackDown", stacks: 1, turns: 2, log: "攻撃が鈍くなった！" }
+                        ]
+                    }
+                ]
+            },
+            900: {
+                floor: 900,
+                name: "影刃王カゲロウ",
+                icon: "fa-user-secret",
+                hp: 760,
+                str: 90,
+                exp: 1700,
+                skillInterval: 2,
+                skills: [
+                    {
+                        name: "影縫い",
+                        pow: 1.0,
+                        hits: 2,
+                        effects: [
+                            { target: "player", id: "bleed", stacks: 2, turns: 3, log: "影の刃で裂かれた！" },
+                            { target: "self", id: "haste", stacks: 1, turns: 2 }
+                        ]
+                    }
+                ]
+            },
+            1000: {
+                floor: 1000,
+                name: "終焉竜アポカリス",
+                icon: "fa-dragon",
+                hp: 850,
+                str: 100,
+                exp: 2200,
+                skillInterval: 4,
+                skills: [
+                    {
+                        name: "終焉の咆哮",
+                        pow: 1.8,
+                        effects: [
+                            { target: "player", id: "vulnerable", stacks: 2, turns: 2, log: "恐怖で身が震える！" },
+                            { target: "player", id: "attackDown", stacks: 2, turns: 2 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const BossLootTables = {
+            10: [
+                { name: "毒牙の短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 12 }, { key: "dex", value: 4 }, { key: "leechRate", value: 2 }] },
+                { name: "毒煙の護符", type: "accessory", rarity: "epic", stats: [{ key: "mPen", value: 3 }, { key: "damageBoost", value: 2 }] }
+            ],
+            50: [
+                { name: "疾風の爪剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 18 }, { key: "dex", value: 6 }, { key: "accuracy", value: 4 }] },
+                { name: "風走りのブーツ", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 3 }, { key: "dex", value: 4 }, { key: "hpEfficiency", value: 3 }] }
+            ],
+            100: [
+                { name: "岩核の大盾", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 22 }, { key: "vit", value: 6 }, { key: "damageReduction", value: 2 }] },
+                { name: "岩守りの兜", type: "head", rarity: "epic", stats: [{ key: "defenseFlat", value: 10 }, { key: "vit", value: 4 }, { key: "maxHp", value: 18 }] }
+            ],
+            200: [
+                { name: "氷晶の杖", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 20 }, { key: "int", value: 6 }, { key: "mPen", value: 4 }] },
+                { name: "氷牢の指輪", type: "accessory", rarity: "epic", stats: [{ key: "mpEfficiency", value: 4 }, { key: "critRate", value: 2 }, { key: "maxMp", value: 20 }] }
+            ],
+            300: [
+                { name: "宵闇のマント", type: "armor", rarity: "epic", stats: [{ key: "evasionRate", value: 3 }, { key: "dex", value: 5 }, { key: "damageBoost", value: 2 }] },
+                { name: "闇狩りの短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 22 }, { key: "critRate", value: 3 }, { key: "dex", value: 4 }] }
+            ],
+            400: [
+                { name: "熾火の大剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 26 }, { key: "str", value: 6 }, { key: "critDamage", value: 6 }] },
+                { name: "炎護の手甲", type: "hands", rarity: "epic", stats: [{ key: "attackFlat", value: 6 }, { key: "str", value: 4 }, { key: "damageBoost", value: 2 }] }
+            ],
+            500: [
+                { name: "雷鳴の戦槌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 28 }, { key: "str", value: 7 }, { key: "accuracy", value: 4 }] },
+                { name: "帯電の護符", type: "accessory", rarity: "epic", stats: [{ key: "critRate", value: 3 }, { key: "damageBoost", value: 3 }, { key: "maxHp", value: 20 }] }
+            ],
+            600: [
+                { name: "聖紋のローブ", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 18 }, { key: "int", value: 6 }, { key: "mpEfficiency", value: 5 }] },
+                { name: "聖祈の護符", type: "accessory", rarity: "epic", stats: [{ key: "hpRegen", value: 4 }, { key: "mpRegen", value: 2 }, { key: "damageReduction", value: 2 }] }
+            ],
+            700: [
+                { name: "疫毒の鎌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 30 }, { key: "dex", value: 6 }, { key: "mPen", value: 4 }] },
+                { name: "腐蝕の指輪", type: "accessory", rarity: "epic", stats: [{ key: "damageBoost", value: 3 }, { key: "leechRate", value: 3 }, { key: "maxHp", value: 20 }] }
+            ],
+            800: [
+                { name: "鉄壁の鎧", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 26 }, { key: "vit", value: 7 }, { key: "damageReduction", value: 3 }] },
+                { name: "鋼鉄のグローブ", type: "hands", rarity: "epic", stats: [{ key: "defenseFlat", value: 8 }, { key: "str", value: 5 }, { key: "hpEfficiency", value: 4 }] }
+            ],
+            900: [
+                { name: "影刃の忍刀", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 32 }, { key: "dex", value: 8 }, { key: "critRate", value: 4 }] },
+                { name: "夜走りの足袋", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 4 }, { key: "dex", value: 5 }, { key: "accuracy", value: 4 }] }
+            ],
+            1000: [
+                { name: "終焉の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 40 }, { key: "str", value: 10 }, { key: "damageBoost", value: 5 }] },
+                { name: "竜鱗の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 30 }, { key: "vit", value: 10 }, { key: "maxHp", value: 40 }] }
+            ]
+        };
+
         const StatLabels = {
             str: "STR",
             vit: "VIT",
@@ -1289,6 +1606,26 @@
                 uniqueStats: [],
                 prefix,
                 suffix
+            };
+        };
+
+        const buildBossItem = (base) => {
+            const rarityKey = base.rarity || "epic";
+            const rarity = RarityDefs.find((def) => def.key === rarityKey) || RarityDefs[2];
+            const baseStats = base.stats.map((stat) => ({
+                key: stat.key,
+                value: Math.max(1, Math.floor(stat.value * rarity.mul))
+            }));
+            return {
+                name: base.name,
+                type: base.type,
+                rarity: rarity.key,
+                rarityMul: rarity.mul,
+                baseStats,
+                affixStats: [],
+                uniqueStats: [],
+                prefix: null,
+                suffix: null
             };
         };
 
@@ -1852,17 +2189,97 @@
         }
 
         function spawn() {
-            const scale = 1 + (Game.floor * 0.22);
-            const baseIdx = Math.min(EnemyBases.length - 1, Math.floor(Game.floor / 5));
-            const base = EnemyBases[baseIdx];
-            Game.enemy = { 
-                ...base, 
-                maxHp: Math.floor(base.hp * scale), 
-                hp: Math.floor(base.hp * scale), 
-                str: Math.floor(base.str * scale),
-                statusEffects: []
-            };
+            const bossDef = BossDefs[Game.floor];
+            if (bossDef) {
+                const scale = 1 + (Game.floor * 0.18);
+                Game.enemy = {
+                    ...bossDef,
+                    maxHp: Math.floor(bossDef.hp * scale),
+                    hp: Math.floor(bossDef.hp * scale),
+                    str: Math.floor(bossDef.str * scale),
+                    exp: Math.floor(bossDef.exp * scale),
+                    statusEffects: [],
+                    isBoss: true,
+                    skillCooldown: bossDef.skillInterval,
+                    skillRotation: 0
+                };
+                addLog(`BOSS ${bossDef.name}が出現！`, "text-amber-500 font-black");
+            } else {
+                const scale = 1 + (Game.floor * 0.22);
+                const baseIdx = Math.min(EnemyBases.length - 1, Math.floor(Game.floor / 5));
+                const base = EnemyBases[baseIdx];
+                Game.enemy = { 
+                    ...base, 
+                    maxHp: Math.floor(base.hp * scale), 
+                    hp: Math.floor(base.hp * scale), 
+                    str: Math.floor(base.str * scale),
+                    statusEffects: [],
+                    isBoss: false
+                };
+            }
             Game.state = 'combat';
+        }
+
+        function performEnemySkill(skill, derived) {
+            const enemyStatusMods = getStatusModifiers(Game.enemy);
+            const playerStatusMods = getStatusModifiers(Game.player);
+            let totalDamage = 0;
+            let landedHit = false;
+
+            if (skill.pow !== undefined && skill.pow !== null) {
+                const hits = skill.hits || 1;
+                for (let i = 0; i < hits; i++) {
+                    const accuracy = skill.accuracy ?? 100;
+                    if (Math.random() * 100 > accuracy) {
+                        continue;
+                    }
+                    landedHit = true;
+                    let enemyAtk = Game.enemy.str * enemyStatusMods.atkMul;
+                    let d = Math.floor((skill.pow ?? 1) * enemyAtk * (0.8 + Math.random() * 0.4)) - derived.def;
+                    if (derived.totals.damageReduction > 0) {
+                        d = Math.floor(d * (1 - derived.totals.damageReduction / 100));
+                    }
+                    d = Math.floor(d * enemyStatusMods.damageDoneMul);
+                    d = Math.floor(d * playerStatusMods.damageTakenMul);
+                    d = Math.max(1, d);
+                    totalDamage += applyDamage(Game.player, d, Game.enemy);
+                }
+            }
+
+            if (skill.pow !== undefined && skill.pow !== null) {
+                if (totalDamage > 0) {
+                    addLog(`${Game.enemy.name}の${skill.name}！ ${totalDamage}ダメージ`, "text-red-400");
+                    dmgText(totalDamage);
+                } else if (landedHit) {
+                    addLog(`${Game.enemy.name}の${skill.name}！ バリアに防がれた！`, "text-slate-400");
+                    dmgText(0, false);
+                } else {
+                    addLog(`${Game.enemy.name}の${skill.name}は外れた！`, "text-slate-400");
+                    dmgText("MISS", false);
+                }
+            } else {
+                addLog(`${Game.enemy.name}の${skill.name}！`, "text-amber-500");
+            }
+
+            if (skill.healPct) {
+                const healAmount = Math.floor(Game.enemy.maxHp * skill.healPct);
+                Game.enemy.hp = Math.min(Game.enemy.maxHp, Game.enemy.hp + healAmount);
+                addLog(`${Game.enemy.name}はHPを${healAmount}回復！`, "text-emerald-500");
+            }
+
+            if (skill.effects) {
+                skill.effects.forEach((effect) => {
+                    const target = effect.target === "self" ? Game.enemy : Game.player;
+                    applyStatusEffect(target, effect.id, effect.stacks, effect.turns);
+                    if (effect.log && effect.target === "player") {
+                        addLog(effect.log, "text-purple-400");
+                    }
+                });
+            }
+
+            if (skill.log) {
+                addLog(skill.log, "text-amber-500");
+            }
         }
 
         document.getElementById('action-btn').onclick = () => {
@@ -2034,32 +2451,48 @@
             }
             const derived = getDerivedStats();
             const playerStatusMods = getStatusModifiers(Game.player);
-            
+
+            let usedBossSkill = false;
+            if (Game.enemy.isBoss && Array.isArray(Game.enemy.skills) && Game.enemy.skills.length > 0) {
+                Game.enemy.skillCooldown = Math.max(0, (Game.enemy.skillCooldown ?? 0) - 1);
+                if (Game.enemy.skillCooldown <= 0) {
+                    const skill = Game.enemy.skills[Game.enemy.skillRotation % Game.enemy.skills.length];
+                    Game.enemy.skillRotation = (Game.enemy.skillRotation + 1) % Game.enemy.skills.length;
+                    performEnemySkill(skill, derived);
+                    Game.enemy.skillCooldown = Game.enemy.skillInterval;
+                    usedBossSkill = true;
+                }
+            }
+
             // Evasion Check
-            if (Math.random() * 100 < derived.totals.evasionRate) {
-                addLog("攻撃を回避！", "text-blue-500 font-bold");
-                dmgText("MISS", false);
-                advanceStatusEffects(Game.enemy, 'end');
-                updateUI();
-                return;
+            if (!usedBossSkill) {
+                if (Math.random() * 100 < derived.totals.evasionRate) {
+                    addLog("攻撃を回避！", "text-blue-500 font-bold");
+                    dmgText("MISS", false);
+                    advanceStatusEffects(Game.enemy, 'end');
+                    updateUI();
+                    return;
+                }
             }
             let enemyAtk = Game.enemy.str * enemyStatusMods.atkMul;
-            let d = Math.floor(enemyAtk * (0.8 + Math.random() * 0.4)) - derived.def;
+            let d = usedBossSkill ? 0 : Math.floor(enemyAtk * (0.8 + Math.random() * 0.4)) - derived.def;
             // Passive: Armor Boost
             const armorBoostLevel = getPassiveLevel('warrior', 4);
             if (armorBoostLevel > 0) d -= Math.floor(getItemStatValue(Game.player.armor, "defenseFlat") * 0.15 * armorBoostLevel);
             
-            if (derived.totals.damageReduction > 0) {
+            if (!usedBossSkill && derived.totals.damageReduction > 0) {
                 d = Math.floor(d * (1 - derived.totals.damageReduction / 100));
             }
-            d = Math.floor(d * enemyStatusMods.damageDoneMul);
-            d = Math.floor(d * playerStatusMods.damageTakenMul);
-            d = Math.max(1, d);
-            const appliedDamage = applyDamage(Game.player, d, Game.enemy);
-            addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
-            if (Math.random() < 0.2) {
-                applyStatusEffect(Game.player, 'poison');
-                addLog("毒を受けた！", "text-green-600");
+            if (!usedBossSkill) {
+                d = Math.floor(d * enemyStatusMods.damageDoneMul);
+                d = Math.floor(d * playerStatusMods.damageTakenMul);
+                d = Math.max(1, d);
+                const appliedDamage = applyDamage(Game.player, d, Game.enemy);
+                addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
+                if (!Game.enemy.isBoss && Math.random() < 0.2) {
+                    applyStatusEffect(Game.player, 'poison');
+                    addLog("毒を受けた！", "text-green-600");
+                }
             }
             
             // Passive: MP Regen
@@ -2160,12 +2593,22 @@
         }
 
         function drop() {
-            const tier = EquipmentTiers[getTierIndex(Game.floor)];
-            const types = Object.keys(EquipmentTypePools);
-            const type = pickRandom(types);
-            const poolKey = EquipmentTypePools[type];
-            const base = pickRandom(tier[poolKey]);
-            Game.tempLoot = buildItem(base, type);
+            Game.tempLoot = null;
+            if (Game.enemy?.isBoss) {
+                const bossTable = BossLootTables[Game.enemy.floor];
+                if (bossTable && bossTable.length > 0) {
+                    const base = pickRandom(bossTable);
+                    Game.tempLoot = buildBossItem(base);
+                }
+            }
+            if (!Game.tempLoot) {
+                const tier = EquipmentTiers[getTierIndex(Game.floor)];
+                const types = Object.keys(EquipmentTypePools);
+                const type = pickRandom(types);
+                const poolKey = EquipmentTypePools[type];
+                const base = pickRandom(tier[poolKey]);
+                Game.tempLoot = buildItem(base, type);
+            }
             document.getElementById('loot-display').innerHTML = `
                 <div class="text-[10px] text-slate-400 mb-1 uppercase font-black">${EquipmentTypeLabels[Game.tempLoot.type]} Found</div>
                 <div class="text-xl font-black rarity-${Game.tempLoot.rarity}">${Game.tempLoot.name}</div>
@@ -2282,10 +2725,28 @@
 
             const e = Game.enemy;
             if (e) {
-                document.getElementById('enemy-name').innerText = e.name;
+                const enemyName = document.getElementById('enemy-name');
+                const enemyVisual = document.getElementById('enemy-visual');
+                const bossBadge = document.getElementById('enemy-boss-badge');
+                enemyName.innerText = e.name;
                 document.getElementById('enemy-hp-text').innerText = `${e.hp}/${e.maxHp}`;
                 document.getElementById('enemy-hp-bar').style.width = (e.hp/e.maxHp*100)+'%';
-                document.getElementById('enemy-visual').innerHTML = `<i class="fas ${e.icon}"></i>`;
+                enemyVisual.innerHTML = `<i class="fas ${e.icon}"></i>`;
+                if (e.isBoss) {
+                    enemyVisual.classList.add('boss-visual');
+                    enemyName.classList.add('boss-name');
+                    if (bossBadge) {
+                        bossBadge.classList.remove('hidden');
+                        bossBadge.classList.add('flex');
+                    }
+                } else {
+                    enemyVisual.classList.remove('boss-visual');
+                    enemyName.classList.remove('boss-name');
+                    if (bossBadge) {
+                        bossBadge.classList.add('hidden');
+                        bossBadge.classList.remove('flex');
+                    }
+                }
             }
 
             const renderStatusEffects = (target, containerId) => {
