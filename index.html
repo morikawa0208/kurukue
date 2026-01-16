@@ -154,6 +154,12 @@
         <!-- BATTLE PAGE -->
         <section id="page-battle" class="page active p-4">
             <div class="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
+                <div class="absolute right-2 top-2 z-10">
+                    <button id="warp-btn" class="bg-slate-800 text-white text-xs font-black px-3 py-2 rounded-full shadow flex items-center gap-2 hover:bg-slate-700 active:scale-95 transition">
+                        <i class="fas fa-location-arrow"></i>
+                        ワープ
+                    </button>
+                </div>
                 <div id="enemy-container" class="text-center transition-all duration-300">
                     <div id="enemy-visual" class="text-8xl mb-4 text-slate-700"><i class="fas fa-ghost"></i></div>
                 <div id="enemy-name" class="font-bold text-lg mb-1">スライム</div>
@@ -893,6 +899,28 @@
         </div>
     </div>
 
+    <!-- WARP MODAL -->
+    <div id="warp-modal" class="fixed inset-0 bg-slate-900/80 z-[115] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-black text-lg text-slate-800 flex items-center gap-2"><i class="fas fa-location-arrow"></i> ワープ</h3>
+                <button id="warp-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="text-[10px] text-slate-400 font-bold">最高到達階数: <span id="warp-max-floor">1</span>F</div>
+            <div class="mt-3 flex items-center gap-2">
+                <input id="warp-input" type="number" min="1" inputmode="numeric" class="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400" placeholder="階数">
+                <button id="warp-confirm" class="bg-slate-800 text-white text-xs font-black px-4 py-2 rounded-xl shadow hover:bg-slate-700 active:scale-95 transition">
+                    ワープ
+                </button>
+            </div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-2">討伐済みボス</div>
+                <div id="warp-boss-empty" class="text-[10px] text-slate-400 hidden">討伐したボスがありません。</div>
+                <div id="warp-boss-buttons" class="grid grid-cols-3 gap-2"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (e) {
@@ -907,6 +935,8 @@
         // --- DATA STRUCTURE ---
         const Game = {
             floor: 1,
+            maxFloor: 1,
+            defeatedBossFloors: [],
             state: 'idle',
             player: {
                 level: 1,
@@ -1065,6 +1095,7 @@
                 return;
             }
             applySaveData(payload.data);
+            ensureWarpState();
             initializeStarterPotions();
             if (Game.player?.hp <= 0) {
                 const derived = getDerivedStats();
@@ -2512,9 +2543,152 @@
             syncPotionCapacity(Game.player.potion2);
         };
 
+        const ensureWarpState = () => {
+            if (!Number.isFinite(Game.maxFloor)) {
+                Game.maxFloor = Game.floor || 1;
+            }
+            if (!Array.isArray(Game.defeatedBossFloors)) {
+                Game.defeatedBossFloors = [];
+            }
+            Game.maxFloor = Math.max(1, Game.maxFloor, Game.floor);
+        };
+
+        const getWarpMaxFloor = () => {
+            ensureWarpState();
+            return Game.maxFloor;
+        };
+
+        const normalizeWarpFloor = (value) => {
+            const maxFloor = getWarpMaxFloor();
+            const parsed = Number.parseInt(value, 10);
+            if (Number.isNaN(parsed)) return null;
+            return Math.min(maxFloor, Math.max(1, parsed));
+        };
+
+        const renderWarpBossButtons = () => {
+            const container = document.getElementById('warp-boss-buttons');
+            const empty = document.getElementById('warp-boss-empty');
+            if (!container) return;
+            container.innerHTML = '';
+            const floors = (Game.defeatedBossFloors || []).filter((floor) => BossDefs[floor]).sort((a, b) => a - b);
+            if (floors.length === 0) {
+                if (empty) empty.classList.remove('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            floors.forEach((floor) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'bg-slate-100 text-slate-600 text-[10px] font-black px-2 py-2 rounded-xl flex items-center justify-center gap-1 hover:bg-slate-200 transition';
+                button.innerHTML = `<i class="fas fa-crown"></i> ${floor}F`;
+                button.addEventListener('click', () => performWarp(floor));
+                container.appendChild(button);
+            });
+        };
+
+        const syncWarpModal = () => {
+            const maxFloor = getWarpMaxFloor();
+            const maxFloorEl = document.getElementById('warp-max-floor');
+            const input = document.getElementById('warp-input');
+            if (maxFloorEl) {
+                maxFloorEl.textContent = maxFloor;
+            }
+            if (input) {
+                input.max = maxFloor;
+                const normalized = normalizeWarpFloor(input.value || Game.floor);
+                if (normalized !== null) {
+                    input.value = normalized;
+                }
+            }
+            renderWarpBossButtons();
+        };
+
+        const updateWarpButtonState = () => {
+            const warpBtn = document.getElementById('warp-btn');
+            if (!warpBtn) return;
+            const disabled = Game.state === 'combat';
+            warpBtn.disabled = disabled;
+            warpBtn.classList.toggle('opacity-40', disabled);
+            warpBtn.classList.toggle('cursor-not-allowed', disabled);
+        };
+
+        const openWarpModal = () => {
+            if (Game.state === 'combat') return;
+            const modal = document.getElementById('warp-modal');
+            if (!modal) return;
+            syncWarpModal();
+            modal.style.display = 'flex';
+        };
+
+        const closeWarpModal = () => {
+            const modal = document.getElementById('warp-modal');
+            if (!modal) return;
+            modal.style.display = 'none';
+        };
+
+        const recordBossDefeat = (floor) => {
+            if (!floor) return;
+            ensureWarpState();
+            if (!Game.defeatedBossFloors.includes(floor)) {
+                Game.defeatedBossFloors.push(floor);
+            }
+        };
+
+        const performWarp = (value) => {
+            if (Game.state === 'combat') return;
+            const target = normalizeWarpFloor(value);
+            if (!target) return;
+            Game.floor = target;
+            Game.maxFloor = Math.max(Game.maxFloor, Game.floor);
+            closeWarpModal();
+            spawn();
+            addLog(`B${Game.floor}へワープ...`, "text-sky-500");
+            updateUI();
+            triggerAutosave();
+        };
+
+        const setupWarpControls = () => {
+            const warpBtn = document.getElementById('warp-btn');
+            const warpClose = document.getElementById('warp-close');
+            const warpConfirm = document.getElementById('warp-confirm');
+            const warpInput = document.getElementById('warp-input');
+            const warpModal = document.getElementById('warp-modal');
+            if (warpBtn) {
+                warpBtn.addEventListener('click', openWarpModal);
+            }
+            if (warpClose) {
+                warpClose.addEventListener('click', closeWarpModal);
+            }
+            if (warpConfirm) {
+                warpConfirm.addEventListener('click', () => performWarp(warpInput ? warpInput.value : ''));
+            }
+            if (warpInput) {
+                warpInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        performWarp(warpInput.value);
+                    }
+                });
+                warpInput.addEventListener('blur', () => {
+                    const normalized = normalizeWarpFloor(warpInput.value);
+                    if (normalized !== null) {
+                        warpInput.value = normalized;
+                    }
+                });
+            }
+            if (warpModal) {
+                warpModal.addEventListener('click', (event) => {
+                    if (event.target === warpModal) {
+                        closeWarpModal();
+                    }
+                });
+            }
+        };
+
         // --- CORE LOGIC ---
         window.onload = () => {
             setupSaveControls();
+            setupWarpControls();
             startAutosaveTimer();
             window.addEventListener('beforeunload', () => {
                 triggerAutosave();
@@ -2526,6 +2700,7 @@
                 return;
             }
             initializeStarterPotions();
+            ensureWarpState();
             spawn();
             updateUI();
             switchJob('warrior');
@@ -3656,6 +3831,9 @@
 
         function victory() {
             Game.state = 'idle';
+            if (Game.enemy?.isBoss) {
+                recordBossDefeat(Game.enemy.floor || Game.floor);
+            }
             addLog(`討伐成功！`, "text-yellow-500 font-black");
             let gain = Game.enemy.exp;
             // Exp Boost Calculation
@@ -3982,6 +4160,7 @@
         }
 
         function updateUI() {
+            ensureWarpState();
             const p = Game.player;
             const derived = getDerivedStats();
             const totals = derived.totals;
@@ -4289,6 +4468,11 @@
                 if (icon) {
                     icon.className = `fas ${sortDef.icon}`;
                 }
+            }
+            updateWarpButtonState();
+            const warpModal = document.getElementById('warp-modal');
+            if (warpModal && warpModal.style.display === 'flex') {
+                syncWarpModal();
             }
         }
     </script>
