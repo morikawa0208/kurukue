@@ -317,6 +317,14 @@
                 </div>
                 <p class="text-[10px] text-slate-500 mb-3">30秒ごとに選択したスロットへ自動保存します。</p>
                 <div id="save-status" class="text-[10px] text-slate-400 mb-3">未保存</div>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <button id="switch-save-slot-btn" class="py-2 rounded-xl bg-slate-100 text-slate-600 text-[10px] font-black flex items-center justify-center gap-2">
+                        <i class="fas fa-right-left"></i> スロット切替
+                    </button>
+                    <button id="new-save-btn" class="py-2 rounded-xl bg-rose-50 text-rose-600 text-[10px] font-black flex items-center justify-center gap-2">
+                        <i class="fas fa-trash-can"></i> 新しく始める
+                    </button>
+                </div>
                 <div class="space-y-3">
                     <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                         <div class="flex items-center justify-between gap-2">
@@ -983,6 +991,9 @@
             enemy: null, logs: [], dropLogs: []
         };
 
+        const DefaultGameState = JSON.parse(JSON.stringify(Game));
+        const buildInitialSnapshot = () => JSON.parse(JSON.stringify(DefaultGameState));
+
         const JobKeys = ['warrior', 'mage', 'thief', 'ranger', 'paladin', 'monk'];
 
         const SaveConfig = {
@@ -1092,7 +1103,7 @@
         const loadFromSlot = (slot) => {
             const raw = localStorage.getItem(getSaveKey(slot));
             if (!raw) {
-                setSaveStatus(`スロット${slot}は空です。`, 'text-rose-500');
+                resetGameForSlot(slot, `スロット${slot}は空のため新規開始しました。`, 'text-amber-600');
                 return;
             }
             const payload = JSON.parse(raw);
@@ -1121,6 +1132,36 @@
             renderSaveSlots();
         };
 
+        const resetGameForSlot = (slot, message = `スロット${slot}のデータを削除して新規開始しました。`, tone = 'text-amber-600') => {
+            localStorage.removeItem(getSaveKey(slot));
+            applySaveData(buildInitialSnapshot());
+            ensureWarpState();
+            initializeStarterPotions();
+            Game.enemy = null;
+            spawn();
+            switchJob('warrior');
+            switchSkillType('active');
+            updateUI();
+            setSaveStatus(message, tone);
+            renderSaveSlots();
+        };
+
+        const changeSaveSlot = (slot) => {
+            setAutosaveSlot(slot);
+            const raw = localStorage.getItem(getSaveKey(slot));
+            if (raw) {
+                loadFromSlot(slot);
+                return;
+            }
+            resetGameForSlot(slot, `スロット${slot}は空のため新規開始しました。`, 'text-amber-600');
+        };
+
+        const switchSaveSlot = () => {
+            const current = getAutosaveSlot();
+            const next = (current % 3) + 1;
+            changeSaveSlot(next);
+        };
+
         const setupSaveControls = () => {
             document.querySelectorAll('[data-save-slot]').forEach((button) => {
                 button.addEventListener('click', () => {
@@ -1137,9 +1178,24 @@
             document.querySelectorAll('input[name="autosave-slot"]').forEach((input) => {
                 input.addEventListener('change', () => {
                     const slot = Number.parseInt(input.value, 10);
-                    if (!Number.isNaN(slot)) setAutosaveSlot(slot);
+                    if (!Number.isNaN(slot)) changeSaveSlot(slot);
                 });
             });
+            const switchSlotButton = document.getElementById('switch-save-slot-btn');
+            if (switchSlotButton) {
+                switchSlotButton.addEventListener('click', () => {
+                    switchSaveSlot();
+                });
+            }
+            const newSaveButton = document.getElementById('new-save-btn');
+            if (newSaveButton) {
+                newSaveButton.addEventListener('click', () => {
+                    const slot = getAutosaveSlot();
+                    const confirmed = window.confirm(`スロット${slot}のデータを削除して新しく始めますか？`);
+                    if (!confirmed) return;
+                    resetGameForSlot(slot);
+                });
+            }
             renderSaveSlots();
         };
 
