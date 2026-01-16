@@ -874,6 +874,28 @@
         </div>
     </div>
 
+    <!-- SKILL DETAIL MODAL -->
+    <div id="skill-detail-modal" class="fixed inset-0 bg-slate-900/80 z-[120] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="skill-detail-title" class="font-black text-lg text-slate-800 flex items-center gap-2"></h3>
+                <button id="skill-detail-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div id="skill-detail-meta" class="text-[10px] text-slate-500 font-bold mb-2"></div>
+            <p id="skill-detail-desc" class="text-xs text-slate-600"></p>
+            <div id="skill-detail-stats" class="mt-4 space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-1">追加効果</div>
+                <div id="skill-detail-effects" class="space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            </div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-1">マイルストーン</div>
+                <div id="skill-detail-milestones" class="space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            </div>
+            <button id="skill-detail-close-bottom" class="mt-5 w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg">閉じる</button>
+        </div>
+    </div>
+
     <script>
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (e) {
@@ -1098,116 +1120,167 @@
             warrior: {
                 name: "戦士",
                 active: [
-                    { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 5, desc: "力で叩き込む一撃。Lvで威力上昇" },
-                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防御が崩れた！" }], desc: "盾で叩き、命中率が高い。脆甲を付与" },
-                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 5, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "HPを消費して高火力。闘志と脆弱を同時に得る" },
-                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 5, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "気合でHPを回復し、与ダメを強化" },
-                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 5, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "堅い一撃で守勢とバリアを展開" },
-                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 4.5, powGrowth: 0.7, maxLevel: 5, desc: "渾身の斬撃。Lvで超火力" }
+                    { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 50, desc: "力で叩き込む一撃。Lvで威力上昇" },
+                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防御が崩れた！" }], desc: "盾で叩き、命中率が高い。脆甲を付与" },
+                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "HPを消費して高火力。闘志と脆弱を同時に得る" },
+                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "気合でHPを回復し、与ダメを強化" },
+                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 50, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "堅い一撃で守勢とバリアを展開" },
+                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 4.5, powGrowth: 0.7, maxLevel: 50, desc: "渾身の斬撃。Lvで超火力" }
                 ],
                 passive: [
-                    { id: 0, name: "筋力増強", desc: "STR+3/レベル", maxLevel: 5, apply: (d) => Game.player.str += 3 * d },
-                    { id: 1, name: "頑強", desc: "VIT+3/レベル", maxLevel: 5, apply: (d) => Game.player.vit += 3 * d },
-                    { id: 2, name: "血の渇望", desc: "吸血率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.leechRate += 2 * d },
-                    { id: 3, name: "反撃の構え", desc: "被弾時の反撃率が上昇", maxLevel: 5, logic: 'counter' },
-                    { id: 4, name: "鉄壁装備", desc: "防具で受けるダメージがさらに減少", maxLevel: 5, logic: 'armor_boost' },
-                    { id: 5, name: "不屈の闘志", desc: "HP30%以下で攻撃力上昇", maxLevel: 5, logic: 'low_hp_boost' }
+                    { id: 0, name: "筋力増強", desc: "STR+3/レベル", maxLevel: 50, apply: (d) => Game.player.str += 3 * d },
+                    { id: 1, name: "頑強", desc: "VIT+3/レベル", maxLevel: 50, apply: (d) => Game.player.vit += 3 * d },
+                    { id: 2, name: "血の渇望", desc: "吸血率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.leechRate += 2 * d },
+                    { id: 3, name: "反撃の構え", desc: "被弾時の反撃率が上昇", maxLevel: 50, logic: 'counter' },
+                    { id: 4, name: "鉄壁装備", desc: "防具で受けるダメージがさらに減少", maxLevel: 50, logic: 'armor_boost' },
+                    { id: 5, name: "不屈の闘志", desc: "HP30%以下で攻撃力上昇", maxLevel: 50, logic: 'low_hp_boost' }
                 ]
             },
             mage: {
                 name: "魔術師",
                 active: [
-                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "炎が勢いを削いだ！" }], desc: "燃え上がる火球で焼き払い、弱体を付与" },
-                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "氷槍で脆くなった！" }], desc: "鋭い氷槍で貫き、脆弱を与える" },
-                    { id: 2, name: "マナドレイン", mp: 0, pow: 0.7, powGrowth: 0.1, isMagic: true, mpHeal: 0.4, mpHealGrowth: 0.05, maxLevel: 5, desc: "与ダメに応じてMPを吸収" },
-                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "雷光で目がくらんだ！" }], desc: "雷撃を叩きつけ、暗闇を与える" },
-                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 2, turns: 2, log: "衝撃で防御が崩れた！" }], desc: "隕石で大ダメージ、脆甲を与える" },
-                    { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 5, desc: "魔力を解き放つ禁呪" }
+                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "炎が勢いを削いだ！" }], desc: "燃え上がる火球で焼き払い、弱体を付与" },
+                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "氷槍で脆くなった！" }], desc: "鋭い氷槍で貫き、脆弱を与える" },
+                    { id: 2, name: "マナドレイン", mp: 0, pow: 0.7, powGrowth: 0.1, isMagic: true, mpHeal: 0.4, mpHealGrowth: 0.05, maxLevel: 50, desc: "与ダメに応じてMPを吸収" },
+                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "雷光で目がくらんだ！" }], desc: "雷撃を叩きつけ、暗闇を与える" },
+                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 2, turns: 2, log: "衝撃で防御が崩れた！" }], desc: "隕石で大ダメージ、脆甲を与える" },
+                    { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 50, desc: "魔力を解き放つ禁呪" }
                 ],
                 passive: [
-                    { id: 0, name: "知力増強", desc: "INT+4/レベル", maxLevel: 5, apply: (d) => Game.player.int += 4 * d },
-                    { id: 1, name: "魔力循環", desc: "最大MP+15/レベル", maxLevel: 5, apply: (d) => { Game.player.maxMpFlat += 15 * d; } },
-                    { id: 2, name: "瞑想", desc: "MP自動回復+2/レベル", maxLevel: 5, apply: (d) => Game.player.mpRegen += 2 * d },
-                    { id: 3, name: "魔導集中", desc: "会心率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 2 * d },
-                    { id: 4, name: "魔力貫通", desc: "魔法貫通+4%/レベル", maxLevel: 5, apply: (d) => Game.player.mPen += 4 * d },
-                    { id: 5, name: "秘奥強化", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d }
+                    { id: 0, name: "知力増強", desc: "INT+4/レベル", maxLevel: 50, apply: (d) => Game.player.int += 4 * d },
+                    { id: 1, name: "魔力循環", desc: "最大MP+15/レベル", maxLevel: 50, apply: (d) => { Game.player.maxMpFlat += 15 * d; } },
+                    { id: 2, name: "瞑想", desc: "MP自動回復+2/レベル", maxLevel: 50, apply: (d) => Game.player.mpRegen += 2 * d },
+                    { id: 3, name: "魔導集中", desc: "会心率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.critRate += 2 * d },
+                    { id: 4, name: "魔力貫通", desc: "魔法貫通+4%/レベル", maxLevel: 50, apply: (d) => Game.player.mPen += 4 * d },
+                    { id: 5, name: "秘奥強化", desc: "与ダメ増加+2%/レベル", maxLevel: 50, apply: (d) => Game.player.damageBoost += 2 * d }
                 ]
             },
             thief: {
                 name: "盗賊",
                 active: [
-                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, desc: "素早い突きで確実に削る" },
-                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 5, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 2, log: "裂傷で出血した！" }], desc: "二連撃で出血を狙う" },
-                    { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 5, effects: [{ target: "enemy", id: "poison", stacks: 1, turns: 3, log: "毒が回った！" }], desc: "急所狙いで会心率上昇、毒を付与" },
-                    { id: 3, name: "強奪", mp: 5, pow: 1.0, powGrowth: 0.1, expBonus: 15, expBonusGrowth: 5, maxLevel: 5, desc: "攻撃しながら経験値を奪う" },
-                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "影に紛れて暗闇を与えた！" }], desc: "影から一撃を加え、暗闇を付与" },
-                    { id: 5, name: "千手観音", mp: 30, pow: 1.1, powGrowth: 0.1, hits: 5, maxLevel: 5, desc: "圧倒的な五連撃" }
+                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 50, desc: "素早い突きで確実に削る" },
+                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 50, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 2, log: "裂傷で出血した！" }], desc: "二連撃で出血を狙う" },
+                    { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 50, effects: [{ target: "enemy", id: "poison", stacks: 1, turns: 3, log: "毒が回った！" }], desc: "急所狙いで会心率上昇、毒を付与" },
+                    { id: 3, name: "強奪", mp: 5, pow: 1.0, powGrowth: 0.1, expBonus: 15, expBonusGrowth: 5, maxLevel: 50, desc: "攻撃しながら経験値を奪う" },
+                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "影に紛れて暗闇を与えた！" }], desc: "影から一撃を加え、暗闇を付与" },
+                    { id: 5, name: "千手観音", mp: 30, pow: 1.1, powGrowth: 0.1, hits: 5, maxLevel: 50, desc: "圧倒的な五連撃" }
                 ],
                 passive: [
-                    { id: 0, name: "俊敏", desc: "DEX+3/レベル", maxLevel: 5, apply: (d) => Game.player.dex += 3 * d },
-                    { id: 1, name: "神速回避", desc: "回避率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 2 * d },
-                    { id: 2, name: "目利き", desc: "ドロップ率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.luck += 3 * d },
-                    { id: 3, name: "幸運の女神", desc: "追加経験値+5%/レベル", maxLevel: 5, apply: (d) => Game.player.expBoost += 5 * d },
-                    { id: 4, name: "急所攻撃", desc: "会心率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 3 * d },
-                    { id: 5, name: "暗殺者の心得", desc: "満タンの敵への初撃が強化", maxLevel: 5, logic: 'first_hit_boost' }
+                    { id: 0, name: "俊敏", desc: "DEX+3/レベル", maxLevel: 50, apply: (d) => Game.player.dex += 3 * d },
+                    { id: 1, name: "神速回避", desc: "回避率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.evasionRate += 2 * d },
+                    { id: 2, name: "目利き", desc: "ドロップ率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.luck += 3 * d },
+                    { id: 3, name: "幸運の女神", desc: "追加経験値+5%/レベル", maxLevel: 50, apply: (d) => Game.player.expBoost += 5 * d },
+                    { id: 4, name: "急所攻撃", desc: "会心率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.critRate += 3 * d },
+                    { id: 5, name: "暗殺者の心得", desc: "満タンの敵への初撃が強化", maxLevel: 50, logic: 'first_hit_boost' }
                 ]
             },
             ranger: {
                 name: "レンジャー",
                 active: [
-                    { id: 0, name: "プレシジョンショット", mp: 5, pow: 1.5, powGrowth: 0.2, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "急所を射抜いた！" }], desc: "狙いすました一射で脆弱を与える" },
-                    { id: 1, name: "トリプルショット", mp: 10, pow: 0.8, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "三連射で圧倒する" },
-                    { id: 2, name: "ブラッドアロー", mp: 8, pow: 1.3, powGrowth: 0.2, leech: 8, leechGrowth: 2, maxLevel: 5, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 3, log: "血が滴る！" }], desc: "与ダメの一部を吸収し出血を与える" },
-                    { id: 3, name: "爆裂矢", mp: 16, pow: 2.6, powGrowth: 0.4, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防具が砕けた！" }], desc: "爆発で敵を貫き、脆甲を与える" },
-                    { id: 4, name: "ハンターズラッシュ", mp: 18, pow: 1.0, powGrowth: 0.1, hits: 4, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "連射で勢いを奪った！" }], desc: "連射で削り、弱体を付与" },
-                    { id: 5, name: "テンペストボレー", mp: 32, pow: 1.4, powGrowth: 0.15, hits: 6, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "矢雨で視界が乱れた！" }], desc: "嵐のような矢の雨で暗闇を与える" }
+                    { id: 0, name: "プレシジョンショット", mp: 5, pow: 1.5, powGrowth: 0.2, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "急所を射抜いた！" }], desc: "狙いすました一射で脆弱を与える" },
+                    { id: 1, name: "トリプルショット", mp: 10, pow: 0.8, powGrowth: 0.1, hits: 3, maxLevel: 50, desc: "三連射で圧倒する" },
+                    { id: 2, name: "ブラッドアロー", mp: 8, pow: 1.3, powGrowth: 0.2, leech: 8, leechGrowth: 2, maxLevel: 50, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 3, log: "血が滴る！" }], desc: "与ダメの一部を吸収し出血を与える" },
+                    { id: 3, name: "爆裂矢", mp: 16, pow: 2.6, powGrowth: 0.4, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防具が砕けた！" }], desc: "爆発で敵を貫き、脆甲を与える" },
+                    { id: 4, name: "ハンターズラッシュ", mp: 18, pow: 1.0, powGrowth: 0.1, hits: 4, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "連射で勢いを奪った！" }], desc: "連射で削り、弱体を付与" },
+                    { id: 5, name: "テンペストボレー", mp: 32, pow: 1.4, powGrowth: 0.15, hits: 6, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "矢雨で視界が乱れた！" }], desc: "嵐のような矢の雨で暗闇を与える" }
                 ],
                 passive: [
-                    { id: 0, name: "射撃訓練", desc: "命中率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.accuracy += 3 * d },
-                    { id: 1, name: "クリティカルアイ", desc: "会心率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.critRate += 2 * d },
-                    { id: 2, name: "集中", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d },
-                    { id: 3, name: "野生の勘", desc: "回避率+1%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 1 * d },
-                    { id: 4, name: "レアハント", desc: "レアドロ率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.rareFind += 3 * d },
-                    { id: 5, name: "獲物の追跡", desc: "ゴールド増加率+5%/レベル", maxLevel: 5, apply: (d) => Game.player.goldBoost += 5 * d }
+                    { id: 0, name: "射撃訓練", desc: "命中率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.accuracy += 3 * d },
+                    { id: 1, name: "クリティカルアイ", desc: "会心率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.critRate += 2 * d },
+                    { id: 2, name: "集中", desc: "与ダメ増加+2%/レベル", maxLevel: 50, apply: (d) => Game.player.damageBoost += 2 * d },
+                    { id: 3, name: "野生の勘", desc: "回避率+1%/レベル", maxLevel: 50, apply: (d) => Game.player.evasionRate += 1 * d },
+                    { id: 4, name: "レアハント", desc: "レアドロ率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.rareFind += 3 * d },
+                    { id: 5, name: "獲物の追跡", desc: "ゴールド増加率+5%/レベル", maxLevel: 50, apply: (d) => Game.player.goldBoost += 5 * d }
                 ]
             },
             paladin: {
                 name: "聖騎士",
                 active: [
-                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "浄化の光で弱体化した！" }], desc: "聖なる衝撃で浄化し、弱体を与える" },
-                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "attackDown", stacks: 1, turns: 2, log: "勢いが削がれた！" }], desc: "盾で突撃し敵の攻撃を鈍らせる" },
-                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 5, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "聖なる力でHPを回復し、自身を強化" },
-                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "眩光で暗闇になった！" }], desc: "眩い光で敵を撃ち、暗闇を付与" },
-                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "裁きで脆弱になった！" }], desc: "聖なる裁きを連撃で与え、脆弱を付与" },
-                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "attackDown", stacks: 2, turns: 2, log: "聖域の圧で攻撃が下がった！" }], desc: "聖域の光が降り注ぎ、攻撃力を下げる" }
+                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "浄化の光で弱体化した！" }], desc: "聖なる衝撃で浄化し、弱体を与える" },
+                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "attackDown", stacks: 1, turns: 2, log: "勢いが削がれた！" }], desc: "盾で突撃し敵の攻撃を鈍らせる" },
+                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "聖なる力でHPを回復し、自身を強化" },
+                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "眩光で暗闇になった！" }], desc: "眩い光で敵を撃ち、暗闇を付与" },
+                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "裁きで脆弱になった！" }], desc: "聖なる裁きを連撃で与え、脆弱を付与" },
+                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "attackDown", stacks: 2, turns: 2, log: "聖域の圧で攻撃が下がった！" }], desc: "聖域の光が降り注ぎ、攻撃力を下げる" }
                 ],
                 passive: [
-                    { id: 0, name: "信仰", desc: "最大HP+15/レベル", maxLevel: 5, apply: (d) => Game.player.maxHpFlat += 15 * d },
-                    { id: 1, name: "聖なる守り", desc: "被ダメ軽減+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageReduction += 2 * d },
-                    { id: 2, name: "聖癒力", desc: "HP自動回復+2/レベル", maxLevel: 5, apply: (d) => Game.player.hpRegen += 2 * d },
-                    { id: 3, name: "敬虔", desc: "MP自動回復+1/レベル", maxLevel: 5, apply: (d) => Game.player.mpRegen += 1 * d },
-                    { id: 4, name: "神罰", desc: "与ダメ増加+2%/レベル", maxLevel: 5, apply: (d) => Game.player.damageBoost += 2 * d },
-                    { id: 5, name: "守護誓約", desc: "防御効率+4%/レベル", maxLevel: 5, apply: (d) => Game.player.defenseEfficiency += 4 * d }
+                    { id: 0, name: "信仰", desc: "最大HP+15/レベル", maxLevel: 50, apply: (d) => Game.player.maxHpFlat += 15 * d },
+                    { id: 1, name: "聖なる守り", desc: "被ダメ軽減+2%/レベル", maxLevel: 50, apply: (d) => Game.player.damageReduction += 2 * d },
+                    { id: 2, name: "聖癒力", desc: "HP自動回復+2/レベル", maxLevel: 50, apply: (d) => Game.player.hpRegen += 2 * d },
+                    { id: 3, name: "敬虔", desc: "MP自動回復+1/レベル", maxLevel: 50, apply: (d) => Game.player.mpRegen += 1 * d },
+                    { id: 4, name: "神罰", desc: "与ダメ増加+2%/レベル", maxLevel: 50, apply: (d) => Game.player.damageBoost += 2 * d },
+                    { id: 5, name: "守護誓約", desc: "防御効率+4%/レベル", maxLevel: 50, apply: (d) => Game.player.defenseEfficiency += 4 * d }
                 ]
             },
             monk: {
                 name: "拳闘士",
                 active: [
-                    { id: 0, name: "連打拳", mp: 4, pow: 0.7, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "素早い連打で削る" },
-                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "気が乱れた！" }], desc: "気を飛ばして攻撃し、弱体を与える" },
-                    { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "守りが砕けた！" }], desc: "岩をも砕く一撃で脆甲を付与" },
-                    { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "回転で目がくらんだ！" }], desc: "回転蹴りの連撃で暗闇を与える" },
-                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 5, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "内なる気でHPを回復し、迅速化" },
-                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 5, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }], desc: "集中して渾身の一撃、闘志を得る" }
+                    { id: 0, name: "連打拳", mp: 4, pow: 0.7, powGrowth: 0.1, hits: 3, maxLevel: 50, desc: "素早い連打で削る" },
+                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "気が乱れた！" }], desc: "気を飛ばして攻撃し、弱体を与える" },
+                    { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "守りが砕けた！" }], desc: "岩をも砕く一撃で脆甲を付与" },
+                    { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "回転で目がくらんだ！" }], desc: "回転蹴りの連撃で暗闇を与える" },
+                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "内なる気でHPを回復し、迅速化" },
+                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }], desc: "集中して渾身の一撃、闘志を得る" }
                 ],
                 passive: [
-                    { id: 0, name: "体術鍛錬", desc: "STR+2/レベル & DEX+2/レベル", maxLevel: 5, apply: (d) => { Game.player.str += 2 * d; Game.player.dex += 2 * d; } },
-                    { id: 1, name: "気の流れ", desc: "HP効率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.hpEfficiency += 3 * d },
-                    { id: 2, name: "内功", desc: "MP効率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.mpEfficiency += 3 * d },
-                    { id: 3, name: "闘志", desc: "会心ダメージ+8%/レベル", maxLevel: 5, apply: (d) => Game.player.critDamage += 8 * d },
-                    { id: 4, name: "霞身", desc: "回避率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.evasionRate += 2 * d },
-                    { id: 5, name: "闘気吸収", desc: "吸血率+2%/レベル", maxLevel: 5, apply: (d) => Game.player.leechRate += 2 * d }
+                    { id: 0, name: "体術鍛錬", desc: "STR+2/レベル & DEX+2/レベル", maxLevel: 50, apply: (d) => { Game.player.str += 2 * d; Game.player.dex += 2 * d; } },
+                    { id: 1, name: "気の流れ", desc: "HP効率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.hpEfficiency += 3 * d },
+                    { id: 2, name: "内功", desc: "MP効率+3%/レベル", maxLevel: 50, apply: (d) => Game.player.mpEfficiency += 3 * d },
+                    { id: 3, name: "闘志", desc: "会心ダメージ+8%/レベル", maxLevel: 50, apply: (d) => Game.player.critDamage += 8 * d },
+                    { id: 4, name: "霞身", desc: "回避率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.evasionRate += 2 * d },
+                    { id: 5, name: "闘気吸収", desc: "吸血率+2%/レベル", maxLevel: 50, apply: (d) => Game.player.leechRate += 2 * d }
                 ]
+            }
+        };
+
+        const PassiveMilestoneBonuses = {
+            warrior: {
+                0: { 10: { stats: { attackFlat: 15 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                1: { 10: { stats: { maxHpFlat: 120 } }, 30: { stats: { defenseEfficiency: 10 } }, 50: { stats: { damageReduction: 10 } } },
+                2: { 10: { stats: { leechRate: 5 } }, 30: { stats: { hpRegen: 5 } }, 50: { stats: { damageBoost: 5 } } },
+                3: { 10: { stats: { defenseFlat: 20 } }, 30: { stats: { damageReduction: 5 } }, 50: { stats: { attackFlat: 20 } } },
+                4: { 10: { stats: { defenseFlat: 30 } }, 30: { stats: { defenseEfficiency: 10 } }, 50: { stats: { damageReduction: 8 } } },
+                5: { 10: { stats: { attackEfficiency: 5 } }, 30: { stats: { damageBoost: 10 } }, 50: { stats: { critRate: 5 } } }
+            },
+            mage: {
+                0: { 10: { stats: { mPen: 8 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                1: { 10: { stats: { mpRegen: 5 } }, 30: { stats: { maxMpFlat: 120 } }, 50: { stats: { mpEfficiency: 10 } } },
+                2: { 10: { stats: { mpEfficiency: 5 } }, 30: { stats: { mpRegen: 5 } }, 50: { stats: { maxMpFlat: 80 } } },
+                3: { 10: { stats: { critDamage: 20 } }, 30: { stats: { accuracy: 10 } }, 50: { stats: { damageBoost: 10 } } },
+                4: { 10: { stats: { damageBoost: 5 } }, 30: { stats: { mPen: 8 } }, 50: { stats: { critRate: 5 } } },
+                5: { 10: { stats: { critRate: 5 } }, 30: { stats: { critDamage: 30 } }, 50: { stats: { damageBoost: 10 } } }
+            },
+            thief: {
+                0: { 10: { stats: { accuracy: 10 } }, 30: { stats: { evasionRate: 5 } }, 50: { stats: { critRate: 5 } } },
+                1: { 10: { stats: { evasionRate: 5 } }, 30: { stats: { damageReduction: 5 } }, 50: { stats: { accuracy: 10 } } },
+                2: { 10: { stats: { rareFind: 10 } }, 30: { stats: { affixFind: 10 } }, 50: { stats: { eliteEncounter: 10 } } },
+                3: { 10: { stats: { goldBoost: 10 } }, 30: { stats: { expBoost: 10 } }, 50: { stats: { damageBoost: 10 } } },
+                4: { 10: { stats: { critDamage: 20 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                5: { 10: { stats: { accuracy: 10 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } }
+            },
+            ranger: {
+                0: { 10: { stats: { accuracy: 10 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                1: { 10: { stats: { critDamage: 20 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                2: { 10: { stats: { accuracy: 10 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                3: { 10: { stats: { evasionRate: 5 } }, 30: { stats: { damageReduction: 5 } }, 50: { stats: { accuracy: 10 } } },
+                4: { 10: { stats: { rareFind: 10 } }, 30: { stats: { affixFind: 10 } }, 50: { stats: { eliteEncounter: 10 } } },
+                5: { 10: { stats: { goldBoost: 10 } }, 30: { stats: { expBoost: 5 } }, 50: { stats: { damageBoost: 10 } } }
+            },
+            paladin: {
+                0: { 10: { stats: { hpRegen: 5 } }, 30: { stats: { maxHpFlat: 120 } }, 50: { stats: { damageReduction: 10 } } },
+                1: { 10: { stats: { defenseEfficiency: 10 } }, 30: { stats: { damageReduction: 5 } }, 50: { stats: { maxHpFlat: 120 } } },
+                2: { 10: { stats: { hpEfficiency: 5 } }, 30: { stats: { hpRegen: 5 } }, 50: { stats: { damageReduction: 5 } } },
+                3: { 10: { stats: { mpEfficiency: 5 } }, 30: { stats: { mpRegen: 3 } }, 50: { stats: { maxMpFlat: 80 } } },
+                4: { 10: { stats: { critRate: 5 } }, 30: { stats: { critDamage: 20 } }, 50: { stats: { damageBoost: 10 } } },
+                5: { 10: { stats: { damageReduction: 5 } }, 30: { stats: { defenseEfficiency: 10 } }, 50: { stats: { maxHpFlat: 150 } } }
+            },
+            monk: {
+                0: { 10: { stats: { accuracy: 10 } }, 30: { stats: { critRate: 5 } }, 50: { stats: { damageBoost: 10 } } },
+                1: { 10: { stats: { maxHpFlat: 80 } }, 30: { stats: { hpEfficiency: 5 } }, 50: { stats: { damageReduction: 5 } } },
+                2: { 10: { stats: { maxMpFlat: 60 } }, 30: { stats: { mpEfficiency: 5 } }, 50: { stats: { mpRegen: 3 } } },
+                3: { 10: { stats: { critRate: 5 } }, 30: { stats: { critDamage: 20 } }, 50: { stats: { damageBoost: 10 } } },
+                4: { 10: { stats: { evasionRate: 5 } }, 30: { stats: { accuracy: 10 } }, 50: { stats: { damageReduction: 5 } } },
+                5: { 10: { stats: { leechRate: 5 } }, 30: { stats: { hpRegen: 5 } }, 50: { stats: { damageBoost: 5 } } }
             }
         };
 
@@ -2239,39 +2312,66 @@
             ]);
         };
 
+        const addMilestoneStats = (total, stats) => {
+            if (!stats) return;
+            Object.entries(stats).forEach(([key, value]) => {
+                total[key] = (total[key] || 0) + value;
+            });
+        };
+
+        const getPassiveMilestoneStats = () => {
+            const total = {};
+            JobKeys.forEach((job) => {
+                const bonuses = PassiveMilestoneBonuses[job] || {};
+                const levels = Game.player.skills[job]?.passive || [];
+                Object.keys(bonuses).forEach((idx) => {
+                    const level = levels[idx] || 0;
+                    if (level <= 0) return;
+                    const milestone = bonuses[idx];
+                    SkillMilestoneLevels.forEach((threshold) => {
+                        if (level >= threshold && milestone[threshold]) {
+                            addMilestoneStats(total, milestone[threshold].stats);
+                        }
+                    });
+                });
+            });
+            return total;
+        };
+
         const getTotalStats = () => {
             const equip = getEquipmentStats();
+            const milestone = getPassiveMilestoneStats();
             return {
-                str: Game.player.str + (equip.str || 0),
-                vit: Game.player.vit + (equip.vit || 0),
-                int: Game.player.int + (equip.int || 0),
-                dex: Game.player.dex + (equip.dex || 0),
-                maxHp: Game.player.maxHp + (equip.maxHp || 0),
-                maxMp: Game.player.maxMp + (equip.maxMp || 0),
-                maxHpFlat: Game.player.maxHpFlat + (equip.maxHpFlat || 0),
-                maxMpFlat: Game.player.maxMpFlat + (equip.maxMpFlat || 0),
-                hpEfficiency: Game.player.hpEfficiency + (equip.hpEfficiency || 0),
-                mpEfficiency: Game.player.mpEfficiency + (equip.mpEfficiency || 0),
-                attackFlat: Game.player.attackFlat + (equip.attackFlat || 0),
-                attackEfficiency: Game.player.attackEfficiency + (equip.attackEfficiency || 0),
-                defenseFlat: Game.player.defenseFlat + (equip.defenseFlat || 0),
-                defenseEfficiency: Game.player.defenseEfficiency + (equip.defenseEfficiency || 0),
-                hpRegen: Game.player.hpRegen + (equip.hpRegen || 0),
-                mpRegen: Game.player.mpRegen + (equip.mpRegen || 0),
-                goldBoost: Game.player.goldBoost + (equip.goldBoost || 0),
-                critRate: Game.player.critRate + (equip.critRate || 0),
-                evasionRate: Game.player.evasionRate + (equip.evasionRate || 0),
-                leechRate: Game.player.leechRate + (equip.leechRate || 0),
-                expBoost: Game.player.expBoost + (equip.expBoost || 0),
-                mPen: Game.player.mPen + (equip.mPen || 0),
-                luck: Game.player.luck + (equip.luck || 0),
-                accuracy: Game.player.accuracy + (equip.accuracy || 0),
-                critDamage: Game.player.critDamage + (equip.critDamage || 0),
-                damageBoost: Game.player.damageBoost + (equip.damageBoost || 0),
-                damageReduction: Game.player.damageReduction + (equip.damageReduction || 0),
-                rareFind: Game.player.rareFind + (equip.rareFind || 0),
-                affixFind: Game.player.affixFind + (equip.affixFind || 0),
-                eliteEncounter: Game.player.eliteEncounter + (equip.eliteEncounter || 0)
+                str: Game.player.str + (equip.str || 0) + (milestone.str || 0),
+                vit: Game.player.vit + (equip.vit || 0) + (milestone.vit || 0),
+                int: Game.player.int + (equip.int || 0) + (milestone.int || 0),
+                dex: Game.player.dex + (equip.dex || 0) + (milestone.dex || 0),
+                maxHp: Game.player.maxHp + (equip.maxHp || 0) + (milestone.maxHp || 0),
+                maxMp: Game.player.maxMp + (equip.maxMp || 0) + (milestone.maxMp || 0),
+                maxHpFlat: Game.player.maxHpFlat + (equip.maxHpFlat || 0) + (milestone.maxHpFlat || 0),
+                maxMpFlat: Game.player.maxMpFlat + (equip.maxMpFlat || 0) + (milestone.maxMpFlat || 0),
+                hpEfficiency: Game.player.hpEfficiency + (equip.hpEfficiency || 0) + (milestone.hpEfficiency || 0),
+                mpEfficiency: Game.player.mpEfficiency + (equip.mpEfficiency || 0) + (milestone.mpEfficiency || 0),
+                attackFlat: Game.player.attackFlat + (equip.attackFlat || 0) + (milestone.attackFlat || 0),
+                attackEfficiency: Game.player.attackEfficiency + (equip.attackEfficiency || 0) + (milestone.attackEfficiency || 0),
+                defenseFlat: Game.player.defenseFlat + (equip.defenseFlat || 0) + (milestone.defenseFlat || 0),
+                defenseEfficiency: Game.player.defenseEfficiency + (equip.defenseEfficiency || 0) + (milestone.defenseEfficiency || 0),
+                hpRegen: Game.player.hpRegen + (equip.hpRegen || 0) + (milestone.hpRegen || 0),
+                mpRegen: Game.player.mpRegen + (equip.mpRegen || 0) + (milestone.mpRegen || 0),
+                goldBoost: Game.player.goldBoost + (equip.goldBoost || 0) + (milestone.goldBoost || 0),
+                critRate: Game.player.critRate + (equip.critRate || 0) + (milestone.critRate || 0),
+                evasionRate: Game.player.evasionRate + (equip.evasionRate || 0) + (milestone.evasionRate || 0),
+                leechRate: Game.player.leechRate + (equip.leechRate || 0) + (milestone.leechRate || 0),
+                expBoost: Game.player.expBoost + (equip.expBoost || 0) + (milestone.expBoost || 0),
+                mPen: Game.player.mPen + (equip.mPen || 0) + (milestone.mPen || 0),
+                luck: Game.player.luck + (equip.luck || 0) + (milestone.luck || 0),
+                accuracy: Game.player.accuracy + (equip.accuracy || 0) + (milestone.accuracy || 0),
+                critDamage: Game.player.critDamage + (equip.critDamage || 0) + (milestone.critDamage || 0),
+                damageBoost: Game.player.damageBoost + (equip.damageBoost || 0) + (milestone.damageBoost || 0),
+                damageReduction: Game.player.damageReduction + (equip.damageReduction || 0) + (milestone.damageReduction || 0),
+                rareFind: Game.player.rareFind + (equip.rareFind || 0) + (milestone.rareFind || 0),
+                affixFind: Game.player.affixFind + (equip.affixFind || 0) + (milestone.affixFind || 0),
+                eliteEncounter: Game.player.eliteEncounter + (equip.eliteEncounter || 0) + (milestone.eliteEncounter || 0)
             };
         };
 
@@ -2450,11 +2550,76 @@
             return Game.player.skills[job]?.passive?.[idx] || 0;
         }
 
+        const SkillMaxLevel = 50;
+        const SkillMilestoneLevels = [10, 30, 50];
+
+        const cloneSkillEffects = (effects) => (
+            Array.isArray(effects) ? effects.map(effect => ({ ...effect })) : []
+        );
+
+        const ensureEffectTurns = (effect) => {
+            if (effect.turns !== undefined && effect.turns !== null) return effect.turns;
+            return StatusDefs[effect.id]?.defaultTurns ?? 1;
+        };
+
+        const addEffectIfMissing = (effects, entry) => {
+            const exists = effects.some(effect => effect.id === entry.id && effect.target === entry.target);
+            if (!exists) effects.push(entry);
+        };
+
+        const applyActiveSkillMilestones = (base, skill) => {
+            let effects = cloneSkillEffects(base.effects);
+            const level = skill.level;
+            if (effects.length > 0 && level >= SkillMilestoneLevels[0]) {
+                effects.forEach((effect) => {
+                    const stacks = effect.stacks ?? 1;
+                    if (effect.target === 'self' && NegativeStatusEffectIds.has(effect.id)) {
+                        effect.stacks = Math.max(1, stacks);
+                    } else {
+                        effect.stacks = stacks + 1;
+                    }
+                });
+            }
+            if (effects.length > 0 && level >= SkillMilestoneLevels[1]) {
+                effects.forEach((effect) => {
+                    const baseTurns = ensureEffectTurns(effect);
+                    if (effect.target === 'self' && NegativeStatusEffectIds.has(effect.id)) {
+                        effect.turns = Math.max(1, baseTurns - 1);
+                    } else {
+                        effect.turns = baseTurns + 1;
+                    }
+                });
+            }
+            if (level >= SkillMilestoneLevels[2]) {
+                if (skill.type === 'heal') {
+                    addEffectIfMissing(effects, { target: "self", id: "potionRegenHp", stacks: 1, turns: 2 });
+                    addEffectIfMissing(effects, { target: "self", id: "barrier", stacks: 1, turns: 2 });
+                } else if (effects.some(effect => effect.target !== 'self')) {
+                    if (skill.isMagic) {
+                        addEffectIfMissing(effects, { target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "魔力で勢いを削いだ！" });
+                    } else {
+                        addEffectIfMissing(effects, { target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "深い傷が残った！" });
+                    }
+                } else if (effects.some(effect => effect.target === 'self')) {
+                    addEffectIfMissing(effects, { target: "self", id: "attackUp", stacks: 1, turns: 2 });
+                }
+            }
+            if (skill.type !== 'heal' && effects.length === 0) {
+                if (level >= SkillMilestoneLevels[0]) skill.accuracyBonus = (skill.accuracyBonus || 0) + 5;
+                if (level >= SkillMilestoneLevels[1]) skill.critBonus = (skill.critBonus || 0) + 5;
+                if (level >= SkillMilestoneLevels[2]) {
+                    if (skill.pow !== undefined) skill.pow = Math.round(skill.pow * 1.2 * 100) / 100;
+                    if (skill.hits !== undefined) skill.hits = skill.hits + 1;
+                }
+            }
+            skill.effects = effects.length > 0 ? effects : undefined;
+        };
+
         function buildActiveSkill(job, idx, level) {
             const base = JobData[job].active[idx];
             const lv = Math.max(1, level);
             const scale = lv - 1;
-            const skill = { ...base, level: lv, maxLevel: base.maxLevel || 5 };
+            const skill = { ...base, level: lv, maxLevel: base.maxLevel || SkillMaxLevel };
             if (base.mp !== undefined) skill.mp = Math.max(0, Math.round(base.mp + (base.mpGrowth || 0) * scale));
             if (base.pow !== undefined) skill.pow = Math.max(0, base.pow + (base.powGrowth || 0) * scale);
             if (base.val !== undefined) skill.val = Math.max(0, Math.round(base.val + (base.valGrowth || 0) * scale));
@@ -2464,6 +2629,7 @@
             if (base.accuracyBonus !== undefined) skill.accuracyBonus = Math.round(base.accuracyBonus + (base.accuracyGrowth || 0) * scale);
             if (base.critBonus !== undefined) skill.critBonus = Math.round(base.critBonus + (base.critGrowth || 0) * scale);
             if (base.leech !== undefined) skill.leech = Math.max(0, base.leech + (base.leechGrowth || 0) * scale);
+            applyActiveSkillMilestones(base, skill);
             return skill;
         }
 
@@ -2504,6 +2670,11 @@
         function assignSkillToSlot(job, idx) {
             const level = getSkillLevel(job, 'active', idx);
             if (level <= 0) return;
+            Game.player.skillSlots = Game.player.skillSlots.map((slot, slotIndex) => {
+                if (slotIndex === Game.player.skillSlotTarget) return slot;
+                if (slot && slot.job === job && slot.idx === idx) return null;
+                return slot;
+            });
             Game.player.skillSlots[Game.player.skillSlotTarget] = { job, idx };
             updateUI();
             triggerAutosave();
@@ -2788,6 +2959,117 @@
             if (event.target === statusEffectModal) closeStatusEffectModal();
         });
 
+        const skillDetailModal = document.getElementById('skill-detail-modal');
+        const skillDetailTitle = document.getElementById('skill-detail-title');
+        const skillDetailMeta = document.getElementById('skill-detail-meta');
+        const skillDetailDesc = document.getElementById('skill-detail-desc');
+        const skillDetailStats = document.getElementById('skill-detail-stats');
+        const skillDetailEffects = document.getElementById('skill-detail-effects');
+        const skillDetailMilestones = document.getElementById('skill-detail-milestones');
+        const openSkillDetailModal = (job, type, idx, level) => {
+            const base = JobData[job][type][idx];
+            if (!base) return;
+            const maxLevel = base.maxLevel || SkillMaxLevel;
+            const currentLevel = Math.max(0, level || 0);
+            const label = type === 'active' ? 'アクティブ' : 'パッシブ';
+            const displaySkill = type === 'active'
+                ? buildActiveSkill(job, idx, Math.max(1, currentLevel || 1))
+                : base;
+            skillDetailTitle.innerHTML = `<i class="fas fa-circle-info text-slate-500"></i> ${displaySkill.name}`;
+            skillDetailMeta.textContent = `${label} / Lv ${currentLevel}/${maxLevel}`;
+            skillDetailDesc.textContent = displaySkill.desc || '説明がありません。';
+
+            const stats = [];
+            if (type === 'active') {
+                if (displaySkill.mp !== undefined) stats.push(`MP消費: ${displaySkill.mp}`);
+                if (displaySkill.pow !== undefined) stats.push(`威力倍率: ${displaySkill.pow}`);
+                if (displaySkill.hits) stats.push(`ヒット数: ${displaySkill.hits}`);
+                if (displaySkill.accuracyBonus) stats.push(`命中補正: +${displaySkill.accuracyBonus}%`);
+                if (displaySkill.critBonus) stats.push(`会心補正: +${displaySkill.critBonus}%`);
+                if (displaySkill.mpHeal) stats.push(`MP吸収率: ${Math.round(displaySkill.mpHeal * 100)}%`);
+                if (displaySkill.expBonus) stats.push(`追加EXP: +${displaySkill.expBonus}%`);
+                if (displaySkill.leech) stats.push(`吸血率: ${displaySkill.leech}%`);
+                if (displaySkill.hpCost) stats.push(`HP消費: ${Math.round(displaySkill.hpCost * 100)}%`);
+                if (displaySkill.type === 'heal') stats.push('効果: 回復');
+            } else if (base.apply) {
+                stats.push('効果: 常時ステータス強化');
+            } else if (base.logic) {
+                stats.push('効果: 条件付きボーナス');
+            }
+            skillDetailStats.innerHTML = stats.length
+                ? stats.map((line) => `<div>${line}</div>`).join('')
+                : '<div>数値情報なし</div>';
+
+            const effectLines = [];
+            if (type === 'active' && Array.isArray(displaySkill.effects) && displaySkill.effects.length > 0) {
+                displaySkill.effects.forEach((effect) => {
+                    const def = StatusDefs[effect.id];
+                    const name = def ? def.name : effect.id;
+                    const target = effect.target === 'self' ? '自分' : '敵';
+                    const stacks = effect.stacks ?? 1;
+                    const turns = effect.turns ?? def?.defaultTurns ?? 1;
+                    effectLines.push(`${target}: ${name} ${stacks}スタック / ${turns}ターン`);
+                });
+            }
+            skillDetailEffects.innerHTML = effectLines.length
+                ? effectLines.map((line) => `<div>${line}</div>`).join('')
+                : '<div>追加効果なし</div>';
+
+            const milestoneLines = [];
+            if (type === 'active') {
+                const hasEffects = Array.isArray(base.effects) && base.effects.length > 0;
+                SkillMilestoneLevels.forEach((threshold) => {
+                    const reached = currentLevel >= threshold;
+                    let detail = '';
+                    if (threshold === 10) {
+                        detail = hasEffects ? '既存効果のスタック+1' : '命中+5%';
+                    }
+                    if (threshold === 30) {
+                        detail = hasEffects ? '既存効果の継続+1ターン' : '会心+5%';
+                    }
+                    if (threshold === 50) {
+                        if (displaySkill.type === 'heal') {
+                            detail = '再生(HP)付与 + バリア展開';
+                        } else if (hasEffects) {
+                            detail = displaySkill.isMagic ? '敵に弱体を追加' : '敵に脆弱を追加';
+                        } else {
+                            detail = '威力+20% / ヒット+1';
+                        }
+                    }
+                    milestoneLines.push(`${reached ? '★' : '☆'} Lv${threshold}: ${detail}`);
+                });
+            } else {
+                const milestone = PassiveMilestoneBonuses?.[job]?.[idx] || {};
+                SkillMilestoneLevels.forEach((threshold) => {
+                    const reached = currentLevel >= threshold;
+                    const statsBonus = milestone[threshold]?.stats;
+                    const detail = statsBonus
+                        ? Object.entries(statsBonus).map(([key, value]) => {
+                            const labelText = StatLabels[key] || key;
+                            const suffix = PercentStats.has(key) ? '%' : '';
+                            return `${labelText}+${value}${suffix}`;
+                        }).join(' / ')
+                        : '追加効果なし';
+                    milestoneLines.push(`${reached ? '★' : '☆'} Lv${threshold}: ${detail}`);
+                });
+            }
+            skillDetailMilestones.innerHTML = milestoneLines.length
+                ? milestoneLines.map((line) => `<div>${line}</div>`).join('')
+                : '<div>マイルストーンなし</div>';
+
+            skillDetailModal.classList.remove('hidden');
+            skillDetailModal.classList.add('flex');
+        };
+        const closeSkillDetailModal = () => {
+            skillDetailModal.classList.add('hidden');
+            skillDetailModal.classList.remove('flex');
+        };
+        document.getElementById('skill-detail-close').addEventListener('click', closeSkillDetailModal);
+        document.getElementById('skill-detail-close-bottom').addEventListener('click', closeSkillDetailModal);
+        skillDetailModal.addEventListener('click', (event) => {
+            if (event.target === skillDetailModal) closeSkillDetailModal();
+        });
+
         const lootFilterModal = document.getElementById('loot-filter-modal');
         const lootFilterOpenBtn = document.getElementById('loot-filter-open');
         const lootFilterCloseBtn = document.getElementById('loot-filter-close');
@@ -2938,7 +3220,7 @@
             
             data.forEach((skill, idx) => {
                 const level = getSkillLevel(Game.currentJobTab, Game.currentSkillType, idx);
-                const maxLevel = skill.maxLevel || 5;
+                const maxLevel = skill.maxLevel || SkillMaxLevel;
                 const isLearned = level > 0;
                 const isMax = level >= maxLevel;
                 const card = document.createElement('div');
@@ -2946,9 +3228,9 @@
                 
                 let actionPart = '';
                 if (!isLearned) {
-                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
+                    actionPart = `<button onclick="event.stopPropagation(); learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
                 } else if (!isMax) {
-                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-amber-500 text-white text-[10px] font-black rounded-xl">1SP強化</button>`;
+                    actionPart = `<button onclick="event.stopPropagation(); learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-amber-500 text-white text-[10px] font-black rounded-xl">1SP強化</button>`;
                 } else {
                     actionPart = `<span class="shrink-0 text-xs font-black text-slate-400"><i class="fas fa-check-circle"></i></span>`;
                 }
@@ -2958,7 +3240,7 @@
                     actionPart = `
                         <div class="flex items-center gap-2">
                             ${actionPart}
-                            <button onclick="assignSkillToSlot('${Game.currentJobTab}', ${idx})" class="shrink-0 px-3 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl">S${targetSlot}セット</button>
+                            <button onclick="event.stopPropagation(); assignSkillToSlot('${Game.currentJobTab}', ${idx})" class="shrink-0 px-3 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl">S${targetSlot}セット</button>
                         </div>
                     `;
                 }
@@ -2980,6 +3262,9 @@
                         ${actionPart}
                     </div>
                 `;
+                card.addEventListener('click', () => {
+                    openSkillDetailModal(Game.currentJobTab, Game.currentSkillType, idx, level);
+                });
                 list.appendChild(card);
             });
         }
@@ -2987,7 +3272,7 @@
         function learnSkill(job, type, idx) {
             const skill = JobData[job][type][idx];
             const current = getSkillLevel(job, type, idx);
-            const maxLevel = skill.maxLevel || 5;
+            const maxLevel = skill.maxLevel || SkillMaxLevel;
             if (Game.player.sp <= 0 || current >= maxLevel) return;
             Game.player.sp--;
             Game.player.skills[job][type][idx] = current + 1;
