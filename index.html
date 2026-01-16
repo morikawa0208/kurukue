@@ -1275,12 +1275,12 @@
             warrior: {
                 name: "戦士",
                 active: [
-                    { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 50, desc: "力で叩き込む一撃。Lvで威力上昇" },
-                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防御が崩れた！" }], desc: "盾で叩き、命中率が高い。脆甲を付与" },
-                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "HPを消費して高火力。闘志と脆弱を同時に得る" },
-                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "気合でHPを回復し、与ダメを強化" },
-                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 50, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "堅い一撃で守勢とバリアを展開" },
-                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 5, powGrowth: 0.7, maxLevel: 50, desc: "渾身の斬撃。Lvで超火力" }
+                    { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 50, desc: "単発高威力で安定ダメージを狙う主力技" },
+                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "taunt", stacks: 1, turns: 2, log: "挑発で態勢が崩れた！" }], desc: "盾で崩し、敵を挑発状態にして被ダメを誘発" },
+                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }], desc: "HPを代償に闘志を高める瞬間火力" },
+                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "回復しつつ短時間の火力バフで攻めを支える" },
+                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 50, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "守勢とバリアで耐久を固める防御特化" },
+                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 5, powGrowth: 0.7, maxLevel: 50, effects: [{ target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "大技の代わりに自ら脆弱を受ける決死の斬撃" }
                 ],
                 passive: [
                     { id: 0, name: "筋力増強", desc: "STR+3/レベル", maxLevel: 50, apply: (d) => Game.player.str += 3 * d },
@@ -1294,12 +1294,12 @@
             mage: {
                 name: "魔術師",
                 active: [
-                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "炎が勢いを削いだ！" }], desc: "燃え上がる火球で焼き払い、弱体を付与" },
-                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "氷槍で脆くなった！" }], desc: "鋭い氷槍で貫き、脆弱を与える" },
+                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "炎が勢いを削いだ！" }], desc: "炎で勢いを削ぎ、継続火力を支える弱体付与" },
+                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 50, effects: [{ target: "enemy", id: "freeze", stacks: 1, turns: 1, log: "氷槍で凍結した！" }], desc: "命中寄りの一撃で短時間の凍結を狙う" },
                     { id: 2, name: "マナドレイン", mp: 0, pow: 0.7, powGrowth: 0.1, isMagic: true, mpHeal: 0.4, mpHealGrowth: 0.05, maxLevel: 50, desc: "与ダメに応じてMPを吸収" },
-                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "雷光で目がくらんだ！" }], desc: "雷撃を叩きつけ、暗闇を与える" },
-                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 2, turns: 2, log: "衝撃で防御が崩れた！" }], desc: "隕石で大ダメージ、脆甲を与える" },
-                    { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 50, desc: "魔力を解き放つ禁呪" }
+                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "雷光で目がくらんだ！" }], desc: "雷撃で命中と会心を阻害する制圧魔法" },
+                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 2, turns: 2, log: "衝撃で防御が崩れた！" }], desc: "重い一撃で防御を砕く高火力" },
+                    { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "silence", stacks: 1, turns: 1, log: "禁呪で沈黙した！" }], desc: "絶大火力と引き換えに敵のスキルを封じる" }
                 ],
                 passive: [
                     { id: 0, name: "知力増強", desc: "INT+4/レベル", maxLevel: 50, apply: (d) => Game.player.int += 4 * d },
@@ -1313,11 +1313,11 @@
             thief: {
                 name: "盗賊",
                 active: [
-                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 50, desc: "素早い突きで確実に削る" },
+                    { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "素早い突きで迅速を得る連携起点" },
                     { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 50, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 2, log: "裂傷で出血した！" }], desc: "二連撃で出血を狙う" },
                     { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 50, effects: [{ target: "enemy", id: "poison", stacks: 1, turns: 3, log: "毒が回った！" }], desc: "急所狙いで会心率上昇、毒を付与" },
                     { id: 3, name: "強奪", mp: 5, pow: 1.0, powGrowth: 0.1, expBonus: 15, expBonusGrowth: 5, maxLevel: 50, desc: "攻撃しながら経験値を奪う" },
-                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "影に紛れて暗闇を与えた！" }], desc: "影から一撃を加え、暗闇を付与" },
+                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 50, effects: [{ target: "enemy", id: "silence", stacks: 1, turns: 1, log: "影に縛られて沈黙した！" }], desc: "影で封じ、敵のスキル回転を止める" },
                     { id: 5, name: "千手観音", mp: 30, pow: 1.1, powGrowth: 0.1, hits: 5, maxLevel: 50, desc: "圧倒的な五連撃" }
                 ],
                 passive: [
@@ -1351,12 +1351,12 @@
             paladin: {
                 name: "聖騎士",
                 active: [
-                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "浄化の光で弱体化した！" }], desc: "聖なる衝撃で浄化し、弱体を与える" },
-                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "attackDown", stacks: 1, turns: 2, log: "勢いが削がれた！" }], desc: "盾で突撃し敵の攻撃を鈍らせる" },
-                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "聖なる力でHPを回復し、自身を強化" },
-                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "眩光で暗闇になった！" }], desc: "眩い光で敵を撃ち、暗闇を付与" },
-                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "裁きで脆弱になった！" }], desc: "聖なる裁きを連撃で与え、脆弱を付与" },
-                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "attackDown", stacks: 2, turns: 2, log: "聖域の圧で攻撃が下がった！" }], desc: "聖域の光が降り注ぎ、攻撃力を下げる" }
+                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "聖撃で脆弱になった！" }], desc: "聖撃で被ダメを増やし、連撃の起点にする" },
+                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "taunt", stacks: 1, turns: 2, log: "盾撃ちで挑発した！" }], desc: "盾で押し込み、敵を挑発して受け止める" },
+                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 50, effects: [{ target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "回復と同時にバリアを展開する守護技" },
+                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "silence", stacks: 1, turns: 1, log: "眩光で沈黙した！" }], desc: "光で敵の詠唱を遮る制圧の一撃" },
+                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "裁きで弱体化した！" }], desc: "連撃で削りつつ敵火力を抑える" },
+                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 50, effects: [{ target: "enemy", id: "attackDown", stacks: 2, turns: 2, log: "聖域の圧で攻撃が下がった！" }], desc: "広範囲の圧で敵の攻撃力を大きく下げる" }
                 ],
                 passive: [
                     { id: 0, name: "信仰", desc: "最大HP+15/レベル", maxLevel: 50, apply: (d) => Game.player.maxHpFlat += 15 * d },
@@ -1371,11 +1371,11 @@
                 name: "拳闘士",
                 active: [
                     { id: 0, name: "連打拳", mp: 4, pow: 0.7, powGrowth: 0.1, hits: 3, maxLevel: 50, desc: "素早い連打で削る" },
-                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 50, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "気が乱れた！" }], desc: "気を飛ばして攻撃し、弱体を与える" },
+                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 50, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "気を乱され脆弱になった！" }], desc: "敵の隙を作る遠隔打撃で脆弱を狙う" },
                     { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 50, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "守りが砕けた！" }], desc: "岩をも砕く一撃で脆甲を付与" },
                     { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 50, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "回転で目がくらんだ！" }], desc: "回転蹴りの連撃で暗闇を与える" },
-                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "内なる気でHPを回復し、迅速化" },
-                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }], desc: "集中して渾身の一撃、闘志を得る" }
+                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "回復と迅速化で手数を増やす" },
+                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "reflect", stacks: 1, turns: 2 }], desc: "闘志と反射で反撃寄りの攻めを作る" }
                 ],
                 passive: [
                     { id: 0, name: "体術鍛錬", desc: "STR+2/レベル & DEX+2/レベル", maxLevel: 50, apply: (d) => { Game.player.str += 2 * d; Game.player.dex += 2 * d; } },
