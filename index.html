@@ -5600,6 +5600,7 @@
                 const favoriteMarker = favorite
                     ? '<i class="fas fa-star text-amber-400 mx-1"></i>'
                     : '';
+                const isLongName = item.name.length >= 16;
                 const deleteLabel = equipped ? '装備中' : '売却';
                 const deleteDisabled = equipped || favorite;
                 const deleteClasses = deleteDisabled
@@ -5613,8 +5614,8 @@
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${getEquipmentTypeLabel(item)}</div>
-                        <div class="font-black text-sm truncate rarity-${item.rarity}">${equipMarker}${favoriteMarker}${item.name}</div>
-                        <div class="mt-1 space-y-0.5">${renderItemStatsHtml(item)}</div>
+                        <div class="font-black text-sm truncate rarity-${item.rarity} ${isLongName ? "item-name-shrink" : ""}">${equipMarker}${favoriteMarker}${item.name}</div>
+                        <div class="mt-1">${renderItemStatsGroupedHtml(item)}</div>
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
                         <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
