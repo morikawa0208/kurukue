@@ -1122,7 +1122,7 @@
                     { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 50, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "HPを消費して高火力。闘志と脆弱を同時に得る" },
                     { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 50, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "気合でHPを回復し、与ダメを強化" },
                     { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 50, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "堅い一撃で守勢とバリアを展開" },
-                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 4.5, powGrowth: 0.7, maxLevel: 50, desc: "渾身の斬撃。Lvで超火力" }
+                    { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 5, powGrowth: 0.7, maxLevel: 50, desc: "渾身の斬撃。Lvで超火力" }
                 ],
                 passive: [
                     { id: 0, name: "筋力増強", desc: "STR+3/レベル", maxLevel: 50, apply: (d) => Game.player.str += 3 * d },
@@ -1637,11 +1637,11 @@
         const BossLootTables = {
             10: [
                 { name: "毒牙の短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 18 }, { key: "dex", value: 6 }, { key: "leechRate", value: 3 }] },
-                { name: "毒煙の護符", type: "accessory", rarity: "epic", stats: [{ key: "mPen", value: 4.5 }, { key: "damageBoost", value: 3 }] }
+                { name: "毒煙の護符", type: "accessory", rarity: "epic", stats: [{ key: "mPen", value: 5 }, { key: "damageBoost", value: 3 }] }
             ],
             50: [
                 { name: "疾風の爪剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 27 }, { key: "dex", value: 9 }, { key: "accuracy", value: 6 }] },
-                { name: "風走りのブーツ", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 4.5 }, { key: "dex", value: 6 }, { key: "hpEfficiency", value: 4.5 }] }
+                { name: "風走りのブーツ", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 6 }, { key: "hpEfficiency", value: 5 }] }
             ],
             100: [
                 { name: "岩核の大盾", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 33 }, { key: "vit", value: 9 }, { key: "damageReduction", value: 3 }] },
@@ -1652,35 +1652,35 @@
                 { name: "氷牢の指輪", type: "accessory", rarity: "epic", stats: [{ key: "mpEfficiency", value: 6 }, { key: "critRate", value: 3 }, { key: "maxMp", value: 30 }] }
             ],
             300: [
-                { name: "宵闇のマント", type: "armor", rarity: "epic", stats: [{ key: "evasionRate", value: 4.5 }, { key: "dex", value: 7.5 }, { key: "damageBoost", value: 3 }] },
-                { name: "闇狩りの短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 33 }, { key: "critRate", value: 4.5 }, { key: "dex", value: 6 }] }
+                { name: "宵闇のマント", type: "armor", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 8 }, { key: "damageBoost", value: 3 }] },
+                { name: "闇狩りの短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 33 }, { key: "critRate", value: 5 }, { key: "dex", value: 6 }] }
             ],
             400: [
                 { name: "熾火の大剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 39 }, { key: "str", value: 9 }, { key: "critDamage", value: 9 }] },
                 { name: "炎護の手甲", type: "hands", rarity: "epic", stats: [{ key: "attackFlat", value: 9 }, { key: "str", value: 6 }, { key: "damageBoost", value: 3 }] }
             ],
             500: [
-                { name: "雷鳴の戦槌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 42 }, { key: "str", value: 10.5 }, { key: "accuracy", value: 6 }] },
-                { name: "帯電の護符", type: "accessory", rarity: "epic", stats: [{ key: "critRate", value: 4.5 }, { key: "damageBoost", value: 4.5 }, { key: "maxHp", value: 30 }] }
+                { name: "雷鳴の戦槌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 42 }, { key: "str", value: 11 }, { key: "accuracy", value: 6 }] },
+                { name: "帯電の護符", type: "accessory", rarity: "epic", stats: [{ key: "critRate", value: 5 }, { key: "damageBoost", value: 5 }, { key: "maxHp", value: 30 }] }
             ],
             600: [
-                { name: "聖紋のローブ", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 27 }, { key: "int", value: 9 }, { key: "mpEfficiency", value: 7.5 }] },
+                { name: "聖紋のローブ", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 27 }, { key: "int", value: 9 }, { key: "mpEfficiency", value: 8 }] },
                 { name: "聖祈の護符", type: "accessory", rarity: "epic", stats: [{ key: "hpRegen", value: 6 }, { key: "mpRegen", value: 3 }, { key: "damageReduction", value: 3 }] }
             ],
             700: [
                 { name: "疫毒の鎌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 45 }, { key: "dex", value: 9 }, { key: "mPen", value: 6 }] },
-                { name: "腐蝕の指輪", type: "accessory", rarity: "epic", stats: [{ key: "damageBoost", value: 4.5 }, { key: "leechRate", value: 4.5 }, { key: "maxHp", value: 30 }] }
+                { name: "腐蝕の指輪", type: "accessory", rarity: "epic", stats: [{ key: "damageBoost", value: 5 }, { key: "leechRate", value: 5 }, { key: "maxHp", value: 30 }] }
             ],
             800: [
-                { name: "鉄壁の鎧", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 39 }, { key: "vit", value: 10.5 }, { key: "damageReduction", value: 4.5 }] },
-                { name: "鋼鉄のグローブ", type: "hands", rarity: "epic", stats: [{ key: "defenseFlat", value: 12 }, { key: "str", value: 7.5 }, { key: "hpEfficiency", value: 6 }] }
+                { name: "鉄壁の鎧", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 39 }, { key: "vit", value: 11 }, { key: "damageReduction", value: 5 }] },
+                { name: "鋼鉄のグローブ", type: "hands", rarity: "epic", stats: [{ key: "defenseFlat", value: 12 }, { key: "str", value: 8 }, { key: "hpEfficiency", value: 6 }] }
             ],
             900: [
                 { name: "影刃の忍刀", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 48 }, { key: "dex", value: 12 }, { key: "critRate", value: 6 }] },
-                { name: "夜走りの足袋", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 6 }, { key: "dex", value: 7.5 }, { key: "accuracy", value: 6 }] }
+                { name: "夜走りの足袋", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 6 }, { key: "dex", value: 8 }, { key: "accuracy", value: 6 }] }
             ],
             1000: [
-                { name: "終焉の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 60 }, { key: "str", value: 15 }, { key: "damageBoost", value: 7.5 }] },
+                { name: "終焉の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 60 }, { key: "str", value: 15 }, { key: "damageBoost", value: 8 }] },
                 { name: "竜鱗の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 45 }, { key: "vit", value: 15 }, { key: "maxHp", value: 60 }] }
             ]
         };
