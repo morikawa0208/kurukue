@@ -1166,10 +1166,10 @@
                 name: "戦士",
                 active: [
                     { id: 0, name: "パワースラッシュ", mp: 4, mpGrowth: 0, pow: 1.6, powGrowth: 0.25, maxLevel: 5, desc: "力で叩き込む一撃。Lvで威力上昇" },
-                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "盾で叩き、命中率が高い" },
-                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 5, desc: "HPを消費して高火力を叩き出す" },
-                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 5, desc: "気合でHPを回復する" },
-                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 5, desc: "堅い一撃で持久戦に強い" },
+                    { id: 1, name: "シールドバッシュ", mp: 6, mpGrowth: 0, pow: 1.1, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防御が崩れた！" }], desc: "盾で叩き、命中率が高い。脆甲を付与" },
+                    { id: 2, name: "バーサク", mp: 10, pow: 2.2, powGrowth: 0.35, hpCost: 0.08, maxLevel: 5, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }, { target: "self", id: "vulnerable", stacks: 1, turns: 1 }], desc: "HPを消費して高火力。闘志と脆弱を同時に得る" },
+                    { id: 3, name: "鼓舞", mp: 8, val: 30, valGrowth: 12, type: 'heal', maxLevel: 5, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "気合でHPを回復し、与ダメを強化" },
+                    { id: 4, name: "鉄壁の構え", mp: 12, pow: 0.6, powGrowth: 0.12, maxLevel: 5, effects: [{ target: "self", id: "defenseUp", stacks: 2, turns: 3 }, { target: "self", id: "barrier", stacks: 1, turns: 2 }], desc: "堅い一撃で守勢とバリアを展開" },
                     { id: 5, name: "ドラゴンスレイヤー", mp: 25, pow: 4.5, powGrowth: 0.7, maxLevel: 5, desc: "渾身の斬撃。Lvで超火力" }
                 ],
                 passive: [
@@ -1184,11 +1184,11 @@
             mage: {
                 name: "魔術師",
                 active: [
-                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 5, desc: "燃え上がる火球で焼き払う" },
-                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 5, desc: "鋭い氷槍で貫く" },
+                    { id: 0, name: "ファイアボール", mp: 8, pow: 2.0, powGrowth: 0.3, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "炎が勢いを削いだ！" }], desc: "燃え上がる火球で焼き払い、弱体を付与" },
+                    { id: 1, name: "アイスランス", mp: 10, pow: 2.3, powGrowth: 0.35, isMagic: true, accuracyBonus: 5, accuracyGrowth: 3, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "氷槍で脆くなった！" }], desc: "鋭い氷槍で貫き、脆弱を与える" },
                     { id: 2, name: "マナドレイン", mp: 0, pow: 0.7, powGrowth: 0.1, isMagic: true, mpHeal: 0.4, mpHealGrowth: 0.05, maxLevel: 5, desc: "与ダメに応じてMPを吸収" },
-                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 5, desc: "雷撃を叩きつける広範囲魔法" },
-                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 5, desc: "隕石を召喚する大魔法" },
+                    { id: 3, name: "サンダーストーム", mp: 18, pow: 3.2, powGrowth: 0.45, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "雷光で目がくらんだ！" }], desc: "雷撃を叩きつけ、暗闇を与える" },
+                    { id: 4, name: "メテオ", mp: 30, pow: 5.0, powGrowth: 0.8, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 2, turns: 2, log: "衝撃で防御が崩れた！" }], desc: "隕石で大ダメージ、脆甲を与える" },
                     { id: 5, name: "終焉の禁呪", mp: 50, pow: 10.0, powGrowth: 1.2, isMagic: true, maxLevel: 5, desc: "魔力を解き放つ禁呪" }
                 ],
                 passive: [
@@ -1204,10 +1204,10 @@
                 name: "盗賊",
                 active: [
                     { id: 0, name: "クイックスタブ", mp: 3, pow: 1.0, powGrowth: 0.15, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, desc: "素早い突きで確実に削る" },
-                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 5, desc: "二連撃で手数を稼ぐ" },
-                    { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 5, desc: "急所狙いで会心率上昇" },
+                    { id: 1, name: "ダブルアタック", mp: 7, pow: 0.85, powGrowth: 0.1, hits: 2, maxLevel: 5, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 2, log: "裂傷で出血した！" }], desc: "二連撃で出血を狙う" },
+                    { id: 2, name: "毒の刃", mp: 10, pow: 1.8, powGrowth: 0.25, critBonus: 5, critGrowth: 2, maxLevel: 5, effects: [{ target: "enemy", id: "poison", stacks: 1, turns: 3, log: "毒が回った！" }], desc: "急所狙いで会心率上昇、毒を付与" },
                     { id: 3, name: "強奪", mp: 5, pow: 1.0, powGrowth: 0.1, expBonus: 15, expBonusGrowth: 5, maxLevel: 5, desc: "攻撃しながら経験値を奪う" },
-                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 5, desc: "影から一撃を加える" },
+                    { id: 4, name: "影縫い", mp: 12, pow: 2.2, powGrowth: 0.3, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "影に紛れて暗闇を与えた！" }], desc: "影から一撃を加え、暗闇を付与" },
                     { id: 5, name: "千手観音", mp: 30, pow: 1.1, powGrowth: 0.1, hits: 5, maxLevel: 5, desc: "圧倒的な五連撃" }
                 ],
                 passive: [
@@ -1222,12 +1222,12 @@
             ranger: {
                 name: "レンジャー",
                 active: [
-                    { id: 0, name: "プレシジョンショット", mp: 5, pow: 1.5, powGrowth: 0.2, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, desc: "狙いすました一射" },
+                    { id: 0, name: "プレシジョンショット", mp: 5, pow: 1.5, powGrowth: 0.2, accuracyBonus: 15, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "急所を射抜いた！" }], desc: "狙いすました一射で脆弱を与える" },
                     { id: 1, name: "トリプルショット", mp: 10, pow: 0.8, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "三連射で圧倒する" },
-                    { id: 2, name: "ブラッドアロー", mp: 8, pow: 1.3, powGrowth: 0.2, leech: 8, leechGrowth: 2, maxLevel: 5, desc: "与ダメの一部を吸収する矢" },
-                    { id: 3, name: "爆裂矢", mp: 16, pow: 2.6, powGrowth: 0.4, maxLevel: 5, desc: "爆発で敵を貫く強撃" },
-                    { id: 4, name: "ハンターズラッシュ", mp: 18, pow: 1.0, powGrowth: 0.1, hits: 4, maxLevel: 5, desc: "連射で削り続ける" },
-                    { id: 5, name: "テンペストボレー", mp: 32, pow: 1.4, powGrowth: 0.15, hits: 6, maxLevel: 5, desc: "嵐のような矢の雨" }
+                    { id: 2, name: "ブラッドアロー", mp: 8, pow: 1.3, powGrowth: 0.2, leech: 8, leechGrowth: 2, maxLevel: 5, effects: [{ target: "enemy", id: "bleed", stacks: 1, turns: 3, log: "血が滴る！" }], desc: "与ダメの一部を吸収し出血を与える" },
+                    { id: 3, name: "爆裂矢", mp: 16, pow: 2.6, powGrowth: 0.4, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "防具が砕けた！" }], desc: "爆発で敵を貫き、脆甲を与える" },
+                    { id: 4, name: "ハンターズラッシュ", mp: 18, pow: 1.0, powGrowth: 0.1, hits: 4, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "連射で勢いを奪った！" }], desc: "連射で削り、弱体を付与" },
+                    { id: 5, name: "テンペストボレー", mp: 32, pow: 1.4, powGrowth: 0.15, hits: 6, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "矢雨で視界が乱れた！" }], desc: "嵐のような矢の雨で暗闇を与える" }
                 ],
                 passive: [
                     { id: 0, name: "射撃訓練", desc: "命中率+3%/レベル", maxLevel: 5, apply: (d) => Game.player.accuracy += 3 * d },
@@ -1241,12 +1241,12 @@
             paladin: {
                 name: "聖騎士",
                 active: [
-                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 5, desc: "聖なる衝撃で浄化する" },
-                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "盾で突撃し敵を崩す" },
-                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 5, desc: "聖なる力でHPを回復" },
-                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 5, desc: "眩い光で敵を撃つ" },
-                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 5, desc: "聖なる裁きを連撃で与える" },
-                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 5, desc: "聖域の光が降り注ぐ一撃" }
+                    { id: 0, name: "ホーリースマイト", mp: 6, pow: 1.7, powGrowth: 0.25, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "浄化の光で弱体化した！" }], desc: "聖なる衝撃で浄化し、弱体を与える" },
+                    { id: 1, name: "シールドチャージ", mp: 8, pow: 1.3, powGrowth: 0.2, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "attackDown", stacks: 1, turns: 2, log: "勢いが削がれた！" }], desc: "盾で突撃し敵の攻撃を鈍らせる" },
+                    { id: 2, name: "セイクリッドヒール", mp: 12, val: 40, valGrowth: 15, type: 'heal', isMagic: true, maxLevel: 5, effects: [{ target: "self", id: "buff", stacks: 1, turns: 2 }], desc: "聖なる力でHPを回復し、自身を強化" },
+                    { id: 3, name: "ライトバースト", mp: 18, pow: 2.8, powGrowth: 0.4, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "眩光で暗闇になった！" }], desc: "眩い光で敵を撃ち、暗闇を付与" },
+                    { id: 4, name: "ジャッジメント", mp: 22, pow: 2.0, powGrowth: 0.3, isMagic: true, hits: 2, maxLevel: 5, effects: [{ target: "enemy", id: "vulnerable", stacks: 1, turns: 2, log: "裁きで脆弱になった！" }], desc: "聖なる裁きを連撃で与え、脆弱を付与" },
+                    { id: 5, name: "聖域の裁き", mp: 35, pow: 4.8, powGrowth: 0.7, isMagic: true, maxLevel: 5, effects: [{ target: "enemy", id: "attackDown", stacks: 2, turns: 2, log: "聖域の圧で攻撃が下がった！" }], desc: "聖域の光が降り注ぎ、攻撃力を下げる" }
                 ],
                 passive: [
                     { id: 0, name: "信仰", desc: "最大HP+15/レベル", maxLevel: 5, apply: (d) => Game.player.maxHpFlat += 15 * d },
@@ -1261,11 +1261,11 @@
                 name: "拳闘士",
                 active: [
                     { id: 0, name: "連打拳", mp: 4, pow: 0.7, powGrowth: 0.1, hits: 3, maxLevel: 5, desc: "素早い連打で削る" },
-                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 5, desc: "気を飛ばして攻撃する" },
-                    { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 5, desc: "岩をも砕く一撃" },
-                    { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, desc: "回転蹴りで連撃" },
-                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 5, desc: "内なる気でHPを回復" },
-                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 5, desc: "集中して渾身の一撃" }
+                    { id: 1, name: "気功波", mp: 8, pow: 1.8, powGrowth: 0.25, maxLevel: 5, effects: [{ target: "enemy", id: "weaken", stacks: 1, turns: 2, log: "気が乱れた！" }], desc: "気を飛ばして攻撃し、弱体を与える" },
+                    { id: 2, name: "破岩撃", mp: 10, pow: 2.4, powGrowth: 0.3, maxLevel: 5, effects: [{ target: "enemy", id: "defenseDown", stacks: 1, turns: 2, log: "守りが砕けた！" }], desc: "岩をも砕く一撃で脆甲を付与" },
+                    { id: 3, name: "回天脚", mp: 12, pow: 1.0, powGrowth: 0.15, hits: 4, accuracyBonus: 10, accuracyGrowth: 5, maxLevel: 5, effects: [{ target: "enemy", id: "blind", stacks: 1, turns: 2, log: "回転で目がくらんだ！" }], desc: "回転蹴りの連撃で暗闇を与える" },
+                    { id: 4, name: "活力循環", mp: 10, val: 25, valGrowth: 10, type: 'heal', maxLevel: 5, effects: [{ target: "self", id: "haste", stacks: 1, turns: 2 }], desc: "内なる気でHPを回復し、迅速化" },
+                    { id: 5, name: "無我の境地", mp: 30, pow: 3.8, powGrowth: 0.6, critBonus: 10, critGrowth: 3, maxLevel: 5, effects: [{ target: "self", id: "attackUp", stacks: 2, turns: 2 }], desc: "集中して渾身の一撃、闘志を得る" }
                 ],
                 passive: [
                     { id: 0, name: "体術鍛錬", desc: "STR+2/レベル & DEX+2/レベル", maxLevel: 5, apply: (d) => { Game.player.str += 2 * d; Game.player.dex += 2 * d; } },
@@ -1301,74 +1301,74 @@
 
         const EnemyTiers = [
             [
-                { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12 },
-                { name: "コウモリ", icon: "fa-moon", hp: 35, str: 10, exp: 15 },
+                { name: "スライム", icon: "fa-bacteria", hp: 30, str: 7, exp: 12, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.25, log: "粘液で毒を受けた！" }] },
+                { name: "コウモリ", icon: "fa-moon", hp: 35, str: 10, exp: 15, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.2, log: "羽ばたきで視界が乱れた！" }] },
                 { name: "コモンバグ", icon: "fa-bug", hp: 28, str: 8, exp: 12 },
-                { name: "野犬", icon: "fa-dog", hp: 40, str: 11, exp: 16 },
-                { name: "草の精", icon: "fa-leaf", hp: 32, str: 9, exp: 14 }
+                { name: "野犬", icon: "fa-dog", hp: 40, str: 11, exp: 16, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "牙で裂かれた！" }] },
+                { name: "草の精", icon: "fa-leaf", hp: 32, str: 9, exp: 14, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "胞子で弱体化した！" }] }
             ],
             [
                 { name: "ゴブリン", icon: "fa-user-ninja", hp: 60, str: 14, exp: 25 },
-                { name: "スケルトン", icon: "fa-skull", hp: 80, str: 20, exp: 40 },
-                { name: "大蜘蛛", icon: "fa-spider", hp: 70, str: 18, exp: 32 },
-                { name: "小悪魔", icon: "fa-ghost", hp: 65, str: 17, exp: 30 },
+                { name: "スケルトン", icon: "fa-skull", hp: 80, str: 20, exp: 40, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "骨刃で切り裂かれた！" }] },
+                { name: "大蜘蛛", icon: "fa-spider", hp: 70, str: 18, exp: 32, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.3, log: "毒糸が絡みついた！" }] },
+                { name: "小悪魔", icon: "fa-ghost", hp: 65, str: 17, exp: 30, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.2, log: "呪いで沈黙した！" }] },
                 { name: "野生狼", icon: "fa-paw", hp: 75, str: 19, exp: 35 }
             ],
             [
-                { name: "洞窟トカゲ", icon: "fa-dragon", hp: 110, str: 24, exp: 55 },
+                { name: "洞窟トカゲ", icon: "fa-dragon", hp: 110, str: 24, exp: 55, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.2, log: "硬い鱗で守りが削がれた！" }] },
                 { name: "スピアゴブリン", icon: "fa-user-ninja", hp: 95, str: 23, exp: 50 },
                 { name: "骨戦士", icon: "fa-skull", hp: 120, str: 26, exp: 60 },
-                { name: "夜影", icon: "fa-ghost", hp: 100, str: 25, exp: 56 },
+                { name: "夜影", icon: "fa-ghost", hp: 100, str: 25, exp: 56, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "闇の一撃で視界が霞んだ！" }] },
                 { name: "岩トカゲ", icon: "fa-mountain", hp: 130, str: 22, exp: 58 }
             ],
             [
                 { name: "ゴーレム", icon: "fa-mountain", hp: 150, str: 25, exp: 70 },
                 { name: "シャドウ", icon: "fa-ghost", hp: 200, str: 35, exp: 100 },
-                { name: "バンシー", icon: "fa-skull", hp: 170, str: 32, exp: 90 },
+                { name: "バンシー", icon: "fa-skull", hp: 170, str: 32, exp: 90, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "叫びで視界が歪んだ！" }] },
                 { name: "鋼鉄獣", icon: "fa-hippo", hp: 190, str: 34, exp: 95 },
-                { name: "雷鳥", icon: "fa-bolt", hp: 160, str: 33, exp: 92 }
+                { name: "雷鳥", icon: "fa-bolt", hp: 160, str: 33, exp: 92, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.2, log: "雷撃で動きが鈍った！" }] }
             ],
             [
-                { name: "炎の精霊", icon: "fa-fire", hp: 220, str: 38, exp: 110 },
+                { name: "炎の精霊", icon: "fa-fire", hp: 220, str: 38, exp: 110, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "灼熱で力が落ちた！" }] },
                 { name: "氷の精霊", icon: "fa-snowflake", hp: 210, str: 37, exp: 108 },
-                { name: "毒クモ女王", icon: "fa-spider", hp: 240, str: 40, exp: 120 },
-                { name: "邪悪な魔導師", icon: "fa-hat-wizard", hp: 200, str: 42, exp: 125 },
+                { name: "毒クモ女王", icon: "fa-spider", hp: 240, str: 40, exp: 120, onHitEffects: [{ id: "poison", stacks: 2, turns: 3, chance: 0.3, log: "強い毒が回った！" }] },
+                { name: "邪悪な魔導師", icon: "fa-hat-wizard", hp: 200, str: 42, exp: 125, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "呪文で沈黙した！" }] },
                 { name: "深海魔", icon: "fa-fish", hp: 230, str: 39, exp: 118 }
             ],
             [
-                { name: "蒼狼", icon: "fa-dog", hp: 260, str: 45, exp: 135 },
-                { name: "闇騎士", icon: "fa-chess-knight", hp: 280, str: 47, exp: 140 },
+                { name: "蒼狼", icon: "fa-dog", hp: 260, str: 45, exp: 135, onHitEffects: [{ id: "bleed", stacks: 1, turns: 3, chance: 0.3, log: "蒼い牙で裂かれた！" }] },
+                { name: "闇騎士", icon: "fa-chess-knight", hp: 280, str: 47, exp: 140, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.25, log: "闇の圧で攻撃が下がった！" }] },
                 { name: "死霊騎士", icon: "fa-skull", hp: 300, str: 48, exp: 145 },
-                { name: "雷獣", icon: "fa-bolt", hp: 270, str: 50, exp: 148 },
-                { name: "異界の影", icon: "fa-ghost", hp: 290, str: 46, exp: 142 }
+                { name: "雷獣", icon: "fa-bolt", hp: 270, str: 50, exp: 148, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "雷撃で視界が揺れた！" }] },
+                { name: "異界の影", icon: "fa-ghost", hp: 290, str: 46, exp: 142, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "異界の気配で沈黙した！" }] }
             ],
             [
                 { name: "灼熱竜", icon: "fa-dragon", hp: 340, str: 58, exp: 175 },
                 { name: "凍結竜", icon: "fa-dragon", hp: 330, str: 56, exp: 170 },
-                { name: "漆黒の翼", icon: "fa-crow", hp: 320, str: 55, exp: 168 },
+                { name: "漆黒の翼", icon: "fa-crow", hp: 320, str: 55, exp: 168, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "黒翼が視界を覆った！" }] },
                 { name: "深緑の獣", icon: "fa-hippo", hp: 360, str: 57, exp: 178 },
-                { name: "破砕ゴーレム", icon: "fa-mountain", hp: 380, str: 54, exp: 172 }
+                { name: "破砕ゴーレム", icon: "fa-mountain", hp: 380, str: 54, exp: 172, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.3, log: "衝撃で防御が崩れた！" }] }
             ],
             [
-                { name: "虚無の影", icon: "fa-ghost", hp: 420, str: 62, exp: 200 },
+                { name: "虚無の影", icon: "fa-ghost", hp: 420, str: 62, exp: 200, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "虚無の力で沈黙した！" }] },
                 { name: "星屑の魔獣", icon: "fa-crow", hp: 410, str: 64, exp: 205 },
                 { name: "深海王", icon: "fa-fish", hp: 430, str: 63, exp: 202 },
-                { name: "雷帝", icon: "fa-bolt", hp: 400, str: 66, exp: 210 },
+                { name: "雷帝", icon: "fa-bolt", hp: 400, str: 66, exp: 210, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "雷帝の光で視界が乱れた！" }] },
                 { name: "冥界の騎士", icon: "fa-chess-knight", hp: 440, str: 61, exp: 198 }
             ],
             [
                 { name: "獄炎獣", icon: "fa-fire", hp: 470, str: 70, exp: 230 },
                 { name: "氷晶獣", icon: "fa-snowflake", hp: 460, str: 68, exp: 225 },
-                { name: "深淵竜", icon: "fa-dragon", hp: 500, str: 72, exp: 240 },
-                { name: "絶叫の亡霊", icon: "fa-skull", hp: 480, str: 69, exp: 228 },
+                { name: "深淵竜", icon: "fa-dragon", hp: 500, str: 72, exp: 240, onHitEffects: [{ id: "vulnerable", stacks: 1, turns: 2, chance: 0.25, log: "深淵の咆哮で脆弱になった！" }] },
+                { name: "絶叫の亡霊", icon: "fa-skull", hp: 480, str: 69, exp: 228, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "絶叫で沈黙した！" }] },
                 { name: "奈落の巨影", icon: "fa-ghost", hp: 520, str: 71, exp: 235 }
             ],
             [
-                { name: "終焉竜", icon: "fa-dragon", hp: 600, str: 80, exp: 280 },
+                { name: "終焉竜", icon: "fa-dragon", hp: 600, str: 80, exp: 280, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.3, log: "終焉の爪で攻撃が鈍った！" }] },
                 { name: "星滅の影", icon: "fa-ghost", hp: 580, str: 82, exp: 285 },
                 { name: "無限の巨獣", icon: "fa-hippo", hp: 620, str: 78, exp: 275 },
                 { name: "審判の騎士", icon: "fa-chess-knight", hp: 590, str: 81, exp: 282 },
-                { name: "終末の魔導", icon: "fa-hat-wizard", hp: 570, str: 83, exp: 290 }
+                { name: "終末の魔導", icon: "fa-hat-wizard", hp: 570, str: 83, exp: 290, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.3, log: "終末魔法で弱体化した！" }] }
             ]
         ];
 
@@ -3306,6 +3306,16 @@
                 setTimeout(()=>document.getElementById('enemy-visual').classList.remove('shake'), 200);
             }
 
+            if (currentSkill.effects) {
+                currentSkill.effects.forEach((effect) => {
+                    const target = effect.target === "self" ? Game.player : Game.enemy;
+                    applyStatusEffect(target, effect.id, effect.stacks, effect.turns);
+                    if (effect.log && effect.target !== "self") {
+                        addLog(effect.log, "text-purple-400");
+                    }
+                });
+            }
+
             advanceStatusEffects(Game.player, 'end');
             applyAutoRegen();
             if (Game.enemy.hp <= 0) {
@@ -3373,9 +3383,16 @@
                 d = Math.max(1, d);
                 const appliedDamage = applyDamage(Game.player, d, Game.enemy);
                 addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
-                if (!Game.enemy.isBoss && Math.random() < 0.2) {
-                    applyStatusEffect(Game.player, 'poison');
-                    addLog("毒を受けた！", "text-green-600");
+                if (!Game.enemy.isBoss && appliedDamage > 0 && Array.isArray(Game.enemy.onHitEffects)) {
+                    Game.enemy.onHitEffects.forEach((effect) => {
+                        const chance = effect.chance ?? 1;
+                        if (Math.random() < chance) {
+                            applyStatusEffect(Game.player, effect.id, effect.stacks, effect.turns);
+                            if (effect.log) {
+                                addLog(effect.log, "text-purple-400");
+                            }
+                        }
+                    });
                 }
             }
             
