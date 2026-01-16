@@ -5209,11 +5209,19 @@
 
         function deleteItem(idx) {
             const item = Game.player.inventory[idx];
-            if (!item || isItemEquipped(item)) return;
+            if (!item || isItemEquipped(item) || item.favorite) return;
             const price = getSellPrice(item);
             if (removeInventoryItem(idx)) {
                 Game.player.gold += price;
             }
+            updateUI();
+            triggerAutosave();
+        }
+
+        function toggleFavorite(idx) {
+            const item = Game.player.inventory[idx];
+            if (!item) return;
+            item.favorite = !item.favorite;
             updateUI();
             triggerAutosave();
         }
@@ -5223,7 +5231,7 @@
             let totalGold = 0;
             for (let i = Game.player.inventory.length - 1; i >= 0; i--) {
                 const item = Game.player.inventory[i];
-                if (!item || isItemEquipped(item)) continue;
+                if (!item || isItemEquipped(item) || item.favorite) continue;
                 if (!rarities.includes(item.rarity)) continue;
                 totalGold += getSellPrice(item);
                 Game.player.inventory.splice(i, 1);
@@ -5513,20 +5521,34 @@
                 const equipMarker = equipped
                     ? '<span class="text-emerald-500 font-black mr-1">[E]</span>'
                     : '';
+                const favorite = Boolean(item.favorite);
+                const favoriteMarker = favorite
+                    ? '<i class="fas fa-star text-amber-400 mx-1"></i>'
+                    : '';
                 const deleteLabel = equipped ? '装備中' : '売却';
-                const deleteClasses = equipped
+                const deleteDisabled = equipped || favorite;
+                const deleteClasses = deleteDisabled
                     ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                    : 'bg-slate-100 text-slate-500';
+                const favoriteLabel = favorite ? 'お気に入り解除' : 'お気に入り';
+                const favoriteIcon = favorite ? 'fas fa-star' : 'far fa-star';
+                const favoriteClasses = favorite
+                    ? 'bg-amber-400 text-white'
                     : 'bg-slate-100 text-slate-500';
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${getEquipmentTypeLabel(item)}</div>
-                        <div class="font-black text-sm truncate rarity-${item.rarity}">${equipMarker}${item.name}</div>
+                        <div class="font-black text-sm truncate rarity-${item.rarity}">${equipMarker}${favoriteMarker}${item.name}</div>
                         <div class="mt-1 space-y-0.5">${renderItemStatsHtml(item)}</div>
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
                         <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
-                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${equipped ? 'disabled' : ''}><i class="fas fa-coins"></i> ${deleteLabel}</button>
+                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${deleteDisabled ? 'disabled' : ''}><i class="fas fa-coins"></i> ${deleteLabel}</button>
                         <div class="text-[10px] text-slate-400 font-bold text-right">売値 ${sellPriceDisplay}G</div>
+                        <button onclick="toggleFavorite(${index})" class="px-4 py-2 ${favoriteClasses} text-[10px] font-black rounded-xl flex items-center justify-center gap-1">
+                            <i class="${favoriteIcon}"></i>
+                            <span>${favoriteLabel}</span>
+                        </button>
                     </div>
                 `;
                 invList.appendChild(div);
