@@ -2744,6 +2744,7 @@
         function applyAutoRegen() {
             const p = Game.player;
             const derived = getDerivedStats();
+            if (p.hp <= 0) return;
             if (derived.totals.hpRegen > 0) {
                 p.hp = Math.min(derived.maxHp, p.hp + derived.totals.hpRegen);
             }
@@ -3637,8 +3638,12 @@
             }
 
             advanceStatusEffects(Game.enemy, 'end');
+            if (Game.player.hp <= 0) {
+                die();
+                updateUI();
+                return;
+            }
             applyAutoRegen();
-            if (Game.player.hp <= 0) die();
             updateUI();
         }
 
