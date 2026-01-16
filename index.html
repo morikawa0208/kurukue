@@ -874,6 +874,28 @@
         </div>
     </div>
 
+    <!-- SKILL DETAIL MODAL -->
+    <div id="skill-detail-modal" class="fixed inset-0 bg-slate-900/80 z-[120] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="skill-detail-title" class="font-black text-lg text-slate-800 flex items-center gap-2"></h3>
+                <button id="skill-detail-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div id="skill-detail-meta" class="text-[10px] text-slate-500 font-bold mb-2"></div>
+            <p id="skill-detail-desc" class="text-xs text-slate-600"></p>
+            <div id="skill-detail-stats" class="mt-4 space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-1">追加効果</div>
+                <div id="skill-detail-effects" class="space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            </div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-1">マイルストーン</div>
+                <div id="skill-detail-milestones" class="space-y-1 text-[10px] text-slate-500 font-bold"></div>
+            </div>
+            <button id="skill-detail-close-bottom" class="mt-5 w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg">閉じる</button>
+        </div>
+    </div>
+
     <script>
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (e) {
@@ -2937,6 +2959,117 @@
             if (event.target === statusEffectModal) closeStatusEffectModal();
         });
 
+        const skillDetailModal = document.getElementById('skill-detail-modal');
+        const skillDetailTitle = document.getElementById('skill-detail-title');
+        const skillDetailMeta = document.getElementById('skill-detail-meta');
+        const skillDetailDesc = document.getElementById('skill-detail-desc');
+        const skillDetailStats = document.getElementById('skill-detail-stats');
+        const skillDetailEffects = document.getElementById('skill-detail-effects');
+        const skillDetailMilestones = document.getElementById('skill-detail-milestones');
+        const openSkillDetailModal = (job, type, idx, level) => {
+            const base = JobData[job][type][idx];
+            if (!base) return;
+            const maxLevel = base.maxLevel || SkillMaxLevel;
+            const currentLevel = Math.max(0, level || 0);
+            const label = type === 'active' ? 'アクティブ' : 'パッシブ';
+            const displaySkill = type === 'active'
+                ? buildActiveSkill(job, idx, Math.max(1, currentLevel || 1))
+                : base;
+            skillDetailTitle.innerHTML = `<i class="fas fa-circle-info text-slate-500"></i> ${displaySkill.name}`;
+            skillDetailMeta.textContent = `${label} / Lv ${currentLevel}/${maxLevel}`;
+            skillDetailDesc.textContent = displaySkill.desc || '説明がありません。';
+
+            const stats = [];
+            if (type === 'active') {
+                if (displaySkill.mp !== undefined) stats.push(`MP消費: ${displaySkill.mp}`);
+                if (displaySkill.pow !== undefined) stats.push(`威力倍率: ${displaySkill.pow}`);
+                if (displaySkill.hits) stats.push(`ヒット数: ${displaySkill.hits}`);
+                if (displaySkill.accuracyBonus) stats.push(`命中補正: +${displaySkill.accuracyBonus}%`);
+                if (displaySkill.critBonus) stats.push(`会心補正: +${displaySkill.critBonus}%`);
+                if (displaySkill.mpHeal) stats.push(`MP吸収率: ${Math.round(displaySkill.mpHeal * 100)}%`);
+                if (displaySkill.expBonus) stats.push(`追加EXP: +${displaySkill.expBonus}%`);
+                if (displaySkill.leech) stats.push(`吸血率: ${displaySkill.leech}%`);
+                if (displaySkill.hpCost) stats.push(`HP消費: ${Math.round(displaySkill.hpCost * 100)}%`);
+                if (displaySkill.type === 'heal') stats.push('効果: 回復');
+            } else if (base.apply) {
+                stats.push('効果: 常時ステータス強化');
+            } else if (base.logic) {
+                stats.push('効果: 条件付きボーナス');
+            }
+            skillDetailStats.innerHTML = stats.length
+                ? stats.map((line) => `<div>${line}</div>`).join('')
+                : '<div>数値情報なし</div>';
+
+            const effectLines = [];
+            if (type === 'active' && Array.isArray(displaySkill.effects) && displaySkill.effects.length > 0) {
+                displaySkill.effects.forEach((effect) => {
+                    const def = StatusDefs[effect.id];
+                    const name = def ? def.name : effect.id;
+                    const target = effect.target === 'self' ? '自分' : '敵';
+                    const stacks = effect.stacks ?? 1;
+                    const turns = effect.turns ?? def?.defaultTurns ?? 1;
+                    effectLines.push(`${target}: ${name} ${stacks}スタック / ${turns}ターン`);
+                });
+            }
+            skillDetailEffects.innerHTML = effectLines.length
+                ? effectLines.map((line) => `<div>${line}</div>`).join('')
+                : '<div>追加効果なし</div>';
+
+            const milestoneLines = [];
+            if (type === 'active') {
+                const hasEffects = Array.isArray(base.effects) && base.effects.length > 0;
+                SkillMilestoneLevels.forEach((threshold) => {
+                    const reached = currentLevel >= threshold;
+                    let detail = '';
+                    if (threshold === 10) {
+                        detail = hasEffects ? '既存効果のスタック+1' : '命中+5%';
+                    }
+                    if (threshold === 30) {
+                        detail = hasEffects ? '既存効果の継続+1ターン' : '会心+5%';
+                    }
+                    if (threshold === 50) {
+                        if (displaySkill.type === 'heal') {
+                            detail = '再生(HP)付与 + バリア展開';
+                        } else if (hasEffects) {
+                            detail = displaySkill.isMagic ? '敵に弱体を追加' : '敵に脆弱を追加';
+                        } else {
+                            detail = '威力+20% / ヒット+1';
+                        }
+                    }
+                    milestoneLines.push(`${reached ? '★' : '☆'} Lv${threshold}: ${detail}`);
+                });
+            } else {
+                const milestone = PassiveMilestoneBonuses?.[job]?.[idx] || {};
+                SkillMilestoneLevels.forEach((threshold) => {
+                    const reached = currentLevel >= threshold;
+                    const statsBonus = milestone[threshold]?.stats;
+                    const detail = statsBonus
+                        ? Object.entries(statsBonus).map(([key, value]) => {
+                            const labelText = StatLabels[key] || key;
+                            const suffix = PercentStats.has(key) ? '%' : '';
+                            return `${labelText}+${value}${suffix}`;
+                        }).join(' / ')
+                        : '追加効果なし';
+                    milestoneLines.push(`${reached ? '★' : '☆'} Lv${threshold}: ${detail}`);
+                });
+            }
+            skillDetailMilestones.innerHTML = milestoneLines.length
+                ? milestoneLines.map((line) => `<div>${line}</div>`).join('')
+                : '<div>マイルストーンなし</div>';
+
+            skillDetailModal.classList.remove('hidden');
+            skillDetailModal.classList.add('flex');
+        };
+        const closeSkillDetailModal = () => {
+            skillDetailModal.classList.add('hidden');
+            skillDetailModal.classList.remove('flex');
+        };
+        document.getElementById('skill-detail-close').addEventListener('click', closeSkillDetailModal);
+        document.getElementById('skill-detail-close-bottom').addEventListener('click', closeSkillDetailModal);
+        skillDetailModal.addEventListener('click', (event) => {
+            if (event.target === skillDetailModal) closeSkillDetailModal();
+        });
+
         const lootFilterModal = document.getElementById('loot-filter-modal');
         const lootFilterOpenBtn = document.getElementById('loot-filter-open');
         const lootFilterCloseBtn = document.getElementById('loot-filter-close');
@@ -3095,9 +3228,9 @@
                 
                 let actionPart = '';
                 if (!isLearned) {
-                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
+                    actionPart = `<button onclick="event.stopPropagation(); learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl">1SP習得</button>`;
                 } else if (!isMax) {
-                    actionPart = `<button onclick="learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-amber-500 text-white text-[10px] font-black rounded-xl">1SP強化</button>`;
+                    actionPart = `<button onclick="event.stopPropagation(); learnSkill('${Game.currentJobTab}', '${Game.currentSkillType}', ${idx})" class="shrink-0 px-4 py-2 bg-amber-500 text-white text-[10px] font-black rounded-xl">1SP強化</button>`;
                 } else {
                     actionPart = `<span class="shrink-0 text-xs font-black text-slate-400"><i class="fas fa-check-circle"></i></span>`;
                 }
@@ -3107,7 +3240,7 @@
                     actionPart = `
                         <div class="flex items-center gap-2">
                             ${actionPart}
-                            <button onclick="assignSkillToSlot('${Game.currentJobTab}', ${idx})" class="shrink-0 px-3 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl">S${targetSlot}セット</button>
+                            <button onclick="event.stopPropagation(); assignSkillToSlot('${Game.currentJobTab}', ${idx})" class="shrink-0 px-3 py-2 bg-blue-600 text-white text-[10px] font-black rounded-xl">S${targetSlot}セット</button>
                         </div>
                     `;
                 }
@@ -3129,6 +3262,9 @@
                         ${actionPart}
                     </div>
                 `;
+                card.addEventListener('click', () => {
+                    openSkillDetailModal(Game.currentJobTab, Game.currentSkillType, idx, level);
+                });
                 list.appendChild(card);
             });
         }
