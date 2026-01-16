@@ -934,10 +934,16 @@
                     ワープ
                 </button>
             </div>
+            <div id="warp-bossrush-note" class="mt-2 text-[10px] text-amber-600 font-bold hidden">※10001F以上は任意ワープ不可（ボスラッシュはマイルストーンのみ）</div>
             <div class="mt-4">
                 <div class="text-[10px] text-slate-400 font-black mb-2">討伐済みボス</div>
                 <div id="warp-boss-empty" class="text-[10px] text-slate-400 hidden">討伐したボスがありません。</div>
                 <div id="warp-boss-buttons" class="grid grid-cols-3 gap-2"></div>
+            </div>
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-black mb-2">ボスラッシュ・マイルストーン</div>
+                <div id="warp-bossrush-empty" class="text-[10px] text-slate-400 hidden">ボスラッシュのマイルストーンがありません。</div>
+                <div id="warp-bossrush-buttons" class="grid grid-cols-3 gap-2"></div>
             </div>
         </div>
     </div>
@@ -958,6 +964,7 @@
             floor: 1,
             maxFloor: 1,
             defeatedBossFloors: [],
+            defeatedBossRushMilestones: [],
             state: 'idle',
             stayOnFloor: false,
             player: {
@@ -1583,6 +1590,10 @@
             10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
             ...Array.from({ length: 18 }, (_, idx) => 1500 + idx * 500)
         ];
+        const BossRushStartFloor = 10001;
+        const BossRushSequence = [...BossFloors];
+        const BossRushSequenceEndFloor = BossRushStartFloor + BossRushSequence.length - 1;
+        const BossRushNoDropStartFloor = BossRushSequenceEndFloor + 1;
         const BossDefs = {
             10: {
                 floor: 10,
@@ -2462,6 +2473,20 @@
                 { name: "終焉神の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 160 }, { key: "vit", value: 45 }, { key: "maxHp", value: 260 }], uniqueStats: [{ key: "bossDropSynergy", value: 8 }] }
             ]
         };
+        const BossRushDropScale = 1.4;
+        const BossRushLootTables = Object.fromEntries(
+            BossRushSequence.map((_, idx) => {
+                const floor = BossRushStartFloor + idx;
+                const baseTable = BossLootTables[10000] || [];
+                const table = baseTable.map((item) => ({
+                    ...item,
+                    name: `DX${item.name}`,
+                    stats: item.stats.map((stat) => ({ ...stat, value: Math.max(1, Math.floor(stat.value * BossRushDropScale)) })),
+                    uniqueStats: (item.uniqueStats || []).map((stat) => ({ ...stat }))
+                }));
+                return [floor, table];
+            })
+        );
 
         const StatLabels = {
             str: "STR",
@@ -3401,6 +3426,9 @@
             if (!Array.isArray(Game.defeatedBossFloors)) {
                 Game.defeatedBossFloors = [];
             }
+            if (!Array.isArray(Game.defeatedBossRushMilestones)) {
+                Game.defeatedBossRushMilestones = [];
+            }
             Game.maxFloor = Math.max(1, Game.maxFloor, Game.floor);
         };
 
@@ -3409,11 +3437,13 @@
             return Game.maxFloor;
         };
 
-        const normalizeWarpFloor = (value) => {
+        const normalizeWarpFloor = (value, options = {}) => {
+            const allowBossRush = options.allowBossRush ?? false;
             const maxFloor = getWarpMaxFloor();
+            const upperLimit = allowBossRush ? maxFloor : Math.min(maxFloor, BossRushStartFloor - 1);
             const parsed = Number.parseInt(value, 10);
             if (Number.isNaN(parsed)) return null;
-            return Math.min(maxFloor, Math.max(1, parsed));
+            return Math.min(upperLimit, Math.max(1, parsed));
         };
 
         const renderWarpBossButtons = () => {
@@ -3437,21 +3467,50 @@
             });
         };
 
+        const renderWarpBossRushButtons = () => {
+            const container = document.getElementById('warp-bossrush-buttons');
+            const empty = document.getElementById('warp-bossrush-empty');
+            if (!container) return;
+            container.innerHTML = '';
+            const floors = (Game.defeatedBossRushMilestones || [])
+                .filter((floor) => floor >= BossRushStartFloor)
+                .sort((a, b) => a - b);
+            if (floors.length === 0) {
+                if (empty) empty.classList.remove('hidden');
+                return;
+            }
+            if (empty) empty.classList.add('hidden');
+            floors.forEach((floor) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'bg-amber-50 text-amber-700 text-[10px] font-black px-2 py-2 rounded-xl flex items-center justify-center gap-1 hover:bg-amber-100 transition';
+                button.innerHTML = `<i class="fas fa-flag-checkered"></i> ${floor}F`;
+                button.addEventListener('click', () => performWarp(floor, { allowBossRush: true }));
+                container.appendChild(button);
+            });
+        };
+
         const syncWarpModal = () => {
             const maxFloor = getWarpMaxFloor();
             const maxFloorEl = document.getElementById('warp-max-floor');
             const input = document.getElementById('warp-input');
+            const note = document.getElementById('warp-bossrush-note');
             if (maxFloorEl) {
                 maxFloorEl.textContent = maxFloor;
             }
             if (input) {
-                input.max = maxFloor;
-                const normalized = normalizeWarpFloor(input.value || Game.floor);
+                const inputMax = Math.min(maxFloor, BossRushStartFloor - 1);
+                input.max = inputMax;
+                const normalized = normalizeWarpFloor(input.value || Game.floor, { allowBossRush: false });
                 if (normalized !== null) {
                     input.value = normalized;
                 }
             }
+            if (note) {
+                note.classList.toggle('hidden', maxFloor < BossRushStartFloor);
+            }
             renderWarpBossButtons();
+            renderWarpBossRushButtons();
         };
 
         const updateWarpButtonState = () => {
@@ -3480,14 +3539,21 @@
         const recordBossDefeat = (floor) => {
             if (!floor) return;
             ensureWarpState();
+            if (floor >= BossRushStartFloor) {
+                const milestones = Game.defeatedBossRushMilestones;
+                if (floor % 500 === 0 && !milestones.includes(floor)) {
+                    milestones.push(floor);
+                }
+                return;
+            }
             if (!Game.defeatedBossFloors.includes(floor)) {
                 Game.defeatedBossFloors.push(floor);
             }
         };
 
-        const performWarp = (value) => {
+        const performWarp = (value, options = {}) => {
             if (Game.state === 'combat') return;
-            const target = normalizeWarpFloor(value);
+            const target = normalizeWarpFloor(value, options);
             if (!target) return;
             Game.floor = target;
             Game.maxFloor = Math.max(Game.maxFloor, Game.floor);
@@ -3521,7 +3587,7 @@
                     }
                 });
                 warpInput.addEventListener('blur', () => {
-                    const normalized = normalizeWarpFloor(warpInput.value);
+                    const normalized = normalizeWarpFloor(warpInput.value, { allowBossRush: false });
                     if (normalized !== null) {
                         warpInput.value = normalized;
                     }
@@ -4427,11 +4493,24 @@
         }
 
         function spawn() {
-            const bossDef = BossDefs[Game.floor];
+            let bossDef = null;
+            if (Game.floor >= BossRushStartFloor) {
+                if (Game.floor <= BossRushSequenceEndFloor) {
+                    const originFloor = BossRushSequence[Game.floor - BossRushStartFloor];
+                    bossDef = BossDefs[originFloor] ? { ...BossDefs[originFloor], originFloor } : null;
+                } else {
+                    const pool = Object.values(BossDefs);
+                    const picked = pickRandom(pool);
+                    bossDef = picked ? { ...picked, originFloor: picked.floor } : null;
+                }
+            } else {
+                bossDef = BossDefs[Game.floor];
+            }
             if (bossDef) {
                 const scale = getBossScale(Game.floor);
                 Game.enemy = {
                     ...bossDef,
+                    floor: Game.floor,
                     maxHp: Math.floor(bossDef.hp * scale),
                     hp: Math.floor(bossDef.hp * scale),
                     str: Math.floor(bossDef.str * scale),
@@ -4853,15 +4932,17 @@
             restorePotionCapacity(Game.player.potion1);
             restorePotionCapacity(Game.player.potion2);
             // Drop Luck Check
-            const eliteLootMultiplier = Game.enemy?.elite?.lootMultiplier ?? 1;
-            let dropChance = Math.min(0.95, getTotalStats().luck / 100);
-            dropChance = Math.min(0.95, dropChance * eliteLootMultiplier);
-            if (Math.random() < dropChance) queueLoot(buildEquipmentLoot());
-            if (Math.random() < dropChance) queueLoot(buildPotionLoot());
-            const bonusRolls = Game.enemy?.elite ? Math.floor(Game.enemy.elite.rank / 2) : 0;
-            for (let i = 0; i < bonusRolls; i++) {
+            if (Game.floor < BossRushNoDropStartFloor) {
+                const eliteLootMultiplier = Game.enemy?.elite?.lootMultiplier ?? 1;
+                let dropChance = Math.min(0.95, getTotalStats().luck / 100);
+                dropChance = Math.min(0.95, dropChance * eliteLootMultiplier);
                 if (Math.random() < dropChance) queueLoot(buildEquipmentLoot());
                 if (Math.random() < dropChance) queueLoot(buildPotionLoot());
+                const bonusRolls = Game.enemy?.elite ? Math.floor(Game.enemy.elite.rank / 2) : 0;
+                for (let i = 0; i < bonusRolls; i++) {
+                    if (Math.random() < dropChance) queueLoot(buildEquipmentLoot());
+                    if (Math.random() < dropChance) queueLoot(buildPotionLoot());
+                }
             }
             openNextLoot();
             triggerAutosave();
@@ -4941,7 +5022,7 @@
 
         function buildEquipmentLoot() {
             if (Game.enemy?.isBoss) {
-                const bossTable = BossLootTables[Game.enemy.floor];
+                const bossTable = BossRushLootTables[Game.enemy.floor] || BossLootTables[Game.enemy.floor];
                 if (bossTable && bossTable.length > 0) {
                     const base = pickRandom(bossTable);
                     return buildBossItem(base);
