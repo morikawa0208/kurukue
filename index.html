@@ -1002,6 +1002,10 @@
             enemy: null, logs: [], dropLogs: []
         };
 
+        const MAX_LEVEL = 300;
+        const LEVEL_UP_SKILL_POINTS = 1;
+        const MAX_SKILL_POINTS = 300;
+
         const DefaultGameState = JSON.parse(JSON.stringify(Game));
         const buildInitialSnapshot = () => JSON.parse(JSON.stringify(DefaultGameState));
 
@@ -1067,6 +1071,13 @@
         const applySaveData = (snapshot) => {
             if (!snapshot || typeof snapshot !== 'object') return;
             mergeSaveData(Game, snapshot);
+            if (Game.player) {
+                Game.player.level = Math.min(MAX_LEVEL, Game.player.level || 1);
+                Game.player.sp = Math.min(MAX_SKILL_POINTS, Game.player.sp || 0);
+                if (Game.player.level >= MAX_LEVEL && Game.player.next) {
+                    Game.player.exp = Math.min(Game.player.exp || 0, Game.player.next - 1);
+                }
+            }
         };
 
         const renderSaveSlots = () => {
@@ -4314,7 +4325,7 @@
                     });
                 });
             });
-            Game.player.sp += refund;
+            Game.player.sp = Math.min(MAX_SKILL_POINTS, Game.player.sp + refund);
             renderSkillList();
             updateUI();
             triggerAutosave();
@@ -4825,16 +4836,19 @@
             }
             Game.player.exp += gain;
 
-            if (Game.player.exp >= Game.player.next) {
+            if (Game.player.exp >= Game.player.next && Game.player.level < MAX_LEVEL) {
                 Game.player.level++;
                 Game.player.exp -= Game.player.next;
                 Game.player.next = Math.floor(Game.player.next * 1.4);
                 Game.player.maxHp += 25; Game.player.hp = Game.player.maxHp;
                 Game.player.maxMp += 15; Game.player.mp = Game.player.maxMp;
                 Game.player.str += 3; Game.player.vit += 3; Game.player.int += 3; Game.player.dex += 2;
-                Game.player.sp += 3;
+                Game.player.sp = Math.min(MAX_SKILL_POINTS, Game.player.sp + LEVEL_UP_SKILL_POINTS);
                 addLog(`LEVEL UP! [${Game.player.level}]`, "text-blue-400 font-black");
                 document.getElementById('nav-sp-dot').classList.remove('hidden');
+            }
+            if (Game.player.level >= MAX_LEVEL) {
+                Game.player.exp = Math.min(Game.player.exp, Game.player.next - 1);
             }
             restorePotionCapacity(Game.player.potion1);
             restorePotionCapacity(Game.player.potion2);
