@@ -2409,6 +2409,9 @@
         window.onload = () => {
             setupSaveControls();
             startAutosaveTimer();
+            window.addEventListener('beforeunload', () => {
+                triggerAutosave();
+            });
             const autosaveSlot = getAutosaveSlot();
             const raw = localStorage.getItem(getSaveKey(autosaveSlot));
             if (raw) {
@@ -2672,6 +2675,7 @@
                 addLog("バリアを付与！", "text-sky-400");
             }
             updateUI();
+            triggerAutosave();
         }
 
         function advanceStatusEffects(target, phase) {
@@ -3257,6 +3261,7 @@
                 setTimeout(enemyTurn, 300);
             }
             updateUI();
+            triggerAutosave();
         };
 
         function enemyTurn() {
