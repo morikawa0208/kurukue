@@ -129,6 +129,42 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.06); }
         }
+
+        .item-name-shrink {
+            font-size: 0.72rem;
+            line-height: 1.1;
+        }
+
+        .item-stat-categories {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .item-stat-group {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .item-stat-group-title {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            font-weight: 900;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .item-unique-block {
+            margin-top: 6px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
     </style>
 </head>
 <body class="flex flex-col">
@@ -3399,6 +3435,52 @@
             return stats.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
         };
 
+        const renderStatGroupHtml = (title, icon, lines) => {
+            if (!lines.length) return '';
+            const items = lines.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
+            return `
+                <div class="item-stat-group">
+                    <div class="item-stat-group-title"><i class="fas ${icon}"></i>${title}</div>
+                    <div class="space-y-0.5">${items}</div>
+                </div>
+            `;
+        };
+
+        const renderItemStatsGroupedHtml = (item) => {
+            if (!item) return '';
+            const baseLines = renderStatLines(item.baseStats || []);
+            const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
+            const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
+            const uniqueLines = renderStatLines(item.uniqueStats || []);
+            const groups = [
+                renderStatGroupHtml("基礎", "fa-layer-group", baseLines),
+                renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
+                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
+            ].filter(Boolean);
+            const groupHtml = groups.length ? `<div class="item-stat-categories">${groups.join('')}</div>` : '';
+            const uniqueHtml = uniqueLines.length
+                ? `
+                    <div class="item-unique-block">
+                        <div class="item-stat-group-title text-amber-600"><i class="fas fa-crown"></i>固有効果</div>
+                        <div class="space-y-0.5">
+                            ${uniqueLines.map((line) => `<div class="text-[10px] text-amber-700 font-bold">${line}</div>`).join('')}
+                        </div>
+                    </div>
+                `
+                : '';
+            return `${groupHtml}${uniqueHtml}`;
+        };
+
+        const updateEquipNameDisplay = (elementId, item) => {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const name = item?.name || "なし";
+            const rarity = item?.rarity || "normal";
+            const isLong = name.length >= 16;
+            el.innerText = name;
+            el.className = `font-bold truncate text-sm rarity-${rarity} ${isLong ? "item-name-shrink" : ""}`.trim();
+        };
+
         const createStarterPotion = (name) => {
             const base = PotionBases.find((potion) => potion.name === name);
             if (!base) return null;
@@ -5457,27 +5539,20 @@
             document.getElementById('stat-elite-encounter').innerText = `${totals.eliteEncounter}%`;
             document.getElementById('stat-gold-boost').innerText = `${totals.goldBoost}%`;
 
-            document.getElementById('equip-weapon').innerText = p.weapon?.name || "なし";
-            document.getElementById('equip-weapon').className = `font-bold truncate text-sm rarity-${p.weapon?.rarity||'normal'}`;
-            document.getElementById('weapon-val').innerHTML = p.weapon ? renderItemStatsHtml(p.weapon) : "";
-            document.getElementById('equip-armor').innerText = p.armor?.name || "なし";
-            document.getElementById('equip-armor').className = `font-bold truncate text-sm rarity-${p.armor?.rarity||'normal'}`;
-            document.getElementById('armor-val').innerHTML = p.armor ? renderItemStatsHtml(p.armor) : "";
-            document.getElementById('equip-head').innerText = p.head?.name || "なし";
-            document.getElementById('equip-head').className = `font-bold truncate text-sm rarity-${p.head?.rarity||'normal'}`;
-            document.getElementById('head-val').innerHTML = p.head ? renderItemStatsHtml(p.head) : "";
-            document.getElementById('equip-hands').innerText = p.hands?.name || "なし";
-            document.getElementById('equip-hands').className = `font-bold truncate text-sm rarity-${p.hands?.rarity||'normal'}`;
-            document.getElementById('hands-val').innerHTML = p.hands ? renderItemStatsHtml(p.hands) : "";
-            document.getElementById('equip-feet').innerText = p.feet?.name || "なし";
-            document.getElementById('equip-feet').className = `font-bold truncate text-sm rarity-${p.feet?.rarity||'normal'}`;
-            document.getElementById('feet-val').innerHTML = p.feet ? renderItemStatsHtml(p.feet) : "";
-            document.getElementById('equip-accessory1').innerText = p.accessory1?.name || "なし";
-            document.getElementById('equip-accessory1').className = `font-bold truncate text-sm rarity-${p.accessory1?.rarity||'normal'}`;
-            document.getElementById('accessory1-val').innerHTML = p.accessory1 ? renderItemStatsHtml(p.accessory1) : "";
-            document.getElementById('equip-accessory2').innerText = p.accessory2?.name || "なし";
-            document.getElementById('equip-accessory2').className = `font-bold truncate text-sm rarity-${p.accessory2?.rarity||'normal'}`;
-            document.getElementById('accessory2-val').innerHTML = p.accessory2 ? renderItemStatsHtml(p.accessory2) : "";
+            updateEquipNameDisplay('equip-weapon', p.weapon);
+            document.getElementById('weapon-val').innerHTML = p.weapon ? renderItemStatsGroupedHtml(p.weapon) : "";
+            updateEquipNameDisplay('equip-armor', p.armor);
+            document.getElementById('armor-val').innerHTML = p.armor ? renderItemStatsGroupedHtml(p.armor) : "";
+            updateEquipNameDisplay('equip-head', p.head);
+            document.getElementById('head-val').innerHTML = p.head ? renderItemStatsGroupedHtml(p.head) : "";
+            updateEquipNameDisplay('equip-hands', p.hands);
+            document.getElementById('hands-val').innerHTML = p.hands ? renderItemStatsGroupedHtml(p.hands) : "";
+            updateEquipNameDisplay('equip-feet', p.feet);
+            document.getElementById('feet-val').innerHTML = p.feet ? renderItemStatsGroupedHtml(p.feet) : "";
+            updateEquipNameDisplay('equip-accessory1', p.accessory1);
+            document.getElementById('accessory1-val').innerHTML = p.accessory1 ? renderItemStatsGroupedHtml(p.accessory1) : "";
+            updateEquipNameDisplay('equip-accessory2', p.accessory2);
+            document.getElementById('accessory2-val').innerHTML = p.accessory2 ? renderItemStatsGroupedHtml(p.accessory2) : "";
 
             // Inventory
             const invList = document.getElementById('inventory-list');
