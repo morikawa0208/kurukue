@@ -154,7 +154,11 @@
         <!-- BATTLE PAGE -->
         <section id="page-battle" class="page active p-4">
             <div class="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
-                <div class="absolute right-2 top-2 z-10">
+                <div class="absolute right-2 top-2 z-10 flex items-center gap-2">
+                    <label class="flex items-center gap-1.5 bg-white/90 text-slate-600 text-[10px] font-bold px-2 py-1 rounded-full shadow border border-slate-200">
+                        <input id="rematch-toggle" type="checkbox" class="accent-slate-800">
+                        再戦
+                    </label>
                     <button id="warp-btn" class="bg-slate-800 text-white text-xs font-black px-3 py-2 rounded-full shadow flex items-center gap-2 hover:bg-slate-700 active:scale-95 transition">
                         <i class="fas fa-location-arrow"></i>
                         ワープ
@@ -938,6 +942,7 @@
             maxFloor: 1,
             defeatedBossFloors: [],
             state: 'idle',
+            stayOnFloor: false,
             player: {
                 level: 1,
                 hp: 100, maxHp: 100, mp: 30, maxMp: 30,
@@ -2685,10 +2690,20 @@
             }
         };
 
+        const setupRematchToggle = () => {
+            const rematchToggle = document.getElementById('rematch-toggle');
+            if (!rematchToggle) return;
+            rematchToggle.addEventListener('change', (event) => {
+                Game.stayOnFloor = event.target.checked;
+                updateUI();
+            });
+        };
+
         // --- CORE LOGIC ---
         window.onload = () => {
             setupSaveControls();
             setupWarpControls();
+            setupRematchToggle();
             startAutosaveTimer();
             window.addEventListener('beforeunload', () => {
                 triggerAutosave();
@@ -3573,9 +3588,12 @@
         document.getElementById('action-btn').onclick = () => {
             if (Game.state === 'dead') return;
             if (Game.state === 'idle') {
-                Game.floor++;
+                const stayOnFloor = Game.stayOnFloor;
+                if (!stayOnFloor) {
+                    Game.floor++;
+                }
                 spawn();
-                addLog(`B${Game.floor}へ潜入...`);
+                addLog(stayOnFloor ? `B${Game.floor}へ再戦...` : `B${Game.floor}へ潜入...`);
                 updateUI();
                 triggerAutosave();
                 return;
@@ -4170,6 +4188,10 @@
             document.getElementById('header-sp').innerText = p.sp;
             document.getElementById('header-gold').innerText = formatGold(p.gold);
             document.getElementById('skill-sp-display').innerText = p.sp;
+            const rematchToggle = document.getElementById('rematch-toggle');
+            if (rematchToggle) {
+                rematchToggle.checked = Boolean(Game.stayOnFloor);
+            }
 
             // Health/Mana/Exp
             p.hp = Math.min(p.hp, derived.maxHp);
@@ -4326,7 +4348,9 @@
                 btn.innerHTML = `<i class="fas fa-sword"></i> <span>攻撃</span>`;
                 btn.className = "w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2";
             } else {
-                btn.innerHTML = `<i class="fas fa-shoe-prints"></i> <span>次の階層へ</span>`;
+                const idleLabel = Game.stayOnFloor ? '再戦' : '次の階層へ';
+                const idleIcon = Game.stayOnFloor ? 'fa-rotate-right' : 'fa-shoe-prints';
+                btn.innerHTML = `<i class="fas ${idleIcon}"></i> <span>${idleLabel}</span>`;
                 btn.className = "w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-transform text-lg flex items-center justify-center gap-2";
             }
 
