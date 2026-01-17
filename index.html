@@ -3423,27 +3423,30 @@
             return `<span class="enhance-broken">破損</span>`;
         };
 
-        const getWeaponEnhancementStats = (item) => {
-            if (!isEnhanceableItem(item)) return [];
-            const level = getWeaponEnhancementLevel(item);
-            if (level <= 0 || item.isBroken) return [];
-            const statKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
-            return [{ key: statKey, value: level }];
-        };
-
         const getEnhancementPreviewStat = (item) => {
             if (!isEnhanceableItem(item)) return null;
             const statKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
             return { key: statKey, value: 1 };
         };
 
+        const getEnhancedBaseStats = (item) => {
+            if (!item) return [];
+            const baseStats = (item.baseStats || []).map((stat) => ({ ...stat }));
+            if (!isEnhanceableItem(item)) return baseStats;
+            const level = getWeaponEnhancementLevel(item);
+            if (level <= 0 || item.isBroken) return baseStats;
+            const targetKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
+            return baseStats.map((stat) => (
+                stat.key === targetKey ? { ...stat, value: stat.value + level } : stat
+            ));
+        };
+
         const getItemStats = (item) => {
             if (!item) return [];
             return [
-                ...(item.baseStats || []),
+                ...getEnhancedBaseStats(item),
                 ...(item.affixStats || []),
-                ...(item.uniqueStats || []),
-                ...getWeaponEnhancementStats(item)
+                ...(item.uniqueStats || [])
             ];
         };
 
@@ -3880,18 +3883,16 @@
                         value: valueMap[stat.key] ?? totals[stat.key] ?? stat.value
                     }));
                 })()
-                : (item.baseStats || []);
+                : getEnhancedBaseStats(item);
             const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
             const uniqueLines = renderStatLines(item.uniqueStats || []);
-            const enhancementLines = renderStatLines(getWeaponEnhancementStats(item));
             const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
                 renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
                 renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
-                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines),
-                renderStatGroupHtml("強化補正", "fa-wand-magic-sparkles", enhancementLines)
+                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
             ].filter(Boolean);
             const groupHtml = groups.length ? `<div class="item-stat-categories">${groups.join('')}</div>` : '';
             const uniqueHtml = uniqueLines.length
