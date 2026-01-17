@@ -2515,125 +2515,70 @@
             ]
         };
 
-        const BossUniqueEffectThemes = [
-            { pattern: /毒/, status: "poison", label: "毒" },
-            { pattern: /氷|凍|零度/, status: "freeze", label: "凍結" },
-            { pattern: /雷|電/, status: "blind", label: "暗闇" },
-            { pattern: /影|闇|虚無/, status: "silence", label: "沈黙" },
-            { pattern: /炎|熾|灼|燼/, status: "weaken", label: "弱体" },
-            { pattern: /岩|鉄|鋼|盾/, status: "defenseDown", label: "脆甲" },
-            { pattern: /聖|裁|神|祈/, status: "attackDown", label: "衰弱" },
-            { pattern: /竜|星|審|滅/, status: "vulnerable", label: "脆弱" }
-        ];
 
-        const getBossUniqueTheme = (name) => (
-            BossUniqueEffectThemes.find((theme) => theme.pattern.test(name)) || null
-        );
-
-        const createBossUniqueEffect = (base, floor, index) => {
-            const id = `boss-${floor}-${index}`;
-            const namePrefix = `${base.name}：`;
-            const baseValue = 8 + Math.floor(floor / 500) + index * 2;
-            const theme = getBossUniqueTheme(base.name);
-
-            if (floor === 3000 && index === 0) {
-                return { id, type: "statMultiplier", stat: "int", value: 28, label: `${namePrefix}INT倍率 +28%` };
-            }
-            if (floor === 5000 && index === 1) {
-                return { id, type: "statMultiplier", stat: "luk", value: 30, label: `${namePrefix}LUK倍率 +30%` };
-            }
-            if (floor === 10000 && index === 0) {
-                return { id, type: "levelRatioBoost", labelBase: `${namePrefix}一次ステータス成長` };
-            }
-
-            if (theme) {
-                if (index === 0) {
-                    return {
-                        id,
-                        type: "damageBoost",
-                        condition: { type: "enemyStatus", status: theme.status },
-                        value: baseValue + 4,
-                        label: `${namePrefix}${theme.label}状態の敵に与ダメ+${baseValue + 4}%`
-                    };
-                }
-                return {
-                    id,
-                    type: "bonusHitsChance",
-                    condition: { type: "enemyStatus", status: theme.status },
-                    chance: Math.min(45, 18 + Math.floor(floor / 700)),
-                    hits: 1,
-                    hitMultiplier: 0.6,
-                    label: `${namePrefix}${theme.label}中に${Math.min(45, 18 + Math.floor(floor / 700))}%で追撃(+1Hit)`
-                };
-            }
-
-            const variant = (Math.floor(floor / 50) + index) % 7;
-            if (variant === 0) {
-                return {
-                    id,
-                    type: "damageBoost",
-                    condition: { type: "playerHpBelow", threshold: 0.5 },
-                    value: baseValue + 6,
-                    label: `${namePrefix}HP50%以下で与ダメ+${baseValue + 6}%`
-                };
-            }
-            if (variant === 1) {
-                return {
-                    id,
-                    type: "riskBoost",
-                    condition: { type: "playerMpZero" },
-                    value: baseValue + 10,
-                    penalty: 10,
-                    label: `${namePrefix}MP0で与ダメ+${baseValue + 10}%/被ダメ+10%`
-                };
-            }
-            if (variant === 2) {
-                return {
-                    id,
-                    type: "accuracyBoost",
-                    condition: { type: "enemyHpAbove", threshold: 0.7 },
-                    value: 8 + Math.floor(floor / 900),
-                    label: `${namePrefix}敵HP70%以上で命中+${8 + Math.floor(floor / 900)}%`
-                };
-            }
-            if (variant === 3) {
-                return {
-                    id,
-                    type: "critBoost",
-                    condition: { type: "enemyHpBelow", threshold: 0.35 },
-                    value: 6 + Math.floor(floor / 1000),
-                    label: `${namePrefix}敵HP35%以下で会心率+${6 + Math.floor(floor / 1000)}%`
-                };
-            }
-            if (variant === 4) {
-                return {
-                    id,
-                    type: "bonusHitsChance",
-                    condition: { type: "playerMpBelow", threshold: 0.25 },
-                    chance: Math.min(40, 20 + Math.floor(floor / 900)),
-                    hits: 1,
-                    hitMultiplier: 0.55,
-                    label: `${namePrefix}MP25%以下で${Math.min(40, 20 + Math.floor(floor / 900))}%追撃(+1Hit)`
-                };
-            }
-            if (variant === 5) {
-                return {
-                    id,
-                    type: "extraTurnChance",
-                    condition: { type: "playerHpAbove", threshold: 0.8 },
-                    chance: Math.min(25, 12 + Math.floor(floor / 1000)),
-                    hitMultiplier: 0.7,
-                    label: `${namePrefix}HP80%以上で${Math.min(25, 12 + Math.floor(floor / 1000))}%の追加行動`
-                };
-            }
-            return {
-                id,
-                type: "damageTakenReduction",
-                condition: { type: "playerHpAbove", threshold: 0.7 },
-                value: 8 + Math.floor(floor / 900),
-                label: `${namePrefix}HP70%以上で被ダメ-${8 + Math.floor(floor / 900)}%`
-            };
+        const BossUniqueEffects = {
+            "毒牙の短剣": { type: "damageBoost", condition: { type: "enemyStatus", status: "poison" }, value: 10, label: "毒牙の短剣：毒状態の敵に与ダメ+10%" },
+            "毒煙の護符": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "poison" }, chance: 9, hits: 1, hitMultiplier: 0.6, label: "毒煙の護符：毒中に9%で追撃(+1Hit)" },
+            "疾風の爪剣": { type: "accuracyBoost", condition: { type: "enemyHpAbove", threshold: 0.7 }, value: 12, label: "疾風の爪剣：敵HP70%以上で命中+12%" },
+            "風走りのブーツ": { type: "critBoost", condition: { type: "enemyHpBelow", threshold: 0.35 }, value: 13, label: "風走りのブーツ：敵HP35%以下で会心率+13%" },
+            "岩核の大盾": { type: "damageBoost", condition: { type: "enemyStatus", status: "defenseDown" }, value: 14, label: "岩核の大盾：脆甲状態の敵に与ダメ+14%" },
+            "岩守りの兜": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "defenseDown" }, chance: 13, hits: 1, hitMultiplier: 0.6, label: "岩守りの兜：脆甲中に13%で追撃(+1Hit)" },
+            "氷晶の杖": { type: "damageBoost", condition: { type: "enemyStatus", status: "freeze" }, value: 16, label: "氷晶の杖：凍結状態の敵に与ダメ+16%" },
+            "氷牢の指輪": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "freeze" }, chance: 15, hits: 1, hitMultiplier: 0.6, label: "氷牢の指輪：凍結中に15%で追撃(+1Hit)" },
+            "宵闇のマント": { type: "damageBoost", condition: { type: "enemyStatus", status: "silence" }, value: 18, label: "宵闇のマント：沈黙状態の敵に与ダメ+18%" },
+            "闇狩りの短剣": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "silence" }, chance: 17, hits: 1, hitMultiplier: 0.6, label: "闇狩りの短剣：沈黙中に17%で追撃(+1Hit)" },
+            "熾火の大剣": { type: "damageBoost", condition: { type: "enemyStatus", status: "weaken" }, value: 20, label: "熾火の大剣：弱体状態の敵に与ダメ+20%" },
+            "炎護の手甲": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "weaken" }, chance: 19, hits: 1, hitMultiplier: 0.6, label: "炎護の手甲：弱体中に19%で追撃(+1Hit)" },
+            "雷鳴の戦槌": { type: "damageBoost", condition: { type: "enemyStatus", status: "blind" }, value: 22, label: "雷鳴の戦槌：暗闇状態の敵に与ダメ+22%" },
+            "帯電の護符": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "blind" }, chance: 21, hits: 1, hitMultiplier: 0.6, label: "帯電の護符：暗闇中に21%で追撃(+1Hit)" },
+            "聖紋のローブ": { type: "damageBoost", condition: { type: "enemyStatus", status: "attackDown" }, value: 24, label: "聖紋のローブ：衰弱状態の敵に与ダメ+24%" },
+            "聖祈の護符": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "attackDown" }, chance: 23, hits: 1, hitMultiplier: 0.6, label: "聖祈の護符：衰弱中に23%で追撃(+1Hit)" },
+            "疫毒の鎌": { type: "damageBoost", condition: { type: "enemyStatus", status: "poison" }, value: 26, label: "疫毒の鎌：毒状態の敵に与ダメ+26%" },
+            "腐蝕の指輪": { type: "critBoost", condition: { type: "enemyHpBelow", threshold: 0.35 }, value: 27, label: "腐蝕の指輪：敵HP35%以下で会心率+27%" },
+            "鉄壁の鎧": { type: "damageBoost", condition: { type: "enemyStatus", status: "defenseDown" }, value: 28, label: "鉄壁の鎧：脆甲状態の敵に与ダメ+28%" },
+            "鋼鉄のグローブ": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "defenseDown" }, chance: 27, hits: 1, hitMultiplier: 0.6, label: "鋼鉄のグローブ：脆甲中に27%で追撃(+1Hit)" },
+            "影刃の忍刀": { type: "damageBoost", condition: { type: "enemyStatus", status: "silence" }, value: 30, label: "影刃の忍刀：沈黙状態の敵に与ダメ+30%" },
+            "夜走りの足袋": { type: "damageBoost", condition: { type: "playerHpBelow", threshold: 0.5 }, value: 31, label: "夜走りの足袋：HP50%以下で与ダメ+31%" },
+            "終焉の竜槍": { type: "damageBoost", condition: { type: "enemyStatus", status: "vulnerable" }, value: 32, label: "終焉の竜槍：脆弱状態の敵に与ダメ+32%" },
+            "竜鱗の護鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "vulnerable" }, chance: 31, hits: 1, hitMultiplier: 0.6, label: "竜鱗の護鎧：脆弱中に31%で追撃(+1Hit)" },
+            "冥雷の長槍": { type: "damageBoost", condition: { type: "enemyStatus", status: "blind" }, value: 34, label: "冥雷の長槍：暗闇状態の敵に与ダメ+34%" },
+            "雷陣の印章": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "blind" }, chance: 33, hits: 1, hitMultiplier: 0.6, label: "雷陣の印章：暗闇中に33%で追撃(+1Hit)" },
+            "深淵の大剣": { type: "extraTurnChance", condition: { type: "playerHpAbove", threshold: 0.8 }, chance: 34, hitMultiplier: 0.7, label: "深淵の大剣：HP80%以上で34%の追加行動" },
+            "奈落の指輪": { type: "damageTakenReduction", condition: { type: "playerHpAbove", threshold: 0.7 }, value: 37, label: "奈落の指輪：HP70%以上で被ダメ-37%" },
+            "灼滅の双剣": { type: "damageBoost", condition: { type: "enemyStatus", status: "weaken" }, value: 38, label: "灼滅の双剣：弱体状態の敵に与ダメ+38%" },
+            "熾火の鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "weaken" }, chance: 37, hits: 1, hitMultiplier: 0.6, label: "熾火の鎧：弱体中に37%で追撃(+1Hit)" },
+            "氷獄の杖": { type: "statMultiplier", stat: "int", value: 28, label: "氷獄の杖：INT倍率 +28%" },
+            "氷牢の護符": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "freeze" }, chance: 39, hits: 1, hitMultiplier: 0.6, label: "氷牢の護符：凍結中に39%で追撃(+1Hit)" },
+            "虚無の忍刀": { type: "damageBoost", condition: { type: "enemyStatus", status: "silence" }, value: 42, label: "虚無の忍刀：沈黙状態の敵に与ダメ+42%" },
+            "終闇の外套": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "silence" }, chance: 41, hits: 1, hitMultiplier: 0.6, label: "終闇の外套：沈黙中に41%で追撃(+1Hit)" },
+            "星断の槍": { type: "damageBoost", condition: { type: "enemyStatus", status: "vulnerable" }, value: 44, label: "星断の槍：脆弱状態の敵に与ダメ+44%" },
+            "裁定の盾鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "defenseDown" }, chance: 43, hits: 1, hitMultiplier: 0.6, label: "裁定の盾鎧：脆甲中に43%で追撃(+1Hit)" },
+            "毒宴の鎌": { type: "damageBoost", condition: { type: "enemyStatus", status: "poison" }, value: 46, label: "毒宴の鎌：毒状態の敵に与ダメ+46%" },
+            "腐蝕の首飾り": { type: "accuracyBoost", condition: { type: "enemyHpAbove", threshold: 0.7 }, value: 47, label: "腐蝕の首飾り：敵HP70%以上で命中+47%" },
+            "終夜の竜剣": { type: "damageBoost", condition: { type: "enemyStatus", status: "vulnerable" }, value: 48, label: "終夜の竜剣：脆弱状態の敵に与ダメ+48%" },
+            "黒翼のマント": { type: "statMultiplier", stat: "luk", value: 30, label: "黒翼のマント：LUK倍率 +30%" },
+            "雷哭の戦槌": { type: "damageBoost", condition: { type: "enemyStatus", status: "blind" }, value: 50, label: "雷哭の戦槌：暗闇状態の敵に与ダメ+50%" },
+            "雷鳴の護符": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "blind" }, chance: 49, hits: 1, hitMultiplier: 0.6, label: "雷鳴の護符：暗闇中に49%で追撃(+1Hit)" },
+            "聖裁の槍杖": { type: "damageBoost", condition: { type: "enemyStatus", status: "attackDown" }, value: 52, label: "聖裁の槍杖：衰弱状態の敵に与ダメ+52%" },
+            "神域のローブ": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "attackDown" }, chance: 51, hits: 1, hitMultiplier: 0.6, label: "神域のローブ：衰弱中に51%で追撃(+1Hit)" },
+            "地裂の戦斧": { type: "accuracyBoost", condition: { type: "enemyHpAbove", threshold: 0.7 }, value: 54, label: "地裂の戦斧：敵HP70%以上で命中+54%" },
+            "岩界の鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "defenseDown" }, chance: 53, hits: 1, hitMultiplier: 0.6, label: "岩界の鎧：脆甲中に53%で追撃(+1Hit)" },
+            "疫神の魔槍": { type: "damageBoost", condition: { type: "enemyStatus", status: "attackDown" }, value: 56, label: "疫神の魔槍：衰弱状態の敵に与ダメ+56%" },
+            "疫毒の印環": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "poison" }, chance: 55, hits: 1, hitMultiplier: 0.6, label: "疫毒の印環：毒中に55%で追撃(+1Hit)" },
+            "影刃の双刃": { type: "damageBoost", condition: { type: "enemyStatus", status: "silence" }, value: 58, label: "影刃の双刃：沈黙状態の敵に与ダメ+58%" },
+            "影縫いの足袋": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "silence" }, chance: 57, hits: 1, hitMultiplier: 0.6, label: "影縫いの足袋：沈黙中に57%で追撃(+1Hit)" },
+            "絶対零度の杖": { type: "damageBoost", condition: { type: "enemyStatus", status: "freeze" }, value: 60, label: "絶対零度の杖：凍結状態の敵に与ダメ+60%" },
+            "氷結の護鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "freeze" }, chance: 59, hits: 1, hitMultiplier: 0.6, label: "氷結の護鎧：凍結中に59%で追撃(+1Hit)" },
+            "業火の大剣": { type: "critBoost", condition: { type: "enemyHpBelow", threshold: 0.35 }, value: 62, label: "業火の大剣：敵HP35%以下で会心率+62%" },
+            "灰燼の手甲": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "weaken" }, chance: 61, hits: 1, hitMultiplier: 0.6, label: "灰燼の手甲：弱体中に61%で追撃(+1Hit)" },
+            "星滅の大鎚": { type: "damageBoost", condition: { type: "enemyStatus", status: "vulnerable" }, value: 64, label: "星滅の大鎚：脆弱状態の敵に与ダメ+64%" },
+            "虚無の指輪": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "silence" }, chance: 63, hits: 1, hitMultiplier: 0.6, label: "虚無の指輪：沈黙中に63%で追撃(+1Hit)" },
+            "神罰の竜槍": { type: "damageBoost", condition: { type: "enemyStatus", status: "attackDown" }, value: 66, label: "神罰の竜槍：衰弱状態の敵に与ダメ+66%" },
+            "天罰の護符": { type: "riskBoost", condition: { type: "playerMpZero" }, value: 67, penalty: 67, label: "天罰の護符：MP0で与ダメ+67%/被ダメ+67%" },
+            "終極の神剣": { type: "levelRatioBoost", step: 2, gain: 1, label: "終極の神剣：一次ステータス成長：Lv2ごとに一次ステ+1" },
+            "終焉神の鎧": { type: "bonusHitsChance", condition: { type: "enemyStatus", status: "attackDown" }, chance: 67, hits: 1, hitMultiplier: 0.6, label: "終焉神の鎧：衰弱中に67%で追撃(+1Hit)" },
         };
+
         const BossRushDropScale = 1.4;
         const BossRushLootTables = Object.fromEntries(
             BossRushSequence.map((_, idx) => {
@@ -3261,15 +3206,8 @@
                 value: Math.max(1, Math.floor(stat.value * rarity.mul))
             }));
             const uniqueStats = (base.uniqueStats || []).map((stat) => ({ ...stat }));
-            const effect = createBossUniqueEffect(base, floor, index);
+            const effect = BossUniqueEffects[base.name];
             if (effect) {
-                if (effect.type === "levelRatioBoost") {
-                    const step = Math.random() < 0.5 ? 2 : 3;
-                    const gain = Math.random() < 0.5 ? 1 : 2;
-                    effect.step = step;
-                    effect.gain = gain;
-                    effect.label = `${effect.labelBase}：Lv${step}ごとに一次ステ+${gain}`;
-                }
                 uniqueStats.push({ key: "bossUniqueEffect", value: 0, effect });
             }
             return {
