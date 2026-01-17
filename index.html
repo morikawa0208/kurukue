@@ -1019,8 +1019,8 @@
                 hpRegen: 0, mpRegen: 0, goldBoost: 0,
                 critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 50, accuracy: 95,
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0, affixFind: 0, eliteEncounter: 20,
-                skillPowerBoost: 0, normalAttackBoost: 0, statusEffectStackBonus: 0, statusEffectTurnBonus: 0,
-                skillMpDiscount: 0, bossDropSynergy: 0, strMultiplier: 0, intMultiplier: 0, vitMultiplier: 0, dexMultiplier: 0,
+                skillPowerBoost: 0, statusEffectStackBonus: 0, statusEffectTurnBonus: 0,
+                skillMpDiscount: 0, strMultiplier: 0, intMultiplier: 0, vitMultiplier: 0, dexMultiplier: 0, lukMultiplier: 0,
                 exp: 0, next: 100, sp: 1,
                 gold: 0,
                 weapon: null, armor: null, head: null, hands: null, feet: null, accessory1: null, accessory2: null, potion1: null, potion2: null, inventory: [],
@@ -2529,12 +2529,142 @@
             })
         );
 
+        const BossUniqueEffectThemes = [
+            { pattern: /毒/, status: "poison", label: "毒" },
+            { pattern: /氷|凍|零度/, status: "freeze", label: "凍結" },
+            { pattern: /雷|電/, status: "blind", label: "暗闇" },
+            { pattern: /影|闇|虚無/, status: "silence", label: "沈黙" },
+            { pattern: /炎|熾|灼|燼/, status: "weaken", label: "弱体" },
+            { pattern: /岩|鉄|鋼|盾/, status: "defenseDown", label: "脆甲" },
+            { pattern: /聖|裁|神|祈/, status: "attackDown", label: "衰弱" },
+            { pattern: /竜|星|審|滅/, status: "vulnerable", label: "脆弱" }
+        ];
+
+        const getBossUniqueEffectTheme = (name) => (
+            BossUniqueEffectThemes.find((theme) => theme.pattern.test(name)) || null
+        );
+
+        const createBossUniqueEffect = (base, floor, index) => {
+            const id = `boss-${floor}-${index}`;
+            const baseValue = 10 + Math.floor(floor / 500) + index * 2;
+            const namePrefix = `${base.name}：`;
+
+            if (floor === 2000 && index === 0) {
+                return { id, type: "statMultiplier", stat: "int", value: 28, label: `${namePrefix}INT倍率 +28%` };
+            }
+            if (floor === 5000 && index === 1) {
+                return { id, type: "statMultiplier", stat: "luk", value: 30, label: `${namePrefix}LUK倍率 +30%` };
+            }
+            if (floor === 10000 && index === 0) {
+                return { id, type: "levelRatioBoost", labelBase: `${namePrefix}一次ステータス成長` };
+            }
+
+            const theme = getBossUniqueEffectTheme(base.name);
+            if (theme) {
+                if (index === 0) {
+                    return {
+                        id,
+                        type: "damageBoost",
+                        condition: { type: "enemyStatus", status: theme.status },
+                        value: baseValue + 4,
+                        label: `${namePrefix}${theme.label}状態の敵に与ダメ+${baseValue + 4}%`
+                    };
+                }
+                return {
+                    id,
+                    type: "bonusHitsChance",
+                    condition: { type: "enemyStatus", status: theme.status },
+                    chance: Math.min(45, 18 + Math.floor(floor / 700)),
+                    hits: 1,
+                    hitMultiplier: 0.6,
+                    label: `${namePrefix}${theme.label}中に${Math.min(45, 18 + Math.floor(floor / 700))}%で追撃(+1Hit)`
+                };
+            }
+
+            const variant = floor % 4;
+            if (index === 0) {
+                if (variant === 0) {
+                    return {
+                        id,
+                        type: "damageBoost",
+                        condition: { type: "playerHpBelow", threshold: 0.5 },
+                        value: baseValue + 6,
+                        label: `${namePrefix}HP50%以下で与ダメ+${baseValue + 6}%`
+                    };
+                }
+                if (variant === 1) {
+                    return {
+                        id,
+                        type: "riskBoost",
+                        condition: { type: "playerMpZero" },
+                        value: baseValue + 12,
+                        penalty: 12,
+                        label: `${namePrefix}MP0で与ダメ+${baseValue + 12}%/被ダメ+12%`
+                    };
+                }
+                if (variant === 2) {
+                    return {
+                        id,
+                        type: "damageBoost",
+                        condition: { type: "enemyHpAbove", threshold: 0.7 },
+                        value: baseValue + 5,
+                        label: `${namePrefix}敵HP70%以上で与ダメ+${baseValue + 5}%`
+                    };
+                }
+                return {
+                    id,
+                    type: "damageBoost",
+                    condition: { type: "enemyHpBelow", threshold: 0.35 },
+                    value: baseValue + 8,
+                    label: `${namePrefix}敵HP35%以下で与ダメ+${baseValue + 8}%`
+                };
+            }
+
+            if (variant === 0) {
+                return {
+                    id,
+                    type: "damageTakenReduction",
+                    condition: { type: "playerHpAbove", threshold: 0.7 },
+                    value: 8 + Math.floor(floor / 800),
+                    label: `${namePrefix}HP70%以上で被ダメ-${8 + Math.floor(floor / 800)}%`
+                };
+            }
+            if (variant === 1) {
+                return {
+                    id,
+                    type: "bonusHitsChance",
+                    condition: { type: "playerMpBelow", threshold: 0.25 },
+                    chance: Math.min(40, 20 + Math.floor(floor / 900)),
+                    hits: 1,
+                    hitMultiplier: 0.55,
+                    label: `${namePrefix}MP25%以下で${Math.min(40, 20 + Math.floor(floor / 900))}%追撃(+1Hit)`
+                };
+            }
+            if (variant === 2) {
+                return {
+                    id,
+                    type: "critBoost",
+                    condition: { type: "playerHpAbove", threshold: 0.9 },
+                    value: 8 + Math.floor(floor / 1000),
+                    label: `${namePrefix}HP90%以上で会心率+${8 + Math.floor(floor / 1000)}%`
+                };
+            }
+            return {
+                id,
+                type: "accuracyBoost",
+                condition: { type: "playerHpBelow", threshold: 0.4 },
+                value: 10 + Math.floor(floor / 900),
+                label: `${namePrefix}HP40%以下で命中+${10 + Math.floor(floor / 900)}%`
+            };
+        };
+
         const StatLabels = {
             str: "STR",
             vit: "VIT",
             int: "INT",
             dex: "DEX",
             luk: "LUK",
+            lukMultiplier: "LUK倍率",
             maxHp: "最大HP",
             maxMp: "最大MP",
             maxHpFlat: "最大HP",
@@ -3131,7 +3261,21 @@
             return potion;
         };
 
-        const buildBossItem = (base) => {
+        const buildBossUniqueEffectInstance = (effectDef) => {
+            if (!effectDef) return null;
+            if (effectDef.type === "levelRatioBoost") {
+                const step = Math.random() < 0.5 ? 2 : 3;
+                const gain = Math.random() < 0.5 ? 1 : 2;
+                return {
+                    ...effectDef,
+                    data: { step, gain },
+                    label: `${effectDef.labelBase}：Lv${step}ごとに一次ステ+${gain}`
+                };
+            }
+            return { ...effectDef };
+        };
+
+        const buildBossItem = (base, floor, index) => {
             const totals = getTotalStats();
             const eliteRank = Game.enemy?.elite?.rank || 0;
             const rarity = rollRarity(totals.rareFind, eliteRank);
@@ -3139,7 +3283,10 @@
                 key: stat.key,
                 value: Math.max(1, Math.floor(stat.value * rarity.mul))
             }));
-            const uniqueStats = (base.uniqueStats || []).map((stat) => ({ ...stat }));
+            const effectDef = createBossUniqueEffect(base, floor, index);
+            const uniqueEffects = [];
+            const effectInstance = buildBossUniqueEffectInstance(effectDef);
+            if (effectInstance) uniqueEffects.push(effectInstance);
             return {
                 name: base.name,
                 type: base.type,
@@ -3147,7 +3294,8 @@
                 rarityMul: rarity.mul,
                 baseStats,
                 affixStats: [],
-                uniqueStats,
+                uniqueStats: [],
+                uniqueEffects,
                 prefix: null,
                 suffix: null,
                 isBossDrop: true
@@ -3220,16 +3368,6 @@
             "taunt"
         ]);
 
-        const getBossDropCount = () => ([
-            Game.player.weapon,
-            Game.player.armor,
-            Game.player.head,
-            Game.player.hands,
-            Game.player.feet,
-            Game.player.accessory1,
-            Game.player.accessory2
-        ].filter((item) => item?.isBossDrop).length);
-
         const getEquipmentStats = () => {
             const weaponStats = getItemStats(Game.player.weapon);
             const armorStats = getItemStats(Game.player.armor);
@@ -3247,6 +3385,38 @@
                 ...accessory1Stats,
                 ...accessory2Stats
             ]);
+        };
+
+        const getEquippedUniqueEffects = () => ([
+            Game.player.weapon,
+            Game.player.armor,
+            Game.player.head,
+            Game.player.hands,
+            Game.player.feet,
+            Game.player.accessory1,
+            Game.player.accessory2
+        ].flatMap((item) => item?.uniqueEffects || []));
+
+        const applyUniqueEffectStatBonuses = (totals) => {
+            const updated = { ...totals };
+            const effects = getEquippedUniqueEffects();
+            effects.forEach((effect) => {
+                if (effect.type === "statMultiplier") {
+                    if (effect.stat === "int") updated.intMultiplier += effect.value;
+                    if (effect.stat === "luk") updated.lukMultiplier += effect.value;
+                }
+                if (effect.type === "levelRatioBoost" && effect.data) {
+                    const bonus = Math.floor(Game.player.level / effect.data.step) * effect.data.gain;
+                    if (bonus > 0) {
+                        updated.str += bonus;
+                        updated.vit += bonus;
+                        updated.int += bonus;
+                        updated.dex += bonus;
+                        updated.luk += bonus;
+                    }
+                }
+            });
+            return updated;
         };
 
         const addMilestoneStats = (total, stats) => {
@@ -3278,7 +3448,7 @@
         const getTotalStats = () => {
             const equip = getEquipmentStats();
             const milestone = getPassiveMilestoneStats();
-            return {
+            const totals = {
                 str: Game.player.str + (equip.str || 0) + (milestone.str || 0),
                 vit: Game.player.vit + (equip.vit || 0) + (milestone.vit || 0),
                 int: Game.player.int + (equip.int || 0) + (milestone.int || 0),
@@ -3311,16 +3481,16 @@
                 affixFind: Game.player.affixFind + (equip.affixFind || 0) + (milestone.affixFind || 0),
                 eliteEncounter: Game.player.eliteEncounter + (equip.eliteEncounter || 0) + (milestone.eliteEncounter || 0),
                 skillPowerBoost: Game.player.skillPowerBoost + (equip.skillPowerBoost || 0),
-                normalAttackBoost: Game.player.normalAttackBoost + (equip.normalAttackBoost || 0),
                 statusEffectStackBonus: Game.player.statusEffectStackBonus + (equip.statusEffectStackBonus || 0),
                 statusEffectTurnBonus: Game.player.statusEffectTurnBonus + (equip.statusEffectTurnBonus || 0),
                 skillMpDiscount: Game.player.skillMpDiscount + (equip.skillMpDiscount || 0),
-                bossDropSynergy: Game.player.bossDropSynergy + (equip.bossDropSynergy || 0),
                 strMultiplier: Game.player.strMultiplier + (equip.strMultiplier || 0),
                 intMultiplier: Game.player.intMultiplier + (equip.intMultiplier || 0),
                 vitMultiplier: Game.player.vitMultiplier + (equip.vitMultiplier || 0),
-                dexMultiplier: Game.player.dexMultiplier + (equip.dexMultiplier || 0)
+                dexMultiplier: Game.player.dexMultiplier + (equip.dexMultiplier || 0),
+                lukMultiplier: Game.player.lukMultiplier + (equip.lukMultiplier || 0)
             };
+            return applyUniqueEffectStatBonuses(totals);
         };
 
         function getStatusEffect(target, effectId) {
@@ -3407,6 +3577,95 @@
             return mods;
         }
 
+        const checkUniqueEffectCondition = (condition, context) => {
+            if (!condition) return true;
+            const { player, enemy, derived } = context;
+            if (condition.type === "enemyStatus") {
+                return Boolean(getStatusEffect(enemy, condition.status));
+            }
+            if (condition.type === "playerStatus") {
+                return Boolean(getStatusEffect(player, condition.status));
+            }
+            if (condition.type === "playerHpBelow") {
+                return player.hp <= derived.maxHp * condition.threshold;
+            }
+            if (condition.type === "playerHpAbove") {
+                return player.hp >= derived.maxHp * condition.threshold;
+            }
+            if (condition.type === "playerMpBelow") {
+                return player.mp <= derived.maxMp * condition.threshold;
+            }
+            if (condition.type === "playerMpAbove") {
+                return player.mp >= derived.maxMp * condition.threshold;
+            }
+            if (condition.type === "playerMpZero") {
+                return player.mp <= 0;
+            }
+            if (condition.type === "enemyHpBelow") {
+                return enemy.hp <= enemy.maxHp * condition.threshold;
+            }
+            if (condition.type === "enemyHpAbove") {
+                return enemy.hp >= enemy.maxHp * condition.threshold;
+            }
+            if (condition.type === "enemyIsBoss") {
+                return Boolean(enemy?.isBoss);
+            }
+            return false;
+        };
+
+        const getUniqueAttackModifiers = (context) => {
+            const mods = {
+                damageMultiplier: 1,
+                accuracyBonus: 0,
+                critRateBonus: 0,
+                bonusHits: 0,
+                bonusHitMultiplier: 1,
+                damageTakenMultiplier: 1,
+                logs: []
+            };
+            const effects = getEquippedUniqueEffects();
+            effects.forEach((effect) => {
+                if (!checkUniqueEffectCondition(effect.condition, context)) return;
+                if (effect.type === "damageBoost") {
+                    mods.damageMultiplier *= 1 + effect.value / 100;
+                }
+                if (effect.type === "riskBoost") {
+                    mods.damageMultiplier *= 1 + effect.value / 100;
+                    mods.damageTakenMultiplier *= 1 + (effect.penalty || 0) / 100;
+                }
+                if (effect.type === "bonusHitsChance") {
+                    const chance = effect.chance ?? 0;
+                    if (Math.random() * 100 < chance) {
+                        mods.bonusHits += effect.hits || 1;
+                        mods.bonusHitMultiplier = effect.hitMultiplier || mods.bonusHitMultiplier;
+                        if (effect.label) mods.logs.push(effect.label);
+                    }
+                }
+                if (effect.type === "critBoost") {
+                    mods.critRateBonus += effect.value || 0;
+                }
+                if (effect.type === "accuracyBoost") {
+                    mods.accuracyBonus += effect.value || 0;
+                }
+            });
+            return mods;
+        };
+
+        const getUniqueDefenseMultiplier = (context) => {
+            let multiplier = 1;
+            const effects = getEquippedUniqueEffects();
+            effects.forEach((effect) => {
+                if (!checkUniqueEffectCondition(effect.condition, context)) return;
+                if (effect.type === "damageTakenReduction") {
+                    multiplier *= Math.max(0, 1 - (effect.value || 0) / 100);
+                }
+                if (effect.type === "riskBoost") {
+                    multiplier *= 1 + (effect.penalty || 0) / 100;
+                }
+            });
+            return multiplier;
+        };
+
         const CustomStatRenderers = {
             potionCapacity: (stat) => `容量 ${stat.source ? "+" : ""}${stat.value}`,
             potionCost: (stat) => `消費量 ${stat.value}`,
@@ -3418,15 +3677,14 @@
             potionAutoRegen: (stat) => `再生付与 ${stat.source ? "+" : ""}${stat.value}スタック`,
             potionBarrier: (stat) => `バリア付与 ${stat.source ? "+" : ""}${stat.value}`,
             skillPowerBoost: (stat) => `スキル威力 +${stat.value}%`,
-            normalAttackBoost: (stat) => `通常攻撃威力 +${stat.value}%`,
             statusEffectStackBonus: (stat) => `状態異常付与スタック +${stat.value}`,
             statusEffectTurnBonus: (stat) => `状態異常付与ターン +${stat.value}`,
             skillMpDiscount: (stat) => `スキルMP消費 -${stat.value}%`,
-            bossDropSynergy: (stat) => `ボス装備連携 +${stat.value}%/個`,
             strMultiplier: (stat) => `STR倍率 +${stat.value}%`,
             vitMultiplier: (stat) => `VIT倍率 +${stat.value}%`,
             intMultiplier: (stat) => `INT倍率 +${stat.value}%`,
-            dexMultiplier: (stat) => `DEX倍率 +${stat.value}%`
+            dexMultiplier: (stat) => `DEX倍率 +${stat.value}%`,
+            lukMultiplier: (stat) => `LUK倍率 +${stat.value}%`
         };
 
         const renderStatLines = (stats) => {
@@ -3438,8 +3696,16 @@
             });
         };
 
+        const renderUniqueEffectLines = (effects) => {
+            if (!Array.isArray(effects)) return [];
+            return effects.map((effect) => effect?.label).filter(Boolean);
+        };
+
         const renderItemStatsHtml = (item) => {
-            const stats = renderStatLines(getItemStats(item));
+            const stats = [
+                ...renderStatLines(getItemStats(item)),
+                ...renderUniqueEffectLines(item.uniqueEffects || [])
+            ];
             return stats.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
         };
 
@@ -3467,7 +3733,10 @@
             const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
-            const uniqueLines = renderStatLines(item.uniqueStats || []);
+            const uniqueLines = [
+                ...renderStatLines(item.uniqueStats || []),
+                ...renderUniqueEffectLines(item.uniqueEffects || [])
+            ];
             const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
                 renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
@@ -3910,12 +4179,14 @@
             const vitMultiplier = 1 + (totals.vitMultiplier || 0) / 100;
             const intMultiplier = 1 + (totals.intMultiplier || 0) / 100;
             const dexMultiplier = 1 + (totals.dexMultiplier || 0) / 100;
+            const lukMultiplier = 1 + (totals.lukMultiplier || 0) / 100;
             const boostedTotals = {
                 ...totals,
                 str: Math.floor(totals.str * strMultiplier),
                 vit: Math.floor(totals.vit * vitMultiplier),
                 int: Math.floor(totals.int * intMultiplier),
-                dex: Math.floor(totals.dex * dexMultiplier)
+                dex: Math.floor(totals.dex * dexMultiplier),
+                luk: Math.floor(totals.luk * lukMultiplier)
             };
             const maxHpBase = totals.maxHp + totals.maxHpFlat;
             const maxMpBase = totals.maxMp + totals.maxMpFlat;
@@ -3943,10 +4214,6 @@
                 eliteEncounter: totals.eliteEncounter + lukBonus,
                 goldBoost: totals.goldBoost + lukBonus
             };
-            const bossDropCount = getBossDropCount();
-            if (bossDropCount > 0 && modifiedTotals.bossDropSynergy > 0) {
-                modifiedTotals.damageBoost += modifiedTotals.bossDropSynergy * bossDropCount;
-            }
             return { maxHp, maxMp, atk, def, totals: modifiedTotals };
         }
 
@@ -4665,6 +4932,11 @@
         function performEnemySkill(skill, derived) {
             const enemyStatusMods = getStatusModifiers(Game.enemy);
             const playerStatusMods = getStatusModifiers(Game.player);
+            const uniqueDefenseMultiplier = getUniqueDefenseMultiplier({
+                player: Game.player,
+                enemy: Game.enemy,
+                derived
+            });
             let totalDamage = 0;
             let landedHit = false;
 
@@ -4683,6 +4955,7 @@
                     }
                     d = Math.floor(d * enemyStatusMods.damageDoneMul);
                     d = Math.floor(d * playerStatusMods.damageTakenMul);
+                    d = Math.floor(d * uniqueDefenseMultiplier);
                     d = Math.max(1, d);
                     totalDamage += applyDamage(Game.player, d, Game.enemy);
                 }
@@ -4807,12 +5080,23 @@
                 addLog(`【回復】${amt}HP`, "text-green-500");
                 dmgText(amt, true);
             } else {
-                let hits = currentSkill.hits || 1;
+                const uniqueAttackMods = getUniqueAttackModifiers({
+                    player: Game.player,
+                    enemy: Game.enemy,
+                    derived,
+                    skill: currentSkill
+                });
+                const baseHits = currentSkill.hits || 1;
+                let hits = baseHits + (uniqueAttackMods.bonusHits || 0);
                 let totalDamage = 0;
                 let landedHit = false;
+
+                if (uniqueAttackMods.logs.length) {
+                    uniqueAttackMods.logs.forEach((line) => addLog(line, "text-amber-400"));
+                }
                 
                 for(let i=0; i<hits; i++){
-                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0));
+                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0) + uniqueAttackMods.accuracyBonus);
                     if (Math.random() * 100 > hitChance) {
                         continue;
                     }
@@ -4821,15 +5105,15 @@
                     let atkBase = isMagic ? (derived.totals.int * 2) : derived.atk;
                     
                     // Critical Check
-                    let isCrit = Math.random() * 100 < (derived.totals.critRate + (currentSkill.critBonus || 0));
+                    let isCrit = Math.random() * 100 < (derived.totals.critRate + (currentSkill.critBonus || 0) + uniqueAttackMods.critRateBonus);
                     let dmg = Math.floor(currentSkill.pow * atkBase * (0.9 + Math.random() * 0.2));
                     if (isCrit) dmg = Math.floor(dmg * (derived.totals.critDamage / 100));
 
                     if (currentSkill.name !== '通常攻撃' && derived.totals.skillPowerBoost > 0) {
                         dmg = Math.floor(dmg * (1 + derived.totals.skillPowerBoost / 100));
                     }
-                    if (currentSkill.name === '通常攻撃' && derived.totals.normalAttackBoost > 0) {
-                        dmg = Math.floor(dmg * (1 + derived.totals.normalAttackBoost / 100));
+                    if (i >= baseHits && uniqueAttackMods.bonusHitMultiplier !== 1) {
+                        dmg = Math.floor(dmg * uniqueAttackMods.bonusHitMultiplier);
                     }
 
                     // Passive: Low HP boost
@@ -4845,6 +5129,9 @@
 
                     if (derived.totals.damageBoost > 0) {
                         dmg = Math.floor(dmg * (1 + derived.totals.damageBoost / 100));
+                    }
+                    if (uniqueAttackMods.damageMultiplier !== 1) {
+                        dmg = Math.floor(dmg * uniqueAttackMods.damageMultiplier);
                     }
                     dmg = Math.floor(dmg * playerStatusMods.damageDoneMul);
                     dmg = Math.floor(dmg * enemyStatusMods.damageTakenMul);
@@ -4976,6 +5263,12 @@
             if (!usedBossSkill) {
                 d = Math.floor(d * enemyStatusMods.damageDoneMul);
                 d = Math.floor(d * playerStatusMods.damageTakenMul);
+                const uniqueDefenseMultiplier = getUniqueDefenseMultiplier({
+                    player: Game.player,
+                    enemy: Game.enemy,
+                    derived
+                });
+                d = Math.floor(d * uniqueDefenseMultiplier);
                 d = Math.max(1, d);
                 const appliedDamage = applyDamage(Game.player, d, Game.enemy);
                 addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
@@ -5144,7 +5437,8 @@
                 const bossTable = BossRushLootTables[Game.enemy.floor] || BossLootTables[Game.enemy.floor];
                 if (bossTable && bossTable.length > 0) {
                     const base = pickRandom(bossTable);
-                    return buildBossItem(base);
+                    const index = Math.max(0, bossTable.indexOf(base));
+                    return buildBossItem(base, Game.enemy.floor, index);
                 }
             }
             const tier = EquipmentTiers[getTierIndex(Game.floor)];
