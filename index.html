@@ -2517,66 +2517,66 @@
 
 
         const BossUniqueEffects = {
-            "毒牙の短剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 1 } ], label: "毒牙の短剣：状態異常付与スタック +1" },
-            "毒煙の護符": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 1 } ], label: "毒煙の護符：状態異常付与ターン +1" },
+            "毒牙の短剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 2 } ], label: "毒牙の短剣：状態異常付与スタック +2" },
+            "毒煙の護符": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "毒煙の護符：状態異常付与ターン +2" },
             "疾風の爪剣": { type: "statMultiplier", stat: "dex", value: 12, label: "疾風の爪剣：DEX倍率 +12%" },
-            "風走りのブーツ": { type: "statMultiplier", stat: "dex", value: 14, label: "風走りのブーツ：DEX倍率 +14%" },
+            "風走りのブーツ": { type: "bonusHitsChance", chance: 20, hits: 1, hitMultiplier: 0.7, label: "風走りのブーツ：20%で追加ヒット+1(70%)" },
             "岩核の大盾": { type: "statMultiplier", stat: "vit", value: 12, label: "岩核の大盾：VIT倍率 +12%" },
-            "岩守りの兜": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 6 } ], label: "岩守りの兜：スキルMP消費 -6%" },
+            "岩守りの兜": { type: "riskBoost", condition: { type: "playerHpBelow", threshold: 0.5 }, value: 20, penalty: 12, label: "岩守りの兜：HP50%以下で与ダメ+20%/被ダメ+12%" },
             "氷晶の杖": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 12 } ], label: "氷晶の杖：スキル威力 +12%" },
             "氷牢の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 8 } ], label: "氷牢の指輪：スキルMP消費 -8%" },
-            "宵闇のマント": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "宵闇のマント：状態異常付与ターン +2" },
-            "闇狩りの短剣": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 14 } ], label: "闇狩りの短剣：スキル威力 +14%" },
+            "宵闇のマント": { type: "damageBoost", condition: { type: "enemyStatus", status: "poison" }, value: 15, label: "宵闇のマント：毒の敵に与ダメ+15%" },
+            "闇狩りの短剣": { type: "bonusHitsChance", chance: 18, hits: 1, hitMultiplier: 0.75, label: "闇狩りの短剣：18%で追加ヒット+1(75%)" },
             "熾火の大剣": { type: "statMultiplier", stat: "str", value: 12, label: "熾火の大剣：STR倍率 +12%" },
             "炎護の手甲": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 10 } ], label: "炎護の手甲：スキル威力 +10%" },
             "雷鳴の戦槌": { type: "statMultiplier", stat: "dex", value: 16, label: "雷鳴の戦槌：DEX倍率 +16%" },
             "帯電の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 10 } ], label: "帯電の護符：スキルMP消費 -10%" },
-            "聖紋のローブ": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 12 } ], label: "聖紋のローブ：スキルMP消費 -12%" },
+            "聖紋のローブ": { type: "statMultiplier", stat: "int", value: 18, label: "聖紋のローブ：INT倍率 +18%" },
             "聖祈の護符": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 16 } ], label: "聖祈の護符：スキル威力 +16%" },
             "疫毒の鎌": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 2 } ], label: "疫毒の鎌：状態異常付与スタック +2" },
             "腐蝕の指輪": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 1 } ], label: "腐蝕の指輪：状態異常付与ターン +1" },
             "鉄壁の鎧": { type: "statMultiplier", stat: "vit", value: 18, label: "鉄壁の鎧：VIT倍率 +18%" },
             "鋼鉄のグローブ": { type: "statMultiplier", stat: "str", value: 14, label: "鋼鉄のグローブ：STR倍率 +14%" },
-            "影刃の忍刀": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 1 }, { key: "statusEffectTurnBonus", value: 1 } ], label: "影刃の忍刀：状態異常付与スタック +1 / ターン +1" },
+            "影刃の忍刀": { type: "bonusHitsChance", chance: 22, hits: 1, hitMultiplier: 0.7, label: "影刃の忍刀：22%で追加ヒット+1(70%)" },
             "夜走りの足袋": { type: "statMultiplier", stat: "dex", value: 18, label: "夜走りの足袋：DEX倍率 +18%" },
-            "終焉の竜槍": { type: "statMultiplier", stat: "str", value: 18, label: "終焉の竜槍：STR倍率 +18%" },
+            "終焉の竜槍": { type: "riskBoost", condition: { type: "playerMpZero" }, value: 25, penalty: 15, label: "終焉の竜槍：MP0で与ダメ+25%/被ダメ+15%" },
             "竜鱗の護鎧": { type: "statMultiplier", stat: "vit", value: 20, label: "竜鱗の護鎧：VIT倍率 +20%" },
             "冥雷の長槍": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 18 } ], label: "冥雷の長槍：スキル威力 +18%" },
             "雷陣の印章": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "雷陣の印章：状態異常付与ターン +2" },
-            "深淵の大剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 3 } ], label: "深淵の大剣：状態異常付与スタック +3" },
+            "深淵の大剣": { type: "extraTurnChance", chance: 15, hitMultiplier: 0.6, label: "深淵の大剣：15%で追加行動(60%)" },
             "奈落の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 15 } ], label: "奈落の指輪：スキルMP消費 -15%" },
             "灼滅の双剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 2 }, { key: "statusEffectTurnBonus", value: 1 } ], label: "灼滅の双剣：状態異常付与スタック +2 / ターン +1" },
             "熾火の鎧": { type: "statMultiplier", stat: "vit", value: 22, label: "熾火の鎧：VIT倍率 +22%" },
             "氷獄の杖": { type: "statMultiplier", stat: "int", value: 28, label: "氷獄の杖：INT倍率 +28%" },
             "氷牢の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 18 } ], label: "氷牢の護符：スキルMP消費 -18%" },
-            "虚無の忍刀": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 20 } ], label: "虚無の忍刀：スキル威力 +20%" },
+            "虚無の忍刀": { type: "damageBoost", condition: { type: "enemyStatus", status: "bleed" }, value: 18, label: "虚無の忍刀：出血中の敵に与ダメ+18%" },
             "終闇の外套": { type: "statMultiplier", stat: "dex", value: 22, label: "終闇の外套：DEX倍率 +22%" },
             "星断の槍": { type: "statMultiplier", stat: "str", value: 22, label: "星断の槍：STR倍率 +22%" },
-            "裁定の盾鎧": { type: "statMultiplier", stat: "vit", value: 28, label: "裁定の盾鎧：VIT倍率 +28%" },
+            "裁定の盾鎧": { type: "damageBoost", condition: { type: "playerHpAbove", threshold: 0.7 }, value: 18, label: "裁定の盾鎧：HP70%以上で与ダメ+18%" },
             "毒宴の鎌": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "毒宴の鎌：状態異常付与ターン +2" },
             "腐蝕の首飾り": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 3 } ], label: "腐蝕の首飾り：状態異常付与スタック +3" },
             "終夜の竜剣": { type: "statMultiplier", stat: "str", value: 25, label: "終夜の竜剣：STR倍率 +25%" },
             "黒翼のマント": { type: "statMultiplier", stat: "luk", value: 30, label: "黒翼のマント：LUK倍率 +30%" },
-            "雷哭の戦槌": { type: "statMultiplier", stat: "str", value: 24, label: "雷哭の戦槌：STR倍率 +24%" },
+            "雷哭の戦槌": { type: "bonusHitsChance", chance: 25, hits: 1, hitMultiplier: 0.75, label: "雷哭の戦槌：25%で追加ヒット+1(75%)" },
             "雷鳴の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 20 } ], label: "雷鳴の護符：スキルMP消費 -20%" },
             "聖裁の槍杖": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 22 } ], label: "聖裁の槍杖：スキル威力 +22%" },
             "神域のローブ": { type: "statMultiplier", stat: "int", value: 32, label: "神域のローブ：INT倍率 +32%" },
-            "地裂の戦斧": { type: "statMultiplier", stat: "str", value: 28, label: "地裂の戦斧：STR倍率 +28%" },
+            "地裂の戦斧": { type: "riskBoost", condition: { type: "playerHpBelow", threshold: 0.4 }, value: 28, penalty: 18, label: "地裂の戦斧：HP40%以下で与ダメ+28%/被ダメ+18%" },
             "岩界の鎧": { type: "statMultiplier", stat: "vit", value: 25, label: "岩界の鎧：VIT倍率 +25%" },
             "疫神の魔槍": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 3 } ], label: "疫神の魔槍：状態異常付与ターン +3" },
             "疫毒の印環": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 4 } ], label: "疫毒の印環：状態異常付与スタック +4" },
-            "影刃の双刃": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 24 } ], label: "影刃の双刃：スキル威力 +24%" },
+            "影刃の双刃": { type: "extraTurnChance", chance: 18, hitMultiplier: 0.65, label: "影刃の双刃：18%で追加行動(65%)" },
             "影縫いの足袋": { type: "statMultiplier", stat: "dex", value: 26, label: "影縫いの足袋：DEX倍率 +26%" },
             "絶対零度の杖": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 28 } ], label: "絶対零度の杖：スキル威力 +28%" },
-            "氷結の護鎧": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 22 } ], label: "氷結の護鎧：スキルMP消費 -22%" },
+            "氷結の護鎧": { type: "damageBoost", condition: { type: "enemyHpAbove", threshold: 0.7 }, value: 20, label: "氷結の護鎧：敵HP70%以上で与ダメ+20%" },
             "業火の大剣": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 30 }, { key: "statusEffectStackBonus", value: 2 } ], label: "業火の大剣：スキル威力 +30% / 状態異常付与スタック +2" },
             "灰燼の手甲": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 }, { key: "skillMpDiscount", value: 12 } ], label: "灰燼の手甲：状態異常付与ターン +2 / スキルMP消費 -12%" },
             "星滅の大鎚": { type: "statMultiplier", stat: "str", value: 30, label: "星滅の大鎚：STR倍率 +30%" },
             "虚無の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 24 } ], label: "虚無の指輪：スキルMP消費 -24%" },
-            "神罰の竜槍": { type: "statMultiplier", stat: "str", value: 35, label: "神罰の竜槍：STR倍率 +35%" },
-            "天罰の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 25 }, { key: "statusEffectTurnBonus", value: 2 } ], label: "天罰の護符：スキルMP消費 -25% / 状態異常付与ターン +2" },
-            "終極の神剣": { type: "statMultiplier", stat: "str", value: 40, label: "終極の神剣：STR倍率 +40%" },
-            "終焉神の鎧": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 4 }, { key: "vitMultiplier", value: 20 } ], label: "終焉神の鎧：状態異常付与スタック +4 / VIT倍率 +20%" },
+            "神罰の竜槍": { type: "levelRatioBoost", randomize: true, stepRange: [2, 3], gainRange: [1, 2], label: "神罰の竜槍：一次ステ成長(抽選)" },
+            "天罰の護符": { type: "damageBoost", condition: { type: "playerMpBelow", threshold: 0.3 }, value: 22, label: "天罰の護符：MP30%以下で与ダメ+22%" },
+            "終極の神剣": { type: "levelRatioBoost", randomize: true, stepRange: [2, 3], gainRange: [1, 2], label: "終極の神剣：一次ステ成長(抽選)" },
+            "終焉神の鎧": { type: "levelRatioBoost", randomize: true, stepRange: [2, 3], gainRange: [1, 2], label: "終焉神の鎧：一次ステ成長(抽選)" }
         };
 
         const BossRushDropScale = 1.4;
@@ -3207,8 +3207,26 @@
             }));
             const uniqueStats = (base.uniqueStats || []).map((stat) => ({ ...stat }));
             const effect = BossUniqueEffects[base.name];
-            if (effect) {
-                uniqueStats.push({ key: "bossUniqueEffect", value: 0, effect });
+            let resolvedEffect = effect;
+            if (effect?.type === "levelRatioBoost" && effect.randomize) {
+                const stepMin = effect.stepRange?.[0] ?? 2;
+                const stepMax = effect.stepRange?.[1] ?? stepMin;
+                const gainMin = effect.gainRange?.[0] ?? 1;
+                const gainMax = effect.gainRange?.[1] ?? gainMin;
+                const step = Math.floor(Math.random() * (stepMax - stepMin + 1)) + stepMin;
+                const gain = Math.floor(Math.random() * (gainMax - gainMin + 1)) + gainMin;
+                resolvedEffect = {
+                    ...effect,
+                    step,
+                    gain,
+                    label: `${base.name}：一次ステ成長 Lv${step}ごとに+${gain}`
+                };
+                delete resolvedEffect.randomize;
+                delete resolvedEffect.stepRange;
+                delete resolvedEffect.gainRange;
+            }
+            if (resolvedEffect) {
+                uniqueStats.push({ key: "bossUniqueEffect", value: 0, effect: resolvedEffect });
             }
             return {
                 name: base.name,
