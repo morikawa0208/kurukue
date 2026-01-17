@@ -3917,11 +3917,16 @@
             const atk = Math.max(0, Math.floor(atkBase * (1 + totals.attackEfficiency / 100) * statusMods.atkMul));
             const defBase = boostedTotals.vit + totals.defenseFlat;
             const def = Math.max(0, Math.floor(defBase * (1 + totals.defenseEfficiency / 100) * statusMods.defMul));
+            const dexAccuracyBonus = Math.floor(boostedTotals.dex * 0.2);
+            const dexEvasionBonus = Math.floor(boostedTotals.dex * 0.15);
+            const dexCritRateBonus = Math.floor(boostedTotals.dex * 0.05);
+            const dexCritDamageBonus = Math.floor(boostedTotals.dex * 0.2);
             const modifiedTotals = {
                 ...boostedTotals,
-                accuracy: Math.max(0, Math.floor(totals.accuracy * statusMods.accuracyMul)),
-                critRate: Math.max(0, Math.floor(totals.critRate * statusMods.critMul)),
-                evasionRate: Math.max(0, Math.floor(totals.evasionRate * statusMods.evasionMul))
+                accuracy: Math.max(0, Math.floor((totals.accuracy + dexAccuracyBonus) * statusMods.accuracyMul)),
+                critRate: Math.max(0, Math.floor((totals.critRate + dexCritRateBonus) * statusMods.critMul)),
+                evasionRate: Math.max(0, Math.floor((totals.evasionRate + dexEvasionBonus) * statusMods.evasionMul)),
+                critDamage: Math.max(0, Math.floor(totals.critDamage + dexCritDamageBonus))
             };
             const bossDropCount = getBossDropCount();
             if (bossDropCount > 0 && modifiedTotals.bossDropSynergy > 0) {
