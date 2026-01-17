@@ -3665,12 +3665,25 @@
         const renderItemStatsGroupedHtml = (item) => {
             if (!item) return '';
             const isPotion = item.type === "potion";
-            const affixTotals = isPotion ? sumStats(item.affixStats || []) : {};
             const baseStats = isPotion
-                ? (item.baseStats || []).map((stat) => ({
-                    ...stat,
-                    value: stat.value + (affixTotals[stat.key] || 0)
-                }))
+                ? (() => {
+                    const totals = sumStats(getItemStats(item));
+                    const derived = getPotionDerived(item);
+                    const valueMap = {
+                        potionCapacity: derived?.maxCapacity ?? totals.potionCapacity ?? 0,
+                        potionCost: derived?.cost ?? totals.potionCost ?? 0,
+                        potionHealFlat: derived?.healFlat ?? totals.potionHealFlat ?? 0,
+                        potionHealPct: derived?.healPct ?? totals.potionHealPct ?? 0,
+                        potionChargeOnKill: derived?.chargeOnKill ?? totals.potionChargeOnKill ?? 0,
+                        potionCleanse: derived?.cleanse ?? totals.potionCleanse ?? 0,
+                        potionAutoRegen: derived?.autoRegen ?? totals.potionAutoRegen ?? 0,
+                        potionBarrier: derived?.barrier ?? totals.potionBarrier ?? 0
+                    };
+                    return (item.baseStats || []).map((stat) => ({
+                        ...stat,
+                        value: valueMap[stat.key] ?? totals[stat.key] ?? stat.value
+                    }));
+                })()
                 : (item.baseStats || []);
             const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
