@@ -179,6 +179,17 @@
         .enhance-gold { color: #f59e0b; text-shadow: 0 0 6px rgba(245, 158, 11, 0.55); }
         .enhance-white { color: #f8fafc; text-shadow: 0 0 4px rgba(15, 23, 42, 0.8); }
         .enhance-broken { color: #ef4444; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.08em; }
+        .enhance-rattle { animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) infinite; }
+        .enhance-glow-success { animation: enhanceGlow 1.2s ease-in-out infinite; }
+        .enhance-glow-fail { animation: enhanceFade 1.2s ease-in-out infinite; }
+        @keyframes enhanceGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { transform: scale(1.04); box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+        }
+        @keyframes enhanceFade {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(0.98); opacity: 0.6; }
+        }
     </style>
 </head>
 <body class="flex flex-col">
@@ -637,6 +648,15 @@
                             <span class="font-bold text-slate-600">運用ルール:</span> 基礎攻撃/防御 × (1 + 合計補正) で計算。
                         </div>
                     </div>
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-2">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">装備強化</div>
+                        <ul class="text-xs text-slate-500 space-y-1">
+                            <li>対象: ポーション以外の装備品（武器/防具/装飾品）。</li>
+                            <li>成功時は次の強化値分だけ補正が加算（武器: 攻撃力+1 / それ以外: 防御力+1）。</li>
+                            <li>強化費用は強化値が高いほど上昇。</li>
+                            <li>失敗ペナルティ: +5まで変化なし / +6〜+9は1低下 / +10以上は破損して修理が必要。</li>
+                        </ul>
+                    </div>
                     <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4 space-y-3">
                         <div class="grid gap-3">
                             <div class="flex items-start gap-3 rounded-xl border border-slate-100 bg-white p-3">
@@ -883,6 +903,46 @@
         </div>
     </div>
 
+    <!-- ENHANCE MODAL -->
+    <div id="enhance-modal" class="fixed inset-0 bg-slate-900/80 z-[130] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="enhance-modal-title" class="font-black text-lg text-slate-800 flex items-center gap-2"></h3>
+                <button id="enhance-modal-close" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div id="enhance-modal-info" class="space-y-2 text-xs text-slate-600">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-500">現在の強化値</span>
+                    <span id="enhance-modal-level" class="font-black text-slate-700"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-500">強化費用</span>
+                    <span id="enhance-modal-cost" class="font-black text-slate-700"></span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-500">成功時アップ見込み</span>
+                    <span id="enhance-modal-preview" class="font-black text-emerald-600"></span>
+                </div>
+                <div id="enhance-modal-warning" class="text-[10px] text-rose-500 font-bold"></div>
+            </div>
+            <button id="enhance-modal-start" class="mt-4 w-full bg-slate-800 text-white font-black py-3 rounded-2xl shadow-lg">強化</button>
+            <div id="enhance-modal-progress" class="hidden mt-6 text-center space-y-3">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600 enhance-rattle">
+                    <i class="fas fa-hammer text-2xl"></i>
+                </div>
+                <div class="font-black text-slate-700">鍛冶中...</div>
+                <div class="text-[10px] text-slate-400">タップでスキップ</div>
+            </div>
+            <div id="enhance-modal-result" class="hidden mt-6 text-center space-y-3">
+                <div id="enhance-modal-result-icon" class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-2xl"></div>
+                <div id="enhance-modal-result-title" class="font-black text-lg"></div>
+                <div id="enhance-modal-result-detail" class="text-xs font-bold text-slate-600"></div>
+                <div id="enhance-modal-result-extra" class="text-[10px] text-slate-400"></div>
+                <div class="text-[10px] text-slate-400">タップで閉じる</div>
+            </div>
+        </div>
+    </div>
+
     <!-- STATUS INFO MODAL -->
     <div id="status-info-modal" class="fixed inset-0 bg-slate-900/80 z-[110] hidden items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-[2rem] overflow-hidden shadow-2xl p-6 border-b-8 border-slate-200">
@@ -1022,6 +1082,12 @@
             defeatedBossRushMilestones: [],
             state: 'idle',
             stayOnFloor: false,
+            enhanceModal: {
+                index: null,
+                stage: 'confirm',
+                timer: null,
+                result: null
+            },
             player: {
                 level: 1,
                 hp: 100, maxHp: 100, mp: 30, maxMp: 30,
@@ -3161,7 +3227,7 @@
                 prefix,
                 suffix
             };
-            if (item.type === "weapon") {
+            if (item.type !== "potion") {
                 item.enhancementLevel = 0;
                 item.isBroken = false;
             }
@@ -3263,7 +3329,7 @@
                 suffix: null,
                 isBossDrop: true
             };
-            if (item.type === "weapon") {
+            if (item.type !== "potion") {
                 item.enhancementLevel = 0;
                 item.isBroken = false;
             }
@@ -3295,14 +3361,25 @@
             20: 0.0001
         };
 
+        const EnhancementTargetTypes = new Set([
+            "weapon",
+            "armor",
+            "head",
+            "hands",
+            "feet",
+            "accessory"
+        ]);
+
+        const isEnhanceableItem = (item) => Boolean(item && EnhancementTargetTypes.has(item.type));
+
         const normalizeWeaponEnhancement = (item) => {
-            if (!item || item.type !== "weapon") return;
+            if (!isEnhanceableItem(item)) return;
             if (!Number.isFinite(item.enhancementLevel)) item.enhancementLevel = 0;
             if (item.isBroken === undefined || item.isBroken === null) item.isBroken = false;
         };
 
         const getWeaponEnhancementLevel = (item) => {
-            if (!item || item.type !== "weapon") return 0;
+            if (!isEnhanceableItem(item)) return 0;
             return Number.isFinite(item.enhancementLevel) ? item.enhancementLevel : 0;
         };
 
@@ -3342,24 +3419,34 @@
         };
 
         const getWeaponBrokenLabelHtml = (item) => {
-            if (!item || item.type !== "weapon" || !item.isBroken) return "";
+            if (!isEnhanceableItem(item) || !item.isBroken) return "";
             return `<span class="enhance-broken">破損</span>`;
         };
 
-        const getWeaponEnhancementStats = (item) => {
-            if (!item || item.type !== "weapon") return [];
+        const getEnhancementPreviewStat = (item) => {
+            if (!isEnhanceableItem(item)) return null;
+            const statKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
+            return { key: statKey, value: 1 };
+        };
+
+        const getEnhancedBaseStats = (item) => {
+            if (!item) return [];
+            const baseStats = (item.baseStats || []).map((stat) => ({ ...stat }));
+            if (!isEnhanceableItem(item)) return baseStats;
             const level = getWeaponEnhancementLevel(item);
-            if (level <= 0 || item.isBroken) return [];
-            return [{ key: "attackFlat", value: level }];
+            if (level <= 0 || item.isBroken) return baseStats;
+            const targetKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
+            return baseStats.map((stat) => (
+                stat.key === targetKey ? { ...stat, value: stat.value + level } : stat
+            ));
         };
 
         const getItemStats = (item) => {
             if (!item) return [];
             return [
-                ...(item.baseStats || []),
+                ...getEnhancedBaseStats(item),
                 ...(item.affixStats || []),
-                ...(item.uniqueStats || []),
-                ...getWeaponEnhancementStats(item)
+                ...(item.uniqueStats || [])
             ];
         };
 
@@ -3796,18 +3883,16 @@
                         value: valueMap[stat.key] ?? totals[stat.key] ?? stat.value
                     }));
                 })()
-                : (item.baseStats || []);
+                : getEnhancedBaseStats(item);
             const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
             const uniqueLines = renderStatLines(item.uniqueStats || []);
-            const enhancementLines = renderStatLines(getWeaponEnhancementStats(item));
             const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
                 renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
                 renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
-                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines),
-                renderStatGroupHtml("強化補正", "fa-wand-magic-sparkles", enhancementLines)
+                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
             ].filter(Boolean);
             const groupHtml = groups.length ? `<div class="item-stat-categories">${groups.join('')}</div>` : '';
             const uniqueHtml = uniqueLines.length
@@ -3829,9 +3914,7 @@
             const name = item?.name || "なし";
             const rarity = item?.rarity || "normal";
             const isLong = name.length >= 16;
-            if (item) {
-                normalizeWeaponEnhancement(item);
-            }
+            if (item) normalizeWeaponEnhancement(item);
             const enhancementHtml = getWeaponEnhancementLabelHtml(item);
             const brokenHtml = getWeaponBrokenLabelHtml(item);
             el.innerHTML = `${name}${enhancementHtml ? ` ${enhancementHtml}` : ""}${brokenHtml ? ` ${brokenHtml}` : ""}`.trim();
@@ -4796,6 +4879,25 @@
             if (event.target === equipSlotModal) closeEquipSlotModal();
         });
 
+        const enhanceModal = document.getElementById('enhance-modal');
+        const enhanceModalCloseBtn = document.getElementById('enhance-modal-close');
+        const enhanceModalStartBtn = document.getElementById('enhance-modal-start');
+        enhanceModalCloseBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            closeEnhanceModal();
+        });
+        enhanceModalStartBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            runEnhancement();
+        });
+        enhanceModal.addEventListener('click', (event) => {
+            if (Game.enhanceModal.stage === 'confirm') {
+                if (event.target === enhanceModal) closeEnhanceModal();
+                return;
+            }
+            handleEnhanceModalTap();
+        });
+
         function switchSkillType(type) {
             Game.currentSkillType = type;
             document.querySelectorAll('.type-tab').forEach(el => el.classList.remove('active'));
@@ -5709,35 +5811,205 @@
             triggerAutosave();
         }
 
-        function enhanceWeapon(idx) {
+        const openEnhanceModal = (idx) => {
             const item = Game.player.inventory[idx];
-            if (!item || item.type !== "weapon") return;
+            if (!isEnhanceableItem(item)) return;
             normalizeWeaponEnhancement(item);
-            if (item.isBroken) return;
+            Game.enhanceModal.index = idx;
+            Game.enhanceModal.stage = 'confirm';
+            Game.enhanceModal.result = null;
+            if (Game.enhanceModal.timer) {
+                clearTimeout(Game.enhanceModal.timer);
+                Game.enhanceModal.timer = null;
+            }
+            syncEnhanceModal();
+            const modal = document.getElementById('enhance-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        const closeEnhanceModal = () => {
+            const modal = document.getElementById('enhance-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            Game.enhanceModal.index = null;
+            Game.enhanceModal.stage = 'confirm';
+            Game.enhanceModal.result = null;
+            if (Game.enhanceModal.timer) {
+                clearTimeout(Game.enhanceModal.timer);
+                Game.enhanceModal.timer = null;
+            }
+        };
+
+        const syncEnhanceModal = () => {
+            const idx = Game.enhanceModal.index;
+            const item = Game.player.inventory[idx];
+            const title = document.getElementById('enhance-modal-title');
+            const levelEl = document.getElementById('enhance-modal-level');
+            const costEl = document.getElementById('enhance-modal-cost');
+            const previewEl = document.getElementById('enhance-modal-preview');
+            const warningEl = document.getElementById('enhance-modal-warning');
+            const startBtn = document.getElementById('enhance-modal-start');
+            if (!item || !isEnhanceableItem(item)) return;
             const level = getWeaponEnhancementLevel(item);
-            if (level >= MAX_WEAPON_ENHANCEMENT) return;
+            const cost = getWeaponEnhancementCost(item);
+            const preview = getEnhancementPreviewStat(item);
+            const previewLabel = preview ? `${StatLabels[preview.key] || preview.key} +${preview.value}` : "なし";
+            const maxed = level >= MAX_WEAPON_ENHANCEMENT;
+            title.innerHTML = `<i class="fas fa-hammer text-slate-500"></i> 強化`;
+            levelEl.textContent = `+${level}`;
+            costEl.textContent = maxed ? "MAX" : `${formatGold(cost)}G`;
+            previewEl.textContent = maxed ? "強化不可" : previewLabel;
+            warningEl.textContent = '';
+            const canStart = !item.isBroken && !maxed && Game.player.gold >= cost;
+            startBtn.disabled = !canStart;
+            startBtn.className = `mt-4 w-full font-black py-3 rounded-2xl shadow-lg ${
+                canStart ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-300 cursor-not-allowed'
+            }`;
+            const progress = document.getElementById('enhance-modal-progress');
+            const result = document.getElementById('enhance-modal-result');
+            progress.classList.add('hidden');
+            result.classList.add('hidden');
+            syncEnhanceModalStages();
+        };
+
+        const setEnhanceModalWarning = (message) => {
+            const warningEl = document.getElementById('enhance-modal-warning');
+            warningEl.textContent = message || '';
+        };
+
+        const runEnhancement = () => {
+            const idx = Game.enhanceModal.index;
+            const item = Game.player.inventory[idx];
+            if (!isEnhanceableItem(item)) return;
+            normalizeWeaponEnhancement(item);
+            const level = getWeaponEnhancementLevel(item);
+            if (item.isBroken) {
+                setEnhanceModalWarning('破損中のため修理が必要です。');
+                return;
+            }
+            if (level >= MAX_WEAPON_ENHANCEMENT) {
+                setEnhanceModalWarning('これ以上は強化できません。');
+                return;
+            }
             const cost = getWeaponEnhancementCost(item);
             if (Game.player.gold < cost) {
-                addLog("強化費用が足りない！", "text-slate-400");
+                setEnhanceModalWarning('強化費用が足りません。');
                 return;
             }
             Game.player.gold -= cost;
             const rate = getWeaponEnhancementRate(level);
             const success = Math.random() < rate;
+            const statKey = item.type === "weapon" ? "attackFlat" : "defenseFlat";
+            let resultType = 'success';
+            let newLevel = level;
             if (success) {
-                item.enhancementLevel = level + 1;
-                addLog(`${item.name} 強化成功！ +${item.enhancementLevel}`, "text-emerald-500 font-bold");
+                newLevel = level + 1;
+                item.enhancementLevel = newLevel;
+            } else if (level <= 5) {
+                resultType = 'safe';
+            } else if (level <= 9) {
+                resultType = 'down';
+                newLevel = Math.max(0, level - 1);
+                item.enhancementLevel = newLevel;
             } else {
+                resultType = 'broken';
                 item.isBroken = true;
-                addLog(`${item.name} 強化失敗...武器が壊れた`, "text-rose-500 font-bold");
             }
+            Game.enhanceModal.result = {
+                success,
+                resultType,
+                statKey,
+                oldLevel: level,
+                newLevel
+            };
+            Game.enhanceModal.stage = 'progress';
+            syncEnhanceModalStages();
+            Game.enhanceModal.timer = setTimeout(() => {
+                showEnhancementResult();
+            }, 1200);
             updateUI();
             triggerAutosave();
-        }
+        };
+
+        const syncEnhanceModalStages = () => {
+            const progress = document.getElementById('enhance-modal-progress');
+            const result = document.getElementById('enhance-modal-result');
+            const startBtn = document.getElementById('enhance-modal-start');
+            if (Game.enhanceModal.stage === 'progress') {
+                progress.classList.remove('hidden');
+                result.classList.add('hidden');
+                startBtn.classList.add('hidden');
+            } else if (Game.enhanceModal.stage === 'result') {
+                progress.classList.add('hidden');
+                result.classList.remove('hidden');
+                startBtn.classList.add('hidden');
+            } else {
+                progress.classList.add('hidden');
+                result.classList.add('hidden');
+                startBtn.classList.remove('hidden');
+            }
+        };
+
+        const showEnhancementResult = () => {
+            if (Game.enhanceModal.timer) {
+                clearTimeout(Game.enhanceModal.timer);
+                Game.enhanceModal.timer = null;
+            }
+            Game.enhanceModal.stage = 'result';
+            const result = Game.enhanceModal.result;
+            const icon = document.getElementById('enhance-modal-result-icon');
+            const title = document.getElementById('enhance-modal-result-title');
+            const detail = document.getElementById('enhance-modal-result-detail');
+            const extra = document.getElementById('enhance-modal-result-extra');
+            if (!result) return;
+            const statLabel = StatLabels[result.statKey] || result.statKey;
+            if (result.success) {
+                icon.className = 'w-16 h-16 mx-auto rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl enhance-glow-success';
+                icon.innerHTML = '<i class="fas fa-sparkles"></i>';
+                title.textContent = '強化成功！';
+                detail.textContent = `+${result.newLevel} になった`;
+                extra.textContent = `${statLabel} +1`;
+                addLog(`強化成功！ +${result.newLevel}`, "text-emerald-500 font-bold");
+            } else if (result.resultType === 'safe') {
+                icon.className = 'w-16 h-16 mx-auto rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-2xl enhance-glow-fail';
+                icon.innerHTML = '<i class="fas fa-cloud-rain"></i>';
+                title.textContent = '強化失敗...';
+                detail.textContent = '変化なし';
+                extra.textContent = 'ペナルティなし';
+                addLog('強化失敗（変化なし）', "text-slate-400 font-bold");
+            } else if (result.resultType === 'down') {
+                icon.className = 'w-16 h-16 mx-auto rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center text-2xl enhance-glow-fail';
+                icon.innerHTML = '<i class="fas fa-heart-crack"></i>';
+                title.textContent = '強化失敗...';
+                detail.textContent = `+${result.newLevel} に低下`;
+                extra.textContent = `${statLabel} -1`;
+                addLog('強化失敗で強化値が低下', "text-rose-400 font-bold");
+            } else {
+                icon.className = 'w-16 h-16 mx-auto rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center text-2xl enhance-glow-fail';
+                icon.innerHTML = '<i class="fas fa-skull-crossbones"></i>';
+                title.textContent = '強化失敗...';
+                detail.textContent = '装備が破損した';
+                extra.textContent = '修理が必要';
+                addLog('強化失敗で装備が破損', "text-rose-500 font-bold");
+            }
+            syncEnhanceModalStages();
+            updateUI();
+        };
+
+        const handleEnhanceModalTap = () => {
+            if (Game.enhanceModal.stage === 'progress') {
+                showEnhancementResult();
+                return;
+            }
+            if (Game.enhanceModal.stage === 'result') {
+                closeEnhanceModal();
+            }
+        };
 
         function repairWeapon(idx) {
             const item = Game.player.inventory[idx];
-            if (!item || item.type !== "weapon") return;
+            if (!isEnhanceableItem(item)) return;
             normalizeWeaponEnhancement(item);
             if (!item.isBroken) return;
             const cost = getWeaponEnhancementCost(item) * 2;
@@ -6033,7 +6305,7 @@
                 return acquiredA - acquiredB;
             });
             sortedItems.forEach(({ item, index }) => {
-                if (item?.type === "weapon") {
+                if (isEnhanceableItem(item)) {
                     normalizeWeaponEnhancement(item);
                 }
                 const sellPrice = getSellPrice(item);
@@ -6063,24 +6335,12 @@
                 const enhancementLabelHtml = getWeaponEnhancementLabelHtml(item);
                 const brokenLabelHtml = getWeaponBrokenLabelHtml(item);
                 const enhancementDisplay = [enhancementLabelHtml, brokenLabelHtml].filter(Boolean).join(' ');
-                const isWeapon = item.type === 'weapon';
+                const isEnhanceable = isEnhanceableItem(item);
                 let enhancementButtonHtml = '';
-                if (isWeapon) {
+                if (isEnhanceable) {
                     const level = getWeaponEnhancementLevel(item);
                     const isBroken = Boolean(item.isBroken);
                     const cost = getWeaponEnhancementCost(item);
-                    const rate = getWeaponEnhancementRate(level);
-                    const maxed = level >= MAX_WEAPON_ENHANCEMENT;
-                    const canEnhance = !isBroken && !maxed && Game.player.gold >= cost;
-                    const enhanceClasses = canEnhance
-                        ? 'bg-slate-800 text-white'
-                        : 'bg-slate-100 text-slate-300 cursor-not-allowed';
-                    const valueClass = getWeaponEnhancementColorClass(level);
-                    const valueHtml = level > 0
-                        ? `<span class="enhance-label ${valueClass}">+${level}</span>`
-                        : `<span class="text-[9px] text-slate-400 font-bold">+0</span>`;
-                    const rateText = maxed ? 'MAX' : `${formatEnhancementRate(rate)}%`;
-                    const costText = maxed ? '' : `${formatGold(cost)}G`;
                     if (isBroken) {
                         const repairCost = cost * 2;
                         const canRepair = Game.player.gold >= repairCost;
@@ -6096,11 +6356,8 @@
                         `;
                     } else {
                         enhancementButtonHtml = `
-                            <button onclick="enhanceWeapon(${index})" class="px-4 py-2 ${enhanceClasses} text-[10px] font-black rounded-xl flex items-center justify-center gap-1 leading-none" ${canEnhance ? '' : 'disabled'}>
-                                <i class="fas fa-hammer"></i>
+                            <button onclick="openEnhanceModal(${index})" class="px-4 py-2 bg-slate-800 text-white text-[10px] font-black rounded-xl flex items-center justify-center gap-1 leading-none">
                                 <span>強化</span>
-                                ${valueHtml}
-                                <span class="text-[9px] font-bold opacity-80">${rateText}${costText ? ` / ${costText}` : ''}</span>
                             </button>
                         `;
                     }
