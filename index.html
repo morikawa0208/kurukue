@@ -3448,12 +3448,34 @@
 
         const renderItemStatsGroupedHtml = (item) => {
             if (!item) return '';
-            const baseLines = renderStatLines(item.baseStats || []);
+            const isPotion = item.type === "potion";
+            const baseStats = isPotion
+                ? (() => {
+                    const totals = sumStats(getItemStats(item));
+                    const derived = getPotionDerived(item);
+                    const valueMap = {
+                        potionCapacity: derived?.maxCapacity ?? totals.potionCapacity ?? 0,
+                        potionCost: derived?.cost ?? totals.potionCost ?? 0,
+                        potionHealFlat: derived?.healFlat ?? totals.potionHealFlat ?? 0,
+                        potionHealPct: derived?.healPct ?? totals.potionHealPct ?? 0,
+                        potionChargeOnKill: derived?.chargeOnKill ?? totals.potionChargeOnKill ?? 0,
+                        potionCleanse: derived?.cleanse ?? totals.potionCleanse ?? 0,
+                        potionAutoRegen: derived?.autoRegen ?? totals.potionAutoRegen ?? 0,
+                        potionBarrier: derived?.barrier ?? totals.potionBarrier ?? 0
+                    };
+                    return (item.baseStats || []).map((stat) => ({
+                        ...stat,
+                        value: valueMap[stat.key] ?? totals[stat.key] ?? stat.value
+                    }));
+                })()
+                : (item.baseStats || []);
+            const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
             const uniqueLines = renderStatLines(item.uniqueStats || []);
+            const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
-                renderStatGroupHtml("基礎", "fa-layer-group", baseLines),
+                renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
                 renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
                 renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
             ].filter(Boolean);
