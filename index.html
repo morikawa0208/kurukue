@@ -2394,140 +2394,126 @@
 
         const BossLootTables = {
             10: [
-                { name: "毒牙の短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 18 }, { key: "dex", value: 6 }, { key: "leechRate", value: 3 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 1 }] },
-                { name: "毒煙の護符", type: "accessory", rarity: "epic", stats: [{ key: "mPen", value: 5 }, { key: "damageBoost", value: 3 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 1 }] }
+                { name: "毒牙の短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 18 }, { key: "dex", value: 6 }, { key: "leechRate", value: 3 }], uniqueStats: [] },
+                { name: "毒煙の護符", type: "accessory", rarity: "epic", stats: [{ key: "mPen", value: 5 }, { key: "damageBoost", value: 3 }], uniqueStats: [] }
             ],
             50: [
-                { name: "疾風の爪剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 27 }, { key: "dex", value: 9 }, { key: "accuracy", value: 6 }], uniqueStats: [{ key: "normalAttackBoost", value: 12 }] },
-                { name: "風走りのブーツ", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 6 }, { key: "hpEfficiency", value: 5 }], uniqueStats: [{ key: "dexMultiplier", value: 20 }] }
+                { name: "疾風の爪剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 27 }, { key: "dex", value: 9 }, { key: "accuracy", value: 6 }], uniqueStats: [] },
+                { name: "風走りのブーツ", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 6 }, { key: "hpEfficiency", value: 5 }], uniqueStats: [] }
             ],
             100: [
-                { name: "岩核の大盾", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 33 }, { key: "vit", value: 9 }, { key: "damageReduction", value: 3 }], uniqueStats: [{ key: "vitMultiplier", value: 25 }] },
-                { name: "岩守りの兜", type: "head", rarity: "epic", stats: [{ key: "defenseFlat", value: 15 }, { key: "vit", value: 6 }, { key: "maxHp", value: 27 }], uniqueStats: [{ key: "bossDropSynergy", value: 2 }] }
+                { name: "岩核の大盾", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 33 }, { key: "vit", value: 9 }, { key: "damageReduction", value: 3 }], uniqueStats: [] },
+                { name: "岩守りの兜", type: "head", rarity: "epic", stats: [{ key: "defenseFlat", value: 15 }, { key: "vit", value: 6 }, { key: "maxHp", value: 27 }], uniqueStats: [] }
             ],
             200: [
-                { name: "氷晶の杖", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 30 }, { key: "int", value: 9 }, { key: "mPen", value: 6 }], uniqueStats: [{ key: "skillPowerBoost", value: 12 }] },
-                { name: "氷牢の指輪", type: "accessory", rarity: "epic", stats: [{ key: "mpEfficiency", value: 6 }, { key: "critRate", value: 3 }, { key: "maxMp", value: 30 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 1 }] }
+                { name: "氷晶の杖", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 30 }, { key: "int", value: 9 }, { key: "mPen", value: 6 }], uniqueStats: [] },
+                { name: "氷牢の指輪", type: "accessory", rarity: "epic", stats: [{ key: "mpEfficiency", value: 6 }, { key: "critRate", value: 3 }, { key: "maxMp", value: 30 }], uniqueStats: [] }
             ],
             300: [
-                { name: "宵闇のマント", type: "armor", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 8 }, { key: "damageBoost", value: 3 }], uniqueStats: [{ key: "dexMultiplier", value: 22 }] },
-                { name: "闇狩りの短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 33 }, { key: "critRate", value: 5 }, { key: "dex", value: 6 }], uniqueStats: [{ key: "skillMpDiscount", value: 10 }] }
+                { name: "宵闇のマント", type: "armor", rarity: "epic", stats: [{ key: "evasionRate", value: 5 }, { key: "dex", value: 8 }, { key: "damageBoost", value: 3 }], uniqueStats: [] },
+                { name: "闇狩りの短剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 33 }, { key: "critRate", value: 5 }, { key: "dex", value: 6 }], uniqueStats: [] }
             ],
             400: [
-                { name: "熾火の大剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 39 }, { key: "str", value: 9 }, { key: "critDamage", value: 9 }], uniqueStats: [{ key: "skillPowerBoost", value: 15 }] },
-                { name: "炎護の手甲", type: "hands", rarity: "epic", stats: [{ key: "attackFlat", value: 9 }, { key: "str", value: 6 }, { key: "damageBoost", value: 3 }], uniqueStats: [{ key: "normalAttackBoost", value: 12 }] }
+                { name: "熾火の大剣", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 39 }, { key: "str", value: 9 }, { key: "critDamage", value: 9 }], uniqueStats: [] },
+                { name: "炎護の手甲", type: "hands", rarity: "epic", stats: [{ key: "attackFlat", value: 9 }, { key: "str", value: 6 }, { key: "damageBoost", value: 3 }], uniqueStats: [] }
             ],
             500: [
-                { name: "雷鳴の戦槌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 42 }, { key: "str", value: 11 }, { key: "accuracy", value: 6 }], uniqueStats: [{ key: "normalAttackBoost", value: 14 }] },
-                { name: "帯電の護符", type: "accessory", rarity: "epic", stats: [{ key: "critRate", value: 5 }, { key: "damageBoost", value: 5 }, { key: "maxHp", value: 30 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 1 }] }
+                { name: "雷鳴の戦槌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 42 }, { key: "str", value: 11 }, { key: "accuracy", value: 6 }], uniqueStats: [] },
+                { name: "帯電の護符", type: "accessory", rarity: "epic", stats: [{ key: "critRate", value: 5 }, { key: "damageBoost", value: 5 }, { key: "maxHp", value: 30 }], uniqueStats: [] }
             ],
             600: [
-                { name: "聖紋のローブ", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 27 }, { key: "int", value: 9 }, { key: "mpEfficiency", value: 8 }], uniqueStats: [{ key: "skillMpDiscount", value: 12 }] },
-                { name: "聖祈の護符", type: "accessory", rarity: "epic", stats: [{ key: "hpRegen", value: 6 }, { key: "mpRegen", value: 3 }, { key: "damageReduction", value: 3 }], uniqueStats: [{ key: "bossDropSynergy", value: 3 }] }
+                { name: "聖紋のローブ", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 27 }, { key: "int", value: 9 }, { key: "mpEfficiency", value: 8 }], uniqueStats: [] },
+                { name: "聖祈の護符", type: "accessory", rarity: "epic", stats: [{ key: "hpRegen", value: 6 }, { key: "mpRegen", value: 3 }, { key: "damageReduction", value: 3 }], uniqueStats: [] }
             ],
             700: [
-                { name: "疫毒の鎌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 45 }, { key: "dex", value: 9 }, { key: "mPen", value: 6 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 2 }] },
-                { name: "腐蝕の指輪", type: "accessory", rarity: "epic", stats: [{ key: "damageBoost", value: 5 }, { key: "leechRate", value: 5 }, { key: "maxHp", value: 30 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 1 }] }
+                { name: "疫毒の鎌", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 45 }, { key: "dex", value: 9 }, { key: "mPen", value: 6 }], uniqueStats: [] },
+                { name: "腐蝕の指輪", type: "accessory", rarity: "epic", stats: [{ key: "damageBoost", value: 5 }, { key: "leechRate", value: 5 }, { key: "maxHp", value: 30 }], uniqueStats: [] }
             ],
             800: [
-                { name: "鉄壁の鎧", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 39 }, { key: "vit", value: 11 }, { key: "damageReduction", value: 5 }], uniqueStats: [{ key: "vitMultiplier", value: 30 }] },
-                { name: "鋼鉄のグローブ", type: "hands", rarity: "epic", stats: [{ key: "defenseFlat", value: 12 }, { key: "str", value: 8 }, { key: "hpEfficiency", value: 6 }], uniqueStats: [{ key: "normalAttackBoost", value: 14 }] }
+                { name: "鉄壁の鎧", type: "armor", rarity: "epic", stats: [{ key: "defenseFlat", value: 39 }, { key: "vit", value: 11 }, { key: "damageReduction", value: 5 }], uniqueStats: [] },
+                { name: "鋼鉄のグローブ", type: "hands", rarity: "epic", stats: [{ key: "defenseFlat", value: 12 }, { key: "str", value: 8 }, { key: "hpEfficiency", value: 6 }], uniqueStats: [] }
             ],
             900: [
-                { name: "影刃の忍刀", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 48 }, { key: "dex", value: 12 }, { key: "critRate", value: 6 }], uniqueStats: [{ key: "skillPowerBoost", value: 18 }] },
-                { name: "夜走りの足袋", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 6 }, { key: "dex", value: 8 }, { key: "accuracy", value: 6 }], uniqueStats: [{ key: "dexMultiplier", value: 25 }] }
+                { name: "影刃の忍刀", type: "weapon", rarity: "epic", stats: [{ key: "attackFlat", value: 48 }, { key: "dex", value: 12 }, { key: "critRate", value: 6 }], uniqueStats: [] },
+                { name: "夜走りの足袋", type: "feet", rarity: "epic", stats: [{ key: "evasionRate", value: 6 }, { key: "dex", value: 8 }, { key: "accuracy", value: 6 }], uniqueStats: [] }
             ],
             1000: [
-                { name: "終焉の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 60 }, { key: "str", value: 15 }, { key: "damageBoost", value: 8 }], uniqueStats: [{ key: "strMultiplier", value: 35 }] },
-                { name: "竜鱗の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 45 }, { key: "vit", value: 15 }, { key: "maxHp", value: 60 }], uniqueStats: [{ key: "bossDropSynergy", value: 4 }] }
+                { name: "終焉の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 60 }, { key: "str", value: 15 }, { key: "damageBoost", value: 8 }], uniqueStats: [] },
+                { name: "竜鱗の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 45 }, { key: "vit", value: 15 }, { key: "maxHp", value: 60 }], uniqueStats: [] }
             ],
             1500: [
-                { name: "冥雷の長槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 75 }, { key: "str", value: 20 }, { key: "accuracy", value: 10 }], uniqueStats: [{ key: "normalAttackBoost", value: 18 }] },
-                { name: "雷陣の印章", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 8 }, { key: "damageBoost", value: 10 }, { key: "maxHp", value: 80 }], uniqueStats: [{ key: "skillMpDiscount", value: 15 }] }
+                { name: "冥雷の長槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 75 }, { key: "str", value: 20 }, { key: "accuracy", value: 10 }], uniqueStats: [] },
+                { name: "雷陣の印章", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 8 }, { key: "damageBoost", value: 10 }, { key: "maxHp", value: 80 }], uniqueStats: [] }
             ],
             2000: [
-                { name: "深淵の大剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 90 }, { key: "str", value: 24 }, { key: "critDamage", value: 15 }], uniqueStats: [{ key: "strMultiplier", value: 40 }] },
-                { name: "奈落の指輪", type: "accessory", rarity: "legendary", stats: [{ key: "mPen", value: 12 }, { key: "damageBoost", value: 12 }, { key: "maxMp", value: 90 }], uniqueStats: [{ key: "skillPowerBoost", value: 20 }] }
+                { name: "深淵の大剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 90 }, { key: "str", value: 24 }, { key: "critDamage", value: 15 }], uniqueStats: [] },
+                { name: "奈落の指輪", type: "accessory", rarity: "legendary", stats: [{ key: "mPen", value: 12 }, { key: "damageBoost", value: 12 }, { key: "maxMp", value: 90 }], uniqueStats: [] }
             ],
             2500: [
-                { name: "灼滅の双剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 105 }, { key: "dex", value: 22 }, { key: "critRate", value: 10 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 2 }] },
-                { name: "熾火の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 70 }, { key: "vit", value: 22 }, { key: "maxHp", value: 110 }], uniqueStats: [{ key: "normalAttackBoost", value: 18 }] }
+                { name: "灼滅の双剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 105 }, { key: "dex", value: 22 }, { key: "critRate", value: 10 }], uniqueStats: [] },
+                { name: "熾火の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 70 }, { key: "vit", value: 22 }, { key: "maxHp", value: 110 }], uniqueStats: [] }
             ],
             3000: [
-                { name: "氷獄の杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 115 }, { key: "int", value: 24 }, { key: "mPen", value: 14 }], uniqueStats: [{ key: "skillPowerBoost", value: 24 }] },
-                { name: "氷牢の護符", type: "accessory", rarity: "legendary", stats: [{ key: "mpEfficiency", value: 12 }, { key: "damageReduction", value: 8 }, { key: "maxMp", value: 100 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 2 }] }
+                { name: "氷獄の杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 115 }, { key: "int", value: 24 }, { key: "mPen", value: 14 }], uniqueStats: [] },
+                { name: "氷牢の護符", type: "accessory", rarity: "legendary", stats: [{ key: "mpEfficiency", value: 12 }, { key: "damageReduction", value: 8 }, { key: "maxMp", value: 100 }], uniqueStats: [] }
             ],
             3500: [
-                { name: "虚無の忍刀", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 125 }, { key: "dex", value: 25 }, { key: "critDamage", value: 18 }], uniqueStats: [{ key: "skillMpDiscount", value: 18 }] },
-                { name: "終闇の外套", type: "armor", rarity: "legendary", stats: [{ key: "evasionRate", value: 8 }, { key: "dex", value: 20 }, { key: "damageBoost", value: 10 }], uniqueStats: [{ key: "dexMultiplier", value: 30 }] }
+                { name: "虚無の忍刀", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 125 }, { key: "dex", value: 25 }, { key: "critDamage", value: 18 }], uniqueStats: [] },
+                { name: "終闇の外套", type: "armor", rarity: "legendary", stats: [{ key: "evasionRate", value: 8 }, { key: "dex", value: 20 }, { key: "damageBoost", value: 10 }], uniqueStats: [] }
             ],
             4000: [
-                { name: "星断の槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 140 }, { key: "str", value: 28 }, { key: "accuracy", value: 12 }], uniqueStats: [{ key: "normalAttackBoost", value: 20 }] },
-                { name: "裁定の盾鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 85 }, { key: "vit", value: 26 }, { key: "damageReduction", value: 10 }], uniqueStats: [{ key: "bossDropSynergy", value: 5 }] }
+                { name: "星断の槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 140 }, { key: "str", value: 28 }, { key: "accuracy", value: 12 }], uniqueStats: [] },
+                { name: "裁定の盾鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 85 }, { key: "vit", value: 26 }, { key: "damageReduction", value: 10 }], uniqueStats: [] }
             ],
             4500: [
-                { name: "毒宴の鎌", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 150 }, { key: "dex", value: 26 }, { key: "leechRate", value: 8 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 3 }] },
-                { name: "腐蝕の首飾り", type: "accessory", rarity: "legendary", stats: [{ key: "damageBoost", value: 12 }, { key: "maxHp", value: 130 }, { key: "mPen", value: 10 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 2 }] }
+                { name: "毒宴の鎌", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 150 }, { key: "dex", value: 26 }, { key: "leechRate", value: 8 }], uniqueStats: [] },
+                { name: "腐蝕の首飾り", type: "accessory", rarity: "legendary", stats: [{ key: "damageBoost", value: 12 }, { key: "maxHp", value: 130 }, { key: "mPen", value: 10 }], uniqueStats: [] }
             ],
             5000: [
-                { name: "終夜の竜剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 165 }, { key: "str", value: 30 }, { key: "critRate", value: 12 }], uniqueStats: [{ key: "strMultiplier", value: 45 }] },
-                { name: "黒翼のマント", type: "armor", rarity: "legendary", stats: [{ key: "evasionRate", value: 10 }, { key: "damageBoost", value: 12 }, { key: "maxHp", value: 140 }], uniqueStats: [{ key: "bossDropSynergy", value: 5 }] }
+                { name: "終夜の竜剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 165 }, { key: "str", value: 30 }, { key: "critRate", value: 12 }], uniqueStats: [] },
+                { name: "黒翼のマント", type: "armor", rarity: "legendary", stats: [{ key: "evasionRate", value: 10 }, { key: "damageBoost", value: 12 }, { key: "maxHp", value: 140 }], uniqueStats: [] }
             ],
             5500: [
-                { name: "雷哭の戦槌", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 175 }, { key: "str", value: 32 }, { key: "accuracy", value: 14 }], uniqueStats: [{ key: "normalAttackBoost", value: 22 }] },
-                { name: "雷鳴の護符", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 10 }, { key: "damageBoost", value: 14 }, { key: "maxHp", value: 150 }], uniqueStats: [{ key: "skillMpDiscount", value: 20 }] }
+                { name: "雷哭の戦槌", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 175 }, { key: "str", value: 32 }, { key: "accuracy", value: 14 }], uniqueStats: [] },
+                { name: "雷鳴の護符", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 10 }, { key: "damageBoost", value: 14 }, { key: "maxHp", value: 150 }], uniqueStats: [] }
             ],
             6000: [
-                { name: "聖裁の槍杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 190 }, { key: "int", value: 30 }, { key: "mPen", value: 16 }], uniqueStats: [{ key: "skillPowerBoost", value: 26 }] },
-                { name: "神域のローブ", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 100 }, { key: "int", value: 24 }, { key: "mpEfficiency", value: 14 }], uniqueStats: [{ key: "bossDropSynergy", value: 6 }] }
+                { name: "聖裁の槍杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 190 }, { key: "int", value: 30 }, { key: "mPen", value: 16 }], uniqueStats: [] },
+                { name: "神域のローブ", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 100 }, { key: "int", value: 24 }, { key: "mpEfficiency", value: 14 }], uniqueStats: [] }
             ],
             6500: [
-                { name: "地裂の戦斧", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 205 }, { key: "str", value: 34 }, { key: "critDamage", value: 20 }], uniqueStats: [{ key: "strMultiplier", value: 50 }] },
-                { name: "岩界の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 110 }, { key: "vit", value: 30 }, { key: "maxHp", value: 170 }], uniqueStats: [{ key: "vitMultiplier", value: 45 }] }
+                { name: "地裂の戦斧", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 205 }, { key: "str", value: 34 }, { key: "critDamage", value: 20 }], uniqueStats: [] },
+                { name: "岩界の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 110 }, { key: "vit", value: 30 }, { key: "maxHp", value: 170 }], uniqueStats: [] }
             ],
             7000: [
-                { name: "疫神の魔槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 220 }, { key: "int", value: 32 }, { key: "mPen", value: 18 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 3 }] },
-                { name: "疫毒の印環", type: "accessory", rarity: "legendary", stats: [{ key: "damageBoost", value: 16 }, { key: "leechRate", value: 10 }, { key: "maxHp", value: 180 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 2 }] }
+                { name: "疫神の魔槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 220 }, { key: "int", value: 32 }, { key: "mPen", value: 18 }], uniqueStats: [] },
+                { name: "疫毒の印環", type: "accessory", rarity: "legendary", stats: [{ key: "damageBoost", value: 16 }, { key: "leechRate", value: 10 }, { key: "maxHp", value: 180 }], uniqueStats: [] }
             ],
             7500: [
-                { name: "影刃の双刃", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 235 }, { key: "dex", value: 34 }, { key: "critRate", value: 14 }], uniqueStats: [{ key: "skillPowerBoost", value: 28 }] },
-                { name: "影縫いの足袋", type: "feet", rarity: "legendary", stats: [{ key: "evasionRate", value: 12 }, { key: "dex", value: 24 }, { key: "accuracy", value: 14 }], uniqueStats: [{ key: "dexMultiplier", value: 35 }] }
+                { name: "影刃の双刃", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 235 }, { key: "dex", value: 34 }, { key: "critRate", value: 14 }], uniqueStats: [] },
+                { name: "影縫いの足袋", type: "feet", rarity: "legendary", stats: [{ key: "evasionRate", value: 12 }, { key: "dex", value: 24 }, { key: "accuracy", value: 14 }], uniqueStats: [] }
             ],
             8000: [
-                { name: "絶対零度の杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 250 }, { key: "int", value: 36 }, { key: "mPen", value: 20 }], uniqueStats: [{ key: "skillPowerBoost", value: 30 }] },
-                { name: "氷結の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 125 }, { key: "vit", value: 32 }, { key: "damageReduction", value: 12 }], uniqueStats: [{ key: "statusEffectTurnBonus", value: 3 }] }
+                { name: "絶対零度の杖", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 250 }, { key: "int", value: 36 }, { key: "mPen", value: 20 }], uniqueStats: [] },
+                { name: "氷結の護鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 125 }, { key: "vit", value: 32 }, { key: "damageReduction", value: 12 }], uniqueStats: [] }
             ],
             8500: [
-                { name: "業火の大剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 265 }, { key: "str", value: 36 }, { key: "critDamage", value: 24 }], uniqueStats: [{ key: "statusEffectStackBonus", value: 3 }] },
-                { name: "灰燼の手甲", type: "hands", rarity: "legendary", stats: [{ key: "attackFlat", value: 18 }, { key: "str", value: 20 }, { key: "damageBoost", value: 12 }], uniqueStats: [{ key: "normalAttackBoost", value: 24 }] }
+                { name: "業火の大剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 265 }, { key: "str", value: 36 }, { key: "critDamage", value: 24 }], uniqueStats: [] },
+                { name: "灰燼の手甲", type: "hands", rarity: "legendary", stats: [{ key: "attackFlat", value: 18 }, { key: "str", value: 20 }, { key: "damageBoost", value: 12 }], uniqueStats: [] }
             ],
             9000: [
-                { name: "星滅の大鎚", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 285 }, { key: "str", value: 40 }, { key: "accuracy", value: 16 }], uniqueStats: [{ key: "skillPowerBoost", value: 32 }] },
-                { name: "虚無の指輪", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 12 }, { key: "damageBoost", value: 18 }, { key: "maxMp", value: 140 }], uniqueStats: [{ key: "bossDropSynergy", value: 7 }] }
+                { name: "星滅の大鎚", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 285 }, { key: "str", value: 40 }, { key: "accuracy", value: 16 }], uniqueStats: [] },
+                { name: "虚無の指輪", type: "accessory", rarity: "legendary", stats: [{ key: "critRate", value: 12 }, { key: "damageBoost", value: 18 }, { key: "maxMp", value: 140 }], uniqueStats: [] }
             ],
             9500: [
-                { name: "神罰の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 310 }, { key: "str", value: 42 }, { key: "damageBoost", value: 20 }], uniqueStats: [{ key: "strMultiplier", value: 60 }] },
-                { name: "天罰の護符", type: "accessory", rarity: "legendary", stats: [{ key: "damageReduction", value: 14 }, { key: "maxHp", value: 200 }, { key: "mpRegen", value: 6 }], uniqueStats: [{ key: "skillMpDiscount", value: 25 }] }
+                { name: "神罰の竜槍", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 310 }, { key: "str", value: 42 }, { key: "damageBoost", value: 20 }], uniqueStats: [] },
+                { name: "天罰の護符", type: "accessory", rarity: "legendary", stats: [{ key: "damageReduction", value: 14 }, { key: "maxHp", value: 200 }, { key: "mpRegen", value: 6 }], uniqueStats: [] }
             ],
             10000: [
-                { name: "終極の神剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 350 }, { key: "str", value: 50 }, { key: "critDamage", value: 30 }], uniqueStats: [{ key: "strMultiplier", value: 100 }] },
-                { name: "終焉神の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 160 }, { key: "vit", value: 45 }, { key: "maxHp", value: 260 }], uniqueStats: [{ key: "bossDropSynergy", value: 8 }] }
+                { name: "終極の神剣", type: "weapon", rarity: "legendary", stats: [{ key: "attackFlat", value: 350 }, { key: "str", value: 50 }, { key: "critDamage", value: 30 }], uniqueStats: [] },
+                { name: "終焉神の鎧", type: "armor", rarity: "legendary", stats: [{ key: "defenseFlat", value: 160 }, { key: "vit", value: 45 }, { key: "maxHp", value: 260 }], uniqueStats: [] }
             ]
         };
-        const BossRushDropScale = 1.4;
-        const BossRushLootTables = Object.fromEntries(
-            BossRushSequence.map((_, idx) => {
-                const floor = BossRushStartFloor + idx;
-                const baseTable = BossLootTables[10000] || [];
-                const table = baseTable.map((item) => ({
-                    ...item,
-                    name: `DX${item.name}`,
-                    stats: item.stats.map((stat) => ({ ...stat, value: Math.max(1, Math.floor(stat.value * BossRushDropScale)) })),
-                    uniqueStats: (item.uniqueStats || []).map((stat) => ({ ...stat }))
-                }));
-                return [floor, table];
-            })
-        );
 
         const BossUniqueEffectThemes = [
             { pattern: /毒/, status: "poison", label: "毒" },
@@ -2540,16 +2526,17 @@
             { pattern: /竜|星|審|滅/, status: "vulnerable", label: "脆弱" }
         ];
 
-        const getBossUniqueEffectTheme = (name) => (
+        const getBossUniqueTheme = (name) => (
             BossUniqueEffectThemes.find((theme) => theme.pattern.test(name)) || null
         );
 
         const createBossUniqueEffect = (base, floor, index) => {
             const id = `boss-${floor}-${index}`;
-            const baseValue = 10 + Math.floor(floor / 500) + index * 2;
             const namePrefix = `${base.name}：`;
+            const baseValue = 8 + Math.floor(floor / 500) + index * 2;
+            const theme = getBossUniqueTheme(base.name);
 
-            if (floor === 2000 && index === 0) {
+            if (floor === 3000 && index === 0) {
                 return { id, type: "statMultiplier", stat: "int", value: 28, label: `${namePrefix}INT倍率 +28%` };
             }
             if (floor === 5000 && index === 1) {
@@ -2559,7 +2546,6 @@
                 return { id, type: "levelRatioBoost", labelBase: `${namePrefix}一次ステータス成長` };
             }
 
-            const theme = getBossUniqueEffectTheme(base.name);
             if (theme) {
                 if (index === 0) {
                     return {
@@ -2581,55 +2567,45 @@
                 };
             }
 
-            const variant = floor % 4;
-            if (index === 0) {
-                if (variant === 0) {
-                    return {
-                        id,
-                        type: "damageBoost",
-                        condition: { type: "playerHpBelow", threshold: 0.5 },
-                        value: baseValue + 6,
-                        label: `${namePrefix}HP50%以下で与ダメ+${baseValue + 6}%`
-                    };
-                }
-                if (variant === 1) {
-                    return {
-                        id,
-                        type: "riskBoost",
-                        condition: { type: "playerMpZero" },
-                        value: baseValue + 12,
-                        penalty: 12,
-                        label: `${namePrefix}MP0で与ダメ+${baseValue + 12}%/被ダメ+12%`
-                    };
-                }
-                if (variant === 2) {
-                    return {
-                        id,
-                        type: "damageBoost",
-                        condition: { type: "enemyHpAbove", threshold: 0.7 },
-                        value: baseValue + 5,
-                        label: `${namePrefix}敵HP70%以上で与ダメ+${baseValue + 5}%`
-                    };
-                }
-                return {
-                    id,
-                    type: "damageBoost",
-                    condition: { type: "enemyHpBelow", threshold: 0.35 },
-                    value: baseValue + 8,
-                    label: `${namePrefix}敵HP35%以下で与ダメ+${baseValue + 8}%`
-                };
-            }
-
+            const variant = (Math.floor(floor / 50) + index) % 7;
             if (variant === 0) {
                 return {
                     id,
-                    type: "damageTakenReduction",
-                    condition: { type: "playerHpAbove", threshold: 0.7 },
-                    value: 8 + Math.floor(floor / 800),
-                    label: `${namePrefix}HP70%以上で被ダメ-${8 + Math.floor(floor / 800)}%`
+                    type: "damageBoost",
+                    condition: { type: "playerHpBelow", threshold: 0.5 },
+                    value: baseValue + 6,
+                    label: `${namePrefix}HP50%以下で与ダメ+${baseValue + 6}%`
                 };
             }
             if (variant === 1) {
+                return {
+                    id,
+                    type: "riskBoost",
+                    condition: { type: "playerMpZero" },
+                    value: baseValue + 10,
+                    penalty: 10,
+                    label: `${namePrefix}MP0で与ダメ+${baseValue + 10}%/被ダメ+10%`
+                };
+            }
+            if (variant === 2) {
+                return {
+                    id,
+                    type: "accuracyBoost",
+                    condition: { type: "enemyHpAbove", threshold: 0.7 },
+                    value: 8 + Math.floor(floor / 900),
+                    label: `${namePrefix}敵HP70%以上で命中+${8 + Math.floor(floor / 900)}%`
+                };
+            }
+            if (variant === 3) {
+                return {
+                    id,
+                    type: "critBoost",
+                    condition: { type: "enemyHpBelow", threshold: 0.35 },
+                    value: 6 + Math.floor(floor / 1000),
+                    label: `${namePrefix}敵HP35%以下で会心率+${6 + Math.floor(floor / 1000)}%`
+                };
+            }
+            if (variant === 4) {
                 return {
                     id,
                     type: "bonusHitsChance",
@@ -2640,23 +2616,38 @@
                     label: `${namePrefix}MP25%以下で${Math.min(40, 20 + Math.floor(floor / 900))}%追撃(+1Hit)`
                 };
             }
-            if (variant === 2) {
+            if (variant === 5) {
                 return {
                     id,
-                    type: "critBoost",
-                    condition: { type: "playerHpAbove", threshold: 0.9 },
-                    value: 8 + Math.floor(floor / 1000),
-                    label: `${namePrefix}HP90%以上で会心率+${8 + Math.floor(floor / 1000)}%`
+                    type: "extraTurnChance",
+                    condition: { type: "playerHpAbove", threshold: 0.8 },
+                    chance: Math.min(25, 12 + Math.floor(floor / 1000)),
+                    hitMultiplier: 0.7,
+                    label: `${namePrefix}HP80%以上で${Math.min(25, 12 + Math.floor(floor / 1000))}%の追加行動`
                 };
             }
             return {
                 id,
-                type: "accuracyBoost",
-                condition: { type: "playerHpBelow", threshold: 0.4 },
-                value: 10 + Math.floor(floor / 900),
-                label: `${namePrefix}HP40%以下で命中+${10 + Math.floor(floor / 900)}%`
+                type: "damageTakenReduction",
+                condition: { type: "playerHpAbove", threshold: 0.7 },
+                value: 8 + Math.floor(floor / 900),
+                label: `${namePrefix}HP70%以上で被ダメ-${8 + Math.floor(floor / 900)}%`
             };
         };
+        const BossRushDropScale = 1.4;
+        const BossRushLootTables = Object.fromEntries(
+            BossRushSequence.map((_, idx) => {
+                const floor = BossRushStartFloor + idx;
+                const baseTable = BossLootTables[10000] || [];
+                const table = baseTable.map((item) => ({
+                    ...item,
+                    name: `DX${item.name}`,
+                    stats: item.stats.map((stat) => ({ ...stat, value: Math.max(1, Math.floor(stat.value * BossRushDropScale)) })),
+                    uniqueStats: (item.uniqueStats || []).map((stat) => ({ ...stat }))
+                }));
+                return [floor, table];
+            })
+        );
 
         const StatLabels = {
             str: "STR",
@@ -3261,20 +3252,6 @@
             return potion;
         };
 
-        const buildBossUniqueEffectInstance = (effectDef) => {
-            if (!effectDef) return null;
-            if (effectDef.type === "levelRatioBoost") {
-                const step = Math.random() < 0.5 ? 2 : 3;
-                const gain = Math.random() < 0.5 ? 1 : 2;
-                return {
-                    ...effectDef,
-                    data: { step, gain },
-                    label: `${effectDef.labelBase}：Lv${step}ごとに一次ステ+${gain}`
-                };
-            }
-            return { ...effectDef };
-        };
-
         const buildBossItem = (base, floor, index) => {
             const totals = getTotalStats();
             const eliteRank = Game.enemy?.elite?.rank || 0;
@@ -3283,10 +3260,18 @@
                 key: stat.key,
                 value: Math.max(1, Math.floor(stat.value * rarity.mul))
             }));
-            const effectDef = createBossUniqueEffect(base, floor, index);
-            const uniqueEffects = [];
-            const effectInstance = buildBossUniqueEffectInstance(effectDef);
-            if (effectInstance) uniqueEffects.push(effectInstance);
+            const uniqueStats = (base.uniqueStats || []).map((stat) => ({ ...stat }));
+            const effect = createBossUniqueEffect(base, floor, index);
+            if (effect) {
+                if (effect.type === "levelRatioBoost") {
+                    const step = Math.random() < 0.5 ? 2 : 3;
+                    const gain = Math.random() < 0.5 ? 1 : 2;
+                    effect.step = step;
+                    effect.gain = gain;
+                    effect.label = `${effect.labelBase}：Lv${step}ごとに一次ステ+${gain}`;
+                }
+                uniqueStats.push({ key: "bossUniqueEffect", value: 0, effect });
+            }
             return {
                 name: base.name,
                 type: base.type,
@@ -3294,8 +3279,7 @@
                 rarityMul: rarity.mul,
                 baseStats,
                 affixStats: [],
-                uniqueStats: [],
-                uniqueEffects,
+                uniqueStats,
                 prefix: null,
                 suffix: null,
                 isBossDrop: true
@@ -3387,7 +3371,7 @@
             ]);
         };
 
-        const getEquippedUniqueEffects = () => ([
+        const getEquippedBossEffects = () => ([
             Game.player.weapon,
             Game.player.armor,
             Game.player.head,
@@ -3395,18 +3379,23 @@
             Game.player.feet,
             Game.player.accessory1,
             Game.player.accessory2
-        ].flatMap((item) => item?.uniqueEffects || []));
+        ].flatMap((item) => (item?.uniqueStats || [])
+            .filter((stat) => stat.key === "bossUniqueEffect" && stat.effect)
+            .map((stat) => stat.effect)
+        ));
 
-        const applyUniqueEffectStatBonuses = (totals) => {
+        const applyBossUniqueStatBonuses = (totals) => {
             const updated = { ...totals };
-            const effects = getEquippedUniqueEffects();
+            const effects = getEquippedBossEffects();
             effects.forEach((effect) => {
                 if (effect.type === "statMultiplier") {
                     if (effect.stat === "int") updated.intMultiplier += effect.value;
                     if (effect.stat === "luk") updated.lukMultiplier += effect.value;
                 }
-                if (effect.type === "levelRatioBoost" && effect.data) {
-                    const bonus = Math.floor(Game.player.level / effect.data.step) * effect.data.gain;
+                if (effect.type === "levelRatioBoost") {
+                    const step = effect.step || 1;
+                    const gain = effect.gain || 0;
+                    const bonus = Math.floor(Game.player.level / step) * gain;
                     if (bonus > 0) {
                         updated.str += bonus;
                         updated.vit += bonus;
@@ -3448,7 +3437,7 @@
         const getTotalStats = () => {
             const equip = getEquipmentStats();
             const milestone = getPassiveMilestoneStats();
-            const totals = {
+            return {
                 str: Game.player.str + (equip.str || 0) + (milestone.str || 0),
                 vit: Game.player.vit + (equip.vit || 0) + (milestone.vit || 0),
                 int: Game.player.int + (equip.int || 0) + (milestone.int || 0),
@@ -3490,7 +3479,7 @@
                 dexMultiplier: Game.player.dexMultiplier + (equip.dexMultiplier || 0),
                 lukMultiplier: Game.player.lukMultiplier + (equip.lukMultiplier || 0)
             };
-            return applyUniqueEffectStatBonuses(totals);
+            return applyBossUniqueStatBonuses(totals);
         };
 
         function getStatusEffect(target, effectId) {
@@ -3577,14 +3566,11 @@
             return mods;
         }
 
-        const checkUniqueEffectCondition = (condition, context) => {
+        const checkBossUniqueCondition = (condition, context) => {
             if (!condition) return true;
             const { player, enemy, derived } = context;
             if (condition.type === "enemyStatus") {
                 return Boolean(getStatusEffect(enemy, condition.status));
-            }
-            if (condition.type === "playerStatus") {
-                return Boolean(getStatusEffect(player, condition.status));
             }
             if (condition.type === "playerHpBelow") {
                 return player.hp <= derived.maxHp * condition.threshold;
@@ -3595,25 +3581,19 @@
             if (condition.type === "playerMpBelow") {
                 return player.mp <= derived.maxMp * condition.threshold;
             }
-            if (condition.type === "playerMpAbove") {
-                return player.mp >= derived.maxMp * condition.threshold;
-            }
             if (condition.type === "playerMpZero") {
                 return player.mp <= 0;
-            }
-            if (condition.type === "enemyHpBelow") {
-                return enemy.hp <= enemy.maxHp * condition.threshold;
             }
             if (condition.type === "enemyHpAbove") {
                 return enemy.hp >= enemy.maxHp * condition.threshold;
             }
-            if (condition.type === "enemyIsBoss") {
-                return Boolean(enemy?.isBoss);
+            if (condition.type === "enemyHpBelow") {
+                return enemy.hp <= enemy.maxHp * condition.threshold;
             }
             return false;
         };
 
-        const getUniqueAttackModifiers = (context) => {
+        const getBossUniqueCombatModifiers = (context) => {
             const mods = {
                 damageMultiplier: 1,
                 accuracyBonus: 0,
@@ -3623,9 +3603,9 @@
                 damageTakenMultiplier: 1,
                 logs: []
             };
-            const effects = getEquippedUniqueEffects();
+            const effects = getEquippedBossEffects();
             effects.forEach((effect) => {
-                if (!checkUniqueEffectCondition(effect.condition, context)) return;
+                if (!checkBossUniqueCondition(effect.condition, context)) return;
                 if (effect.type === "damageBoost") {
                     mods.damageMultiplier *= 1 + effect.value / 100;
                 }
@@ -3638,33 +3618,33 @@
                     if (Math.random() * 100 < chance) {
                         mods.bonusHits += effect.hits || 1;
                         mods.bonusHitMultiplier = effect.hitMultiplier || mods.bonusHitMultiplier;
-                        if (effect.label) mods.logs.push(effect.label);
+                        mods.logs.push(effect.label);
                     }
+                }
+                if (effect.type === "extraTurnChance") {
+                    const chance = effect.chance ?? 0;
+                    if (Math.random() * 100 < chance) {
+                        mods.bonusHits += context.baseHits || 0;
+                        mods.bonusHitMultiplier = effect.hitMultiplier || mods.bonusHitMultiplier;
+                        mods.logs.push(effect.label);
+                    }
+                }
+                if (effect.type === "accuracyBoost") {
+                    mods.accuracyBonus += effect.value || 0;
                 }
                 if (effect.type === "critBoost") {
                     mods.critRateBonus += effect.value || 0;
                 }
-                if (effect.type === "accuracyBoost") {
-                    mods.accuracyBonus += effect.value || 0;
+                if (effect.type === "damageTakenReduction") {
+                    mods.damageTakenMultiplier *= Math.max(0, 1 - (effect.value || 0) / 100);
                 }
             });
             return mods;
         };
 
-        const getUniqueDefenseMultiplier = (context) => {
-            let multiplier = 1;
-            const effects = getEquippedUniqueEffects();
-            effects.forEach((effect) => {
-                if (!checkUniqueEffectCondition(effect.condition, context)) return;
-                if (effect.type === "damageTakenReduction") {
-                    multiplier *= Math.max(0, 1 - (effect.value || 0) / 100);
-                }
-                if (effect.type === "riskBoost") {
-                    multiplier *= 1 + (effect.penalty || 0) / 100;
-                }
-            });
-            return multiplier;
-        };
+        const getBossUniqueDamageTakenMultiplier = (context) => (
+            getBossUniqueCombatModifiers(context).damageTakenMultiplier
+        );
 
         const CustomStatRenderers = {
             potionCapacity: (stat) => `容量 ${stat.source ? "+" : ""}${stat.value}`,
@@ -3684,7 +3664,8 @@
             vitMultiplier: (stat) => `VIT倍率 +${stat.value}%`,
             intMultiplier: (stat) => `INT倍率 +${stat.value}%`,
             dexMultiplier: (stat) => `DEX倍率 +${stat.value}%`,
-            lukMultiplier: (stat) => `LUK倍率 +${stat.value}%`
+            lukMultiplier: (stat) => `LUK倍率 +${stat.value}%`,
+            bossUniqueEffect: (stat) => stat.effect?.label || "固有効果"
         };
 
         const renderStatLines = (stats) => {
@@ -3696,16 +3677,8 @@
             });
         };
 
-        const renderUniqueEffectLines = (effects) => {
-            if (!Array.isArray(effects)) return [];
-            return effects.map((effect) => effect?.label).filter(Boolean);
-        };
-
         const renderItemStatsHtml = (item) => {
-            const stats = [
-                ...renderStatLines(getItemStats(item)),
-                ...renderUniqueEffectLines(item.uniqueEffects || [])
-            ];
+            const stats = renderStatLines(getItemStats(item));
             return stats.map((line) => `<div class="text-[10px] text-slate-400 font-bold">${line}</div>`).join('');
         };
 
@@ -3733,10 +3706,7 @@
             const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
-            const uniqueLines = [
-                ...renderStatLines(item.uniqueStats || []),
-                ...renderUniqueEffectLines(item.uniqueEffects || [])
-            ];
+            const uniqueLines = renderStatLines(item.uniqueStats || []);
             const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
                 renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
@@ -4932,7 +4902,7 @@
         function performEnemySkill(skill, derived) {
             const enemyStatusMods = getStatusModifiers(Game.enemy);
             const playerStatusMods = getStatusModifiers(Game.player);
-            const uniqueDefenseMultiplier = getUniqueDefenseMultiplier({
+            const bossDefenseMultiplier = getBossUniqueDamageTakenMultiplier({
                 player: Game.player,
                 enemy: Game.enemy,
                 derived
@@ -4955,7 +4925,7 @@
                     }
                     d = Math.floor(d * enemyStatusMods.damageDoneMul);
                     d = Math.floor(d * playerStatusMods.damageTakenMul);
-                    d = Math.floor(d * uniqueDefenseMultiplier);
+                    d = Math.floor(d * bossDefenseMultiplier);
                     d = Math.max(1, d);
                     totalDamage += applyDamage(Game.player, d, Game.enemy);
                 }
@@ -5080,23 +5050,22 @@
                 addLog(`【回復】${amt}HP`, "text-green-500");
                 dmgText(amt, true);
             } else {
-                const uniqueAttackMods = getUniqueAttackModifiers({
+                const bossMods = getBossUniqueCombatModifiers({
                     player: Game.player,
                     enemy: Game.enemy,
                     derived,
-                    skill: currentSkill
+                    baseHits: currentSkill.hits || 1
                 });
-                const baseHits = currentSkill.hits || 1;
-                let hits = baseHits + (uniqueAttackMods.bonusHits || 0);
+                if (bossMods.logs.length) {
+                    bossMods.logs.forEach((line) => addLog(line, "text-amber-400"));
+                }
+                let hits = currentSkill.hits || 1;
+                hits += bossMods.bonusHits || 0;
                 let totalDamage = 0;
                 let landedHit = false;
-
-                if (uniqueAttackMods.logs.length) {
-                    uniqueAttackMods.logs.forEach((line) => addLog(line, "text-amber-400"));
-                }
                 
                 for(let i=0; i<hits; i++){
-                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0) + uniqueAttackMods.accuracyBonus);
+                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0) + bossMods.accuracyBonus);
                     if (Math.random() * 100 > hitChance) {
                         continue;
                     }
@@ -5105,15 +5074,15 @@
                     let atkBase = isMagic ? (derived.totals.int * 2) : derived.atk;
                     
                     // Critical Check
-                    let isCrit = Math.random() * 100 < (derived.totals.critRate + (currentSkill.critBonus || 0) + uniqueAttackMods.critRateBonus);
+                    let isCrit = Math.random() * 100 < (derived.totals.critRate + (currentSkill.critBonus || 0) + bossMods.critRateBonus);
                     let dmg = Math.floor(currentSkill.pow * atkBase * (0.9 + Math.random() * 0.2));
                     if (isCrit) dmg = Math.floor(dmg * (derived.totals.critDamage / 100));
 
                     if (currentSkill.name !== '通常攻撃' && derived.totals.skillPowerBoost > 0) {
                         dmg = Math.floor(dmg * (1 + derived.totals.skillPowerBoost / 100));
                     }
-                    if (i >= baseHits && uniqueAttackMods.bonusHitMultiplier !== 1) {
-                        dmg = Math.floor(dmg * uniqueAttackMods.bonusHitMultiplier);
+                    if (i >= (currentSkill.hits || 1) && bossMods.bonusHitMultiplier !== 1) {
+                        dmg = Math.floor(dmg * bossMods.bonusHitMultiplier);
                     }
 
                     // Passive: Low HP boost
@@ -5130,8 +5099,8 @@
                     if (derived.totals.damageBoost > 0) {
                         dmg = Math.floor(dmg * (1 + derived.totals.damageBoost / 100));
                     }
-                    if (uniqueAttackMods.damageMultiplier !== 1) {
-                        dmg = Math.floor(dmg * uniqueAttackMods.damageMultiplier);
+                    if (bossMods.damageMultiplier !== 1) {
+                        dmg = Math.floor(dmg * bossMods.damageMultiplier);
                     }
                     dmg = Math.floor(dmg * playerStatusMods.damageDoneMul);
                     dmg = Math.floor(dmg * enemyStatusMods.damageTakenMul);
@@ -5263,12 +5232,11 @@
             if (!usedBossSkill) {
                 d = Math.floor(d * enemyStatusMods.damageDoneMul);
                 d = Math.floor(d * playerStatusMods.damageTakenMul);
-                const uniqueDefenseMultiplier = getUniqueDefenseMultiplier({
+                d = Math.floor(d * getBossUniqueDamageTakenMultiplier({
                     player: Game.player,
                     enemy: Game.enemy,
                     derived
-                });
-                d = Math.floor(d * uniqueDefenseMultiplier);
+                }));
                 d = Math.max(1, d);
                 const appliedDamage = applyDamage(Game.player, d, Game.enemy);
                 addLog(`${Game.enemy.name}：${appliedDamage}ダメ`, "text-red-400");
