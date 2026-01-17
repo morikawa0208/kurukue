@@ -165,6 +165,20 @@
             background: rgba(251, 191, 36, 0.1);
             border: 1px solid rgba(251, 191, 36, 0.35);
         }
+
+        .enhance-label {
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+        }
+        .enhance-green { color: #22c55e; }
+        .enhance-yellow { color: #facc15; }
+        .enhance-blue { color: #38bdf8; }
+        .enhance-pink { color: #f472b6; }
+        .enhance-orange { color: #fb923c; }
+        .enhance-gold { color: #f59e0b; text-shadow: 0 0 6px rgba(245, 158, 11, 0.55); }
+        .enhance-white { color: #f8fafc; text-shadow: 0 0 4px rgba(15, 23, 42, 0.8); }
+        .enhance-broken { color: #ef4444; font-size: 0.6rem; font-weight: 900; letter-spacing: 0.08em; }
     </style>
 </head>
 <body class="flex flex-col">
@@ -3136,7 +3150,7 @@
                 ...(prefix ? prefix.stats.map((stat) => ({ ...stat, source: "prefix" })) : []),
                 ...(suffix ? suffix.stats.map((stat) => ({ ...stat, source: "suffix" })) : [])
             ];
-            return {
+            const item = {
                 name: `${prefixStars}${prefix ? prefix.name : ""}${base.name}${suffix ? suffix.name : ""}${suffixStars}`,
                 type,
                 rarity: rarity.key,
@@ -3147,6 +3161,11 @@
                 prefix,
                 suffix
             };
+            if (item.type === "weapon") {
+                item.enhancementLevel = 0;
+                item.isBroken = false;
+            }
+            return item;
         };
 
         const convertPotionAffixStats = (stats, base) => {
@@ -3232,7 +3251,7 @@
             if (resolvedEffect) {
                 uniqueStats.push({ key: "bossUniqueEffect", value: 0, effect: resolvedEffect });
             }
-            return {
+            const item = {
                 name: base.name,
                 type: base.type,
                 rarity: rarity.key,
@@ -3244,11 +3263,104 @@
                 suffix: null,
                 isBossDrop: true
             };
+            if (item.type === "weapon") {
+                item.enhancementLevel = 0;
+                item.isBroken = false;
+            }
+            return item;
+        };
+
+        const MAX_WEAPON_ENHANCEMENT = 21;
+        const WeaponEnhancementRates = {
+            0: 1,
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 0.9,
+            5: 0.8,
+            6: 0.6,
+            7: 0.8,
+            8: 0.9,
+            9: 0.5,
+            10: 0.259,
+            11: 0.18,
+            12: 0.127,
+            13: 0.083,
+            14: 0.056,
+            15: 0.031,
+            16: 0.017,
+            17: 0.003,
+            18: 0.002,
+            19: 0.001,
+            20: 0.0001
+        };
+
+        const normalizeWeaponEnhancement = (item) => {
+            if (!item || item.type !== "weapon") return;
+            if (!Number.isFinite(item.enhancementLevel)) item.enhancementLevel = 0;
+            if (item.isBroken === undefined || item.isBroken === null) item.isBroken = false;
+        };
+
+        const getWeaponEnhancementLevel = (item) => {
+            if (!item || item.type !== "weapon") return 0;
+            return Number.isFinite(item.enhancementLevel) ? item.enhancementLevel : 0;
+        };
+
+        const getWeaponEnhancementRate = (level) => WeaponEnhancementRates[level] ?? 0;
+
+        const formatEnhancementRate = (rate) => {
+            const percent = rate * 100;
+            if (percent >= 1) return percent.toFixed(1);
+            if (percent >= 0.1) return percent.toFixed(1);
+            return percent.toFixed(2);
+        };
+
+        const getWeaponEnhancementCost = (item) => {
+            const level = getWeaponEnhancementLevel(item);
+            const rarityMul = item?.rarityMul ?? 1;
+            const base = 220;
+            const scaled = base * (level + 1) * (1 + level * 0.35) * rarityMul;
+            return Math.max(1, Math.floor(scaled));
+        };
+
+        const getWeaponEnhancementColorClass = (level) => {
+            if (level >= 20) return "enhance-white";
+            if (level >= 17) return "enhance-gold";
+            if (level >= 15) return "enhance-orange";
+            if (level >= 13) return "enhance-pink";
+            if (level >= 9) return "enhance-blue";
+            if (level >= 7) return "enhance-yellow";
+            if (level >= 1) return "enhance-green";
+            return "";
+        };
+
+        const getWeaponEnhancementLabelHtml = (item) => {
+            const level = getWeaponEnhancementLevel(item);
+            if (!level) return "";
+            const colorClass = getWeaponEnhancementColorClass(level);
+            return `<span class="enhance-label ${colorClass}">+${level}</span>`;
+        };
+
+        const getWeaponBrokenLabelHtml = (item) => {
+            if (!item || item.type !== "weapon" || !item.isBroken) return "";
+            return `<span class="enhance-broken">破損</span>`;
+        };
+
+        const getWeaponEnhancementStats = (item) => {
+            if (!item || item.type !== "weapon") return [];
+            const level = getWeaponEnhancementLevel(item);
+            if (level <= 0 || item.isBroken) return [];
+            return [{ key: "attackFlat", value: level }];
         };
 
         const getItemStats = (item) => {
             if (!item) return [];
-            return [...(item.baseStats || []), ...(item.affixStats || []), ...(item.uniqueStats || [])];
+            return [
+                ...(item.baseStats || []),
+                ...(item.affixStats || []),
+                ...(item.uniqueStats || []),
+                ...getWeaponEnhancementStats(item)
+            ];
         };
 
         const sumStats = (stats) => {
@@ -3689,11 +3801,13 @@
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
             const uniqueLines = renderStatLines(item.uniqueStats || []);
+            const enhancementLines = renderStatLines(getWeaponEnhancementStats(item));
             const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
                 renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
                 renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
-                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
+                renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines),
+                renderStatGroupHtml("強化補正", "fa-wand-magic-sparkles", enhancementLines)
             ].filter(Boolean);
             const groupHtml = groups.length ? `<div class="item-stat-categories">${groups.join('')}</div>` : '';
             const uniqueHtml = uniqueLines.length
@@ -3715,7 +3829,12 @@
             const name = item?.name || "なし";
             const rarity = item?.rarity || "normal";
             const isLong = name.length >= 16;
-            el.innerText = name;
+            if (item) {
+                normalizeWeaponEnhancement(item);
+            }
+            const enhancementHtml = getWeaponEnhancementLabelHtml(item);
+            const brokenHtml = getWeaponBrokenLabelHtml(item);
+            el.innerHTML = `${name}${enhancementHtml ? ` ${enhancementHtml}` : ""}${brokenHtml ? ` ${brokenHtml}` : ""}`.trim();
             el.className = `font-bold truncate text-sm rarity-${rarity} ${isLong ? "item-name-shrink" : ""}`.trim();
         };
 
@@ -5590,6 +5709,49 @@
             triggerAutosave();
         }
 
+        function enhanceWeapon(idx) {
+            const item = Game.player.inventory[idx];
+            if (!item || item.type !== "weapon") return;
+            normalizeWeaponEnhancement(item);
+            if (item.isBroken) return;
+            const level = getWeaponEnhancementLevel(item);
+            if (level >= MAX_WEAPON_ENHANCEMENT) return;
+            const cost = getWeaponEnhancementCost(item);
+            if (Game.player.gold < cost) {
+                addLog("強化費用が足りない！", "text-slate-400");
+                return;
+            }
+            Game.player.gold -= cost;
+            const rate = getWeaponEnhancementRate(level);
+            const success = Math.random() < rate;
+            if (success) {
+                item.enhancementLevel = level + 1;
+                addLog(`${item.name} 強化成功！ +${item.enhancementLevel}`, "text-emerald-500 font-bold");
+            } else {
+                item.isBroken = true;
+                addLog(`${item.name} 強化失敗...武器が壊れた`, "text-rose-500 font-bold");
+            }
+            updateUI();
+            triggerAutosave();
+        }
+
+        function repairWeapon(idx) {
+            const item = Game.player.inventory[idx];
+            if (!item || item.type !== "weapon") return;
+            normalizeWeaponEnhancement(item);
+            if (!item.isBroken) return;
+            const cost = getWeaponEnhancementCost(item) * 2;
+            if (Game.player.gold < cost) {
+                addLog("修理費用が足りない！", "text-slate-400");
+                return;
+            }
+            Game.player.gold -= cost;
+            item.isBroken = false;
+            addLog(`${item.name} を修理した`, "text-sky-500 font-bold");
+            updateUI();
+            triggerAutosave();
+        }
+
         function bulkSellByRarity(rarities) {
             if (!Array.isArray(rarities) || rarities.length === 0) return;
             let totalGold = 0;
@@ -5871,6 +6033,9 @@
                 return acquiredA - acquiredB;
             });
             sortedItems.forEach(({ item, index }) => {
+                if (item?.type === "weapon") {
+                    normalizeWeaponEnhancement(item);
+                }
                 const sellPrice = getSellPrice(item);
                 const sellPriceDisplay = formatGold(sellPrice);
                 const div = document.createElement('div');
@@ -5889,25 +6054,75 @@
                 const deleteClasses = deleteDisabled
                     ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                     : 'bg-slate-100 text-slate-500';
+                const deletePriceClass = deleteDisabled ? 'text-slate-300' : 'text-slate-400';
                 const favoriteLabel = favorite ? 'お気に入り解除' : 'お気に入り';
                 const favoriteIcon = favorite ? 'fas fa-star' : 'far fa-star';
                 const favoriteClasses = favorite
                     ? 'bg-amber-400 text-white'
                     : 'bg-slate-100 text-slate-500';
+                const enhancementLabelHtml = getWeaponEnhancementLabelHtml(item);
+                const brokenLabelHtml = getWeaponBrokenLabelHtml(item);
+                const enhancementDisplay = [enhancementLabelHtml, brokenLabelHtml].filter(Boolean).join(' ');
+                const isWeapon = item.type === 'weapon';
+                let enhancementButtonHtml = '';
+                if (isWeapon) {
+                    const level = getWeaponEnhancementLevel(item);
+                    const isBroken = Boolean(item.isBroken);
+                    const cost = getWeaponEnhancementCost(item);
+                    const rate = getWeaponEnhancementRate(level);
+                    const maxed = level >= MAX_WEAPON_ENHANCEMENT;
+                    const canEnhance = !isBroken && !maxed && Game.player.gold >= cost;
+                    const enhanceClasses = canEnhance
+                        ? 'bg-slate-800 text-white'
+                        : 'bg-slate-100 text-slate-300 cursor-not-allowed';
+                    const valueClass = getWeaponEnhancementColorClass(level);
+                    const valueHtml = level > 0
+                        ? `<span class="enhance-label ${valueClass}">+${level}</span>`
+                        : `<span class="text-[9px] text-slate-400 font-bold">+0</span>`;
+                    const rateText = maxed ? 'MAX' : `${formatEnhancementRate(rate)}%`;
+                    const costText = maxed ? '' : `${formatGold(cost)}G`;
+                    if (isBroken) {
+                        const repairCost = cost * 2;
+                        const canRepair = Game.player.gold >= repairCost;
+                        const repairClasses = canRepair
+                            ? 'bg-rose-500 text-white'
+                            : 'bg-slate-100 text-slate-300 cursor-not-allowed';
+                        enhancementButtonHtml = `
+                            <button onclick="repairWeapon(${index})" class="px-4 py-2 ${repairClasses} text-[10px] font-black rounded-xl flex items-center justify-center gap-1 leading-none" ${canRepair ? '' : 'disabled'}>
+                                <i class="fas fa-screwdriver-wrench"></i>
+                                <span>修理</span>
+                                <span class="text-[9px] font-bold opacity-80">${formatGold(repairCost)}G</span>
+                            </button>
+                        `;
+                    } else {
+                        enhancementButtonHtml = `
+                            <button onclick="enhanceWeapon(${index})" class="px-4 py-2 ${enhanceClasses} text-[10px] font-black rounded-xl flex items-center justify-center gap-1 leading-none" ${canEnhance ? '' : 'disabled'}>
+                                <i class="fas fa-hammer"></i>
+                                <span>強化</span>
+                                ${valueHtml}
+                                <span class="text-[9px] font-bold opacity-80">${rateText}${costText ? ` / ${costText}` : ''}</span>
+                            </button>
+                        `;
+                    }
+                }
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${getEquipmentTypeLabel(item)}</div>
-                        <div class="font-black text-sm truncate rarity-${item.rarity} ${isLongName ? "item-name-shrink" : ""}">${equipMarker}${favoriteMarker}${item.name}</div>
+                        <div class="font-black text-sm truncate rarity-${item.rarity} ${isLongName ? "item-name-shrink" : ""}">${equipMarker}${favoriteMarker}${item.name}${enhancementDisplay ? ` ${enhancementDisplay}` : ""}</div>
                         <div class="mt-1">${renderItemStatsGroupedHtml(item)}</div>
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
                         <button onclick="equip(${index})" class="px-5 py-2.5 bg-slate-800 text-white text-[11px] font-black rounded-xl">装備</button>
-                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl" ${deleteDisabled ? 'disabled' : ''}><i class="fas fa-coins"></i> ${deleteLabel}</button>
-                        <div class="text-[10px] text-slate-400 font-bold text-right">売値 ${sellPriceDisplay}G</div>
+                        <button onclick="deleteItem(${index})" class="px-5 py-2.5 ${deleteClasses} text-[11px] font-black rounded-xl flex items-center justify-center gap-1 leading-none" ${deleteDisabled ? 'disabled' : ''}>
+                            <i class="fas fa-coins"></i>
+                            <span>${deleteLabel}</span>
+                            <span class="text-[9px] font-bold ${deletePriceClass}">${sellPriceDisplay}G</span>
+                        </button>
                         <button onclick="toggleFavorite(${index})" class="px-4 py-2 ${favoriteClasses} text-[10px] font-black rounded-xl flex items-center justify-center gap-1">
                             <i class="${favoriteIcon}"></i>
                             <span>${favoriteLabel}</span>
                         </button>
+                        ${enhancementButtonHtml}
                     </div>
                 `;
                 invList.appendChild(div);
