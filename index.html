@@ -1019,7 +1019,7 @@
                 hpRegen: 0, mpRegen: 0, goldBoost: 0,
                 critRate: 5, evasionRate: 3, leechRate: 0, expBoost: 0, mPen: 0, luck: 50, accuracy: 95,
                 critDamage: 200, damageBoost: 0, damageReduction: 0, rareFind: 0, affixFind: 0, eliteEncounter: 20,
-                skillPowerBoost: 0, statusEffectStackBonus: 0, statusEffectTurnBonus: 0, bossDropSynergy: 0,
+                skillPowerBoost: 0, statusEffectStackBonus: 0, statusEffectTurnBonus: 0,
                 skillMpDiscount: 0, strMultiplier: 0, intMultiplier: 0, vitMultiplier: 0, dexMultiplier: 0, lukMultiplier: 0,
                 exp: 0, next: 100, sp: 1,
                 gold: 0,
@@ -2525,14 +2525,14 @@
             "岩守りの兜": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 6 } ], label: "岩守りの兜：スキルMP消費 -6%" },
             "氷晶の杖": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 12 } ], label: "氷晶の杖：スキル威力 +12%" },
             "氷牢の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 8 } ], label: "氷牢の指輪：スキルMP消費 -8%" },
-            "宵闇のマント": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 2 } ], label: "宵闇のマント：ボス装備連携 +2%/個" },
+            "宵闇のマント": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "宵闇のマント：状態異常付与ターン +2" },
             "闇狩りの短剣": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 14 } ], label: "闇狩りの短剣：スキル威力 +14%" },
             "熾火の大剣": { type: "statMultiplier", stat: "str", value: 12, label: "熾火の大剣：STR倍率 +12%" },
             "炎護の手甲": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 10 } ], label: "炎護の手甲：スキル威力 +10%" },
             "雷鳴の戦槌": { type: "statMultiplier", stat: "dex", value: 16, label: "雷鳴の戦槌：DEX倍率 +16%" },
             "帯電の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 10 } ], label: "帯電の護符：スキルMP消費 -10%" },
             "聖紋のローブ": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 12 } ], label: "聖紋のローブ：スキルMP消費 -12%" },
-            "聖祈の護符": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 3 } ], label: "聖祈の護符：ボス装備連携 +3%/個" },
+            "聖祈の護符": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 16 } ], label: "聖祈の護符：スキル威力 +16%" },
             "疫毒の鎌": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 2 } ], label: "疫毒の鎌：状態異常付与スタック +2" },
             "腐蝕の指輪": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 1 } ], label: "腐蝕の指輪：状態異常付与ターン +1" },
             "鉄壁の鎧": { type: "statMultiplier", stat: "vit", value: 18, label: "鉄壁の鎧：VIT倍率 +18%" },
@@ -2540,10 +2540,10 @@
             "影刃の忍刀": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 1 }, { key: "statusEffectTurnBonus", value: 1 } ], label: "影刃の忍刀：状態異常付与スタック +1 / ターン +1" },
             "夜走りの足袋": { type: "statMultiplier", stat: "dex", value: 18, label: "夜走りの足袋：DEX倍率 +18%" },
             "終焉の竜槍": { type: "statMultiplier", stat: "str", value: 18, label: "終焉の竜槍：STR倍率 +18%" },
-            "竜鱗の護鎧": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 4 } ], label: "竜鱗の護鎧：ボス装備連携 +4%/個" },
+            "竜鱗の護鎧": { type: "statMultiplier", stat: "vit", value: 20, label: "竜鱗の護鎧：VIT倍率 +20%" },
             "冥雷の長槍": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 18 } ], label: "冥雷の長槍：スキル威力 +18%" },
             "雷陣の印章": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "雷陣の印章：状態異常付与ターン +2" },
-            "深淵の大剣": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 4 } ], label: "深淵の大剣：ボス装備連携 +4%/個" },
+            "深淵の大剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 3 } ], label: "深淵の大剣：状態異常付与スタック +3" },
             "奈落の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 15 } ], label: "奈落の指輪：スキルMP消費 -15%" },
             "灼滅の双剣": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 2 }, { key: "statusEffectTurnBonus", value: 1 } ], label: "灼滅の双剣：状態異常付与スタック +2 / ターン +1" },
             "熾火の鎧": { type: "statMultiplier", stat: "vit", value: 22, label: "熾火の鎧：VIT倍率 +22%" },
@@ -2552,7 +2552,7 @@
             "虚無の忍刀": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 20 } ], label: "虚無の忍刀：スキル威力 +20%" },
             "終闇の外套": { type: "statMultiplier", stat: "dex", value: 22, label: "終闇の外套：DEX倍率 +22%" },
             "星断の槍": { type: "statMultiplier", stat: "str", value: 22, label: "星断の槍：STR倍率 +22%" },
-            "裁定の盾鎧": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 5 } ], label: "裁定の盾鎧：ボス装備連携 +5%/個" },
+            "裁定の盾鎧": { type: "statMultiplier", stat: "vit", value: 28, label: "裁定の盾鎧：VIT倍率 +28%" },
             "毒宴の鎌": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 } ], label: "毒宴の鎌：状態異常付与ターン +2" },
             "腐蝕の首飾り": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 3 } ], label: "腐蝕の首飾り：状態異常付与スタック +3" },
             "終夜の竜剣": { type: "statMultiplier", stat: "str", value: 25, label: "終夜の竜剣：STR倍率 +25%" },
@@ -2560,7 +2560,7 @@
             "雷哭の戦槌": { type: "statMultiplier", stat: "str", value: 24, label: "雷哭の戦槌：STR倍率 +24%" },
             "雷鳴の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 20 } ], label: "雷鳴の護符：スキルMP消費 -20%" },
             "聖裁の槍杖": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 22 } ], label: "聖裁の槍杖：スキル威力 +22%" },
-            "神域のローブ": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 6 } ], label: "神域のローブ：ボス装備連携 +6%/個" },
+            "神域のローブ": { type: "statMultiplier", stat: "int", value: 32, label: "神域のローブ：INT倍率 +32%" },
             "地裂の戦斧": { type: "statMultiplier", stat: "str", value: 28, label: "地裂の戦斧：STR倍率 +28%" },
             "岩界の鎧": { type: "statMultiplier", stat: "vit", value: 25, label: "岩界の鎧：VIT倍率 +25%" },
             "疫神の魔槍": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 3 } ], label: "疫神の魔槍：状態異常付与ターン +3" },
@@ -2572,11 +2572,11 @@
             "業火の大剣": { type: "statBonus", stats: [ { key: "skillPowerBoost", value: 30 }, { key: "statusEffectStackBonus", value: 2 } ], label: "業火の大剣：スキル威力 +30% / 状態異常付与スタック +2" },
             "灰燼の手甲": { type: "statBonus", stats: [ { key: "statusEffectTurnBonus", value: 2 }, { key: "skillMpDiscount", value: 12 } ], label: "灰燼の手甲：状態異常付与ターン +2 / スキルMP消費 -12%" },
             "星滅の大鎚": { type: "statMultiplier", stat: "str", value: 30, label: "星滅の大鎚：STR倍率 +30%" },
-            "虚無の指輪": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 7 } ], label: "虚無の指輪：ボス装備連携 +7%/個" },
+            "虚無の指輪": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 24 } ], label: "虚無の指輪：スキルMP消費 -24%" },
             "神罰の竜槍": { type: "statMultiplier", stat: "str", value: 35, label: "神罰の竜槍：STR倍率 +35%" },
-            "天罰の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 25 }, { key: "bossDropSynergy", value: 5 } ], label: "天罰の護符：スキルMP消費 -25% / ボス装備連携 +5%/個" },
+            "天罰の護符": { type: "statBonus", stats: [ { key: "skillMpDiscount", value: 25 }, { key: "statusEffectTurnBonus", value: 2 } ], label: "天罰の護符：スキルMP消費 -25% / 状態異常付与ターン +2" },
             "終極の神剣": { type: "statMultiplier", stat: "str", value: 40, label: "終極の神剣：STR倍率 +40%" },
-            "終焉神の鎧": { type: "statBonus", stats: [ { key: "bossDropSynergy", value: 8 }, { key: "vitMultiplier", value: 20 } ], label: "終焉神の鎧：ボス装備連携 +8%/個 / VIT倍率 +20%" },
+            "終焉神の鎧": { type: "statBonus", stats: [ { key: "statusEffectStackBonus", value: 4 }, { key: "vitMultiplier", value: 20 } ], label: "終焉神の鎧：状態異常付与スタック +4 / VIT倍率 +20%" },
         };
 
         const BossRushDropScale = 1.4;
@@ -2635,8 +2635,7 @@
             potionChargeOnKill: "討伐回復",
             potionCleanse: "状態異常回復",
             potionAutoRegen: "再生付与",
-            potionBarrier: "バリア付与",
-            bossDropSynergy: "ボス装備連携"
+            potionBarrier: "バリア付与"
         };
 
         const PercentStats = new Set([
@@ -2658,7 +2657,6 @@
             "affixFind",
             "eliteEncounter",
             "goldBoost",
-            "bossDropSynergy",
             "potionHealPct"
         ]);
 
@@ -3417,7 +3415,6 @@
                 skillPowerBoost: Game.player.skillPowerBoost + (equip.skillPowerBoost || 0),
                 statusEffectStackBonus: Game.player.statusEffectStackBonus + (equip.statusEffectStackBonus || 0),
                 statusEffectTurnBonus: Game.player.statusEffectTurnBonus + (equip.statusEffectTurnBonus || 0),
-                bossDropSynergy: Game.player.bossDropSynergy + (equip.bossDropSynergy || 0),
                 skillMpDiscount: Game.player.skillMpDiscount + (equip.skillMpDiscount || 0),
                 strMultiplier: Game.player.strMultiplier + (equip.strMultiplier || 0),
                 intMultiplier: Game.player.intMultiplier + (equip.intMultiplier || 0),
@@ -5262,9 +5259,6 @@
                 const eliteLootMultiplier = Game.enemy?.elite?.lootMultiplier ?? 1;
                 const totals = getTotalStats();
                 let dropChance = Math.min(0.95, totals.luck / 100);
-                if (Game.enemy?.isBoss && totals.bossDropSynergy > 0) {
-                    dropChance = Math.min(0.95, dropChance * (1 + totals.bossDropSynergy / 100));
-                }
                 dropChance = Math.min(0.95, dropChance * eliteLootMultiplier);
                 if (Math.random() < dropChance) queueLoot(buildEquipmentLoot());
                 if (Math.random() < dropChance) queueLoot(buildPotionLoot());
