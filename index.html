@@ -3448,12 +3448,21 @@
 
         const renderItemStatsGroupedHtml = (item) => {
             if (!item) return '';
-            const baseLines = renderStatLines(item.baseStats || []);
+            const isPotion = item.type === "potion";
+            const affixTotals = isPotion ? sumStats(item.affixStats || []) : {};
+            const baseStats = isPotion
+                ? (item.baseStats || []).map((stat) => ({
+                    ...stat,
+                    value: stat.value + (affixTotals[stat.key] || 0)
+                }))
+                : (item.baseStats || []);
+            const baseLines = renderStatLines(baseStats);
             const prefixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "prefix"));
             const suffixLines = renderStatLines((item.affixStats || []).filter((stat) => stat.source === "suffix"));
             const uniqueLines = renderStatLines(item.uniqueStats || []);
+            const baseLabel = isPotion ? "基礎(Affix反映済み)" : "基礎";
             const groups = [
-                renderStatGroupHtml("基礎", "fa-layer-group", baseLines),
+                renderStatGroupHtml(baseLabel, "fa-layer-group", baseLines),
                 renderStatGroupHtml("Prefix", "fa-arrow-up-wide-short", prefixLines),
                 renderStatGroupHtml("Suffix", "fa-arrow-down-wide-short", suffixLines)
             ].filter(Boolean);
