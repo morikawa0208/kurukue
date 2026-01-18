@@ -6373,7 +6373,7 @@
                 div.innerHTML = `
                     <div class="min-w-0 flex-1">
                         <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">${getEquipmentTypeLabel(item)}</div>
-                        <div class="font-black text-sm truncate rarity-${item.rarity} ${isLongName ? "item-name-shrink" : ""}">${equipMarker}${favoriteMarker}${item.name}${enhancementDisplay ? ` ${enhancementDisplay}` : ""}</div>
+                        <div class="font-black text-[11px] leading-tight whitespace-normal break-words rarity-${item.rarity} ${isLongName ? "text-[10px]" : ""}">${equipMarker}${favoriteMarker}${item.name}${enhancementDisplay ? ` ${enhancementDisplay}` : ""}</div>
                         <div class="mt-1">${renderItemStatsGroupedHtml(item)}</div>
                     </div>
                     <div class="ml-4 flex flex-col gap-2">
