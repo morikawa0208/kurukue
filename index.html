@@ -5133,6 +5133,9 @@
                     landedHit = true;
                     let enemyAtk = Game.enemy.str * enemyStatusMods.atkMul;
                     let d = Math.floor((skill.pow ?? 1) * enemyAtk * (0.8 + Math.random() * 0.4)) - derived.def;
+                    // Passive: Armor Boost
+                    const armorBoostLevel = getPassiveLevel('warrior', 4);
+                    if (armorBoostLevel > 0) d -= Math.floor(getItemStatValue(Game.player.armor, "defenseFlat") * 0.15 * armorBoostLevel);
                     if (derived.totals.damageReduction > 0) {
                         d = Math.floor(d * (1 - derived.totals.damageReduction / 100));
                     }
