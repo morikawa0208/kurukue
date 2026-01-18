@@ -3105,18 +3105,18 @@
         };
 
         const getEnemyScale = (floor) => {
-            const base = 1 + (floor * 0.22);
+            const base = 1 + (floor * 0.2);
             if (floor <= 1000) return base;
-            const surge = (floor - 1000) * 0.35;
-            const spike = Math.floor((floor - 1000) / 500) * 8;
+            const surge = (floor - 1000) * 0.24;
+            const spike = Math.floor((floor - 1000) / 500) * 5;
             return base + surge + spike;
         };
 
         const getBossScale = (floor) => {
-            const base = 1 + (floor * 0.18);
+            const base = 1 + (floor * 0.16);
             if (floor <= 1000) return base;
-            const surge = (floor - 1000) * 0.32;
-            const spike = Math.floor((floor - 1000) / 500) * 10;
+            const surge = (floor - 1000) * 0.21;
+            const spike = Math.floor((floor - 1000) / 500) * 6;
             return base + surge + spike;
         };
 
