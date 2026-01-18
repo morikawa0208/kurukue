@@ -3105,9 +3105,9 @@
         };
 
         const getEnemyScale = (floor) => {
-            const base = 1 + (floor * 0.2);
+            const base = 1 + (floor * 0.16);
             if (floor <= 1000) return base;
-            const surge = (floor - 1000) * 0.24;
+            const surge = (floor - 1000) * 0.18;
             const spike = Math.floor((floor - 1000) / 500) * 5;
             return base + surge + spike;
         };
