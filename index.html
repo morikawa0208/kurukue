@@ -3184,7 +3184,7 @@
                 const idx = Math.floor(Math.random() * keys.length);
                 const key = keys.splice(idx, 1)[0];
                 const baseValues = AffixValueTable[key] || [1, 2, 3];
-                stats.push({ key, value: baseValues[rank - 1] });
+                stats.push({ key, value: Math.ceil(baseValues[rank - 1] * 1.5) });
             }
             return stats;
         };
@@ -3210,7 +3210,7 @@
             const suffixStars = suffix ? "☆".repeat(suffix.rank) : "";
             const baseStats = base.stats.map((stat) => ({
                 key: stat.key,
-                value: Math.max(1, Math.floor(stat.value * rarity.mul))
+                value: Math.max(1, Math.ceil(stat.value * rarity.mul * 1.5))
             }));
             const affixStats = [
                 ...(prefix ? prefix.stats.map((stat) => ({ ...stat, source: "prefix" })) : []),
@@ -3288,7 +3288,7 @@
             const rarity = rollRarity(totals.rareFind, eliteRank);
             const baseStats = base.stats.map((stat) => ({
                 key: stat.key,
-                value: Math.max(1, Math.floor(stat.value * rarity.mul))
+                value: Math.max(1, Math.ceil(stat.value * rarity.mul * 1.5))
             }));
             const uniqueStats = (base.uniqueStats || []).map((stat) => ({ ...stat }));
             const effect = BossUniqueEffects[base.name];
