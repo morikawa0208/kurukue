@@ -1133,6 +1133,10 @@
         const MAX_LEVEL = 300;
         const LEVEL_UP_SKILL_POINTS = 1;
         const MAX_SKILL_POINTS = 300;
+        const FreezeDecayConfig = {
+            multiplier: 0.6,
+            windowTurns: 3
+        };
 
         const DefaultGameState = JSON.parse(JSON.stringify(Game));
         const buildInitialSnapshot = () => JSON.parse(JSON.stringify(DefaultGameState));
@@ -4594,6 +4598,33 @@
             }
         }
 
+        function tickFreezeDecay(target) {
+            if (!target || !Number.isFinite(target.freezeDecayTimer)) return;
+            target.freezeDecayTimer = Math.max(0, target.freezeDecayTimer - 1);
+            if (target.freezeDecayTimer === 0) {
+                target.freezeChain = 0;
+            }
+        }
+
+        function tickFreezeDecayForCombatants() {
+            tickFreezeDecay(Game.player);
+            if (Game.enemy) {
+                tickFreezeDecay(Game.enemy);
+            }
+        }
+
+        function getFreezeDecayChance(target, baseChance = 1) {
+            const chain = Math.max(0, target?.freezeChain || 0);
+            const decayed = baseChance * (FreezeDecayConfig.multiplier ** chain);
+            return Math.max(0, Math.min(1, decayed));
+        }
+
+        function recordFreezeApplied(target) {
+            if (!target) return;
+            target.freezeChain = Math.max(0, target.freezeChain || 0) + 1;
+            target.freezeDecayTimer = FreezeDecayConfig.windowTurns;
+        }
+
         const infoModal = document.getElementById('status-info-modal');
         const openInfoModal = () => {
             infoModal.classList.remove('hidden');
@@ -5171,9 +5202,17 @@
             if (skill.effects) {
                 skill.effects.forEach((effect) => {
                     const target = effect.target === "self" ? Game.enemy : Game.player;
-                    applyStatusEffect(target, effect.id, effect.stacks, effect.turns);
-                    if (effect.log && effect.target === "player") {
-                        addLog(effect.log, "text-purple-400");
+                    const isFreeze = effect.id === "freeze" && effect.target === "player";
+                    const baseChance = effect.chance ?? 1;
+                    const finalChance = isFreeze ? getFreezeDecayChance(target, baseChance) : baseChance;
+                    if (!isFreeze || Math.random() < finalChance) {
+                        applyStatusEffect(target, effect.id, effect.stacks, effect.turns);
+                        if (isFreeze) {
+                            recordFreezeApplied(target);
+                        }
+                        if (effect.log && effect.target === "player") {
+                            addLog(effect.log, "text-purple-400");
+                        }
                     }
                 });
             }
@@ -5197,6 +5236,7 @@
                 return;
             }
 
+            tickFreezeDecayForCombatants();
             advanceStatusEffects(Game.player, 'start');
             if (Game.player.hp <= 0) {
                 die();
@@ -5376,9 +5416,17 @@
                             turns = baseTurns + turnBonus;
                         }
                     }
-                    applyStatusEffect(target, effect.id, stacks, turns);
-                    if (effect.log && effect.target !== "self") {
-                        addLog(effect.log, "text-purple-400");
+                    const isFreeze = effect.id === "freeze" && effect.target !== "self";
+                    const baseChance = effect.chance ?? 1;
+                    const finalChance = isFreeze ? getFreezeDecayChance(target, baseChance) : baseChance;
+                    if (!isFreeze || Math.random() < finalChance) {
+                        applyStatusEffect(target, effect.id, stacks, turns);
+                        if (isFreeze) {
+                            recordFreezeApplied(target);
+                        }
+                        if (effect.log && effect.target !== "self") {
+                            addLog(effect.log, "text-purple-400");
+                        }
                     }
                 });
             }
@@ -5397,6 +5445,7 @@
         function enemyTurn() {
             if (Game.state !== 'combat') return;
 
+            tickFreezeDecayForCombatants();
             advanceStatusEffects(Game.enemy, 'start');
             if (Game.enemy.hp <= 0) {
                 victory();
@@ -5459,8 +5508,13 @@
                 if (!Game.enemy.isBoss && appliedDamage > 0 && Array.isArray(Game.enemy.onHitEffects)) {
                     Game.enemy.onHitEffects.forEach((effect) => {
                         const chance = effect.chance ?? 1;
-                        if (Math.random() < chance) {
+                        const isFreeze = effect.id === "freeze";
+                        const finalChance = isFreeze ? getFreezeDecayChance(Game.player, chance) : chance;
+                        if (!isFreeze || Math.random() < finalChance) {
                             applyStatusEffect(Game.player, effect.id, effect.stacks, effect.turns);
+                            if (isFreeze) {
+                                recordFreezeApplied(Game.player);
+                            }
                             if (effect.log) {
                                 addLog(effect.log, "text-purple-400");
                             }
