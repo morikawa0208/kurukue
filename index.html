@@ -6121,9 +6121,11 @@
         function bulkSellByRarity(rarities) {
             if (!Array.isArray(rarities) || rarities.length === 0) return;
             let totalGold = 0;
+            const activeFilter = Game.inventoryFilter || 'all';
             for (let i = Game.player.inventory.length - 1; i >= 0; i--) {
                 const item = Game.player.inventory[i];
                 if (!item || isItemEquipped(item) || item.favorite) continue;
+                if (activeFilter !== 'all' && item.type !== activeFilter) continue;
                 if (!rarities.includes(item.rarity)) continue;
                 totalGold += getSellPrice(item);
                 Game.player.inventory.splice(i, 1);
