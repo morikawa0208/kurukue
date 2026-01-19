@@ -1555,140 +1555,140 @@
 
         const EnemyTiers = [
             [
-                { name: "スライム", icon: "fa-bacteria", hp: 21, str: 5, exp: 12, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.25, log: "粘液で毒を受けた！" }] },
-                { name: "コウモリ", icon: "fa-moon", hp: 25, str: 7, exp: 15, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.2, log: "羽ばたきで視界が乱れた！" }] },
-                { name: "コモンバグ", icon: "fa-bug", hp: 20, str: 6, exp: 12 },
-                { name: "野犬", icon: "fa-dog", hp: 28, str: 8, exp: 16, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "牙で裂かれた！" }] },
-                { name: "草の精", icon: "fa-leaf", hp: 23, str: 7, exp: 14, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "胞子で弱体化した！" }] }
+                { name: "スライム", icon: "fa-bacteria", hp: 21, str: 5, exp: 12, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.25, log: "粘液で毒を受けた！" }] },
+                { name: "コウモリ", icon: "fa-moon", hp: 25, str: 7, exp: 15, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.2, log: "羽ばたきで視界が乱れた！" }] },
+                { name: "コモンバグ", icon: "fa-bug", hp: 20, str: 6, exp: 12, def: 2, acc: 5, eva: 3 },
+                { name: "野犬", icon: "fa-dog", hp: 28, str: 8, exp: 16, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "牙で裂かれた！" }] },
+                { name: "草の精", icon: "fa-leaf", hp: 23, str: 7, exp: 14, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "胞子で弱体化した！" }] }
             ],
             [
-                { name: "ゴブリン", icon: "fa-user-ninja", hp: 42, str: 10, exp: 25 },
-                { name: "スケルトン", icon: "fa-skull", hp: 56, str: 14, exp: 40, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "骨刃で切り裂かれた！" }] },
-                { name: "大蜘蛛", icon: "fa-spider", hp: 49, str: 13, exp: 32, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.3, log: "毒糸が絡みついた！" }] },
-                { name: "小悪魔", icon: "fa-ghost", hp: 46, str: 12, exp: 30, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.2, log: "呪いで沈黙した！" }] },
-                { name: "野生狼", icon: "fa-paw", hp: 53, str: 14, exp: 35 }
+                { name: "ゴブリン", icon: "fa-user-ninja", hp: 42, str: 10, exp: 25, def: 2, acc: 5, eva: 3 },
+                { name: "スケルトン", icon: "fa-skull", hp: 56, str: 14, exp: 40, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "bleed", stacks: 1, turns: 2, chance: 0.25, log: "骨刃で切り裂かれた！" }] },
+                { name: "大蜘蛛", icon: "fa-spider", hp: 49, str: 13, exp: 32, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "poison", stacks: 1, turns: 3, chance: 0.3, log: "毒糸が絡みついた！" }] },
+                { name: "小悪魔", icon: "fa-ghost", hp: 46, str: 12, exp: 30, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.2, log: "呪いで沈黙した！" }] },
+                { name: "野生狼", icon: "fa-paw", hp: 53, str: 14, exp: 35, def: 1, acc: 6, eva: 6 }
             ],
             [
-                { name: "洞窟トカゲ", icon: "fa-dragon", hp: 77, str: 17, exp: 55, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.2, log: "硬い鱗で守りが削がれた！" }] },
-                { name: "スピアゴブリン", icon: "fa-user-ninja", hp: 67, str: 17, exp: 50 },
-                { name: "骨戦士", icon: "fa-skull", hp: 84, str: 19, exp: 60 },
-                { name: "夜影", icon: "fa-ghost", hp: 70, str: 18, exp: 56, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "闇の一撃で視界が霞んだ！" }] },
-                { name: "岩トカゲ", icon: "fa-mountain", hp: 91, str: 16, exp: 58 }
+                { name: "洞窟トカゲ", icon: "fa-dragon", hp: 77, str: 17, exp: 55, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.2, log: "硬い鱗で守りが削がれた！" }] },
+                { name: "スピアゴブリン", icon: "fa-user-ninja", hp: 67, str: 17, exp: 50, def: 2, acc: 5, eva: 3 },
+                { name: "骨戦士", icon: "fa-skull", hp: 84, str: 19, exp: 60, def: 2, acc: 5, eva: 3 },
+                { name: "夜影", icon: "fa-ghost", hp: 70, str: 18, exp: 56, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "闇の一撃で視界が霞んだ！" }] },
+                { name: "岩トカゲ", icon: "fa-mountain", hp: 91, str: 16, exp: 58, def: 5, acc: 4, eva: 1 }
             ],
             [
-                { name: "ゴーレム", icon: "fa-mountain", hp: 105, str: 18, exp: 70 },
-                { name: "シャドウ", icon: "fa-ghost", hp: 140, str: 25, exp: 100 },
-                { name: "バンシー", icon: "fa-skull", hp: 119, str: 23, exp: 90, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "叫びで視界が歪んだ！" }] },
-                { name: "鋼鉄獣", icon: "fa-hippo", hp: 133, str: 24, exp: 95 },
-                { name: "雷鳥", icon: "fa-bolt", hp: 112, str: 24, exp: 92, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.2, log: "雷撃で動きが鈍った！" }] }
+                { name: "ゴーレム", icon: "fa-mountain", hp: 105, str: 18, exp: 70, def: 5, acc: 4, eva: 1 },
+                { name: "シャドウ", icon: "fa-ghost", hp: 140, str: 25, exp: 100, def: 2, acc: 5, eva: 3 },
+                { name: "バンシー", icon: "fa-skull", hp: 119, str: 23, exp: 90, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "叫びで視界が歪んだ！" }] },
+                { name: "鋼鉄獣", icon: "fa-hippo", hp: 133, str: 24, exp: 95, def: 5, acc: 4, eva: 1 },
+                { name: "雷鳥", icon: "fa-bolt", hp: 112, str: 24, exp: 92, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.2, log: "雷撃で動きが鈍った！" }] }
             ],
             [
-                { name: "炎の精霊", icon: "fa-fire", hp: 154, str: 27, exp: 110, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "灼熱で力が落ちた！" }] },
-                { name: "氷の精霊", icon: "fa-snowflake", hp: 147, str: 26, exp: 108 },
-                { name: "毒クモ女王", icon: "fa-spider", hp: 168, str: 28, exp: 120, onHitEffects: [{ id: "poison", stacks: 2, turns: 3, chance: 0.3, log: "強い毒が回った！" }] },
-                { name: "邪悪な魔導師", icon: "fa-hat-wizard", hp: 140, str: 30, exp: 125, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "呪文で沈黙した！" }] },
-                { name: "深海魔", icon: "fa-fish", hp: 161, str: 28, exp: 118 }
+                { name: "炎の精霊", icon: "fa-fire", hp: 154, str: 27, exp: 110, def: 1, acc: 8, eva: 4, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.25, log: "灼熱で力が落ちた！" }] },
+                { name: "氷の精霊", icon: "fa-snowflake", hp: 147, str: 26, exp: 108, def: 1, acc: 8, eva: 4 },
+                { name: "毒クモ女王", icon: "fa-spider", hp: 168, str: 28, exp: 120, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "poison", stacks: 2, turns: 3, chance: 0.3, log: "強い毒が回った！" }] },
+                { name: "邪悪な魔導師", icon: "fa-hat-wizard", hp: 140, str: 30, exp: 125, def: 1, acc: 8, eva: 4, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "呪文で沈黙した！" }] },
+                { name: "深海魔", icon: "fa-fish", hp: 161, str: 28, exp: 118, def: 2, acc: 5, eva: 3 }
             ],
             [
-                { name: "蒼狼", icon: "fa-dog", hp: 182, str: 32, exp: 135, onHitEffects: [{ id: "bleed", stacks: 1, turns: 3, chance: 0.3, log: "蒼い牙で裂かれた！" }] },
-                { name: "闇騎士", icon: "fa-chess-knight", hp: 196, str: 33, exp: 140, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.25, log: "闇の圧で攻撃が下がった！" }] },
-                { name: "死霊騎士", icon: "fa-skull", hp: 210, str: 34, exp: 145 },
-                { name: "雷獣", icon: "fa-bolt", hp: 189, str: 35, exp: 148, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "雷撃で視界が揺れた！" }] },
-                { name: "異界の影", icon: "fa-ghost", hp: 203, str: 33, exp: 142, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "異界の気配で沈黙した！" }] }
+                { name: "蒼狼", icon: "fa-dog", hp: 182, str: 32, exp: 135, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "bleed", stacks: 1, turns: 3, chance: 0.3, log: "蒼い牙で裂かれた！" }] },
+                { name: "闇騎士", icon: "fa-chess-knight", hp: 196, str: 33, exp: 140, def: 5, acc: 4, eva: 1, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.25, log: "闇の圧で攻撃が下がった！" }] },
+                { name: "死霊騎士", icon: "fa-skull", hp: 210, str: 34, exp: 145, def: 5, acc: 4, eva: 1 },
+                { name: "雷獣", icon: "fa-bolt", hp: 189, str: 35, exp: 148, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.25, log: "雷撃で視界が揺れた！" }] },
+                { name: "異界の影", icon: "fa-ghost", hp: 203, str: 33, exp: 142, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.25, log: "異界の気配で沈黙した！" }] }
             ],
             [
-                { name: "灼熱竜", icon: "fa-dragon", hp: 238, str: 41, exp: 175 },
-                { name: "凍結竜", icon: "fa-dragon", hp: 231, str: 40, exp: 170 },
-                { name: "漆黒の翼", icon: "fa-crow", hp: 224, str: 39, exp: 168, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "黒翼が視界を覆った！" }] },
-                { name: "深緑の獣", icon: "fa-hippo", hp: 252, str: 40, exp: 178 },
-                { name: "破砕ゴーレム", icon: "fa-mountain", hp: 266, str: 38, exp: 172, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.3, log: "衝撃で防御が崩れた！" }] }
+                { name: "灼熱竜", icon: "fa-dragon", hp: 238, str: 41, exp: 175, def: 5, acc: 4, eva: 1 },
+                { name: "凍結竜", icon: "fa-dragon", hp: 231, str: 40, exp: 170, def: 5, acc: 4, eva: 1 },
+                { name: "漆黒の翼", icon: "fa-crow", hp: 224, str: 39, exp: 168, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "黒翼が視界を覆った！" }] },
+                { name: "深緑の獣", icon: "fa-hippo", hp: 252, str: 40, exp: 178, def: 2, acc: 5, eva: 3 },
+                { name: "破砕ゴーレム", icon: "fa-mountain", hp: 266, str: 38, exp: 172, def: 5, acc: 4, eva: 1, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.3, log: "衝撃で防御が崩れた！" }] }
             ],
             [
-                { name: "虚無の影", icon: "fa-ghost", hp: 294, str: 44, exp: 200, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "虚無の力で沈黙した！" }] },
-                { name: "星屑の魔獣", icon: "fa-crow", hp: 287, str: 45, exp: 205 },
-                { name: "深海王", icon: "fa-fish", hp: 301, str: 45, exp: 202 },
-                { name: "雷帝", icon: "fa-bolt", hp: 280, str: 47, exp: 210, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "雷帝の光で視界が乱れた！" }] },
-                { name: "冥界の騎士", icon: "fa-chess-knight", hp: 308, str: 43, exp: 198 }
+                { name: "虚無の影", icon: "fa-ghost", hp: 294, str: 44, exp: 200, def: 1, acc: 6, eva: 6, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "虚無の力で沈黙した！" }] },
+                { name: "星屑の魔獣", icon: "fa-crow", hp: 287, str: 45, exp: 205, def: 1, acc: 6, eva: 6 },
+                { name: "深海王", icon: "fa-fish", hp: 301, str: 45, exp: 202, def: 2, acc: 5, eva: 3 },
+                { name: "雷帝", icon: "fa-bolt", hp: 280, str: 47, exp: 210, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.3, log: "雷帝の光で視界が乱れた！" }] },
+                { name: "冥界の騎士", icon: "fa-chess-knight", hp: 308, str: 43, exp: 198, def: 5, acc: 4, eva: 1 }
             ],
             [
-                { name: "獄炎獣", icon: "fa-fire", hp: 329, str: 49, exp: 230 },
-                { name: "氷晶獣", icon: "fa-snowflake", hp: 322, str: 48, exp: 225 },
-                { name: "深淵竜", icon: "fa-dragon", hp: 350, str: 51, exp: 240, onHitEffects: [{ id: "vulnerable", stacks: 1, turns: 2, chance: 0.25, log: "深淵の咆哮で脆弱になった！" }] },
-                { name: "絶叫の亡霊", icon: "fa-skull", hp: 336, str: 49, exp: 228, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "絶叫で沈黙した！" }] },
-                { name: "奈落の巨影", icon: "fa-ghost", hp: 364, str: 50, exp: 235 }
+                { name: "獄炎獣", icon: "fa-fire", hp: 329, str: 49, exp: 230, def: 2, acc: 5, eva: 3 },
+                { name: "氷晶獣", icon: "fa-snowflake", hp: 322, str: 48, exp: 225, def: 2, acc: 5, eva: 3 },
+                { name: "深淵竜", icon: "fa-dragon", hp: 350, str: 51, exp: 240, def: 5, acc: 4, eva: 1, onHitEffects: [{ id: "vulnerable", stacks: 1, turns: 2, chance: 0.25, log: "深淵の咆哮で脆弱になった！" }] },
+                { name: "絶叫の亡霊", icon: "fa-skull", hp: 336, str: 49, exp: 228, def: 2, acc: 5, eva: 3, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "絶叫で沈黙した！" }] },
+                { name: "奈落の巨影", icon: "fa-ghost", hp: 364, str: 50, exp: 235, def: 5, acc: 4, eva: 1 }
             ],
             [
-                { name: "終焉竜", icon: "fa-dragon", hp: 420, str: 56, exp: 280, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.3, log: "終焉の爪で攻撃が鈍った！" }] },
-                { name: "星滅の影", icon: "fa-ghost", hp: 406, str: 58, exp: 285 },
-                { name: "無限の巨獣", icon: "fa-hippo", hp: 434, str: 55, exp: 275 },
-                { name: "審判の騎士", icon: "fa-chess-knight", hp: 413, str: 57, exp: 282 },
-                { name: "終末の魔導", icon: "fa-hat-wizard", hp: 399, str: 59, exp: 290, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.3, log: "終末魔法で弱体化した！" }] }
+                { name: "終焉竜", icon: "fa-dragon", hp: 420, str: 56, exp: 280, def: 5, acc: 4, eva: 1, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.3, log: "終焉の爪で攻撃が鈍った！" }] },
+                { name: "星滅の影", icon: "fa-ghost", hp: 406, str: 58, exp: 285, def: 1, acc: 6, eva: 6 },
+                { name: "無限の巨獣", icon: "fa-hippo", hp: 434, str: 55, exp: 275, def: 5, acc: 4, eva: 1 },
+                { name: "審判の騎士", icon: "fa-chess-knight", hp: 413, str: 57, exp: 282, def: 5, acc: 4, eva: 1 },
+                { name: "終末の魔導", icon: "fa-hat-wizard", hp: 399, str: 59, exp: 290, def: 1, acc: 8, eva: 4, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.3, log: "終末魔法で弱体化した！" }] }
             ]
         ];
 
         const EnemyTiersPost1000 = [
             [
-                { name: "深淵の獣", icon: "fa-hippo", hp: 476, str: 67, exp: 320, onHitEffects: [{ id: "vulnerable", stacks: 1, turns: 2, chance: 0.35, log: "深淵の圧で脆弱になった！" }] },
-                { name: "虚空の狩人", icon: "fa-user-secret", hp: 455, str: 69, exp: 325, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.35, log: "虚空の一撃で視界が歪んだ！" }] },
-                { name: "冥界の刃狼", icon: "fa-dog", hp: 490, str: 65, exp: 318, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "冥界の牙で裂かれた！" }] },
-                { name: "滅尽の羽魔", icon: "fa-crow", hp: 462, str: 70, exp: 330, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "滅尽の囁きで沈黙した！" }] },
-                { name: "雷禍の亡霊", icon: "fa-bolt", hp: 483, str: 68, exp: 322, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.35, log: "雷禍で攻撃が鈍った！" }] }
+                { name: "深淵の獣", icon: "fa-hippo", hp: 476, str: 67, exp: 320, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "vulnerable", stacks: 1, turns: 2, chance: 0.35, log: "深淵の圧で脆弱になった！" }] },
+                { name: "虚空の狩人", icon: "fa-user-secret", hp: 455, str: 69, exp: 325, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.35, log: "虚空の一撃で視界が歪んだ！" }] },
+                { name: "冥界の刃狼", icon: "fa-dog", hp: 490, str: 65, exp: 318, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "冥界の牙で裂かれた！" }] },
+                { name: "滅尽の羽魔", icon: "fa-crow", hp: 462, str: 70, exp: 330, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.3, log: "滅尽の囁きで沈黙した！" }] },
+                { name: "雷禍の亡霊", icon: "fa-bolt", hp: 483, str: 68, exp: 322, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "attackDown", stacks: 1, turns: 2, chance: 0.35, log: "雷禍で攻撃が鈍った！" }] }
             ],
             [
-                { name: "災厄ゴーレム", icon: "fa-mountain", hp: 532, str: 76, exp: 360, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.35, log: "災厄の衝撃で防御が崩れた！" }] },
-                { name: "冥火の精霊", icon: "fa-fire", hp: 504, str: 79, exp: 365, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.35, log: "冥火で弱体化した！" }] },
-                { name: "凍嵐の魔獣", icon: "fa-snowflake", hp: 525, str: 74, exp: 358, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.25, log: "凍嵐で凍結した！" }] },
-                { name: "毒瘴の女王", icon: "fa-spider", hp: 518, str: 77, exp: 362, onHitEffects: [{ id: "poison", stacks: 3, turns: 3, chance: 0.35, log: "毒瘴が体を蝕む！" }] },
-                { name: "夜哭の魔導", icon: "fa-hat-wizard", hp: 497, str: 80, exp: 370, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.35, log: "夜哭の呪詛で沈黙した！" }] }
+                { name: "災厄ゴーレム", icon: "fa-mountain", hp: 532, str: 76, exp: 360, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "defenseDown", stacks: 1, turns: 2, chance: 0.35, log: "災厄の衝撃で防御が崩れた！" }] },
+                { name: "冥火の精霊", icon: "fa-fire", hp: 504, str: 79, exp: 365, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "weaken", stacks: 1, turns: 2, chance: 0.35, log: "冥火で弱体化した！" }] },
+                { name: "凍嵐の魔獣", icon: "fa-snowflake", hp: 525, str: 74, exp: 358, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.25, log: "凍嵐で凍結した！" }] },
+                { name: "毒瘴の女王", icon: "fa-spider", hp: 518, str: 77, exp: 362, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "poison", stacks: 3, turns: 3, chance: 0.35, log: "毒瘴が体を蝕む！" }] },
+                { name: "夜哭の魔導", icon: "fa-hat-wizard", hp: 497, str: 80, exp: 370, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.35, log: "夜哭の呪詛で沈黙した！" }] }
             ],
             [
-                { name: "雷哭竜", icon: "fa-dragon", hp: 574, str: 84, exp: 400, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.35, log: "雷哭の咆哮で脆弱になった！" }] },
-                { name: "終夜の影刃", icon: "fa-ghost", hp: 546, str: 87, exp: 405, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "影刃で出血した！" }] },
-                { name: "審罰騎士", icon: "fa-chess-knight", hp: 588, str: 83, exp: 395, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.35, log: "審罰で攻撃が下がった！" }] },
-                { name: "虚無の賢者", icon: "fa-hat-wizard", hp: 560, str: 89, exp: 410, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.35, log: "虚無の術で弱体化した！" }] },
-                { name: "冥雷の獣王", icon: "fa-bolt", hp: 602, str: 86, exp: 402, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.35, log: "冥雷で視界が乱れた！" }] }
+                { name: "雷哭竜", icon: "fa-dragon", hp: 574, str: 84, exp: 400, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.35, log: "雷哭の咆哮で脆弱になった！" }] },
+                { name: "終夜の影刃", icon: "fa-ghost", hp: 546, str: 87, exp: 405, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "影刃で出血した！" }] },
+                { name: "審罰騎士", icon: "fa-chess-knight", hp: 588, str: 83, exp: 395, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.35, log: "審罰で攻撃が下がった！" }] },
+                { name: "虚無の賢者", icon: "fa-hat-wizard", hp: 560, str: 89, exp: 410, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.35, log: "虚無の術で弱体化した！" }] },
+                { name: "冥雷の獣王", icon: "fa-bolt", hp: 602, str: 86, exp: 402, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "blind", stacks: 1, turns: 2, chance: 0.35, log: "冥雷で視界が乱れた！" }] }
             ],
             [
-                { name: "断罪の守護者", icon: "fa-shield-halved", hp: 630, str: 95, exp: 450, onHitEffects: [{ id: "defenseDown", stacks: 2, turns: 3, chance: 0.35, log: "断罪の一撃で守りが崩れた！" }] },
-                { name: "灼滅の大精霊", icon: "fa-fire", hp: 616, str: 97, exp: 455, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.35, log: "灼滅で弱体化した！" }] },
-                { name: "絶対零度獣", icon: "fa-snowflake", hp: 644, str: 93, exp: 448, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.3, log: "凍結した！" }] },
-                { name: "咎人の亡霊", icon: "fa-skull", hp: 609, str: 98, exp: 458, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.35, log: "咎の囁きで沈黙した！" }] },
-                { name: "冥界の追跡者", icon: "fa-user-secret", hp: 637, str: 96, exp: 452, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "追跡の刃で裂かれた！" }] }
+                { name: "断罪の守護者", icon: "fa-shield-halved", hp: 630, str: 95, exp: 450, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "defenseDown", stacks: 2, turns: 3, chance: 0.35, log: "断罪の一撃で守りが崩れた！" }] },
+                { name: "灼滅の大精霊", icon: "fa-fire", hp: 616, str: 97, exp: 455, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.35, log: "灼滅で弱体化した！" }] },
+                { name: "絶対零度獣", icon: "fa-snowflake", hp: 644, str: 93, exp: 448, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.3, log: "凍結した！" }] },
+                { name: "咎人の亡霊", icon: "fa-skull", hp: 609, str: 98, exp: 458, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.35, log: "咎の囁きで沈黙した！" }] },
+                { name: "冥界の追跡者", icon: "fa-user-secret", hp: 637, str: 96, exp: 452, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.35, log: "追跡の刃で裂かれた！" }] }
             ],
             [
-                { name: "神罰の巨影", icon: "fa-ghost", hp: 686, str: 105, exp: 510, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.4, log: "神罰で脆弱になった！" }] },
-                { name: "深淵の咆哮竜", icon: "fa-dragon", hp: 714, str: 104, exp: 505, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.4, log: "咆哮で攻撃が下がった！" }] },
-                { name: "黒星の魔導", icon: "fa-hat-wizard", hp: 672, str: 109, exp: 520, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.4, log: "黒星の呪文で沈黙した！" }] },
-                { name: "審判の猛獣", icon: "fa-hippo", hp: 735, str: 103, exp: 498, onHitEffects: [{ id: "defenseDown", stacks: 2, turns: 2, chance: 0.4, log: "審判の衝撃で防御が崩れた！" }] },
-                { name: "冥毒の女王", icon: "fa-spider", hp: 693, str: 107, exp: 512, onHitEffects: [{ id: "poison", stacks: 4, turns: 3, chance: 0.4, log: "冥毒が広がった！" }] }
+                { name: "神罰の巨影", icon: "fa-ghost", hp: 686, str: 105, exp: 510, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.4, log: "神罰で脆弱になった！" }] },
+                { name: "深淵の咆哮竜", icon: "fa-dragon", hp: 714, str: 104, exp: 505, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.4, log: "咆哮で攻撃が下がった！" }] },
+                { name: "黒星の魔導", icon: "fa-hat-wizard", hp: 672, str: 109, exp: 520, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "silence", stacks: 1, turns: 2, chance: 0.4, log: "黒星の呪文で沈黙した！" }] },
+                { name: "審判の猛獣", icon: "fa-hippo", hp: 735, str: 103, exp: 498, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "defenseDown", stacks: 2, turns: 2, chance: 0.4, log: "審判の衝撃で防御が崩れた！" }] },
+                { name: "冥毒の女王", icon: "fa-spider", hp: 693, str: 107, exp: 512, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "poison", stacks: 4, turns: 3, chance: 0.4, log: "冥毒が広がった！" }] }
             ],
             [
-                { name: "星界の番人", icon: "fa-star", hp: 770, str: 116, exp: 570, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.4, log: "星界の圧で弱体化した！" }] },
-                { name: "禁域の騎士", icon: "fa-chess-knight", hp: 791, str: 114, exp: 565, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.4, log: "禁域の刃で攻撃が下がった！" }] },
-                { name: "深海の魔王", icon: "fa-fish", hp: 756, str: 118, exp: 575, onHitEffects: [{ id: "blind", stacks: 2, turns: 2, chance: 0.4, log: "深海の闇で視界が乱れた！" }] },
-                { name: "雷禍の使徒", icon: "fa-bolt", hp: 784, str: 117, exp: 568, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.4, log: "雷禍で脆弱になった！" }] },
-                { name: "冥炎の賢者", icon: "fa-fire", hp: 763, str: 119, exp: 578, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.4, log: "冥炎で裂かれた！" }] }
+                { name: "星界の番人", icon: "fa-star", hp: 770, str: 116, exp: 570, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "weaken", stacks: 2, turns: 2, chance: 0.4, log: "星界の圧で弱体化した！" }] },
+                { name: "禁域の騎士", icon: "fa-chess-knight", hp: 791, str: 114, exp: 565, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.4, log: "禁域の刃で攻撃が下がった！" }] },
+                { name: "深海の魔王", icon: "fa-fish", hp: 756, str: 118, exp: 575, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "blind", stacks: 2, turns: 2, chance: 0.4, log: "深海の闇で視界が乱れた！" }] },
+                { name: "雷禍の使徒", icon: "fa-bolt", hp: 784, str: 117, exp: 568, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "vulnerable", stacks: 2, turns: 2, chance: 0.4, log: "雷禍で脆弱になった！" }] },
+                { name: "冥炎の賢者", icon: "fa-fire", hp: 763, str: 119, exp: 578, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "bleed", stacks: 2, turns: 3, chance: 0.4, log: "冥炎で裂かれた！" }] }
             ],
             [
-                { name: "超越の獄竜", icon: "fa-dragon", hp: 840, str: 130, exp: 640, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 2, chance: 0.45, log: "超越の咆哮で脆弱になった！" }] },
-                { name: "黒曜の滅刃", icon: "fa-user-secret", hp: 826, str: 133, exp: 645, onHitEffects: [{ id: "bleed", stacks: 3, turns: 3, chance: 0.45, log: "黒曜の刃で裂かれた！" }] },
-                { name: "幽冥の法王", icon: "fa-hat-wizard", hp: 805, str: 135, exp: 650, onHitEffects: [{ id: "silence", stacks: 1, turns: 3, chance: 0.45, log: "幽冥の呪詛で沈黙した！" }] },
-                { name: "審罰の巨影", icon: "fa-ghost", hp: 854, str: 128, exp: 638, onHitEffects: [{ id: "defenseDown", stacks: 3, turns: 3, chance: 0.45, log: "審罰で防御が崩れた！" }] },
-                { name: "虚無の雷帝", icon: "fa-bolt", hp: 833, str: 132, exp: 642, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.45, log: "虚無雷で攻撃が下がった！" }] }
+                { name: "超越の獄竜", icon: "fa-dragon", hp: 840, str: 130, exp: 640, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 2, chance: 0.45, log: "超越の咆哮で脆弱になった！" }] },
+                { name: "黒曜の滅刃", icon: "fa-user-secret", hp: 826, str: 133, exp: 645, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "bleed", stacks: 3, turns: 3, chance: 0.45, log: "黒曜の刃で裂かれた！" }] },
+                { name: "幽冥の法王", icon: "fa-hat-wizard", hp: 805, str: 135, exp: 650, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "silence", stacks: 1, turns: 3, chance: 0.45, log: "幽冥の呪詛で沈黙した！" }] },
+                { name: "審罰の巨影", icon: "fa-ghost", hp: 854, str: 128, exp: 638, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "defenseDown", stacks: 3, turns: 3, chance: 0.45, log: "審罰で防御が崩れた！" }] },
+                { name: "虚無の雷帝", icon: "fa-bolt", hp: 833, str: 132, exp: 642, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 2, chance: 0.45, log: "虚無雷で攻撃が下がった！" }] }
             ],
             [
-                { name: "終焉の審判者", icon: "fa-sun", hp: 910, str: 144, exp: 720, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 2, chance: 0.45, log: "終焉の光で脆弱になった！" }] },
-                { name: "深淵の疫王", icon: "fa-virus", hp: 896, str: 147, exp: 725, onHitEffects: [{ id: "poison", stacks: 5, turns: 3, chance: 0.45, log: "疫毒が体を蝕む！" }] },
-                { name: "絶対零度の影", icon: "fa-snowflake", hp: 882, str: 146, exp: 722, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.35, log: "絶対零度で凍結した！" }] },
-                { name: "災禍の殲滅竜", icon: "fa-dragon", hp: 938, str: 142, exp: 715, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 3, chance: 0.45, log: "災禍の爪で攻撃が下がった！" }] },
-                { name: "虚無の戦魔", icon: "fa-hippo", hp: 924, str: 145, exp: 718, onHitEffects: [{ id: "weaken", stacks: 3, turns: 2, chance: 0.45, log: "虚無の圧で弱体化した！" }] }
+                { name: "終焉の審判者", icon: "fa-sun", hp: 910, str: 144, exp: 720, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 2, chance: 0.45, log: "終焉の光で脆弱になった！" }] },
+                { name: "深淵の疫王", icon: "fa-virus", hp: 896, str: 147, exp: 725, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "poison", stacks: 5, turns: 3, chance: 0.45, log: "疫毒が体を蝕む！" }] },
+                { name: "絶対零度の影", icon: "fa-snowflake", hp: 882, str: 146, exp: 722, def: 5, acc: 9, eva: 9, onHitEffects: [{ id: "freeze", stacks: 1, turns: 1, chance: 0.35, log: "絶対零度で凍結した！" }] },
+                { name: "災禍の殲滅竜", icon: "fa-dragon", hp: 938, str: 142, exp: 715, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "attackDown", stacks: 2, turns: 3, chance: 0.45, log: "災禍の爪で攻撃が下がった！" }] },
+                { name: "虚無の戦魔", icon: "fa-hippo", hp: 924, str: 145, exp: 718, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "weaken", stacks: 3, turns: 2, chance: 0.45, log: "虚無の圧で弱体化した！" }] }
             ],
             [
-                { name: "神域の影竜", icon: "fa-dragon", hp: 1015, str: 161, exp: 820, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 3, chance: 0.5, log: "神域の咆哮で脆弱になった！" }] },
-                { name: "断罪の剣魔", icon: "fa-chess-knight", hp: 994, str: 165, exp: 825, onHitEffects: [{ id: "defenseDown", stacks: 3, turns: 3, chance: 0.5, log: "断罪の一撃で防御が崩れた！" }] },
-                { name: "星滅の魔王", icon: "fa-star", hp: 980, str: 167, exp: 830, onHitEffects: [{ id: "silence", stacks: 1, turns: 3, chance: 0.5, log: "星滅の呪詛で沈黙した！" }] },
-                { name: "冥炎の支配者", icon: "fa-fire", hp: 1036, str: 160, exp: 818, onHitEffects: [{ id: "bleed", stacks: 3, turns: 3, chance: 0.5, log: "冥炎で裂かれた！" }] },
-                { name: "虚空の審判獣", icon: "fa-hippo", hp: 1050, str: 163, exp: 822, onHitEffects: [{ id: "attackDown", stacks: 3, turns: 3, chance: 0.5, log: "虚空の衝撃で攻撃が下がった！" }] }
+                { name: "神域の影竜", icon: "fa-dragon", hp: 1015, str: 161, exp: 820, def: 9, acc: 7, eva: 4, onHitEffects: [{ id: "vulnerable", stacks: 3, turns: 3, chance: 0.5, log: "神域の咆哮で脆弱になった！" }] },
+                { name: "断罪の剣魔", icon: "fa-chess-knight", hp: 994, str: 165, exp: 825, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "defenseDown", stacks: 3, turns: 3, chance: 0.5, log: "断罪の一撃で防御が崩れた！" }] },
+                { name: "星滅の魔王", icon: "fa-star", hp: 980, str: 167, exp: 830, def: 5, acc: 11, eva: 7, onHitEffects: [{ id: "silence", stacks: 1, turns: 3, chance: 0.5, log: "星滅の呪詛で沈黙した！" }] },
+                { name: "冥炎の支配者", icon: "fa-fire", hp: 1036, str: 160, exp: 818, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "bleed", stacks: 3, turns: 3, chance: 0.5, log: "冥炎で裂かれた！" }] },
+                { name: "虚空の審判獣", icon: "fa-hippo", hp: 1050, str: 163, exp: 822, def: 6, acc: 8, eva: 6, onHitEffects: [{ id: "attackDown", stacks: 3, turns: 3, chance: 0.5, log: "虚空の衝撃で攻撃が下がった！" }] }
             ]
         ];
 
@@ -1730,7 +1730,7 @@
                 icon: "fa-skull-crossbones",
                 hp: 45,
                 str: 7,
-                exp: 48,
+                exp: 48, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -1749,7 +1749,7 @@
                 icon: "fa-wind",
                 hp: 79,
                 str: 12,
-                exp: 96,
+                exp: 96, def: 7, acc: 11, eva: 11,
                 skillInterval: 2,
                 skills: [
                     {
@@ -1769,7 +1769,7 @@
                 icon: "fa-mountain",
                 hp: 112,
                 str: 17,
-                exp: 160,
+                exp: 160, def: 11, acc: 9, eva: 6,
                 skillInterval: 4,
                 skills: [
                     {
@@ -1789,7 +1789,7 @@
                 icon: "fa-snowflake",
                 hp: 146,
                 str: 20,
-                exp: 256,
+                exp: 256, def: 8, acc: 10, eva: 8,
                 skillInterval: 5,
                 skills: [
                     {
@@ -1808,7 +1808,7 @@
                 icon: "fa-mask",
                 hp: 180,
                 str: 24,
-                exp: 360,
+                exp: 360, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -1828,7 +1828,7 @@
                 icon: "fa-fire",
                 hp: 213,
                 str: 28,
-                exp: 480,
+                exp: 480, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -1846,7 +1846,7 @@
                 icon: "fa-bolt",
                 hp: 252,
                 str: 33,
-                exp: 640,
+                exp: 640, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -1864,7 +1864,7 @@
                 icon: "fa-sun",
                 hp: 292,
                 str: 38,
-                exp: 800,
+                exp: 800, def: 8, acc: 10, eva: 8,
                 skillInterval: 4,
                 skills: [
                     {
@@ -1885,7 +1885,7 @@
                 icon: "fa-virus",
                 hp: 336,
                 str: 42,
-                exp: 960,
+                exp: 960, def: 8, acc: 10, eva: 8,
                 skillInterval: 5,
                 skills: [
                     {
@@ -1904,7 +1904,7 @@
                 icon: "fa-shield-halved",
                 hp: 381,
                 str: 47,
-                exp: 1120,
+                exp: 1120, def: 11, acc: 9, eva: 6,
                 skillInterval: 4,
                 skills: [
                     {
@@ -1923,7 +1923,7 @@
                 icon: "fa-user-secret",
                 hp: 426,
                 str: 51,
-                exp: 1360,
+                exp: 1360, def: 7, acc: 11, eva: 11,
                 skillInterval: 2,
                 skills: [
                     {
@@ -1943,7 +1943,7 @@
                 icon: "fa-dragon",
                 hp: 476,
                 str: 56,
-                exp: 1760,
+                exp: 1760, def: 11, acc: 9, eva: 6,
                 skillInterval: 4,
                 skills: [
                     {
@@ -1962,7 +1962,7 @@
                 icon: "fa-bolt",
                 hp: 770,
                 str: 91,
-                exp: 3200,
+                exp: 3200, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -1992,7 +1992,7 @@
                 icon: "fa-skull",
                 hp: 910,
                 str: 105,
-                exp: 4200,
+                exp: 4200, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2020,7 +2020,7 @@
                 icon: "fa-fire",
                 hp: 1050,
                 str: 116,
-                exp: 5200,
+                exp: 5200, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2048,7 +2048,7 @@
                 icon: "fa-snowflake",
                 hp: 1190,
                 str: 126,
-                exp: 6200,
+                exp: 6200, def: 7, acc: 13, eva: 9,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2076,7 +2076,7 @@
                 icon: "fa-ghost",
                 hp: 1330,
                 str: 137,
-                exp: 7200,
+                exp: 7200, def: 8, acc: 10, eva: 8,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2104,7 +2104,7 @@
                 icon: "fa-chess-knight",
                 hp: 1470,
                 str: 147,
-                exp: 8200,
+                exp: 8200, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2132,7 +2132,7 @@
                 icon: "fa-skull-crossbones",
                 hp: 1610,
                 str: 158,
-                exp: 9200,
+                exp: 9200, def: 7, acc: 13, eva: 9,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2160,7 +2160,7 @@
                 icon: "fa-dragon",
                 hp: 1785,
                 str: 168,
-                exp: 10500,
+                exp: 10500, def: 11, acc: 9, eva: 6,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2189,7 +2189,7 @@
                 icon: "fa-bolt",
                 hp: 1960,
                 str: 179,
-                exp: 11800,
+                exp: 11800, def: 8, acc: 10, eva: 8,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2217,7 +2217,7 @@
                 icon: "fa-sun",
                 hp: 2135,
                 str: 189,
-                exp: 13200,
+                exp: 13200, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2246,7 +2246,7 @@
                 icon: "fa-mountain",
                 hp: 2310,
                 str: 200,
-                exp: 14600,
+                exp: 14600, def: 11, acc: 9, eva: 6,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2275,7 +2275,7 @@
                 icon: "fa-virus",
                 hp: 2520,
                 str: 210,
-                exp: 16000,
+                exp: 16000, def: 8, acc: 10, eva: 8,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2302,7 +2302,7 @@
                 icon: "fa-user-secret",
                 hp: 2730,
                 str: 224,
-                exp: 17500,
+                exp: 17500, def: 7, acc: 11, eva: 11,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2330,7 +2330,7 @@
                 icon: "fa-snowflake",
                 hp: 2940,
                 str: 235,
-                exp: 19000,
+                exp: 19000, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2358,7 +2358,7 @@
                 icon: "fa-fire",
                 hp: 3150,
                 str: 245,
-                exp: 20500,
+                exp: 20500, def: 8, acc: 10, eva: 8,
                 skillInterval: 3,
                 skills: [
                     {
@@ -2386,7 +2386,7 @@
                 icon: "fa-star",
                 hp: 3360,
                 str: 259,
-                exp: 22000,
+                exp: 22000, def: 8, acc: 10, eva: 8,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2414,7 +2414,7 @@
                 icon: "fa-dragon",
                 hp: 3640,
                 str: 273,
-                exp: 24000,
+                exp: 24000, def: 11, acc: 9, eva: 6,
                 skillInterval: 2,
                 skills: [
                     {
@@ -2444,7 +2444,7 @@
                 icon: "fa-crown",
                 hp: 4060,
                 str: 294,
-                exp: 28000,
+                exp: 28000, def: 8, acc: 10, eva: 8,
                 skillInterval: 2,
                 skills: [
                     {
@@ -5136,6 +5136,9 @@
                     maxHp: Math.floor(bossDef.hp * scale),
                     hp: Math.floor(bossDef.hp * scale),
                     str: Math.floor(bossDef.str * scale),
+                    def: Math.floor(bossDef.def * scale),
+                    acc: Math.floor(bossDef.acc * scale),
+                    eva: Math.floor(bossDef.eva * scale),
                     exp: Math.floor(bossDef.exp * scale),
                     statusEffects: [],
                     isBoss: true,
@@ -5152,6 +5155,9 @@
                     maxHp: Math.floor(base.hp * scale), 
                     hp: Math.floor(base.hp * scale), 
                     str: Math.floor(base.str * scale),
+                    def: Math.floor(base.def * scale),
+                    acc: Math.floor(base.acc * scale),
+                    eva: Math.floor(base.eva * scale),
                     statusEffects: [],
                     isBoss: false
                 };
@@ -5179,7 +5185,8 @@
             if (skill.pow !== undefined && skill.pow !== null) {
                 const hits = skill.hits || 1;
                 for (let i = 0; i < hits; i++) {
-                    const accuracy = skill.accuracy ?? 100;
+                    const baseAccuracy = (skill.accuracy ?? 100) + (Game.enemy.acc || 0);
+                    const accuracy = Math.max(0, Math.floor(baseAccuracy * enemyStatusMods.accuracyMul));
                     if (Math.random() * 100 > accuracy) {
                         continue;
                     }
@@ -5311,6 +5318,8 @@
             Game.player.skillSlotIndex = slotResult.nextIndex;
 
             const enemyStatusMods = getStatusModifiers(Game.enemy);
+            const enemyEvasion = Math.max(0, Math.floor((Game.enemy.eva || 0) * enemyStatusMods.evasionMul));
+            const enemyDefense = Math.max(0, Math.floor((Game.enemy.def || 0) * enemyStatusMods.defMul));
 
             if (currentSkill.hpCost) {
                 const cost = Math.floor(derived.maxHp * currentSkill.hpCost);
@@ -5343,7 +5352,8 @@
                 let landedHit = false;
                 
                 for(let i=0; i<hits; i++){
-                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0) + bossMods.accuracyBonus);
+                    let hitChance = Math.min(100, derived.totals.accuracy + (currentSkill.accuracyBonus || 0) + bossMods.accuracyBonus - enemyEvasion);
+                    hitChance = Math.max(0, hitChance);
                     if (Math.random() * 100 > hitChance) {
                         continue;
                     }
@@ -5382,6 +5392,7 @@
                     }
                     dmg = Math.floor(dmg * playerStatusMods.damageDoneMul);
                     dmg = Math.floor(dmg * enemyStatusMods.damageTakenMul);
+                    dmg = Math.max(0, dmg - enemyDefense);
 
                     dmg = Math.max(1, dmg);
                     const appliedDamage = applyDamage(Game.enemy, dmg, Game.player);
